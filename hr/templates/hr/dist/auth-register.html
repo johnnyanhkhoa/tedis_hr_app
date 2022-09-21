@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Mazer Admin Dashboard</title>
+    <title>Sign up - Tedis HR</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'hr/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'hr/vendors/bootstrap-icons/bootstrap-icons.css' %}">
@@ -25,7 +25,8 @@
             <div class="col-lg-5 col-12">
                 <div id="auth-left">
                     <div class="auth-logo">
-                        <a href="index.html"><img src="{% static 'hr/images/logo/logo.png' %}" alt="Logo"></a>
+                        <a href="index.html"><img src="{% static 'hr/images/logo/logo_tedis.png' %}" alt="Logo"
+                                style="width: 200px; height: 100px"></a>
                     </div>
                     <h1 class="auth-title">Sign Up</h1>
                     <p class="auth-subtitle mb-5">Input your data to register to our website.</p>
@@ -62,49 +63,43 @@
                         <div class="form-group position-relative has-icon-left mb-4">
                             {{ frm_dang_ky.user_full_name }}
                             <div class="form-control-icon">
-                                <i class="bi bi-shield-lock"></i>
+                                <i class="bi bi-card-heading"></i>
                             </div>
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
                             {{ frm_dang_ky.user_title }}
                             <div class="form-control-icon">
-                                <i class="bi bi-shield-lock"></i>
+                                <i class="bi bi-tags"></i>
                             </div>
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
                             {{ frm_dang_ky.user_mobile_1 }}
                             <div class="form-control-icon">
-                                <i class="bi bi-shield-lock"></i>
+                                <i class="bi bi-phone"></i>
                             </div>
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
                             {{ frm_dang_ky.user_mobile_2 }}
                             <div class="form-control-icon">
-                                <i class="bi bi-shield-lock"></i>
+                                <i class="bi bi-telephone"></i>
                             </div>
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
                             {{ frm_dang_ky.user_email }}
                             <div class="form-control-icon">
-                                <i class="bi bi-shield-lock"></i>
+                                <i class="bi bi-envelope"></i>
                             </div>
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
                             {{ frm_dang_ky.created_by }}
                             <div class="form-control-icon">
-                                <i class="bi bi-shield-lock"></i>
+                                <i class="bi bi-person-plus"></i>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5"  name="btnDangKy" value="Đăng ký">Sign Up</button>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5" name="btnDangKy"
+                            value="Đăng ký">Sign Up</button>
                     </form>
-
-
-                    <div class="text-center mt-5 text-lg fs-4">
-                        <p class='text-gray-600'>Already have an account? 
-                            <a href="auth-login.html" class="font-bold">Login</a>.
-                        </p>
-                    </div>
                 </div>
             </div>
             <div class="col-lg-7 d-none d-lg-block">

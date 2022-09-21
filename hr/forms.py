@@ -4,7 +4,7 @@ from hr.models import User
 
 class FormDangKy(forms.ModelForm):
     user_id = forms.CharField(label='User ID', widget=forms.TextInput(attrs={
-        "class": "form-control form-control-xl", "placeholder": "user_id",
+        "class": "form-control form-control-xl", "placeholder": "User ID",
     }))
     user_name = forms.CharField(max_length=20, label='Username', widget=forms.TextInput(attrs={
         "class": "form-control form-control-xl", "placeholder": "Username",
@@ -22,16 +22,16 @@ class FormDangKy(forms.ModelForm):
         "class": "form-control form-control-xl", "placeholder": "Title",
     }))
     user_mobile_1 = forms.CharField(max_length=20, label='Điện thoại 1', widget=forms.TextInput(attrs={
-        "class": "form-control form-control-xl", "placeholder": "Điện thoại",
+        "class": "form-control form-control-xl", "placeholder": "Điện thoại 1",
     }))
     user_mobile_2 = forms.CharField(max_length=20, label='Điện thoại 2', widget=forms.TextInput(attrs={
-        "class": "form-control form-control-xl", "placeholder": "Điện thoại",
+        "class": "form-control form-control-xl", "placeholder": "Điện thoại 2",
     }))
     user_email = forms.EmailField(max_length=50, label='Email', widget=forms.TextInput(attrs={
         "class": "form-control form-control-xl", "placeholder": "Email",
     }))
     created_by = forms.IntegerField(label='Created By', widget=forms.NumberInput(attrs={
-        "class": "form-control form-control-xl", "placeholder": "created_by",
+        "class": "form-control form-control-xl", "placeholder": "Created by",
     }))
 
     class Meta:
