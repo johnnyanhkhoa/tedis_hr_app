@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'ckeditor',
     'hr',
     'employee',
+    
+
 ]
 
 MIDDLEWARE = [

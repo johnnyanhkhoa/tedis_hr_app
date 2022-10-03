@@ -30,6 +30,9 @@ relation_2_list = Relation_2.objects.only('id')
 bo_sung_ho_so_list = Bo_sung_ho_so.objects.only('id')
 da_nop_thong_tin_nhan_vien_list = Da_nop_thong_tin_nhan_vien.objects.only('id')
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
 # Form
 class CreateEmployeeForm(forms.ModelForm):
     employee_code = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={
@@ -74,25 +77,25 @@ class CreateEmployeeForm(forms.ModelForm):
     position_v = forms.ModelChoiceField(required=False, queryset=position_v_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Position V",
     }))
-    joining_date = forms.DateField(required=False, widget=forms.SelectDateWidget(years=years))
-    out_date = forms.DateField(required=False, widget=forms.SelectDateWidget(years=years))
+    joining_date = forms.DateField(required=False, widget=DateInput())
+    out_date = forms.DateField(required=False, widget=DateInput())
     years_of_service = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Years of service",
     }))
-    promotion_effective_date = forms.DateField(required=False, widget=forms.SelectDateWidget(years=years))
+    promotion_effective_date = forms.DateField(required=False, widget=DateInput())
     contract_no = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Contract number",
     }))
     contract_type = forms.ModelChoiceField(required=False, queryset=contract_type_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Contract type",
     }))
-    signed_contract_date = forms.DateField(required=False, widget=forms.SelectDateWidget(years=years))
-    from_date = forms.DateField(required=False, widget=forms.SelectDateWidget(years=years))
-    to_date = forms.DateField(required=False, widget=forms.SelectDateWidget(years=years))
+    signed_contract_date = forms.DateField(required=False, widget=DateInput())
+    from_date = forms.DateField(required=False, widget=DateInput())
+    to_date = forms.DateField(required=False, widget=DateInput())
     sexual = forms.ModelChoiceField(required=False, queryset=sexual_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Sexual",
     }))
-    date_of_birth = forms.DateField(required=False, widget=forms.SelectDateWidget(years=years))
+    date_of_birth = forms.DateField(required=False, widget=DateInput())
     place_of_birth = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Place of birth",
     }))
@@ -102,7 +105,7 @@ class CreateEmployeeForm(forms.ModelForm):
     id_card_no = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "ID card number",
     }))
-    issued_date_of_id_card = forms.DateField(required=False, widget=forms.SelectDateWidget(years=years))
+    issued_date_of_id_card = forms.DateField(required=False, widget=DateInput())
     issued_place_of_id_card = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Issued place of ID card",
     }))
@@ -160,7 +163,7 @@ class CreateEmployeeForm(forms.ModelForm):
     children = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Children",
     }))
-    birthday_of_children = forms.DateField(required=False, widget=forms.SelectDateWidget(years=years))
+    birthday_of_children = forms.DateField(required=False, widget=DateInput())
     emergency_contact_1 = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Emergency contact 1",
     }))
@@ -199,4 +202,5 @@ class CreateEmployeeForm(forms.ModelForm):
     }))
     class Meta:
         model = Employee
-        fields = ['__all__']
+        fields = '__all__'
+        

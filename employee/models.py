@@ -4,7 +4,7 @@ from django.utils.timezone import now
 
 # Employee
 class Site(models.Model):
-    site = models.CharField(max_length=10, blank=False)
+    site = models.CharField(max_length=10, blank=False, null=True)
     created_by = models.IntegerField(null=True)
     created_at = models.DateTimeField(null=True, default=now)
     updated_by = models.IntegerField(null=True, blank=True)
@@ -17,7 +17,7 @@ class Site(models.Model):
 
 
 class Division(models.Model):
-    division = models.CharField(max_length=50, blank=False)
+    division = models.CharField(max_length=50, blank=False, null=True)
     created_by = models.IntegerField(null=True)
     created_at = models.DateTimeField(null=True, default=now)
     updated_by = models.IntegerField(null=True, blank=True)
@@ -30,7 +30,7 @@ class Division(models.Model):
     
 
 class Department_E(models.Model):
-    department_e = models.CharField(max_length=50, blank=False)
+    department_e = models.CharField(max_length=50, blank=False, null=True)
     created_by = models.IntegerField(null=True)
     created_at = models.DateTimeField(null=True, default=now)
     updated_by = models.IntegerField(null=True, blank=True)
@@ -303,64 +303,64 @@ class Da_nop_thong_tin_nhan_vien(models.Model):
 
     
 class Employee(models.Model):
-    employee_code = models.IntegerField(blank=False)
-    full_name = models.CharField(max_length=100, blank=False)
-    site = models.ForeignKey(Site, on_delete=models.PROTECT, null=True)
-    division = models.ForeignKey(Division, on_delete=models.PROTECT, null=True)
-    department_e = models.ForeignKey(Department_E, on_delete=models.PROTECT, null=True)
-    department_v = models.ForeignKey(Department_V, on_delete=models.PROTECT, null=True, blank=True)
-    area = models.ForeignKey(Area, on_delete=models.PROTECT, null=True)
-    provinces = models.ForeignKey(Provinces, on_delete=models.PROTECT, null=True, blank=True)
-    gp = models.ForeignKey(Gp, on_delete=models.PROTECT, null=True, blank=True)
-    department_area = models.ForeignKey(Department_area, on_delete=models.PROTECT, null=True)
-    function = models.ForeignKey(Function, on_delete=models.PROTECT, null=True)
-    job_title = models.ForeignKey(Job_title, on_delete=models.PROTECT, null=True)
-    position_e = models.ForeignKey(Position_E, on_delete=models.PROTECT, null=True)
-    position_v = models.ForeignKey(Position_V, on_delete=models.PROTECT, null=True)
-    joining_date = models.DateField(max_length=50, null=True)
-    out_date = models.DateField(max_length=50, null=True, blank=True)
-    years_of_service = models.CharField(max_length=10, blank=True, null=True)
-    promotion_effective_date = models.DateField(max_length=30, blank=True, null=True)
-    contract_no = models.CharField(max_length=50, blank=True, null=True)
-    contract_type = models.ForeignKey(Contract_type, on_delete=models.PROTECT, null=True, blank=True)
-    signed_contract_date = models.DateField(max_length=30, blank=True, null=True)
-    from_date = models.DateField(max_length=30, blank=True, null=True)
-    to_date = models.DateField(max_length=30, blank=True, null=True)
-    sexual = models.ForeignKey(Sexual, on_delete=models.PROTECT, null=True, blank=True)
-    date_of_birth = models.DateField(max_length=30, blank=True, null=True)
-    place_of_birth = models.CharField(max_length=30, blank=True, null=True)
-    ethic_group = models.ForeignKey(Ethic_group, on_delete=models.PROTECT, null=True, blank=True)
-    id_card_no = models.CharField(max_length=30, blank=True, null=True)
-    issued_date_of_id_card = models.DateField(max_length=30, blank=True, null=True)
-    issued_place_of_id_card = models.CharField(max_length=100, blank=True, null=True)
-    permanent_address = models.CharField(max_length=100, blank=True, null=True)
-    current_address = models.CharField(max_length=100, blank=True, null=True)
-    send_documents_to_address = models.CharField(max_length=100, blank=True, null=True)
-    cellphone_no = models.CharField(max_length=20, blank=True, null=True)
-    marital_status = models.ForeignKey(Marital_status, on_delete=models.PROTECT, null=True, blank=True)
-    company_email = models.CharField(max_length=30, blank=True, null=True)
-    personal_email = models.CharField(max_length=30, blank=True, null=True)
-    account_no = models.CharField(max_length=50, blank=True, null=True)
-    with_bank = models.CharField(max_length=30, blank=True, null=True)
-    branch = models.CharField(max_length=100, blank=True, null=True)
-    certificate_e = models.ForeignKey(Certificate_E, on_delete=models.PROTECT, null=True, blank=True)
-    certificate_v = models.ForeignKey(Certificate_V, on_delete=models.PROTECT, null=True, blank=True)
-    major_e = models.CharField(max_length=30, blank=True, null=True)
-    major_v = models.CharField(max_length=30, blank=True, null=True)
-    social_insurrance_book = models.CharField(max_length=50, blank=True, null=True)
-    hi_registered_place = models.ForeignKey(Hi_registered_place, on_delete=models.PROTECT, null=True, blank=True)
-    personal_income_tax = models.CharField(max_length=50, blank=True, null=True)
-    children = models.CharField(max_length=50, blank=True, null=True)
-    birthday_of_children = models.DateField(max_length=30, blank=True, null=True)
-    emergency_contact_1 = models.CharField(max_length=50, blank=True, null=True)
-    relation_1 = models.ForeignKey(Relation_1, on_delete=models.PROTECT, null=True, blank=True)
-    contact_address_1 = models.CharField(max_length=50, blank=True, null=True)
-    phone_1 = models.CharField(max_length=30, blank=True, null=True)
-    emergency_contact_2 = models.CharField(max_length=50, blank=True, null=True)
-    relation_2 = models.ForeignKey(Relation_2, on_delete=models.PROTECT, null=True, blank=True)
-    contact_address_2 = models.CharField(max_length=50, blank=True, null=True)
-    phone_2 = models.CharField(max_length=30, blank=True, null=True)
-    year_of_birth = models.IntegerField(blank=True, null=True)
-    age = models.IntegerField(blank=True, null=True)
-    bo_sung_ho_so = models.ForeignKey(Bo_sung_ho_so, on_delete=models.PROTECT, null=True, blank=True)
-    da_nop_thong_tin_nhan_vien = models.ForeignKey(Da_nop_thong_tin_nhan_vien, on_delete=models.PROTECT, null=True, blank=True)
+    employee_code = models.IntegerField(blank=False) #JOB
+    full_name = models.CharField(max_length=100, blank=False) #PERSONAL
+    site = models.ForeignKey(Site, on_delete=models.PROTECT, null=True) #JOB
+    division = models.ForeignKey(Division, on_delete=models.PROTECT, null=True) #JOB
+    department_e = models.ForeignKey(Department_E, on_delete=models.PROTECT, null=True) #JOB
+    department_v = models.ForeignKey(Department_V, on_delete=models.PROTECT, null=True, blank=True) #JOB
+    area = models.ForeignKey(Area, on_delete=models.PROTECT, null=True) #JOB
+    provinces = models.ForeignKey(Provinces, on_delete=models.PROTECT, null=True, blank=True) #JOB
+    gp = models.ForeignKey(Gp, on_delete=models.PROTECT, null=True, blank=True) #JOB
+    department_area = models.ForeignKey(Department_area, on_delete=models.PROTECT, null=True) #JOB
+    function = models.ForeignKey(Function, on_delete=models.PROTECT, null=True) #JOB
+    job_title = models.ForeignKey(Job_title, on_delete=models.PROTECT, null=True) #JOB
+    position_e = models.ForeignKey(Position_E, on_delete=models.PROTECT, null=True) #JOB
+    position_v = models.ForeignKey(Position_V, on_delete=models.PROTECT, null=True) #JOB
+    joining_date = models.DateField(max_length=50, null=True) #JOB
+    out_date = models.DateField(max_length=50, null=True, blank=True) #JOB 
+    years_of_service = models.CharField(max_length=10, blank=True, null=True) #JOB
+    promotion_effective_date = models.DateField(max_length=30, blank=True, null=True) #JOB
+    contract_no = models.CharField(max_length=50, blank=True, null=True) #JOB
+    contract_type = models.ForeignKey(Contract_type, on_delete=models.PROTECT, null=True, blank=True) #JOB
+    signed_contract_date = models.DateField(max_length=30, blank=True, null=True) #JOB
+    from_date = models.DateField(max_length=30, blank=True, null=True) #JOB
+    to_date = models.DateField(max_length=30, blank=True, null=True) #JOB
+    sexual = models.ForeignKey(Sexual, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
+    date_of_birth = models.DateField(max_length=30, blank=True, null=True) #PERSONAL
+    place_of_birth = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
+    ethic_group = models.ForeignKey(Ethic_group, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
+    id_card_no = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
+    issued_date_of_id_card = models.DateField(max_length=30, blank=True, null=True) #PERSONAL
+    issued_place_of_id_card = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
+    permanent_address = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
+    current_address = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
+    send_documents_to_address = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
+    cellphone_no = models.CharField(max_length=20, blank=True, null=True) #PERSONAL
+    marital_status = models.ForeignKey(Marital_status, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
+    company_email = models.CharField(max_length=30, blank=True, null=True) #JOB
+    personal_email = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
+    account_no = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
+    with_bank = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
+    branch = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
+    certificate_e = models.ForeignKey(Certificate_E, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
+    certificate_v = models.ForeignKey(Certificate_V, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
+    major_e = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
+    major_v = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
+    social_insurrance_book = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
+    hi_registered_place = models.ForeignKey(Hi_registered_place, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
+    personal_income_tax = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
+    children = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
+    birthday_of_children = models.DateField(max_length=30, blank=True, null=True) #PERSONAL
+    emergency_contact_1 = models.CharField(max_length=50, blank=True, null=True) #EMERGENCY CONTACT
+    relation_1 = models.ForeignKey(Relation_1, on_delete=models.PROTECT, null=True, blank=True) #EMERGENCY CONTACT
+    contact_address_1 = models.CharField(max_length=50, blank=True, null=True) #EMERGENCY CONTACT
+    phone_1 = models.CharField(max_length=30, blank=True, null=True) #EMERGENCY CONTACT
+    emergency_contact_2 = models.CharField(max_length=50, blank=True, null=True) #EMERGENCY CONTACT
+    relation_2 = models.ForeignKey(Relation_2, on_delete=models.PROTECT, null=True, blank=True) #EMERGENCY CONTACT
+    contact_address_2 = models.CharField(max_length=50, blank=True, null=True) #EMERGENCY CONTACT
+    phone_2 = models.CharField(max_length=30, blank=True, null=True) #EMERGENCY CONTACT
+    year_of_birth = models.IntegerField(blank=True, null=True) #PERSONAL
+    age = models.IntegerField(blank=True, null=True) #PERSONAL
+    bo_sung_ho_so = models.ForeignKey(Bo_sung_ho_so, on_delete=models.PROTECT, null=True, blank=True) #ANOTHER
+    da_nop_thong_tin_nhan_vien = models.ForeignKey(Da_nop_thong_tin_nhan_vien, on_delete=models.PROTECT, null=True, blank=True) #ANOTHER
