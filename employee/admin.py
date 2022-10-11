@@ -25,4 +25,5 @@ admin.site.register(Relation_2)
 admin.site.register(Bo_sung_ho_so)
 admin.site.register(Da_nop_thong_tin_nhan_vien)
 admin.site.register(Employee)
+admin.site.register(Employee_children)
 

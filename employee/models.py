@@ -364,3 +364,15 @@ class Employee(models.Model):
     age = models.IntegerField(blank=True, null=True) #PERSONAL
     bo_sung_ho_so = models.ForeignKey(Bo_sung_ho_so, on_delete=models.PROTECT, null=True, blank=True) #ANOTHER
     da_nop_thong_tin_nhan_vien = models.ForeignKey(Da_nop_thong_tin_nhan_vien, on_delete=models.PROTECT, null=True, blank=True) #ANOTHER
+
+    def __str__(self):
+        return self.full_name
+
+
+class Employee_children(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    children = models.CharField(max_length=50, blank=True, null=True)
+    birthday_of_children = models.DateField(max_length=30, blank=True, null=True)
+
+    def __int__(self):
+        return self.employee 

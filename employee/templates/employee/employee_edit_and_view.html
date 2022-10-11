@@ -1,0 +1,440 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}HR | Employee Information{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Employee Information</h3>
+                    <br>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Layout Default</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <form method="post" class="">
+                {% csrf_token %}
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item text-dark" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                            type="button" role="tab" aria-controls="home" aria-selected="true">Personal
+                            Information</button>
+                    </li>
+                    <li class="nav-item text-dark" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
+                            type="button" role="tab" aria-controls="profile" aria-selected="false">Job
+                            Information</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact"
+                            type="button" role="tab" aria-controls="contact" aria-selected="false">Emergency Contact
+                            Information
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="full_name" class="form-label fw-bold text-dark">Full Name</label>
+                                {{ form.full_name }}
+                            </div>
+                            <div class="col">
+                                <label for="year_of_birth" class="form-label fw-bold text-dark">Year of
+                                    birth</label>
+                                {{ form.year_of_birth }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="sexual" class="form-label fw-bold text-dark">Sexual</label>
+                                {{ form.sexual }}
+                            </div>
+                            <div class="col">
+                                <label for="ethic_group" class="form-label fw-bold text-dark">Ethic
+                                    group</label>
+                                {{ form.ethic_group }}
+                            </div>
+                            <div class="col">
+                                <label for="marital_status" class="form-label fw-bold text-dark">Marital
+                                    status</label>
+                                {{ form.marital_status }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="date_of_birth" class="form-label fw-bold text-dark">Date of
+                                    birth&emsp;&emsp;</label>
+                                {{ form.date_of_birth }}
+                            </div>
+                            <div class="col">
+                                <label for="age" class="form-label fw-bold text-dark">Age</label>
+                                {{ form.age }}
+                            </div>
+                            <div class="col">
+                                <label for="place_of_birth" class="form-label fw-bold text-dark">Place of
+                                    birth</label>
+                                {{ form.place_of_birth }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="permanent_address" class="form-label fw-bold text-dark">Permanent
+                                    address</label>
+                                {{ form.permanent_address }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="current_address" class="form-label fw-bold text-dark">Current
+                                    address</label>
+                                {{ form.current_address }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="ingredient_list" class="form-label fw-bold text-dark">Send documents
+                                    to address</label>
+                                {{ form.send_documents_to_address }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="id_card_no" class="form-label fw-bold text-dark">ID card
+                                    number</label>
+                                {{ form.id_card_no }}
+                            </div>
+                            <div class="col">
+                                <label for="issued_date_of_id_card" class="form-label fw-bold text-dark">Issued
+                                    date of ID card&emsp;&emsp;&emsp;&emsp;&emsp;</label>
+                                {{ form.issued_date_of_id_card }}
+                            </div>
+                            <div class="col">
+                                <label for="issued_place_of_id_card" class="form-label fw-bold text-dark">Issued
+                                    place of ID card</label>
+                                {{ form.issued_place_of_id_card }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="cellphone_no" class="form-label fw-bold text-dark">Cellphone
+                                    number</label>
+                                <br>
+                                {{ form.cellphone_no }}
+                            </div>
+                            <div class="col">
+                                <label for="personal_email" class="form-label fw-bold text-dark">Personal
+                                    email</label>
+                                {{ form.personal_email }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="account_no" class="form-label fw-bold text-dark">Account
+                                    number</label>
+                                <br>
+                                {{ form.account_no }}
+                            </div>
+                            <div class="col">
+                                <label for="with_bank" class="form-label fw-bold text-dark">With bank</label>
+                                {{ form.with_bank }}
+                            </div>
+                            <div class="col">
+                                <label for="branch" class="form-label fw-bold text-dark">Branch</label>
+                                {{ form.branch }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="social_insurrance_book" class="form-label fw-bold text-dark">Social
+                                    insurrance book</label>
+                                <br>
+                                {{ form.social_insurrance_book }}
+                            </div>
+                            <div class="col">
+                                <label for="hi_registered_place" class="form-label fw-bold text-dark">Hi
+                                    registered place</label>
+                                {{ form.hi_registered_place }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="personal_income_tax" class="form-label fw-bold text-dark">Personal
+                                    income tax</label>
+                                <br>
+                                {{ form.personal_income_tax }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="certificate_e" class="form-label fw-bold text-dark">Certificate -
+                                    E</label>
+                                <br>
+                                {{ form.certificate_e }}
+                            </div>
+                            <div class="col">
+                                <label for="major_e" class="form-label fw-bold text-dark">Major-E</label>
+                                <br>
+                                {{ form.major_e }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="certificate_v" class="form-label fw-bold text-dark">Certificate -
+                                    V</label>
+                                <br>
+                                {{ form.certificate_v }}
+                            </div>
+                            <div class="col">
+                                <label for="major_v" class="form-label fw-bold text-dark">Major-V</label>
+                                <br>
+                                {{ form.major_v }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="children" class="form-label fw-bold text-dark">Children</label>
+                                <br>
+                                {{ form.children }}
+                            </div>
+                            <div class="col">
+                                <label for="birthday_of_children" class="form-label fw-bold text-dark">Birthday
+                                    of children</label>
+                                <br>
+                                {{ form.birthday_of_children }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="da_nop_thong_tin_nhan_vien" class="form-label fw-bold text-dark">Đã
+                                    nộp thông tin nhân viên</label>
+                                <br>
+                                {{ form.da_nop_thong_tin_nhan_vien }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="bo_sung_ho_so" class="form-label fw-bold text-dark">Bổ sung hồ
+                                    sơ</label>
+                                <br>
+                                {{ form.bo_sung_ho_so }}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="container">
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="employee_code" class="form-label fw-bold text-dark">Employee
+                                        code</label>
+                                    {{ form.employee_code }}
+                                </div>
+                                <div class="col">
+                                    <label for="company_email" class="form-label fw-bold text-dark">Company
+                                        email</label>
+                                    {{ form.company_email }}
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="site" class="form-label fw-bold text-dark">Site</label>
+                                    {{ form.site }}
+                                </div>
+                                <div class="col">
+                                    <label for="division" class="form-label fw-bold text-dark">Division</label>
+                                    {{ form.division }}
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="position_e" class="form-label fw-bold text-dark">Position -
+                                        E</label>
+                                    {{ form.position_e }}
+                                </div>
+                                <div class="col">
+                                    <label for="position_v" class="form-label fw-bold text-dark">Position -
+                                        V</label>
+                                    {{ form.position_v }}
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="department_area" class="form-label fw-bold text-dark">Department
+                                        area</label>
+                                    {{ form.department_area }}
+                                </div>
+                                <div class="col">
+                                    <label for="function" class="form-label fw-bold text-dark">Function</label>
+                                    {{ form.function }}
+                                </div>
+                                <div class="col">
+                                    <label for="job_title" class="form-label fw-bold text-dark">Job title</label>
+                                    {{ form.job_title }}
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="department_e" class="form-label fw-bold text-dark">Department -
+                                        E</label>
+                                    {{ form.department_e }}
+                                </div>
+                                <div class="col">
+                                    <label for="department_v" class="form-label fw-bold text-dark">Department -
+                                        V</label>
+                                    {{ form.department_v }}
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="gp" class="form-label fw-bold text-dark">GP</label>
+                                    {{ form.gp }}
+                                </div>
+                                <div class="col">
+                                    <label for="area" class="form-label fw-bold text-dark">Area</label>
+                                    {{ form.area }}
+                                </div>
+                                <div class="col">
+                                    <label for="provinces" class="form-label fw-bold text-dark">Province</label>
+                                    {{ form.provinces }}
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="joining_date" class="form-label fw-bold text-dark">Joining
+                                        date</label>
+                                    {{ form.joining_date }}
+                                </div>
+                                <div class="col">
+                                    <label for="out_date" class="form-label fw-bold text-dark">Out date</label>
+                                    {{ form.out_date }}
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="years_of_service" class="form-label fw-bold text-dark">Years of
+                                        service</label>
+                                    {{ form.years_of_service }}
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="promotion_effective_date" class="form-label fw-bold text-dark">Promotion
+                                        effective date</label>
+                                    {{ form.promotion_effective_date }}
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="contract_no" class="form-label fw-bold text-dark">Contract
+                                        number</label>
+                                    {{ form.contract_no }}
+                                </div>
+                                <div class="col">
+                                    <label for="contract_type" class="form-label fw-bold text-dark">Contract
+                                        type</label>
+                                    {{ form.contract_type }}
+                                </div>
+                                <div class="col">
+                                    <label for="signed_contract_date" class="form-label fw-bold text-dark">Signed
+                                        contract date&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</label>
+                                    {{ form.signed_contract_date }}
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="from_date" class="form-label fw-bold text-dark">From date</label>
+                                    {{ form.from_date }}
+                                </div>
+                                <div class="col">
+                                    <label for="to_date" class="form-label fw-bold text-dark">To date</label>
+                                    {{ form.to_date }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="container">
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="emergency_contact_1" class="form-label fw-bold text-dark">Emergency
+                                        contact 1</label>
+                                    <br>
+                                    {{ form.emergency_contact_1 }}
+                                </div>
+                                <div class="col">
+                                    <label for="relation_1" class="form-label fw-bold text-dark">Relation 1</label>
+                                    <br>
+                                    {{ form.relation_1 }}
+                                </div>
+                                <div class="col">
+                                    <label for="phone_1" class="form-label fw-bold text-dark">Phone 1</label>
+                                    <br>
+                                    {{ form.phone_1 }}
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="contact_address_1" class="form-label fw-bold text-dark">Contact
+                                        address 1</label>
+                                    {{ form.contact_address_1 }}
+                                </div>
+                            </div>
+                            <hr style="margin-top: 30px; margin-bottom: 30px">
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="emergency_contact_2" class="form-label fw-bold text-dark">Emergency
+                                        contact 2</label>
+                                    <br>
+                                    {{ form.emergency_contact_2 }}
+                                </div>
+                                <div class="col">
+                                    <label for="relation_2" class="form-label fw-bold text-dark">Relation 2</label>
+                                    <br>
+                                    {{ form.relation_2 }}
+                                </div>
+                                <div class="col">
+                                    <label for="phone_2" class="form-label fw-bold text-dark">Phone 2</label>
+                                    <br>
+                                    {{ form.phone_2 }}
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label for="contact_address_2" class="form-label fw-bold text-dark">Contact
+                                        address 2</label>
+                                    {{ form.contact_address_2 }}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+            <a type="button" class="btn btn-secondary" href="{% url 'employee:employee_table' %}">Close</a>
+            <button type="submit" class="btn btn-primary" name="btnproductinput" value="Product input">Save
+            </button>
+        </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

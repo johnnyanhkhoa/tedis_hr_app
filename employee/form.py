@@ -29,6 +29,7 @@ relation_1_list = Relation_1.objects.only('id')
 relation_2_list = Relation_2.objects.only('id')
 bo_sung_ho_so_list = Bo_sung_ho_so.objects.only('id')
 da_nop_thong_tin_nhan_vien_list = Da_nop_thong_tin_nhan_vien.objects.only('id')
+employee_list = Employee.objects.only('id')
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -204,3 +205,15 @@ class CreateEmployeeForm(forms.ModelForm):
         model = Employee
         fields = '__all__'
         
+
+class AddChildrenForm(forms.ModelForm):
+    employee = forms.ModelChoiceField(required=False, queryset=employee_list ,widget=forms.Select(attrs={
+        "class": "form-control bg-white", "placeholder": "Employee",
+    }))
+    children = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+        "class": "form-control", "placeholder": "Children",
+    }))
+    birthday_of_children = forms.DateField(required=False, widget=DateInput())
+    class Meta:
+        model = Employee_children
+        fields = '__all__'

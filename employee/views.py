@@ -9,7 +9,11 @@ from employee.form import *
 from datetime import datetime
 
 # Create your views here.
-def employee_table(request, pk): 
+def employee_table(request): 
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
     # Create quotation
     form = CreateEmployeeForm()
     if request.method == 'POST':
@@ -90,9 +94,7 @@ def employee_table(request, pk):
         employees = Employee.objects.filter(q)
 
     
-    
-        
-    return render(request, 'hr/dist/table-datatable.html', {
+    return render(request, 'employee/employee_datatable.html', {
         'form': form,
         'employees' : employees,
         'list_site' : list_site,
@@ -106,5 +108,46 @@ def employee_table(request, pk):
         'list_ethic_group' : list_ethic_group, 
         'list_maritial_status' : list_maritial_status,
         'list_certificate_e' : list_certificate_e,
+        
+    })
+
+
+def employee_edit(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    # Edit customer
+    employee = Employee.objects.get(pk=pk)
+    form = CreateEmployeeForm(instance=employee)
+    if request.method == 'POST':
+        form = CreateEmployeeForm(request.POST, instance=employee)
+        if form.is_valid():
+            form.save()
+            return redirect('/employee/')
+    return render(request, 'employee/employee_edit_and_view.html', {
+        'employee' : employee,
+        'form' : form,
+    })
+
+def add_children(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    # Get employee:
+    employee = Employee.objects.get(pk=pk)
+    
+    # Form
+    if request.POST.get('btn_addchildren'):
+        employee_name = request.POST.get('employee_id') # lấy từ <input type="hidden">
+        employee_id = Employee.objects.only('id').get(id=employee_name)
+        children = request.POST.get('children')  
+        birthday_of_children = request.POST.get('birthday_of_children')
+        children_info = Employee_children(employee=employee_id, children=children, birthday_of_children=birthday_of_children)
+        children_info.save()
+        return redirect('/employee/')
+    return render(request, 'employee/form_add_children.html', {
+        'employee' : employee,
         
     })
