@@ -1,0 +1,70 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Layout - Mazer Admin Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'hr/css/bootstrap.css' %}">
+
+    <link rel="stylesheet" href="{% static 'hr/vendors/iconly/bold.css' %}">
+
+    <link rel="stylesheet" href="{% static 'hr/vendors/perfect-scrollbar/perfect-scrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'hr/vendors/bootstrap-icons/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'hr/css/app.css' %}">
+    <link rel="shortcut icon" href="{% static 'hr/images/favicon.svg' %}" type="image/x-icon">
+
+    <style>
+        #tb1 {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            border: 0px solid white;
+        }
+
+        #tr1 {
+            border: 0px solid white;
+            text-align: center;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <table id="tr1" class="table table-borderless">
+            <tbody>
+                <tr>
+                    <td><img class="rounded float-start" src="{% static 'hr/images/logo/logo_tedis.png' %}" alt="Logo"
+                            srcset="" style="width: 150px; height: 75px"></td>
+                    <td>
+                        <p class="text-end text-dark fw-bold" style="font-size: 18pt;">JOB OFFER LETTER</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p class="text-start text-dark" style="font-size: 8pt;"><i>PRIVATE & CONFIDENTIAL</i></p>
+                    </td>
+                    <td>
+                        <p class="text-end text-dark" style="font-size: 18pt;">Thư Tuyển Dụng</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="{% static 'hr/vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'hr/js/bootstrap.bundle.min.js' %}"></script>
+
+    <script src="{% static 'hr/vendors/apexcharts/apexcharts.js' %}"></script>
+    <script src="{% static 'hr/js/pages/dashboard.js' %}"></script>
+
+    <script src="{% static 'hr/js/main.js' %}"></script>
+</body>
+
+</html>

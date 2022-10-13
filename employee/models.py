@@ -376,3 +376,11 @@ class Employee_children(models.Model):
 
     def __int__(self):
         return self.employee 
+    
+class Probationary_period(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    from_date = models.DateField(max_length=30, blank=True, null=True)
+    to_date = models.DateField(max_length=30, blank=True, null=True) 
+
+    def __int__(self):
+        return self.employee 

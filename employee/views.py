@@ -14,20 +14,15 @@ def employee_table(request):
     if 's_user' not in request.session:
         return redirect('hr:signin')
     
-    # Create quotation
+    # Create employee
     form = CreateEmployeeForm()
     if request.method == 'POST':
         form = CreateEmployeeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/employee_table/')
+            return redirect('/employee/')
     
-    # Show Employee on data-table
-    # if pk == 0:
-    #     employees = Employee.objects.order_by('id')
-    # else:
-    #     employees = Employee.objects.filter(Employee=pk).order_by('id')
-        
+
     ''' Filter '''
     # Đọc list fields cần filter trong model
     list_site = Site.objects.all()
@@ -117,8 +112,13 @@ def employee_edit(request, pk):
     if 's_user' not in request.session:
         return redirect('hr:signin')
     
-    # Edit customer
+    # Get employee
     employee = Employee.objects.get(pk=pk)
+    
+    # Get employee's children
+    children = Employee_children.objects.filter(employee=employee)
+    
+    # Edit employee
     form = CreateEmployeeForm(instance=employee)
     if request.method == 'POST':
         form = CreateEmployeeForm(request.POST, instance=employee)
@@ -128,6 +128,8 @@ def employee_edit(request, pk):
     return render(request, 'employee/employee_edit_and_view.html', {
         'employee' : employee,
         'form' : form,
+        'children' : children,
+        # 'form_children_edit' : form_children_edit,
     })
 
 def add_children(request, pk):
@@ -151,3 +153,47 @@ def add_children(request, pk):
         'employee' : employee,
         
     })
+    
+    
+def probationary_period_form(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    # Get employee:
+    employee = Employee.objects.get(pk=pk)
+    id = str(pk)
+    
+    # Form Probationary_period
+    form = Probationary_period_form()
+    if request.method == 'POST':
+        form = Probationary_period_form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('employee:job_offer_form', pk=employee.pk)
+    
+    return render(request, 'employee/form_probationary_period.html', {
+        'employee' : employee,
+        'form' : form,
+    })
+
+def job_offer_form(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    # Get employee:
+    employee = Employee.objects.get(pk=pk)
+    # date = employee.from_date.strftime('%d')
+    # num_month = employee.from_date.strftime('%m')
+    # name_month = employee.from_date.strftime('%B')
+    # print(date)
+    # print(num_month)
+    # print(name_month)
+    
+    
+    return render(request, 'employee/form_job_offer.html', {
+        'employee' : employee,
+    })
+    
+    

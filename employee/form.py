@@ -217,3 +217,13 @@ class AddChildrenForm(forms.ModelForm):
     class Meta:
         model = Employee_children
         fields = '__all__'
+    
+class Probationary_period_form(forms.ModelForm):
+    employee = forms.ModelChoiceField(required=False, queryset=employee_list ,widget=forms.Select(attrs={
+        "class": "form-control bg-white", "placeholder": "Employee",
+    }))
+    from_date = forms.DateField(required=False, widget=DateInput())
+    to_date = forms.DateField(required=False, widget=DateInput())
+    class Meta:
+        model = Probationary_period
+        fields = '__all__'

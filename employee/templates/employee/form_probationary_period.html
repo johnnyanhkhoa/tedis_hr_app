@@ -1,5 +1,5 @@
 {% extends 'hr/dist/_Master.html' %}
-{% block title_tab %}HR | Employee Children{% endblock %}
+{% block title_tab %}HR | Probationary period{% endblock %}
 {% load static %}
 {% load humanize %}
 
@@ -15,14 +15,14 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h3>Children</h3>
-                            <p class="text-subtitle text-muted">Add children</p>
+                            <h3>Probationary period</h3>
+                            <p class="text-subtitle text-muted">Add period</p>
                         </div>
                         <div class="col-12 col-md-6 order-md-2 order-first">
                             <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add children</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Probationary period</li>
                                 </ol>
                             </nav>
                         </div>
@@ -41,18 +41,17 @@
                                         {% csrf_token %}
                                         <input type="hidden" name="employee_id" value="{{ employee.id }}" />
                                     <div class="form-group">
-                                        <label for="basicInput">Children name</label>
-                                        <input type="text" class="form-control" name="children" id="basicInput"
-                                            placeholder="Full name">
+                                        <label for="from_date" class="form-label fw-bold text-dark">From date</label>
+                                        {{ form.from_date }}
                                     </div>
                                     <div class="form-group">
-                                        <label for="basicInput">Date of birth</label>
-                                        <input type="date" class="form-control" name="birthday_of_children" id="basicInput">
+                                        <label for="to_date" class="form-label fw-bold text-dark">To date</label>
+                                        {{ form.to_date }}
                                     </div>
                                 </div>
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-bottom: 20px">
                                     <a type="button" class="btn btn-secondary" href="{% url 'employee:employee_table' %}">Close</a>
-                                    <button type="submit" class="btn btn-primary" name="btn_addchildren" value="Children input">Add children</button>
+                                    <button type="submit" class="btn btn-primary"  name="btn_addperiod"  value="Children input">Create job offer</button>
                                 </div>
                             </form>
                             </div>
