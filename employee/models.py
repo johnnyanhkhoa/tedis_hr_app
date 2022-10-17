@@ -379,6 +379,7 @@ class Employee_children(models.Model):
     
 class Probationary_period(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    letter_date = models.DateField(max_length=30, blank=True, null=True)
     from_date = models.DateField(max_length=30, blank=True, null=True)
     to_date = models.DateField(max_length=30, blank=True, null=True) 
 
