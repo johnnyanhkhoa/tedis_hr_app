@@ -382,6 +382,8 @@ class Probationary_period(models.Model):
     letter_date = models.DateField(max_length=30, blank=True, null=True)
     from_date = models.DateField(max_length=30, blank=True, null=True)
     to_date = models.DateField(max_length=30, blank=True, null=True) 
+    monthly_gross_salary = models.IntegerField(blank=True, null=True)
+    monthly_allowance = models.IntegerField(blank=True, null=True)
 
     def __int__(self):
         return self.employee 

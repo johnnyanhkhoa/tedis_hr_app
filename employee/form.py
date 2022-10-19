@@ -222,8 +222,16 @@ class Probationary_period_form(forms.ModelForm):
     employee = forms.ModelChoiceField(required=False, queryset=employee_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Employee",
     }))
+    letter_date = forms.DateField(required=False, widget=DateInput())
     from_date = forms.DateField(required=False, widget=DateInput())
     to_date = forms.DateField(required=False, widget=DateInput())
+    monthly_gross_salary = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={
+        "class": "form-control", "placeholder": "Monthly gross salary",
+    }))
+    monthly_allowance = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={
+        "class": "form-control", "placeholder": "Monthly allowance",
+    }))
+    
     class Meta:
         model = Probationary_period
         fields = '__all__'

@@ -8,6 +8,11 @@ from hr.models import User
 from employee.form import *
 from datetime import datetime
 
+import pdfkit
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+import os
+
 # Create your views here.
 def employee_table(request): 
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
@@ -192,8 +197,32 @@ def job_offer_form(request, pk):
     # print(name_month)
     
     
-    return render(request, 'employee/form_job_offer.html', {
+    return render(request, 'employee/letter_job_offer.html', {
         'employee' : employee,
     })
+    
+def html_to_pdf_view(request, pk):
+    today = datetime.now().strftime('%d-%m-%Y')
+
+    employee = Employee.objects.get(pk=pk)
+
+    html_string = render_to_string('employee/letter_job_offer.html', {
+        'today': today,
+        'employee': employee,
+    })
+
+    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+    filename = 'report_' + datetime.now().strftime('%Y%m%d_%H%M%S') + '.pdf'
+    pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Documents', filename), configuration=config)
+    # pdfkit.from_string(html_string, "C:\\" + filename, configuration=config)
+
+
+    return HttpResponse(html_string)
+
+# def html_to_pdf_view(request, pk):
+#     employee = Employee.objects.get(pk=pk)
+#     return render(request, 'employee/letter_job_offer.html', {
+#         'employee' : employee,
+#     })
     
     
