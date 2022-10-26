@@ -154,8 +154,15 @@
                                 {{ form.account_no }}
                             </div>
                             <div class="col">
-                                <label for="with_bank" class="form-label fw-bold text-dark">With bank</label>
-                                {{ form.with_bank }}
+                                <label for="bank" class="form-label fw-bold text-dark">Bank</label>
+                                {{ form.bank }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="bank_address" class="form-label fw-bold text-dark">Bank
+                                    address</label>
+                                {{ form.bank_address }}
                             </div>
                             <div class="col">
                                 <label for="branch" class="form-label fw-bold text-dark">Branch</label>
@@ -170,9 +177,9 @@
                                 {{ form.social_insurrance_book }}
                             </div>
                             <div class="col">
-                                <label for="hi_registered_place" class="form-label fw-bold text-dark">Hi
-                                    registered place</label>
-                                {{ form.hi_registered_place }}
+                                <label for="hi_medical_place" class="form-label fw-bold text-dark">HI
+                                    medical place</label>
+                                {{ form.hi_medical_place }}
                             </div>
                         </div>
                         <div class="row align-items-start" style="margin-top: 10px;">
@@ -211,35 +218,41 @@
                         </div>
                         <div class="row align-items-start" style="margin-top: 10px;">
                             <div class="col">
-                                <label for="children" class="form-label fw-bold text-dark">Children</label>
+                                <label for="university" class="form-label fw-bold text-dark">University</label>
+                                <br>
+                                {{ form.university }}
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col">
+                                <label for="children" class="form-label fw-bold text-dark">Children/Relatives</label>
                                 <br>
                                 {{ form.children }}
                             </div>
                             <div class="col">
                                 <label for="birthday_of_children" class="form-label fw-bold text-dark">Birthday
-                                    of children</label>
+                                    of children/Relatives</label>
                                 <br>
                                 {{ form.birthday_of_children }}
                             </div>
                         </div>
                         <div class="row align-items-start" style="margin-top: 10px;">
                             <div class="col">
-                                <label for="da_nop_thong_tin_nhan_vien" class="form-label fw-bold text-dark">Đã
-                                    nộp thông tin nhân viên</label>
+                                <label for="staff_info_submission" class="form-label fw-bold text-dark">Staff
+                                    information submission</label>
                                 <br>
-                                {{ form.da_nop_thong_tin_nhan_vien }}
+                                {{ form.staff_info_submission }}
                             </div>
                         </div>
                         <div class="row align-items-start" style="margin-top: 10px;">
                             <div class="col">
-                                <label for="bo_sung_ho_so" class="form-label fw-bold text-dark">Bổ sung hồ
-                                    sơ</label>
+                                <label for="remark" class="form-label fw-bold text-dark">Remark</label>
                                 <br>
-                                {{ form.bo_sung_ho_so }}
+                                {{ form.remark }}
                             </div>
                         </div>
-
                     </div>
+
                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                         <div class="container">
                             <div class="row align-items-start" style="margin-top: 10px;">
@@ -253,42 +266,33 @@
                                         email</label>
                                     {{ form.company_email }}
                                 </div>
-                            </div>
-                            <div class="row align-items-start" style="margin-top: 10px;">
                                 <div class="col">
                                     <label for="site" class="form-label fw-bold text-dark">Site</label>
                                     {{ form.site }}
                                 </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
                                 <div class="col">
                                     <label for="division" class="form-label fw-bold text-dark">Division</label>
                                     {{ form.division }}
-                                </div>
-                            </div>
-                            <div class="row align-items-start" style="margin-top: 10px;">
-                                <div class="col">
-                                    <label for="position_e" class="form-label fw-bold text-dark">Position -
-                                        E</label>
-                                    {{ form.position_e }}
-                                </div>
-                                <div class="col">
-                                    <label for="position_v" class="form-label fw-bold text-dark">Position -
-                                        V</label>
-                                    {{ form.position_v }}
-                                </div>
-                            </div>
-                            <div class="row align-items-start" style="margin-top: 10px;">
-                                <div class="col">
-                                    <label for="department_area" class="form-label fw-bold text-dark">Department
-                                        area</label>
-                                    {{ form.department_area }}
                                 </div>
                                 <div class="col">
                                     <label for="function" class="form-label fw-bold text-dark">Function</label>
                                     {{ form.function }}
                                 </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 10px;">
                                 <div class="col">
-                                    <label for="job_title" class="form-label fw-bold text-dark">Job title</label>
-                                    {{ form.job_title }}
+                                    <label for="area" class="form-label fw-bold text-dark">Area</label>
+                                    {{ form.area }}
+                                </div>
+                                <div class="col">
+                                    <label for="provinces" class="form-label fw-bold text-dark">Province</label>
+                                    {{ form.provinces }}
+                                </div>
+                                <div class="col">
+                                    <label for="gp" class="form-label fw-bold text-dark">Group</label>
+                                    {{ form.gp }}
                                 </div>
                             </div>
                             <div class="row align-items-start" style="margin-top: 10px;">
@@ -305,16 +309,19 @@
                             </div>
                             <div class="row align-items-start" style="margin-top: 10px;">
                                 <div class="col">
-                                    <label for="gp" class="form-label fw-bold text-dark">GP</label>
-                                    {{ form.gp }}
+                                    <label for="position_e" class="form-label fw-bold text-dark">Position -
+                                        E</label>
+                                    {{ form.position_e }}
                                 </div>
                                 <div class="col">
-                                    <label for="area" class="form-label fw-bold text-dark">Area</label>
-                                    {{ form.area }}
+                                    <label for="position_v" class="form-label fw-bold text-dark">Position -
+                                        V</label>
+                                    {{ form.position_v }}
                                 </div>
                                 <div class="col">
-                                    <label for="provinces" class="form-label fw-bold text-dark">Province</label>
-                                    {{ form.provinces }}
+                                    <label for="abb_position" class="form-label fw-bold text-dark">Abbreviation
+                                        position</label>
+                                    {{ form.abb_position }}
                                 </div>
                             </div>
                             <div class="row align-items-start" style="margin-top: 10px;">
@@ -324,7 +331,7 @@
                                     {{ form.joining_date }}
                                 </div>
                                 <div class="col">
-                                    <label for="out_date" class="form-label fw-bold text-dark">Out date</label>
+                                    <label for="out_date" class="form-label fw-bold text-dark">Leaving date</label>
                                     {{ form.out_date }}
                                 </div>
                             </div>
@@ -335,42 +342,58 @@
                                     {{ form.years_of_service }}
                                 </div>
                             </div>
-                            <div class="row align-items-start" style="margin-top: 10px;">
-                                <div class="col">
-                                    <label for="promotion_effective_date" class="form-label fw-bold text-dark">Promotion
-                                        effective date</label>
-                                    {{ form.promotion_effective_date }}
+
+
+                            <div class="row justify-content-start" style="margin-top: 10px;">
+                                <div class="col-6">
+                                    <div class="row justify-content-start">
+                                        <div class="col-4">
+                                            <label for="contract_no" class="form-label fw-bold text-dark">Contract
+                                                number</label>
+                                            {{ form.contract_no }}
+                                        </div>
+                                        <div class="col-4">
+                                            <label for="contract_type" class="form-label fw-bold text-dark">Type</label>
+                                            {{ form.contract_type }}
+                                        </div>
+                                        <div class="col-4">
+                                            <label for="signed_contract_date"
+                                                class="form-label fw-bold text-dark">Signing
+                                                date&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</label>
+                                            {{ form.signed_contract_date }}
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-start" style="margin-top: 20px;">
+                                        <div class="col-6">
+                                            <label for="from_date" class="form-label fw-bold text-dark">From</label>
+                                            {{ form.from_date }}
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="to_date" class="form-label fw-bold text-dark">To</label>
+                                            {{ form.to_date }}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row align-items-start" style="margin-top: 10px;">
-                                <div class="col">
-                                    <label for="contract_no" class="form-label fw-bold text-dark">Contract
-                                        number</label>
-                                    {{ form.contract_no }}
-                                </div>
-                                <div class="col">
-                                    <label for="contract_type" class="form-label fw-bold text-dark">Contract
-                                        type</label>
-                                    {{ form.contract_type }}
-                                </div>
-                                <div class="col">
-                                    <label for="signed_contract_date" class="form-label fw-bold text-dark">Signed
-                                        contract date&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</label>
-                                    {{ form.signed_contract_date }}
-                                </div>
-                            </div>
-                            <div class="row align-items-start" style="margin-top: 10px;">
-                                <div class="col">
-                                    <label for="from_date" class="form-label fw-bold text-dark">From date</label>
-                                    {{ form.from_date }}
-                                </div>
-                                <div class="col">
-                                    <label for="to_date" class="form-label fw-bold text-dark">To date</label>
-                                    {{ form.to_date }}
+                                <div class="col-6">
+                                    <div class="row justify-content-start">
+                                        <div class="col-6">
+                                            <label for="promotion_effective_date"
+                                                class="form-label fw-bold text-dark">Promotion
+                                                effective date</label>
+                                            {{ form.promotion_effective_date }}
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="promotion_decision_number"
+                                                class="form-label fw-bold text-dark">Decision
+                                                number</label>
+                                            {{ form.promotion_decision_number }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                         <div class="container">
                             <div class="row align-items-start" style="margin-top: 10px;">

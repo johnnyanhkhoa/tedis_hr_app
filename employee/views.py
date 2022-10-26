@@ -1,6 +1,7 @@
 from asyncio.windows_events import NULL
 from django.shortcuts import render
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth.hashers import PBKDF2PasswordHasher, Argon2PasswordHasher, CryptPasswordHasher, BCryptPasswordHasher
 from django.db.models import Q
 from employee.models import *
@@ -24,7 +25,37 @@ def employee_table(request):
     if request.method == 'POST':
         form = CreateEmployeeForm(request.POST)
         if form.is_valid():
-            form.save()
+            # Get Year of birth 
+            phrase_3 = request.POST.get('date_of_birth')
+            phrase_to_list_3 = phrase_3.split("-")
+            year_of_birth = int(phrase_to_list_3[0])
+            
+            # Calculate Age
+            now = datetime.now()
+            present_year = int(now.strftime("%Y"))
+            age = present_year - year_of_birth
+            
+            # Calculate Years of Service
+            phrase_1 = request.POST.get('joining_date')
+            phrase_to_list_1 = phrase_1.split("-")
+            joining_year = int(phrase_to_list_1[0])
+            
+            if request.POST.get('out_date') != '':
+                phrase_2 = request.POST.get('out_date')
+                phrase_to_list_2 = phrase_2.split("-")
+                out_year = int(phrase_to_list_2[0])
+                years_of_service = out_year - joining_year
+            else:
+                years_of_service = present_year - joining_year
+                
+            
+            # Save age and another info to DB
+            request.POST.__mutable = True
+            post = form.save(commit=False)
+            post.age = age
+            post.years_of_service = years_of_service
+            post.year_of_birth = year_of_birth
+            post.save()
             return redirect('/employee/')
     
 
@@ -35,8 +66,8 @@ def employee_table(request):
     list_department_e = Department_E.objects.all()
     list_area = Area.objects.all()
     list_gp = Gp.objects.all()
-    list_department_area = Department_area.objects.all()
     list_contract_type = Contract_type.objects.all()
+    list_university = University.objects.all()
     list_sexual = Sexual.objects.all()
     list_ethic_group = Ethic_group.objects.all()
     list_maritial_status = Marital_status.objects.all()
@@ -53,6 +84,7 @@ def employee_table(request):
     gp = request.GET.get('gp') 
     department_area = request.GET.get('department_area') 
     contract_type = request.GET.get('contract_type')
+    university = request.GET.get('university')
     sexual = request.GET.get('sexual')
     ethic_group = request.GET.get('ethic_group')
     marital_status = request.GET.get('marital_status')
@@ -80,6 +112,9 @@ def employee_table(request):
     elif contract_type != '' and contract_type is not None:
         q = ((Q(contract_type=contract_type)))
         employees = Employee.objects.filter(q) 
+    elif university != '' and university is not None:
+        q = ((Q(university=university)))
+        employees = Employee.objects.filter(q) 
     elif sexual != '' and sexual is not None:
         q = ((Q(sexual=sexual)))
         employees = Employee.objects.filter(q)
@@ -102,13 +137,12 @@ def employee_table(request):
         'list_department_e' : list_department_e,
         'list_area' : list_area, 
         'list_gp' : list_gp, 
-        'list_department_area' : list_department_area,
         'list_contract_type' : list_contract_type, 
         'list_sexual' : list_sexual,
         'list_ethic_group' : list_ethic_group, 
         'list_maritial_status' : list_maritial_status,
         'list_certificate_e' : list_certificate_e,
-        
+        'list_university' : list_university,
     })
 
 
@@ -136,6 +170,29 @@ def employee_edit(request, pk):
         'children' : children,
         # 'form_children_edit' : form_children_edit,
     })
+    
+    
+def employee_delete(request, pk):
+    employee_children_relatives = Employee_children.objects.filter(employee=pk)
+    # employee_probationary_period = Probationary_period.objects.filter(employee=pk)
+    employee_contract = Employee_contract.objects.filter(employee=pk)
+    employee_promotion = Employee_promotion.objects.filter(employee=pk)
+
+    try:
+        employee_info = Employee.objects.get(id = pk)
+        if employee_children_relatives.exists() or employee_contract.exists() or employee_promotion.exists():
+
+            print('not delete')
+            messages.error(request, 'Employee can not be deleted. Check relevant papers.')
+        else:
+            print('delete')
+            employee_info.delete()
+            messages.success(request, 'Employee deleted')
+    except Employee.DoesNotExist:
+        return redirect('/employee/')
+    return redirect('/employee/')
+        
+    
 
 def add_children(request, pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
@@ -157,6 +214,55 @@ def add_children(request, pk):
     return render(request, 'employee/form_add_children.html', {
         'employee' : employee,
         
+    })
+
+def add_contract(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    # Get employee & list of contract type:
+    employee = Employee.objects.get(pk=pk)
+    list_contract_type = Contract_type.objects.all()
+    
+    # Create contract
+    if request.POST.get('btn_addcontract'):
+        employee_id = Employee.objects.only('id').get(id=pk)
+        contract_no = request.POST.get('contract_no')
+        type_id = request.POST.get('type_id')  
+        contract_type = Contract_type.objects.only('id').get(id=type_id)
+        signed_contract_date = request.POST.get('signed_contract_date')
+        contract_info = Employee_contract(employee=employee_id, contract_no=contract_no, contract_type=contract_type,signed_contract_date=signed_contract_date)                 
+        contract_info.save()
+        return redirect('/employee/')
+        
+    return render(request, 'employee/form_add_contract.html', {
+        'employee' : employee,
+        'list_contract_type' : list_contract_type,
+
+    })
+    
+
+def add_promotion(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    # Get employee:
+    employee = Employee.objects.get(pk=pk)
+    
+    # Create employee
+    if request.POST.get('btn_addpromotion'):
+        employee_id = Employee.objects.only('id').get(id=pk)
+        promotion_effective_date = request.POST.get('promotion_effective_date')
+        promotion_decision_number = request.POST.get('promotion_decision_number')
+        promotion_info = Employee_promotion(employee=employee_id, promotion_effective_date=promotion_effective_date, promotion_decision_number=promotion_decision_number)                 
+        promotion_info.save()
+        return redirect('/employee/')
+        
+    return render(request, 'employee/form_add_promotion.html', {
+        'employee' : employee,
+
     })
     
     

@@ -13,10 +13,9 @@ department_v_list = Department_V.objects.only('id')
 area_list = Area.objects.only('id')
 provinces_list = Provinces.objects.only('id')
 gp_list = Gp.objects.only('id')
-department_area_list = Department_area.objects.only('id')
 function_list = Function.objects.only('id')
-job_title_list = Job_title.objects.only('id')
 position_e_list = Position_E.objects.only('id')
+abb_position_list = Abbreviation_Position.objects.only('id')
 position_v_list = Position_V.objects.only('id')
 contract_type_list = Contract_type.objects.only('id')
 sexual_list = Sexual.objects.only('id')
@@ -24,11 +23,11 @@ ethic_group_list = Ethic_group.objects.only('id')
 marital_status_list = Marital_status.objects.only('id')
 certificate_e_list = Certificate_E.objects.only('id')
 certificate_v_list = Certificate_V.objects.only('id')
-hi_registered_place_list = Hi_registered_place.objects.only('id')
+university_list = University.objects.only('id')
+hi_medical_place_list = Hi_medical_place.objects.only('id')
 relation_1_list = Relation_1.objects.only('id')
 relation_2_list = Relation_2.objects.only('id')
-bo_sung_ho_so_list = Bo_sung_ho_so.objects.only('id')
-da_nop_thong_tin_nhan_vien_list = Da_nop_thong_tin_nhan_vien.objects.only('id')
+staff_info_submission_list = Staff_info_submission.objects.only('id')
 employee_list = Employee.objects.only('id')
 
 class DateInput(forms.DateInput):
@@ -61,19 +60,16 @@ class CreateEmployeeForm(forms.ModelForm):
         "class": "form-control bg-white", "placeholder": "Province",
     }))
     gp = forms.ModelChoiceField(required=False, queryset=gp_list ,widget=forms.Select(attrs={
-        "class": "form-control bg-white", "placeholder": "GP",
-    }))
-    department_area = forms.ModelChoiceField(required=False, queryset=department_area_list ,widget=forms.Select(attrs={
-        "class": "form-control bg-white", "placeholder": "Department area",
+        "class": "form-control bg-white", "placeholder": "Group",
     }))
     function = forms.ModelChoiceField(required=False, queryset=function_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Function",
     }))
-    job_title = forms.ModelChoiceField(required=False, queryset=job_title_list ,widget=forms.Select(attrs={
-        "class": "form-control bg-white", "placeholder": "Job title",
-    }))
     position_e = forms.ModelChoiceField(required=False, queryset=position_e_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Positon E",
+    }))
+    abb_position = forms.ModelChoiceField(required=False, queryset=abb_position_list ,widget=forms.Select(attrs={
+        "class": "form-control bg-white", "placeholder": "Abbreviation position",
     }))
     position_v = forms.ModelChoiceField(required=False, queryset=position_v_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Position V",
@@ -84,6 +80,9 @@ class CreateEmployeeForm(forms.ModelForm):
         "class": "form-control", "placeholder": "Years of service",
     }))
     promotion_effective_date = forms.DateField(required=False, widget=DateInput())
+    promotion_decision_number = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+        "class": "form-control", "placeholder": "Promotion decision number",
+    }))
     contract_no = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Contract number",
     }))
@@ -134,8 +133,11 @@ class CreateEmployeeForm(forms.ModelForm):
     account_no = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Account number",
     }))
-    with_bank = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
-        "class": "form-control", "placeholder": "With bank",
+    bank = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+        "class": "form-control", "placeholder": "Bank",
+    }))
+    bank_address = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+        "class": "form-control", "placeholder": "Bank address",
     }))
     branch = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Branch",
@@ -146,6 +148,9 @@ class CreateEmployeeForm(forms.ModelForm):
     certificate_v = forms.ModelChoiceField(required=False, queryset=certificate_v_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Certificate V",
     }))
+    university = forms.ModelChoiceField(required=False, queryset=university_list ,widget=forms.Select(attrs={
+        "class": "form-control bg-white", "placeholder": "University",
+    }))
     major_e = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Major E",
     }))
@@ -155,8 +160,8 @@ class CreateEmployeeForm(forms.ModelForm):
     social_insurrance_book = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Social insurrance book",
     }))
-    hi_registered_place = forms.ModelChoiceField(required=False, queryset=hi_registered_place_list ,widget=forms.Select(attrs={
-        "class": "form-control bg-white", "placeholder": "HI registered place",
+    hi_medical_place = forms.ModelChoiceField(required=False, queryset=hi_medical_place_list ,widget=forms.Select(attrs={
+        "class": "form-control bg-white", "placeholder": "HI medical place",
     }))
     personal_income_tax = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Personal income tax",
@@ -195,11 +200,11 @@ class CreateEmployeeForm(forms.ModelForm):
     age = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={
         "class": "form-control", "placeholder": "Age",
     }))
-    bo_sung_ho_so = forms.ModelChoiceField(required=False, queryset=bo_sung_ho_so_list ,widget=forms.Select(attrs={
-        "class": "form-control bg-white", "placeholder": "Bo sung ho so",
+    remark = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+        "class": "form-control", "placeholder": "Remark",
     }))
-    da_nop_thong_tin_nhan_vien = forms.ModelChoiceField(required=False, queryset=da_nop_thong_tin_nhan_vien_list ,widget=forms.Select(attrs={
-        "class": "form-control bg-white", "placeholder": "Da nop thong tin nhan vien",
+    staff_info_submission = forms.ModelChoiceField(required=False, queryset=staff_info_submission_list ,widget=forms.Select(attrs={
+        "class": "form-control bg-white", "placeholder": "Staff information submission",
     }))
     class Meta:
         model = Employee
@@ -216,6 +221,21 @@ class AddChildrenForm(forms.ModelForm):
     birthday_of_children = forms.DateField(required=False, widget=DateInput())
     class Meta:
         model = Employee_children
+        fields = '__all__'
+
+class AddContractForm(forms.ModelForm):
+    employee = forms.ModelChoiceField(required=False, queryset=employee_list ,widget=forms.Select(attrs={
+        "class": "form-control bg-white", "placeholder": "Employee",
+    }))
+    contract_no = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+        "class": "form-control", "placeholder": "Contract number",
+    }))
+    contract_type = forms.ModelChoiceField(required=False, queryset=contract_type_list ,widget=forms.Select(attrs={
+        "class": "form-control bg-white", "placeholder": "Contract type",
+    }))
+    signed_contract_date = forms.DateField(required=False, widget=DateInput())
+    class Meta:
+        model = Employee_contract
         fields = '__all__'
     
 class Probationary_period_form(forms.ModelForm):

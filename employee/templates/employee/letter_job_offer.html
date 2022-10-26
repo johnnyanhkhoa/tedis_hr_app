@@ -19,9 +19,7 @@
     <link rel="stylesheet" href="{% static 'hr/css/app.css' %}">
     <link rel="shortcut icon" href="{% static 'hr/images/favicon.svg' %}" type="image/x-icon">
 
-    <style>
-        @page {
-            size: a4 portrait;
+    <style type="text/css">
         #tb1 {
             font-family: arial, sans-serif;
             border-collapse: collapse;
@@ -33,56 +31,51 @@
             border: 0px solid white;
             text-align: center;
         }
-    }
+
+        #pdf-body {
+            font-family: "Times New Roman", serif;
+            font-size: x-small;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
     </style>
 
 </head>
 
 <body>
     <div class="container-fluid">
-        <table id="tr1" class="table table-borderless">
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="row justify-content-start">
-                            <img class="rounded float-start" src="{% static 'hr/images/logo/logo_tedis.png' %}"
-                                alt="Logo" srcset="" style="width: 150px; height: 75px">
-                        </div>
-                        <div class="row justify-content-start">
-                            <p class="text-start"
-                                style="font-size: 8pt; color: rgb(124, 124, 124); font-family: calibri;">
-                                <i>PRIVATE &
-                                    CONFIDENTIAL</i>
-                            </p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="row justify-content-start">
-                            <p class="text-end fw-bold"
-                                style="font-size: 18pt; color: rgb(124, 124, 124); font-family: tahoma;">
-                                JOB OFFER LETTER
-                            </p>
-                        </div>
-                        <div class="row justify-content-start">
-                            <p class="text-end"
-                                style="font-size: 18pt; color: rgb(124, 124, 124); font-family: tahoma;">Thư
-                                Tuyển Dụng</p>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
+        <table id="pdf-body" cellspacing="0" border="0">
+            <colgroup width="50%"></colgroup>
+            <colgroup width="50%"></colgroup>
+            <tr>
+                <td class="row justify-content-start">
+                    <img class="rounded float-start" src="https://i.ibb.co/BBbNXyz/tedis-3.jpg" alt="Logo" srcset=""
+                        style="width: 150px; height: 65px">
+                    <p class="text-start" style="font-size: 8pt; color: rgb(124, 124, 124); font-family: calibri;">
+                        <i>PRIVATE &
+                            CONFIDENTIAL</i>
+                    </p>
+                </td>
+                <td class="row justify-content-start" style="text-align: right">
+                    <p class="text-end fw-bold"
+                        style="font-size: 18pt; color: rgb(124, 124, 124); font-family: tahoma;">
+                        JOB OFFER LETTER
+                    </p>
+                    <p class="text-end" style="font-size: 18pt; color: rgb(124, 124, 124); font-family: tahoma;">Thư
+                        Tuyển Dụng</p>
+                </td>
+            </tr>
         </table>
-        <p class="text-end text-dark" style="font-size: 12pt; font-family: calibri">Long
-            An, 31 July
+        <p class="text-end text-dark" style="font-size: 12pt; font-family: calibri">Thành phố Hồ Chí Minh, 31 July
             2019</p>
-        <div class="text-start text-dark" style="font-size: 11.5pt; font-family: calibri">
+        <div class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
             Kính gửi Anh/Chị <span class="fw-bold" style="color: red;">Lê Thị Thanh Tuyền</span> ,
         </div>
-        <div class="text-start text-dark" style="font-size: 11.5pt; font-family: calibri">
-            Dear Mr/Ms. <span class="fw-bold" style="color: red;">Le Thi Thanh Tuyen</span> ,
+        <div class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
+            <i>Dear Mr/Ms</i> <span class="fw-bold" style="color: red;"></span>
         </div>
-        <br>
-        <p class="text-start text-dark" style="font-size: 11.5pt; font-family: calibri">
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
             Chúng tôi hân hạnh thông báo với Anh/Chị về việc tuyển dụng vào vị trí <span class="fw-bold"
                 style="color: red;">Nhân viên
                 Nhân sự</span> của Văn Phòng Đại Diện TEDIS tại TP.HCM (được gọi tắt dưới đây là VPĐD) với các điều
@@ -93,7 +86,7 @@
                 Officer</span> at The Representative Office of TEDIS in Ho Chi Minh City (here in after referred to as
             “Rep Office”) on the following terms and conditions:
         </p>
-        <p class="text-start text-dark" style="font-size: 11.5pt; font-family: calibri">
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
             <b>I.&emsp;Vị trí công việc:</b> Anh/ Chị sẽ đảm nhận vị trí công việc Nhân viên Chế độ chính sách. Tuy
             nhiên công
             việc có
@@ -106,7 +99,7 @@
                 in the event of any re - organization or at any time that the Rep Office deems fit, provided that such
                 alternation is suitable with the agreed work.</i>
         </p>
-        <p class="text-start text-dark" style="font-size: 11.5pt; font-family: calibri">
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
             <b>II.&emsp;Thời gian thử việc:</b> Thời gian bắt đầu là ngày <span style="color: red;">01</span> tháng
             <span style="color: red;">08</span> năm <span style="color: red;">2019</span> đến <span
                 style="color: red;">30</span> tháng <span style="color: red;">09</span> năm <span
@@ -115,8 +108,8 @@
             <i><b>Probation period:</b> Your starting date will be started from <span style="color: red;">1 August
                     2019</span> to <span style="color: red;">30 September 2019</span>.</i>
         </p>
-        <p class="text-start text-dark" style="font-size: 11.5pt; font-family: calibri">
-            <b>III.&emsp;Quyền lợi & điều kiện làm việc:</b> Theo chính sách phúc lợi của VPĐD, Chúng tôi đề nghị về
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
+            <b>III.&emsp;Quyền lợi & điều kiện làm việc:</b> Theo chính sách của VPĐD, chúng tôi đề nghị về
             quyền lợi và điều kiện làm việc của Anh/ Chị như sau:
             <br>
             <i><b>Benefits & working conditions:</b> Following Rep Office’s Compensation and Benefits Policy, we are
@@ -147,57 +140,43 @@
             <br>
             <i>&emsp;&emsp;&ensp;&nbsp;&emsp;<span class="fw-bold">Thời gian thử việc</span></i>
         </p>
-        <table id="tr1" class="table table-borderless text-dark" style="font-size: 11.5pt; font-family: calibri">
-            <tbody>
-                <tr>
-                    <td class="text-start fw-bold">Lương cơ bản hàng tháng</td>
-                    <td>:&emsp; <span style="color: red;">VNĐ</span></td>
-                    <td class="text-end fw-bold">11,000,000</td>
-                </tr>
-                <tr>
-                    <td class="text-start"><i>Monthly Gross Salary</i></td>
-                    <td class="text-end" colspan="2">11,000,000</td>
-                </tr>
-            </tbody>
-        </table>
-        <p class="text-start text-dark" style="font-size: 11.5pt; font-family: calibri">
-            &emsp;&emsp;&ensp;&nbsp;&emsp;Sau thời gian thử việc, nếu Anh/ Chị có thể hoàn thành tốt nhiệm vụ được giao,
+
+
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
+            Lương cơ bản hàng tháng&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;: <span
+                style="color: red;">VNĐ</span> 11,000,000/-
+            <br>
+            <i>Monthly Gross Salary</i>
+        </p>
+
+
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
+            Sau thời gian thử việc, nếu Anh/ Chị có thể hoàn thành tốt nhiệm vụ được giao,
             Anh/ Chị sẽ ký kết hợp đồng lao động với VPĐD, và kể từ ngày ký kết sẽ được hưởng mức thu nhập tháng như
             sau:
             <br>
-            <i>&emsp;&emsp;&ensp;&nbsp;&emsp;After this period, if you can fulfill your delivered tasks, you will be
+            <i>After this period, if you can fulfill your delivered tasks, you will be
                 eligible for signing the Labour Contract and from this date on, your monthly income will be:</i>
             <br>
             <br>
-            <i>&emsp;&emsp;&ensp;&nbsp;&emsp;Basic salary & Allowance</i>
+            <i><b>Basic salary & Allowance</b></i>
+            <br>
+            Lương cơ bản hàng tháng&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;: <span
+                style="color: red;">VNĐ</span>
+            11,000,000/-
+            <br>
+            <i>Monthly Gross Salary</i>
+            <br>
+            Trợ cấp (điện thoại,ăn trưa, di chuyển)&emsp;&emsp;&emsp;&ensp;: <span style="color: red;">VNĐ</span>
+            11,000,000/-
+            <br>
+            <i>Monthly Allowance(phone, lunch, transportation)</i>
         </p>
-        <table id="tr1" class="table table-borderless text-dark" style="font-size: 11.5pt; font-family: calibri">
-            <tbody>
-                <tr>
-                    <td class="text-start fw-bold">Lương cơ bản hàng tháng</td>
-                    <td>:&emsp; <span style="color: red;">VNĐ</span></td>
-                    <td class="text-end fw-bold">11,000,000</td>
-                </tr>
-                <tr>
-                    <td class="text-start"><i>Monthly Gross Salary</i></td>
-                    <td class="text-end" colspan="2">11,000,000</td>
-                </tr>
-                <tr>
-                    <td class="text-start fw-bold">Trợ cấp (điện thoại, ăn trưa, di chuyển)</td>
-                    <td>:&emsp; <span style="color: red;">VNĐ</span></td>
-                    <td class="text-end fw-bold">11,000,000</td>
-                </tr>
-                <tr>
-                    <td class="text-start"><i>Monthly Allowance (phone, lunch, transportation)</i></td>
-                    <td class="text-end" colspan="2">11,000,000</td>
-                </tr>
-            </tbody>
-        </table>
-        <p class="text-start text-dark" style="font-size: 11.5pt; font-family: calibri">
-            &emsp;&emsp;&ensp;&nbsp;&emsp;Các khoản thu nhập trên sẽ được trích nộp Thuế thu nhập cá nhân và Bảo hiểm
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
+            Các khoản thu nhập trên sẽ được trích nộp Thuế thu nhập cá nhân và Bảo hiểm
             theo quy định nhà nước
             <br>
-            <i>&emsp;&emsp;&ensp;&nbsp;&emsp;Personal Income Tax and compulsory insurance will be withheld by the Rep
+            <i>Personal Income Tax and compulsory insurance will be withheld by the Rep
                 Office and paid to the government as per Vietnam Labor Law.</i>
             <br>
             &emsp;&emsp;5.&emsp;<span class="fw-bold">Thưởng lương tháng 13:</span> Anh/ Chị sẽ được xét thưởng lương
@@ -218,15 +197,15 @@
             <i>&emsp;&emsp;&ensp;&nbsp;&emsp;<span class="fw-bold">Medical Attention:</span> You will be eligible to Rep
                 Office’s Heath care insurance according to Rep Office’s regulation.</i>
             <br>
-            &emsp;&emsp;8.&emsp;<span class="fw-bold">Kiểm tra sức khỏe:</span> Khi gia nhập VPĐD, Anh/ Chị có trách
-            nhiệm kiểm tra sức khỏe và được xác nhận đủ sức khỏe cho việc bắt đầu công việc tại VPĐD.
+            &emsp;&emsp;8.&emsp;<span class="fw-bold">Kiểm tra sức khỏe:</span> Khi gia nhập VPĐD, Anh/Chị kiểm tra sức
+            khỏe & đủ điều kiện sức khỏe để bắt đầu công việc tại VPĐD.
             <br>
-            <i>&emsp;&emsp;&ensp;&nbsp;&emsp;<span class="fw-bold">Medical Examination:</span> When you start of
-                employment with Rep Office. You will be subjected to a successful completed medical examination
-                conducted by a certified doctor.</i>
+            <i>&emsp;&emsp;&ensp;&nbsp;&emsp;<span class="fw-bold">Medical Examination:</span> Before joining, you are
+                subjected to a successful completed medical examination by a certified
+                doctor.</i>
         </p>
-        <p class="text-start text-dark" style="font-size: 11.5pt; font-family: calibri">
-            Với vị trí Nhân viên <span style="color: red;">Chế độ chính sách</span> chúng tôi đề nghị, chúng tôi hy vọng
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
+            Với vị trí Nhân viên <span style="color: red;">Chế độ chính sách</span>, chúng tôi hy vọng
             Anh/Chị sẽ hoàn
             thành nhiệm vụ
             một cách chu đáo, liêm khiết và chuyên nghiệp, bảo đảm công việc đúng thời hạn theo kế hoạch.
@@ -235,18 +214,22 @@
                 out your duties carefully, with probity and professionalism, guaranteeing also that jobs are
                 accomplished on time regardless the working hour schedule.</i>
             <br>
-            Để xác nhận sự đồng ý, Anh/ Chị vui lòng ký vào hai bản thỏa thuận và gởi về cho Phòng Nhân Sự.
             <br>
-            <i>Please sign and return the duplicate copy of this letter to the Human Resources Department indicating
+            <br>
+            Để xác nhận sự đồng ý, Anh/ Chị vui lòng ký vào bản thỏa thuận và gởi về cho Phòng Nhân Sự.
+            <br>
+            <i>Please sign and return a copy of this letter to the Human Resources Department indicating
                 your acceptance of this offer of employment.</i>
         </p>
-        <p class="text-start text-dark" style="font-size: 11.5pt; font-family: calibri">
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
             Chúng tôi mong đợi gặp Anh/ Chị vào lúc 8:30 sáng vào ngày bắt đầu làm việc tại địa điểm làm việc như thỏa
             thuận.
             <br>
             <i>We look forward to seeing you at 8:30 a.m on the start date afore mentioned at the agreed workplace.</i>
         </p>
-        <table id="tr1" class="table table-borderless text-dark" style="font-size: 11.5pt; font-family: calibri">
+        <table id="pdf-body" cellspacing="0" border="0" style="font-size: 12pt; font-family: calibri">
+            <colgroup width="50%"></colgroup>
+            <colgroup width="50%"></colgroup>
             <tr>
                 <td>
                     Chào thân ái,
@@ -264,7 +247,6 @@
 
                 </td>
                 <td>
-                    <br>
                     Tôi xác nhận đã đọc kỹ và hoàn toàn đồng ý với nội dung thư tuyển dụng này.
                     <br>
                     <i>I confirm that I have read carefully this Job Offer Letter & totally agree with all the
@@ -272,60 +254,26 @@
                 </td>
             </tr>
         </table>
-        <hr style="color: black;">
-        <table id="tr1" class="table table-borderless text-dark text-start"
-            style="font-size: 8pt; font-family: calibri;">
+        <table id="pdf-body" cellspacing="0" border="0" style="font-size: 12pt; font-family: calibri">
+            <colgroup width="50%"></colgroup>
+            <colgroup width="50%"></colgroup>
             <tr>
-                <td style="color: rgb(124, 124, 124)">
-                    <b style="font-size: 9pt; font-family: calibri">Representative Office</b>
-                    <br>
-                    BROADWAY C Building,
-                    <br>
-                    Unit 2B, 2nd & 4th Floors,
-                    <br>
-                    150 Nguyen Luong Bang Street
-                    <br>
-                    Tan Phu Ward, District 7
-                    <br>
-                    Ho Chi Minh City, Vietnam
-                </td>
-                <td style="color: rgb(124, 124, 124)">
-                    Tel: (84.28) 54 13 51 88
-                    <br>
-                    Fax: (84.28) 54 13 51 85
-                    <br>
-                    e-mail: contact.hcm@tedisvietnam.vn
-                </td>
-                <td style="color: rgb(124, 124, 124)">
-                    <b style="font-size: 9pt; font-family: calibri">Representative Office</b>
-                    <br>
-                    Giang Vo Lake View Building
-                    <br>
-                    Unit 202, Giang Vo Street,
-                    <br>
-                    Ba Dinh District, Hanoi
-                    Vietnam
-                </td>
-                <td style="color: rgb(124, 124, 124)">
-                    Tel: (84.24) 37 72 38 19
-                    <br>
-                    Fax: (84.24) 37 72 38 20
-                    <br>
-                    e-mail: contact.hn@tedisvietnam.vn
+                <td rowspan="1" colspan="2" size="1" height="65">
+
                 </td>
             </tr>
-        </table>
-        <table id="tr1" class="table table-borderless text-dark" style="font-size: 11.5pt; font-family: calibri;">
-            <td>
-                Phó Trưởng Đại Diện
-                <br>
-                <b><i>Deputy of Chief Rep</i></b>
-            </td>
-            <td>
-                Ứng viên trúng tuyển
-                <br>
-                <b><i>Offered Applicant</i></b>
-            </td>
+            <tr>
+                <td>
+                    Phó Trưởng Đại Diện
+                    <br>
+                    <b><i>Deputy of Chief Rep</i></b>
+                </td>
+                <td>
+                    Ứng viên trúng tuyển
+                    <br>
+                    <b><i>Offered Applicant</i></b>
+                </td>
+            </tr>
         </table>
         <br>
     </div>

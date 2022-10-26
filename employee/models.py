@@ -92,20 +92,7 @@ class Gp(models.Model):
 
     def __str__(self):
         return self.gp
-    
-
-class Department_area(models.Model):
-    department_area = models.CharField(max_length=50, blank=True, null=True)
-    created_by = models.IntegerField(null=True)
-    created_at = models.DateTimeField(null=True, default=now)
-    updated_by = models.IntegerField(null=True, blank=True)
-    updated_at = models.DateTimeField(null=True, blank=True)
-    deleted_by = models.IntegerField(null=True, blank=True)
-    deleted_at = models.DateTimeField(null=True, blank=True)
-
-    def __str__(self):
-        return self.department_area
-    
+        
 
 class Function(models.Model):
     function = models.CharField(max_length=50, blank=True, null=True)
@@ -118,20 +105,7 @@ class Function(models.Model):
 
     def __str__(self):
         return self.function
-    
-
-class Job_title(models.Model):
-    job_title = models.CharField(max_length=100, blank=True, null=True)
-    created_by = models.IntegerField(null=True)
-    created_at = models.DateTimeField(null=True, default=now)
-    updated_by = models.IntegerField(null=True, blank=True)
-    updated_at = models.DateTimeField(null=True, blank=True)
-    deleted_by = models.IntegerField(null=True, blank=True)
-    deleted_at = models.DateTimeField(null=True, blank=True)
-
-    def __str__(self):
-        return self.job_title
-    
+       
 
 class Position_E(models.Model):
     position_e = models.CharField(max_length=100, blank=True, null=True)
@@ -157,6 +131,19 @@ class Position_V(models.Model):
 
     def __str__(self):
         return self.position_v
+
+
+class Abbreviation_Position(models.Model):
+    abb_position = models.CharField(max_length=100, blank=True, null=True)
+    created_by = models.IntegerField(null=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.abb_position
     
 
 class Contract_type(models.Model):
@@ -237,8 +224,8 @@ class Certificate_V(models.Model):
         return self.certificate_v
     
 
-class Hi_registered_place(models.Model):
-    hi_registered_place = models.CharField(max_length=100, blank=True, null=True)
+class University(models.Model):
+    university = models.CharField(max_length=100, blank=True, null=True)
     created_by = models.IntegerField(null=True)
     created_at = models.DateTimeField(null=True, default=now)
     updated_by = models.IntegerField(null=True, blank=True)
@@ -247,7 +234,20 @@ class Hi_registered_place(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return self.hi_registered_place
+        return self.university
+    
+
+class Hi_medical_place(models.Model):
+    hi_medical_place = models.CharField(max_length=100, blank=True, null=True)
+    created_by = models.IntegerField(null=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.hi_medical_place
 
 
 class Relation_1(models.Model):
@@ -274,23 +274,10 @@ class Relation_2(models.Model):
 
     def __str__(self):
         return self.relation_2  
-
-
-class Bo_sung_ho_so(models.Model):
-    bo_sung_ho_so = models.CharField(max_length=100, blank=True, null=True)
-    created_by = models.IntegerField(null=True)
-    created_at = models.DateTimeField(null=True, default=now)
-    updated_by = models.IntegerField(null=True, blank=True)
-    updated_at = models.DateTimeField(null=True, blank=True)
-    deleted_by = models.IntegerField(null=True, blank=True)
-    deleted_at = models.DateTimeField(null=True, blank=True)
-
-    def __str__(self):
-        return self.bo_sung_ho_so  
     
 
-class Da_nop_thong_tin_nhan_vien(models.Model):
-    da_nop_thong_tin_nhan_vien = models.CharField(max_length=100, blank=True, null=True)
+class Staff_info_submission(models.Model):
+    staff_info_submission = models.CharField(max_length=100, blank=True, null=True)
     created_by = models.IntegerField(null=True)
     created_at = models.DateTimeField(null=True, default=now)
     updated_by = models.IntegerField(null=True, blank=True)
@@ -299,7 +286,7 @@ class Da_nop_thong_tin_nhan_vien(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return self.da_nop_thong_tin_nhan_vien  
+        return self.staff_info_submission  
 
     
 class Employee(models.Model):
@@ -312,18 +299,13 @@ class Employee(models.Model):
     area = models.ForeignKey(Area, on_delete=models.PROTECT, null=True) #JOB
     provinces = models.ForeignKey(Provinces, on_delete=models.PROTECT, null=True, blank=True) #JOB
     gp = models.ForeignKey(Gp, on_delete=models.PROTECT, null=True, blank=True) #JOB
-    department_area = models.ForeignKey(Department_area, on_delete=models.PROTECT, null=True) #JOB
     function = models.ForeignKey(Function, on_delete=models.PROTECT, null=True) #JOB
-    job_title = models.ForeignKey(Job_title, on_delete=models.PROTECT, null=True) #JOB
     position_e = models.ForeignKey(Position_E, on_delete=models.PROTECT, null=True) #JOB
     position_v = models.ForeignKey(Position_V, on_delete=models.PROTECT, null=True) #JOB
+    abb_position = models.ForeignKey(Abbreviation_Position, on_delete=models.PROTECT, null=True) #JOB
     joining_date = models.DateField(max_length=50, null=True) #JOB
     out_date = models.DateField(max_length=50, null=True, blank=True) #JOB 
     years_of_service = models.CharField(max_length=10, blank=True, null=True) #JOB
-    promotion_effective_date = models.DateField(max_length=30, blank=True, null=True) #JOB
-    contract_no = models.CharField(max_length=50, blank=True, null=True) #JOB
-    contract_type = models.ForeignKey(Contract_type, on_delete=models.PROTECT, null=True, blank=True) #JOB
-    signed_contract_date = models.DateField(max_length=30, blank=True, null=True) #JOB
     from_date = models.DateField(max_length=30, blank=True, null=True) #JOB
     to_date = models.DateField(max_length=30, blank=True, null=True) #JOB
     sexual = models.ForeignKey(Sexual, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
@@ -341,14 +323,16 @@ class Employee(models.Model):
     company_email = models.CharField(max_length=30, blank=True, null=True) #JOB
     personal_email = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
     account_no = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
-    with_bank = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
+    bank = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
+    bank_address = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
     branch = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
     certificate_e = models.ForeignKey(Certificate_E, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
     certificate_v = models.ForeignKey(Certificate_V, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
+    university = models.ForeignKey(University, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
     major_e = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
     major_v = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
     social_insurrance_book = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
-    hi_registered_place = models.ForeignKey(Hi_registered_place, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
+    hi_medical_place = models.ForeignKey(Hi_medical_place, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
     personal_income_tax = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
     children = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
     birthday_of_children = models.DateField(max_length=30, blank=True, null=True) #PERSONAL
@@ -362,8 +346,8 @@ class Employee(models.Model):
     phone_2 = models.CharField(max_length=30, blank=True, null=True) #EMERGENCY CONTACT
     year_of_birth = models.IntegerField(blank=True, null=True) #PERSONAL
     age = models.IntegerField(blank=True, null=True) #PERSONAL
-    bo_sung_ho_so = models.ForeignKey(Bo_sung_ho_so, on_delete=models.PROTECT, null=True, blank=True) #ANOTHER
-    da_nop_thong_tin_nhan_vien = models.ForeignKey(Da_nop_thong_tin_nhan_vien, on_delete=models.PROTECT, null=True, blank=True) #ANOTHER
+    remark = models.CharField(max_length=200, blank=True, null=True) #ANOTHER
+    staff_info_submisstion = models.ForeignKey(Staff_info_submission, on_delete=models.PROTECT, null=True, blank=True) #ANOTHER
 
     def __str__(self):
         return self.full_name
@@ -377,6 +361,7 @@ class Employee_children(models.Model):
     def __int__(self):
         return self.employee 
     
+
 class Probationary_period(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
     letter_date = models.DateField(max_length=30, blank=True, null=True)
@@ -384,6 +369,37 @@ class Probationary_period(models.Model):
     to_date = models.DateField(max_length=30, blank=True, null=True) 
     monthly_gross_salary = models.IntegerField(blank=True, null=True)
     monthly_allowance = models.IntegerField(blank=True, null=True)
+
+    def __int__(self):
+        return self.employee 
+
+
+class Employee_contract(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    contract_no = models.CharField(max_length=50, blank=True, null=True) #JOB
+    contract_type = models.ForeignKey(Contract_type, on_delete=models.PROTECT, null=True, blank=True) #JOB
+    signed_contract_date = models.DateField(max_length=30, blank=True, null=True) #JOB
+    created_by = models.IntegerField(null=True, blank=True,)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.employee 
+    
+    
+class Employee_promotion(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    promotion_effective_date = models.DateField(max_length=30, blank=True, null=True) #JOB
+    promotion_decision_number = models.CharField(max_length=10, blank=True, null=True) #JOB
+    created_by = models.IntegerField(null=True, blank=True,)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __int__(self):
         return self.employee 
