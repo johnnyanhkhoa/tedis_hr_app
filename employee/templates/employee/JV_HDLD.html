@@ -1,0 +1,389 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR - JV job offer letter</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'hr/css/bootstrap.css' %}">
+
+    <link rel="stylesheet" href="{% static 'hr/vendors/iconly/bold.css' %}">
+
+    <link rel="stylesheet" href="{% static 'hr/vendors/perfect-scrollbar/perfect-scrollbar.css' %}">
+    <link rel="stylesheet" href="{% static 'hr/vendors/bootstrap-icons/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'hr/css/app.css' %}">
+    <link rel="shortcut icon" href="{% static 'hr/images/favicon.svg' %}" type="image/x-icon">
+
+    <style type="text/css">
+        #tb1 {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            border: 0px solid white;
+        }
+
+        #tr1 {
+            border: 0px solid white;
+            text-align: center;
+        }
+
+        #pdf-body {
+            font-family: "Times New Roman", serif;
+            font-size: x-small;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <table id="pdf-body" cellspacing="0" border="0">
+            <colgroup width="50%"></colgroup>
+            <colgroup width="50%"></colgroup>
+            <tr>
+                <td class="row justify-content-start">
+                    <img class="rounded float-start" src="https://iili.io/bakZoF.png" alt="Logo" srcset=""
+                        style="width: 150px; height: 65px">
+                </td>
+                <td class="row justify-content-start" style="text-align: center">
+                    <p class="fw-bold" style="font-size: 12pt; color: rgb(124, 124, 124); font-family: tahoma;">
+                        <b>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+                            <br>
+                            Độc Lập - Tự Do - Hạnh Phúc
+                            <br>
+                        </b>
+                        <span style="font-size: 11pt; color: rgb(124, 124, 124)">SOCIALIST REPUBLIC OF
+                            VIETNAM</span>
+                        <br>
+                        <span style="font-size: 11pt; color: rgb(124, 124, 124)">Independence – Freedom –
+                            Happiness</span>
+                    </p>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <table id="pdf-body" cellspacing="0" border="0">
+            <colgroup width="50%"></colgroup>
+            <colgroup width="50%"></colgroup>
+            <tr>
+                <td class="row justify-content-start" style="text-align: right">
+                </td>
+                <td class="row justify-content-end" style="text-align: right">
+                    <p class="text-end text-dark" style="font-size: 12pt; font-family: calibri; text-align: right;">Long
+                        An, ngày 02 tháng 05 năm 2021
+                        <br>
+                        <i>Long An, 2 May 2021</i>
+                    </p>
+                </td>
+            </tr>
+        </table>
+        <p style="font-size: 22pt; font-family: calibri; text-align: center;">
+            <b>
+                HỢP ĐỒNG LAO ĐỘNG
+                <br>
+                <span style="font-size: 14pt; font-family: calibri; text-align: center;">LABOR CONTRACT</span>
+            </b>
+        </p>
+        <table id="pdf-body" cellspacing="0" border="0"
+            style="font-size: 12pt; font-family: calibri; text-align: left;">
+            <colgroup width="25%"></colgroup>
+            <colgroup width="5%"></colgroup>
+            <colgroup width="40%"></colgroup>
+            <colgroup width="30%"></colgroup>
+            <tr>
+                <td><b>Chúng tôi,</b></td>
+            </tr>
+            <br>
+            <tr>
+                <td>Một bên là Ông /Bà
+                    <br>
+                    <i style="font-size: 10pt;">We are, from one side, Mr/Mrs</i>
+                </td>
+                <td>:</td>
+                <td><b>SEVERINE EDGARD-ROSA</b>
+                    <br>
+                    <i style="font-size: 10pt;">SEVERINE EDGARD-ROSA</i>
+                </td>
+                <td>Quốc tịch:&emsp;Pháp
+                    <br>
+                    <i style="font-size: 10pt;">Nationality:&emsp;French</i>
+                </td>
+            </tr>
+            <br>
+            <tr>
+                <td>Chức vụ
+                    <br>
+                    <i style="font-size: 10pt;">Position</i>
+                </td>
+                <td>:</td>
+                <td>Phó Trưởng Đại Diện
+                    <br>
+                    <i style="font-size: 10pt;">Duty of Chief Rep.</i>
+                </td>
+            </tr>
+            <br>
+            <tr>
+                <td>Đại diện cho
+                    <br>
+                    <i style="font-size: 10pt;">On behalf of</i>
+                </td>
+                <td>:</td>
+                <td><b>CÔNG TY CP DƯỢC PHẨM TEDIS – VIỆT HÀ</b>
+                    <br>
+                    <i style="font-size: 10pt;">TEDIS – VIETHA PHARMACEUTICAL JOINT STOCK COMPANY</i>
+                </td>
+            </tr>
+        </table>
+
+
+
+
+
+
+        <div class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
+            Anh/Chị <span class="fw-bold" style="color: red;">Lê Thị Thanh Tuyền</span> thân mến,
+        </div>
+        <div class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
+            <i>Dear Mr/Ms</i> <span class="fw-bold" style="color: red;"></span>
+        </div>
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
+            Như đã trao đổi với Anh/Chị sau khi phỏng vấn, Chúng tôi hân hạnh thông báo với Anh/Chị về việc tuyển dụng
+            của Công Ty Cổ Phần Dược Phẩm Tedis - Việt Hà (được gọi tắt dưới đây là Công ty) như sau:
+            <br>
+            <i>After interviewing you and having appreciated your qualification, we would like to offer you an
+                employment
+                with Tedis - Viet Ha Pharma Corp. (here in after referred to as “Company”) on the following terms and
+                conditions:</i>
+        </p>
+        <table id="pdf-body" cellspacing="0" border="0" style="font-size: 12pt; font-family: calibri">
+            <colgroup width="3%"></colgroup>
+            <colgroup width="97%"></colgroup>
+            <tr>
+                <td style="vertical-align:top"><b>I.</b></td>
+                <td style="text-align: left;"><b>Vị trí công việc:</b> Anh/ Chị sẽ đảm nhận vị trí công việc <b>Nhân
+                        Viên
+                        Phụ Kho</b>. Tuy
+                    nhiên công
+                    việc có
+                    thể được thay đổi tùy theo yêu cầu tổ chức của Công ty và phù hợp với công việc đã được thỏa thuận.
+                    <br>
+                    <i><b>Position:</b> You shall be appointed as <b>Warehouse Executive</b>. The Company reserves the
+                        right to
+                        after
+                        your designation in the event of any re - organization or at any time that the Company deems
+                        fit,
+                        provided that such alternation is suitable with the agreed work.</i>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align:top"><b>II.</b></td>
+                <td style="text-align: left;"><b>Thời gian bắt đầu:</b> 25/07/2022
+                    <br>
+                    <i><b>Starting date:</b> 25/07/2022</i>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align:top"><b>III.</b></td>
+                <td style="text-align: left;"><b>Thời gian thử việc:</b> 25/07/2022 – 23/08/2022
+                    <br>
+                    <i><b>Probation time:</b> 25/07/2022 – 23/08/2022</i>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align:top"><b>IV.</b></td>
+                <td style="text-align: left;"><b>Quyền lợi & điều kiện làm việc:</b> Theo chính sách của Công ty, chúng
+                    tôi đề nghị về
+                    quyền lợi và điều kiện làm việc của Anh/ Chị như sau:
+                    <br>
+                    <i><b>Benefits & working conditions:</b> Following Tedis - Viet Ha Pharma Corp.’s Compensation and
+                        Benefits Policy, we are
+                        glad
+                        to offer to you as follows:</i>
+                    <br>
+                    <table id="pdf-body" cellspacing="0" border="0" style="font-size: 12pt; font-family: calibri">
+                        <colgroup width="2%"></colgroup>
+                        <colgroup width="98%"></colgroup>
+                        <tr>
+                            <td style="vertical-align:top">1.</td>
+                            <td style="text-align: left;"><b>Địa điểm làm việc:</b> Lô F.2B, Đường số 2, KCN Long Hậu,
+                                Cần Giuộc, Long An
+                                <br>
+                                <i><b>Working location:</b> </i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:top">2.</td>
+                            <td style="text-align: left;"><b>Thời gian làm việc:</b> 5.5 ngày/ tuần, 8 tiếng/ ngày (từ
+                                8:00 đến 17:30)
+                                <br>
+                                <i><b>Working time:</b> five and a half days per week, 8 hours per day (from 8:00 to
+                                    17:30)</i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:top">3.</td>
+                            <td style="text-align: left;"><b>Ngày nghỉ hàng tuần và nghỉ lễ:</b> Theo quy định của Công
+                                ty
+                                và quy định Nhà nước
+                                <br>
+                                <i><b>Weekly official off-day and holiday:</b> According to Company’s regulation and
+                                    government regulation</i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:top">4.</td>
+                            <td style="text-align: left;"><b>Lương Cơ Bản và Trợ Cấp (Thời gian thử việc và sau thời
+                                    gian
+                                    thử việc):</b>
+                                <br>
+                                <i>Basic salary and allowances (During probation time and after probation time):</i>
+                                <br>
+                                <table id="pdf-body" cellspacing="0" border="0"
+                                    style="font-size: 12pt; font-family: calibri">
+                                    <colgroup width="60%"></colgroup>
+                                    <colgroup width="5%"></colgroup>
+                                    <colgroup width="10%"></colgroup>
+                                    <colgroup width="25%"></colgroup>
+                                    <tr>
+                                        <td style="text-align: left;"><b>Lương cơ bản</b><br><i>Monthly Gross Salary</i>
+                                        </td>
+                                        <td>:</td>
+                                        <td>VNĐ</td>
+                                        <td><b>11,000,000/-</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: left;"><b>Trợ cấp (điện thoại, ăn trưa, di
+                                                chuyển)</b><br><i>Monthly Allowance (phone, lunch, transportation)</i>
+                                        </td>
+                                        <td>:</td>
+                                        <td>VNĐ</td>
+                                        <td>11,000,000/-</td>
+                                    </tr>
+                                </table>
+                                Các khoản thu nhập trên sẽ được trích nộp Thuế thu nhập cá nhân và Bảo hiểm theo quy
+                                định
+                                Nhà nước
+                                <br>
+                                <i>Personal Income Tax and compulsory insurance will be withheld by the Company and paid
+                                    to
+                                    the government as per Vietnam Labor Law.</i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:top">5.</td>
+                            <td style="text-align: left;"><b>Thưởng:</b> theo quy định Công ty.
+                                <br>
+                                <i><b>Bonus:</b> according to Company’s policy.</i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:top">6.</td>
+                            <td style="text-align: left;"><b>Ngày nghỉ phép năm:</b> 12 ngày phép năm cho một năm làm
+                                việc
+                                đầy đủ.
+                                <br>
+                                <i><b>Annual Leaves:</b> 12 days paid annual leave for each completed calendar year of
+                                    service.</i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:top">7.</td>
+                            <td style="text-align: left;"><b>Bảo hiểm Chăm Sóc Sức Khỏe:</b> Công ty mua bảo hiểm cho
+                                Anh theo các điều kiện quy định của Công ty.
+                                <br>
+                                <i><b>Medical Attention:</b> You will be eligible to Company’s Heath care insurance
+                                    according to Company’s regulation.</i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:top">8.</td>
+                            <td style="text-align: left;"><b>Kiểm tra sức khỏe:</b> Khi gia nhập Công ty, Anh có trách
+                                nhiệm kiểm tra sức khỏe và được xác nhận đủ sức khỏe cho việc bắt đầu công việc tại Công
+                                ty
+                                <br>
+                                <i><b>Medical Examination:</b> When you start of employment with Viet Ha Pharma Corp.
+                                    You will be subjected to a successful completed medical examination conducted by a
+                                    certified doctor.</i>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
+            Với vị trí <b>Nhân Viên Phụ Kho</b> mà chúng tôi đề nghị, chúng tôi hy vọng Anh sẽ hoàn thành nhiệm vụ một
+            cách chu
+            đáo, liêm khiết và chuyên nghiệp, bảo đảm công việc đúng thời hạn theo kế hoạch.
+            <br>
+            <i>Being the position <b>Warehouse Executive</b> offered to you, we expect you will carry out your duties
+                carefully, with probity and professionalism, guaranteeing also that jobs are accomplished on time
+                regardless the working hour schedule.</i>
+        </p>
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
+            Để xác nhận sự đồng ý, Anh vui lòng ký vào hai bản thỏa thuận và gởi về cho Phòng Nhân Sự, chậm nhất là ngày
+            <b>20/07/2022.</b>
+            <br>
+            <i>Please sign and return the duplicate copy of this letter to the Human Resources Department by the latest
+                <b>20/07/2022.</b></i>
+        </p>
+        <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
+            Chúng tôi mong đợi gặp Anh tại Công ty.
+            <br>
+            <i>We look forward to seeing you.</i>
+        </p>
+        <table id="pdf-body" cellspacing="0" border="0" style="font-size: 12pt; font-family: calibri">
+            <colgroup width="50%"></colgroup>
+            <colgroup width="50%"></colgroup>
+            <tr>
+                <td>
+                    Thân chào,
+                    <br>
+                    <i>Yours sincerely,</i>
+                </td>
+                <td>
+                    Xác nhận
+                    <br>
+                    <b>Confirmation</b>
+                </td>
+            </tr>
+            <tr>
+                <td rowspan="1" colspan="2" size="1" height="70">
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>SEVERINE EDGARD-ROSA</b>
+                    <br>
+                    Chariwoman
+                    <br>
+                    <b>Chủ tịch HĐQT</b>
+                </td>
+                <td>
+                    Ứng viên trúng tuyển
+                    <br>
+                    <i>Offered Applicant</i>
+                </td>
+            </tr>
+        </table>
+        <br>
+    </div>
+
+    <script src="{% static 'hr/vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'hr/js/bootstrap.bundle.min.js' %}"></script>
+
+    <script src="{% static 'hr/vendors/apexcharts/apexcharts.js' %}"></script>
+    <script src="{% static 'hr/js/pages/dashboard.js' %}"></script>
+
+    <script src="{% static 'hr/js/main.js' %}"></script>
+</body>
+
+</html>

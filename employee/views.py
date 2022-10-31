@@ -181,11 +181,8 @@ def employee_delete(request, pk):
     try:
         employee_info = Employee.objects.get(id = pk)
         if employee_children_relatives.exists() or employee_contract.exists() or employee_promotion.exists():
-
-            print('not delete')
             messages.error(request, 'Employee can not be deleted. Check relevant papers.')
         else:
-            print('delete')
             employee_info.delete()
             messages.success(request, 'Employee deleted')
     except Employee.DoesNotExist:
@@ -266,7 +263,7 @@ def add_promotion(request, pk):
     })
     
     
-def probationary_period_form(request, pk):
+def TD_probationary_period_form(request, pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
         return redirect('hr:signin')
@@ -281,14 +278,38 @@ def probationary_period_form(request, pk):
         form = Probationary_period_form(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('employee:job_offer_form', pk=employee.pk)
+            return redirect('employee:TD_job_offer_FORM', pk=employee.pk)
+    
+    return render(request, 'employee/form_probationary_period.html', {
+        'employee' : employee,
+        'form' : form,
+    })
+    
+
+def JV_probationary_period_form(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    # Get employee:
+    employee = Employee.objects.get(pk=pk)
+    id = str(pk)
+    
+    # Form Probationary_period
+    form = Probationary_period_form()
+    if request.method == 'POST':
+        form = Probationary_period_form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('employee:JV_job_offer_FORM', pk=employee.pk)
     
     return render(request, 'employee/form_probationary_period.html', {
         'employee' : employee,
         'form' : form,
     })
 
-def job_offer_form(request, pk):
+
+def TD_job_offer_FORM(request, pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
         return redirect('hr:signin')
@@ -303,16 +324,56 @@ def job_offer_form(request, pk):
     # print(name_month)
     
     
-    return render(request, 'employee/letter_job_offer.html', {
+    return render(request, 'employee/TD_letter_job_offer.html', {
         'employee' : employee,
     })
     
-def html_to_pdf_view(request, pk):
+
+def JV_job_offer_FORM(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    # Get employee:
+    employee = Employee.objects.get(pk=pk)
+    # date = employee.from_date.strftime('%d')
+    # num_month = employee.from_date.strftime('%m')
+    # name_month = employee.from_date.strftime('%B')
+    # print(date)
+    # print(num_month)
+    # print(name_month)
+    
+    
+    return render(request, 'employee/JV_letter_job_offer.html', {
+        'employee' : employee,
+    })
+    
+    
+def TD_job_offer_PDF(request, pk):
     today = datetime.now().strftime('%d-%m-%Y')
 
     employee = Employee.objects.get(pk=pk)
 
-    html_string = render_to_string('employee/letter_job_offer.html', {
+    html_string = render_to_string('employee/TD_letter_job_offer.html', {
+        'today': today,
+        'employee': employee,
+    })
+
+    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+    filename = 'report_' + datetime.now().strftime('%Y%m%d_%H%M%S') + '.pdf'
+    pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Documents', filename), configuration=config)
+    # pdfkit.from_string(html_string, "C:\\" + filename, configuration=config)
+
+
+    return HttpResponse(html_string)
+
+
+def JV_job_offer_PDF(request, pk):
+    today = datetime.now().strftime('%d-%m-%Y')
+
+    employee = Employee.objects.get(pk=pk)
+
+    html_string = render_to_string('employee/JV_letter_job_offer.html', {
         'today': today,
         'employee': employee,
     })
@@ -327,7 +388,7 @@ def html_to_pdf_view(request, pk):
 
 # def html_to_pdf_view(request, pk):
 #     employee = Employee.objects.get(pk=pk)
-#     return render(request, 'employee/letter_job_offer.html', {
+#     return render(request, 'employee/TD_letter_job_offer.html', {
 #         'employee' : employee,
 #     })
     
