@@ -349,6 +349,26 @@ def JV_job_offer_FORM(request, pk):
     })
     
     
+def JV_HDLD(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    # Get employee:
+    employee = Employee.objects.get(pk=pk)
+    # date = employee.from_date.strftime('%d')
+    # num_month = employee.from_date.strftime('%m')
+    # name_month = employee.from_date.strftime('%B')
+    # print(date)
+    # print(num_month)
+    # print(name_month)
+    
+    
+    return render(request, 'employee/JV_HDLD.html', {
+        'employee' : employee,
+    })
+    
+    
 def TD_job_offer_PDF(request, pk):
     today = datetime.now().strftime('%d-%m-%Y')
 

@@ -12,6 +12,7 @@ urlpatterns = [
     path('TD_probationary_period_form/<int:pk>/', views.TD_probationary_period_form, name='TD_probationary_period_form'),
     path('TD_job_offer_FORM/<int:pk>/', views.TD_job_offer_FORM, name='TD_job_offer_FORM'),
     path('JV_job_offer_FORM/<int:pk>/', views.JV_job_offer_FORM, name='JV_job_offer_FORM'),
+    path('JV_HDLD/<int:pk>/', views.JV_HDLD, name='JV_HDLD'),
     path('TD_job_offer_PDF/<int:pk>/', views.TD_job_offer_PDF, name='TD_job_offer_PDF'),
     path('JV_job_offer_PDF/<int:pk>/', views.JV_job_offer_PDF, name='JV_job_offer_PDF'),
     
