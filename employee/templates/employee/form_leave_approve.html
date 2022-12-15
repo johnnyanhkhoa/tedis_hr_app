@@ -1,0 +1,383 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}HR | Leave application approve{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Leave Verification</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Leave & Overtime</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Leave verification</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-body">
+                <div class="container-fluid">
+                    <table class="table" style="border: 0px solid white;">
+                        <tr>
+                            <td>
+                                <img class="rounded float-start" src="https://iili.io/me7rqG.jpg" alt="Logo" srcset=""
+                                    style="width: 150px; height: 65px">
+                            </td>
+                            <td class="row justify-content-end" style="text-align: right">
+                                <p class="text-end"
+                                    style="font-size: 18pt; color: rgb(124, 124, 124); font-family: tahoma;">
+                                    <b class="text-dark">APPLICATION FOR LEAVE</b>
+                                    <br>
+                                    <span class="text-end"
+                                        style="font-size: 18pt; color: rgb(0, 0, 0); font-family: tahoma;">ĐƠN XIN
+                                        NGHỈ PHÉP</span>
+                                </p>
+                                <p class="text-end"
+                                    style="font-size: 18pt; color: rgb(124, 124, 124); font-family: tahoma;"></p>
+                            </td>
+                        </tr>
+                    </table>
+                    <form method="post">
+                        {% csrf_token %}
+                        <p class="text-start text-dark"
+                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            <b>EMPLOYEE INFORMATION /</b>
+                            <i> Chi tiết nhân viên</i>
+                        </p>
+                        <hr style="color: black;margin-top: 0px; height: 2px; background-color: black;">
+                        <table class="table text-dark" style="border: 0px solid white; padding: 0;">
+                            <tr>
+                                <td>
+                                    <b>Employee Name</b>
+                                    <br>
+                                    <i>Họ tên nhân viên</i>
+                                </td>
+                                <td colspan="2">{{ leave_application.employee }}</td>
+                                <td><b>Department</b>
+                                    <br>
+                                    <i>Bộ phận làm việc</i>
+                                </td>
+                                <td colspan="2">{{ leave_application.status.status }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Emergency Contact</b>
+                                    <br>
+                                    <i>Số liên lạc khẩn</i>
+                                </td>
+                                <td>{{ leave_application.emergency_contact }}
+                                </td>
+                                <td><b>Contact Person</b>
+                                    <br>
+                                    <i>Người liên lạc</i>
+                                </td>
+                                <td>
+                                    {{ leave_application.contact_person }}
+                                </td>
+                                <td><b>Relation</b>
+                                    <br>
+                                    <i>Quan hệ</i>
+                                </td>
+                                <td>{{ leave_application.relation }}</td>
+                            </tr>
+                        </table>
+                        <br>
+                        <p class="text-start text-dark"
+                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            <b>TYPE OF LEAVE REQUESTED /</b>
+                            <i> Loại phép xin nghỉ</i>
+                        </p>
+                        <hr style="color: black;margin-top: 0px; height: 2px; background-color: black;">
+                        <input type="hidden" name="employee_id" value="{{ employee.id }}" />
+                        <div class="row text-dark">
+                            <div class="col-3">
+                            </div>
+                            <div class="col-3">
+                                <p class="text-center">
+                                    <b>From</b>
+                                    <br>
+                                    <i>Từ</i>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                <p class="text-center">
+                                    <b>To</b>
+                                    <br>
+                                    <i>Đến</i>
+                                </p>
+                            </div>
+                            <div class="col-1">
+                                <p class="text-center">
+                                    <b>Days</b>
+                                    <br>
+                                    <i>Số ngày</i>
+                                </p>
+                            </div>
+                            <div class="col-2">
+                                <p class="text-center">
+                                    <b>Remarks</b>
+                                    <br>
+                                    <i>Ghi chú</i>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row text-dark">
+                            <div class="col-3">
+                                <p class="text-start">
+                                    <b>Annual Leave</b>
+                                    <br>
+                                    <i>Phép hằng năm</i>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.annual_from }}
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.annual_to }}
+                            </div>
+                            <div class="col-1" style="padding: 0;">
+                                {{ leave_application.annual_number_of_leave_days }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.annual_remark }}
+                            </div>
+                        </div>
+                        <div class="row text-dark">
+                            <div class="col-3">
+                                <p class="text-start">
+                                    <b>Non-paid Leave</b>
+                                    <br>
+                                    <i>Nghỉ không lương</i>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.non_paid_from }}
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.non_paid_to }}
+                            </div>
+                            <div class="col-1" style="padding: 0;">
+                                {{ leave_application.non_paid_number_of_leave_days }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.non_paid_remark }}
+                            </div>
+                        </div>
+                        <div class="row text-dark">
+                            <div class="col-3">
+                                <p class="text-start">
+                                    <b>Wedding Leave</b>
+                                    <br>
+                                    <i>Lễ cưới</i>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.wedding_from }}
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.wedding_to }}
+                            </div>
+                            <div class="col-1" style="padding: 0;">
+                                {{ leave_application.wedding_number_of_leave_days }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.wedding_remark }}
+                            </div>
+                        </div>
+                        <div class="row text-dark">
+                            <div class="col-3">
+                                <p class="text-start">
+                                    <b>Bereavment Leave</b>
+                                    <br>
+                                    <i>Nghỉ đám tang</i>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.bereavement_from }}
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.bereavement_to }}
+                            </div>
+                            <div class="col-1" style="padding: 0;">
+                                {{ leave_application.bereavement_number_of_leave_days }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.bereavement_remark }}
+                            </div>
+                        </div>
+                        <div class="row text-dark">
+                            <div class="col-3">
+                                <p class="text-start">
+                                    <b>Maternity Leave / Obstetric Consult</b>
+                                    <br>
+                                    <i>Nghỉ thai sản / Nghỉ khám thai</i>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.maternity_obstetric_from }}
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.maternity_obstetric_to }}
+                            </div>
+                            <div class="col-1" style="padding: 0;">
+                                {{ leave_application.maternity_obstetric_number_of_leave_days }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.maternity_obstetric_remark }}
+                            </div>
+                        </div>
+                        <div class="row text-dark">
+                            <div class="col-3">
+                                <p class="text-start">
+                                    <b>Sick Leave</b>
+                                    <br>
+                                    <i>Nghỉ ốm</i>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.sick_from }}
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.sick_to }}
+                            </div>
+                            <div class="col-1" style="padding: 0;">
+                                {{ leave_application.sick_number_of_leave_days }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.sick_remark }}
+                            </div>
+                        </div>
+                        <div class="row text-dark">
+                            <div class="col-3">
+                                <p class="text-start">
+                                    <b>Off in-lieu</b>
+                                    <br>
+                                    <i>Nghỉ bù</i>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.offinlieu_from }}
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.offinlieu_to }}
+                            </div>
+                            <div class="col-1" style="padding: 0;">
+                                {{ leave_application.offinlieu_number_of_leave_days }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.offinlieu_remark }}
+                            </div>
+                        </div>
+                        <div class="row text-dark">
+                            <div class="col-3">
+                                <p class="text-start">
+                                    <b>Other</b>
+                                    <br>
+                                    <i>Khác</i>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.other_from }}
+                            </div>
+                            <div class="col-3">
+                                {{ leave_application.other_to }}
+                            </div>
+                            <div class="col-1" style="padding: 0;">
+                                {{ leave_application.other_number_of_leave_days }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.other_remark }}
+                            </div>
+                        </div>
+                        <div class="row text-dark" style="border-top: 1px solid black;">
+                            <div class="col-3">
+                                <p class="text-start">
+                                    <b>Total number of days /</b>
+                                    <i>Tổng số ngày</i>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                            </div>
+                            <div class="col-3">
+                            </div>
+                            <div class="col-1" style="padding: 0;">
+                                {{ leave_application.total_days }}
+                            </div>
+                            <div class="col-2">
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <p class="text-start text-dark"
+                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            <b>TEMPORARY REPLACEMENT /</b>
+                            <i> Người thay thế tạm thời</i>
+                        </p>
+                        <hr style="color: black;margin-top: 0px; height: 2px; background-color: black;">
+
+                        <div class="row">
+                            <div class="col">
+                                {{ leave_application.temporary_replacement }}
+                            </div>
+                        </div>
+                        <br><br><br><br>
+                        <table class="table text-dark" style="border: 0px solid white; padding: 0;">
+                            <tr>
+                                <td>
+                                    <b>Employee</b>
+                                    <br>
+                                    <i>Nhân viên</i>
+                                </td>
+                                <td>{{ leave_application.employee }}</td>
+                                <td><b>Approved by</b>
+                                    <br>
+                                    <i>Xét duyệt bởi</i>
+                                </td>
+                                <td>{{ leave_application.approved_by }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Date</b>
+                                    <br>
+                                    <i>Ngày</i>
+                                </td>
+                                <td>
+                                    {{leave_application.application_date}}
+                                </td>
+                                <td><b>Date</b>
+                                    <br>
+                                    <i>Ngày</i>
+                                </td>
+                                <td>
+                                    {{approved_date}}
+                                </td>
+                            </tr>
+                        </table>
+
+                </div>
+                <br>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-bottom: 20px">
+                    <button type="submit" class="btn btn-outline-success" name="btn_approve" value="Period input"
+                        style="margin: 10px;">Approve</button>
+                    <button type="submit" class="btn btn-outline-danger" name="btn_reject" value="Period input"
+                        style="margin: 10px;">Reject</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

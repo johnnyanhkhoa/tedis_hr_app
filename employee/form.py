@@ -35,10 +35,10 @@ class DateInput(forms.DateInput):
 
 # Form
 class CreateEmployeeForm(forms.ModelForm):
-    employee_code = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={
+    employee_code = forms.IntegerField(required=True, widget=forms.NumberInput(attrs={
         "class": "form-control", "placeholder": "Employee code",
     }))
-    full_name = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+    full_name = forms.CharField(strip=False, required=True, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Full name",
     }))
     site = forms.ModelChoiceField(required=False, queryset=site_list ,widget=forms.Select(attrs={
@@ -74,28 +74,17 @@ class CreateEmployeeForm(forms.ModelForm):
     position_v = forms.ModelChoiceField(required=False, queryset=position_v_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Position V",
     }))
-    joining_date = forms.DateField(required=False, widget=DateInput())
+    joining_date = forms.DateField(required=True, widget=DateInput())
     out_date = forms.DateField(required=False, widget=DateInput())
     years_of_service = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Years of service",
     }))
-    promotion_effective_date = forms.DateField(required=False, widget=DateInput())
-    promotion_decision_number = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
-        "class": "form-control", "placeholder": "Promotion decision number",
-    }))
-    contract_no = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
-        "class": "form-control", "placeholder": "Contract number",
-    }))
-    contract_type = forms.ModelChoiceField(required=False, queryset=contract_type_list ,widget=forms.Select(attrs={
-        "class": "form-control bg-white", "placeholder": "Contract type",
-    }))
-    signed_contract_date = forms.DateField(required=False, widget=DateInput())
     from_date = forms.DateField(required=False, widget=DateInput())
     to_date = forms.DateField(required=False, widget=DateInput())
     sexual = forms.ModelChoiceField(required=False, queryset=sexual_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Sexual",
     }))
-    date_of_birth = forms.DateField(required=False, widget=DateInput())
+    date_of_birth = forms.DateField(required=True, widget=DateInput())
     place_of_birth = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Place of birth",
     }))
@@ -194,9 +183,6 @@ class CreateEmployeeForm(forms.ModelForm):
     phone_2 = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Phone 2",
     }))
-    year_of_birth = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={
-        "class": "form-control", "placeholder": "Year of birth",
-    }))
     age = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={
         "class": "form-control", "placeholder": "Age",
     }))
@@ -255,3 +241,44 @@ class Probationary_period_form(forms.ModelForm):
     class Meta:
         model = Probationary_period
         fields = '__all__'
+        
+
+# leave_type_list = Type_of_leave.objects.only('id')   
+# hour_list = Hour.objects.only('id') 
+# minute_list = Minute.objects.only('id') 
+# class Leave_application_form(forms.ModelForm):
+#     employee = forms.ModelChoiceField(required=False, queryset=employee_list ,widget=forms.Select(attrs={
+#         "class": "form-control bg-white", "placeholder": "Employee",
+#     }))
+#     leave_type = forms.ModelChoiceField(required=False, queryset=leave_type_list ,widget=forms.Select(attrs={
+#         "class": "form-control bg-white", "placeholder": "Leave type",
+#     }))
+#     from_hour = forms.ModelChoiceField(required=False, queryset=hour_list ,widget=forms.Select(attrs={
+#         "class": "form-control bg-white", "placeholder": "Hour",
+#     }))
+#     from_minute = forms.ModelChoiceField(required=False, queryset=minute_list ,widget=forms.Select(attrs={
+#         "class": "form-control bg-white", "placeholder": "Minute",
+#     }))
+#     from_date = forms.DateField(required=False, widget=DateInput())
+#     to_hour = forms.ModelChoiceField(required=False, queryset=hour_list ,widget=forms.Select(attrs={
+#         "class": "form-control bg-white", "placeholder": "Hour",
+#     }))
+#     to_minute = forms.ModelChoiceField(required=False, queryset=minute_list ,widget=forms.Select(attrs={
+#         "class": "form-control bg-white", "placeholder": "Minute",
+#     }))
+#     to_date = forms.DateField(required=False, widget=DateInput())
+    
+    
+#     letter_date = forms.DateField(required=False, widget=DateInput())
+#     from_date = forms.DateField(required=False, widget=DateInput())
+#     to_date = forms.DateField(required=False, widget=DateInput())
+#     monthly_gross_salary = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={
+#         "class": "form-control", "placeholder": "Monthly gross salary",
+#     }))
+#     monthly_allowance = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={
+#         "class": "form-control", "placeholder": "Monthly allowance",
+#     }))
+    
+#     class Meta:
+#         model = Probationary_period
+#         fields = '__all__'

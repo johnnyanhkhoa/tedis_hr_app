@@ -26,7 +26,8 @@
                 <div class="sidebar-header">
                     <div class="d-flex justify-content-between">
                         <div class="logo">
-                            <a href="index.html"><img src="{% static 'hr/images/logo/logo_tedis.png' %}" alt="Logo" srcset="" style="width: 150px; height: 75px"></a>
+                            <a href="{% url 'hr:index' %}"><img src="{% static 'hr/images/logo/logo_tedis.png' %}" alt="Logo"
+                                    srcset="" style="width: 150px; height: 75px"></a>
                         </div>
                         <div class="toggler">
                             <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
@@ -210,6 +211,45 @@
                                 <span>Datatable</span>
                             </a>
                         </li>
+        
+                        <li class="sidebar-item has-sub" style="width:250px">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-person-fill"></i>
+                                <span>Employee information</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item ">
+                                    <a href="{% url 'employee:employee_table' %}">General
+                                        view</a>
+                                </li>
+                                <li class="submenu-item ">
+                                    <a href="{% url 'employee:create_new_employee' %}">Create new employee</a>
+                                </li>
+                                <li class="submenu-item ">
+                                    <a href="#">Update personal information</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item has-sub" style="width:250px">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-file-text-fill"></i>
+                                <span>Leave & Overtime</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item ">
+                                    <a href="{% url 'employee:leave_application' %}">Leave application</a>
+                                </li>
+                                <li class="submenu-item ">
+                                    <a href="{% url 'employee:leave_verification' %}">Leave verification</a>
+                                </li>
+                                <li class="submenu-item ">
+                                    <a href="{% url 'employee:ot_application' %}">OT application</a>
+                                </li>
+                                <li class="submenu-item ">
+                                    <a href="{% url 'employee:ot_verification' %}">OT verification</a>
+                                </li>
+                            </ul>
+                        </li>
 
                         <li class="sidebar-title">Extra UI</li>
 
@@ -386,6 +426,7 @@
         <!--End Main content-->
 
     </div>
+    
     <script src="{% static 'hr/vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
     <script src="{% static 'hr/js/bootstrap.bundle.min.js' %}"></script>
 

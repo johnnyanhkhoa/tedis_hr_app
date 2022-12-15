@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import PBKDF2PasswordHasher, Argon2PasswordHash
 from hr.models import User
 from hr.forms import FormDangKy, FormDoiMatKhau
 from datetime import datetime
+from employee.models import *
 
 # Create your views here.
 def index(request):
@@ -12,10 +13,12 @@ def index(request):
     
     user_info = User.objects.all()
     s_user = request.session.get('s_user')
-        # user = User.objects.get(id=s_user['id'])
+    employee_pk = s_user[2]
+    employee = Employee.objects.get(pk=employee_pk)
         
     return render(request, 'hr/dist/index.html' , {
         'user_info' : user_info,
+        'employee' : employee,
     })
 
     
@@ -41,7 +44,10 @@ def signin(request):
             # Tạo session
             list_user_values = []
             # usn = user.values()[0][user_name]
-            request.session['s_user'] = user.values()[0]['user_name']
+            list_key = ['user_name','permission_id','employee_id']
+            for key in list_key:
+                list_user_values.append(user.values()[0].get(key))
+            request.session['s_user'] = list_user_values
             # print(user.values()[0]['user_name', 'user_full_name'])
             return redirect('hr:index')
         else:

@@ -75,12 +75,12 @@
                 </td>
                 <td class="row justify-content-end" style="text-align: right">
                     <p class="text-end text-dark" style="font-size: 12pt; font-family: calibri; text-align: right;">Long
-                        An, 18/07/2022</p>
+                        An, {{letter_date_day}}/{{letter_date_month}}/{{letter_date_period_year}}</p>
                 </td>
             </tr>
         </table>
         <div class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
-            Anh/Chị <span class="fw-bold" style="color: red;">Lê Thị Thanh Tuyền</span> thân mến,
+            Anh/Chị <span class="fw-bold" style="color: red;">{{ latest_probationary_period.employee }}</span> thân mến,
         </div>
         <div class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
             <i>Dear Mr/Ms</i> <span class="fw-bold" style="color: red;"></span>
@@ -116,16 +116,16 @@
             </tr>
             <tr>
                 <td style="vertical-align:top"><b>II.</b></td>
-                <td style="text-align: left;"><b>Thời gian bắt đầu:</b> 25/07/2022
+                <td style="text-align: left;"><b>Thời gian bắt đầu:</b> {{from_date_day}}/{{from_date_month}}/{{from_date_year}}
                     <br>
-                    <i><b>Starting date:</b> 25/07/2022</i>
+                    <i><b>Starting date:</b> {{from_date_day}}/{{from_date_month}}/{{from_date_year}}</i>
                 </td>
             </tr>
             <tr>
                 <td style="vertical-align:top"><b>III.</b></td>
-                <td style="text-align: left;"><b>Thời gian thử việc:</b> 25/07/2022 – 23/08/2022
+                <td style="text-align: left;"><b>Thời gian thử việc:</b> {{from_date_day}}/{{from_date_month}}/{{from_date_year}} – {{to_date_day}}/{{to_date_month}}/{{to_date_year}}
                     <br>
-                    <i><b>Probation time:</b> 25/07/2022 – 23/08/2022</i>
+                    <i><b>Probation time:</b> {{from_date_day}}/{{from_date_month}}/{{from_date_year}} – {{to_date_day}}/{{to_date_month}}/{{to_date_year}}</i>
                 </td>
             </tr>
             <tr>
@@ -188,7 +188,7 @@
                                         </td>
                                         <td>:</td>
                                         <td>VNĐ</td>
-                                        <td><b>11,000,000/-</b></td>
+                                        <td><b>{{ latest_probationary_period.monthly_gross_salary|floatformat:0|intcomma }}/-</b></td>
                                     </tr>
                                     <tr>
                                         <td style="text-align: left;"><b>Trợ cấp (điện thoại, ăn trưa, di
@@ -196,7 +196,7 @@
                                         </td>
                                         <td>:</td>
                                         <td>VNĐ</td>
-                                        <td>11,000,000/-</td>
+                                        <td><b>{{ latest_probationary_period.monthly_allowance|floatformat:0|intcomma }}/-</b></td>
                                     </tr>
                                 </table>
                                 Các khoản thu nhập trên sẽ được trích nộp Thuế thu nhập cá nhân và Bảo hiểm theo quy
@@ -260,10 +260,10 @@
         </p>
         <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
             Để xác nhận sự đồng ý, Anh vui lòng ký vào hai bản thỏa thuận và gởi về cho Phòng Nhân Sự, chậm nhất là ngày
-            <b>20/07/2022.</b>
+            <b>{{letter_returning_date_day}}/{{letter_returning_date_month}}/{{letter_returning_date_year}}.</b>
             <br>
             <i>Please sign and return the duplicate copy of this letter to the Human Resources Department by the latest
-                <b>20/07/2022.</b></i>
+                <b>{{letter_returning_date_day}}/{{letter_returning_date_month}}/{{letter_returning_date_year}}.</b></i>
         </p>
         <p class="text-start text-dark" style="font-size: 12pt; font-family: calibri">
             Chúng tôi mong đợi gặp Anh tại Công ty.

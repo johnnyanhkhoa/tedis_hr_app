@@ -236,6 +236,23 @@
                                 {{ form.birthday_of_children }}
                             </div>
                         </div>
+                        {% for children in children_list %}
+                        <div class="row align-items-start" style="margin-top: 10px;">
+                            <div class="col-6">
+                                <label for="children" class="form-label fw-bold text-dark">Children/Relatives</label>
+                                <p class="text-dark " style="text-align: left; border: 1px solid black; padding:5px">
+                                {{ children.children }}
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <label for="birthday_of_children" class="form-label fw-bold text-dark">Birthday
+                                    of children/Relatives</label>
+                                    <p class="text-dark" style="text-align: left; border: 1px solid black; padding:5px">
+                                    {{ children.birthday_of_children }}
+                                    </p>
+                            </div>
+                        </div>
+                        {% endfor %}
                         <div class="row align-items-start" style="margin-top: 10px;">
                             <div class="col">
                                 <label for="staff_info_submission" class="form-label fw-bold text-dark">Staff
@@ -345,48 +362,65 @@
 
 
                             <div class="row justify-content-start" style="margin-top: 10px;">
-                                <div class="col-6">
+                                <div class="col-6" style="border-right: double;">
                                     <div class="row justify-content-start">
                                         <div class="col-4">
                                             <label for="contract_no" class="form-label fw-bold text-dark">Contract
                                                 number</label>
-                                            {{ form.contract_no }}
+                                            <p class="text-dark"
+                                                style="text-align: center; max-width: 183px; border: 1px solid black;">
+                                                {{ latest_contract.contract_no }}
+                                            </p>
                                         </div>
                                         <div class="col-4">
                                             <label for="contract_type" class="form-label fw-bold text-dark">Type</label>
-                                            {{ form.contract_type }}
+                                            <p class="text-dark"
+                                                style="text-align: center; max-width: 183px; border: 1px solid black;">
+                                                {{ latest_contract.contract_type }}</p>
                                         </div>
                                         <div class="col-4">
                                             <label for="signed_contract_date"
                                                 class="form-label fw-bold text-dark">Signing
                                                 date&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</label>
-                                            {{ form.signed_contract_date }}
+                                            <p class="text-dark"
+                                                style="text-align: center; max-width: 183px; border: 1px solid black;">
+                                                {{ latest_contract.signed_contract_date }}</p>
                                         </div>
                                     </div>
                                     <div class="row justify-content-start" style="margin-top: 20px;">
                                         <div class="col-6">
                                             <label for="from_date" class="form-label fw-bold text-dark">From</label>
-                                            {{ form.from_date }}
+                                            <p class="text-dark"
+                                                style="text-align: center; max-width: 183px; border: 1px solid black;">
+                                                {{ latest_contract.from_date }}</p>
                                         </div>
                                         <div class="col-6">
                                             <label for="to_date" class="form-label fw-bold text-dark">To</label>
-                                            {{ form.to_date }}
+                                            <p class="text-dark"
+                                                style="text-align: center; max-width: 183px; border: 1px solid black;">
+                                                {{ latest_contract.to_date }}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6" style="border-left: double;">
                                     <div class="row justify-content-start">
                                         <div class="col-6">
                                             <label for="promotion_effective_date"
                                                 class="form-label fw-bold text-dark">Promotion
                                                 effective date</label>
-                                            {{ form.promotion_effective_date }}
+                                            <p class="text-dark"
+                                                style="text-align: center; max-width: 183px; border: 1px solid black;">
+                                                {{ latest_promotion.promotion_effective_date }}
+                                            </p>
                                         </div>
                                         <div class="col-6">
                                             <label for="promotion_decision_number"
                                                 class="form-label fw-bold text-dark">Decision
                                                 number</label>
-                                            {{ form.promotion_decision_number }}
+                                            <p class="text-dark"
+                                                style="text-align: center; max-width: 183px; border: 1px solid black;">
+                                                {{ latest_promotion.promotion_decision_number }}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

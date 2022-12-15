@@ -6,9 +6,16 @@
 {% block main_content %}
 <div id="main">
     <header class="mb-3">
-        <a href="#" class="burger-btn d-block d-xl-none">
-            <i class="bi bi-justify fs-3"></i>
-        </a>
+        {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
     </header>
 
     <div class="page-heading">
@@ -220,7 +227,7 @@
                                 <img src="{% static 'hr/images/faces/1.jpg' %}" alt="Face 1">
                             </div>
                             <div class="ms-3 name">
-                                <h5 class="font-bold">{{ request.session.s_user }}</h5>
+                                <h5 class="font-bold">{{ employee }}</h5>
                                 
                             </div>
                         </div>

@@ -5,6 +5,16 @@
 
 {% block main_content %}
 <div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
     <header class="mb-3">
         <a href="#" class="burger-btn d-block d-xl-none">
             <i class="bi bi-justify fs-3"></i>
@@ -42,39 +52,49 @@
                                 <input type="hidden" name="employee_id" value="{{ employee.id }}" />
                                 <div class="row align-items-start" style="margin-top: 10px;">
                                     <div class="col">
-                                        <label for="letter_date" class="form-label fw-bold text-dark">Letter
+                                        <label class="fw-bold text-dark" for="letter_date">Letter
                                             date</label>
-                                        {{ form.letter_date }}
+                                        <input type="date" class="form-control" name="letter_date"
+                                            id="letter_date" placeholder="Input date">
+                                    </div>
+                                    <div class="col">
+                                        <label class="fw-bold text-dark" for="letter_returning_date">Letter
+                                           returning date</label>
+                                        <input type="date" class="form-control" name="letter_returning_date"
+                                            id="letter_returning_date" placeholder="Input date">
                                     </div>
                                 </div>
                                 <div class="row align-items-start" style="margin-top: 10px;">
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="from_date" class="form-label fw-bold text-dark">From
+                                            <label class="fw-bold text-dark" for="from_date">From
                                                 date</label>
-                                            {{ form.from_date }}
+                                            <input type="date" class="form-control" name="from_date"
+                                                id="from_date" placeholder="Input date">
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="to_date" class="form-label fw-bold text-dark">To date</label>
-                                            {{ form.to_date }}
+                                            <label class="fw-bold text-dark" for="to_date">To
+                                                date</label>
+                                            <input type="date" class="form-control" name="to_date"
+                                                id="to_date" placeholder="Input date">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row align-items-start" style="margin-top: 10px;">
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="monthly_gross_salary"
-                                                class="form-label fw-bold text-dark">Monthly gross salary</label>
-                                            {{ form.monthly_gross_salary }}
+                                            <label class="fw-bold text-dark" for="monthly_gross_salary">Monthly gross salary</label>
+                                            <input type="number" class="form-control" name="monthly_gross_salary"
+                                                id="monthly_gross_salary" placeholder="Input salary">
                                         </div>
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="monthly_allowance" class="form-label fw-bold text-dark">Monthly
-                                                allowance</label>
-                                            {{ form.monthly_allowance }}
+                                            <label class="fw-bold text-dark" for="monthly_allowance">Monthly allowance</label>
+                                            <input type="number" class="form-control" name="monthly_allowance"
+                                                id="monthly_allowance" placeholder="Input salary">
                                         </div>
                                     </div>
                                 </div>
@@ -83,7 +103,7 @@
                             <a type="button" class="btn btn-secondary"
                                 href="{% url 'employee:employee_table' %}">Close</a>
                             <button type="submit" class="btn btn-primary" name="btn_addperiod"
-                                value="Children input">Create
+                                value="Period input">Create
                                 job offer</button>
                         </div>
                         </form>

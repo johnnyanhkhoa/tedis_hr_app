@@ -1,0 +1,74 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}HR | Employee Children{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<style>
+    table {
+        counter-reset: rowNumber;
+      }
+      
+      table tbody tr th::before {
+        display: table-cell;
+        counter-increment: rowNumber;
+        content: counter(rowNumber);
+        padding-right: 0.3em;
+        text-align: right;
+      }
+</style>
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>dayoff</h3>
+                    <p class="text-subtitle text-muted">dayoff</p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">dayoff</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">dayoff</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <section class="section">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-striped" id="table1">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Employee</th>
+                                <th>Total day off</th>
+                                <th>Used day off</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dayoff in list_dayoff %}
+                            <tr>
+                                <th></th>
+                                <td>{{ dayoff.employee }}</td>
+                                <td>{{ dayoff.total_dayoff }}</td>
+                                <td>{{ dayoff.used_dayoff }}</td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+   
+</div>
+{% endblock %}

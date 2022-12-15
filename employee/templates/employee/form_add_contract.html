@@ -5,6 +5,16 @@
 
 {% block main_content %}
 <div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
     <header class="mb-3">
         <a href="#" class="burger-btn d-block d-xl-none">
             <i class="bi bi-justify fs-3"></i>
@@ -35,36 +45,82 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-11">
-                            <form method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="employee_id" value="{{ employee.id }}" />
-                                <div class="row align-items-start" style="margin-top: 10px;">
-                                    <label for="contract_no">Contract number</label>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="employee_id" value="{{ employee.id }}" />
+                            <div class="row align-items-start" style="margin-top: 10px;">
+                                <div class="col">
+                                    <label class="fw-bold text-dark" for="contract_no">Contract number</label>
                                     <input type="text" class="form-control" name="contract_no" id="contract_no"
                                         placeholder="Contract no">
                                 </div>
-                        </div>
-                        <div class="row align-items-start" style="margin-top: 10px;">
-                            <div class="col">
-                                <label for="type_id" class="col-form-label fw-bold text-dark">Contract type</label>
-                                <select name="type_id" class="form-select" required>
-                                    {% for type in list_contract_type %}
-                                    <option value="{{ type.id }}">{{ type.contract_type }}</option>
-                                    {% endfor %}
-                                </select>
+                                <div class="col" style="padding: 0;">
+                                    <div class="col">
+                                        <label class="fw-bold text-dark" for="type_id">Contract type</label>
+                                        <select name="type_id" class="form-select" required>
+                                            {% for type in list_contract_type %}
+                                            <option value="{{ type.id }}">{{ type.contract_type }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label class="fw-bold text-dark" for="signed_contract_date">Sigining date</label>
+                                    <input type="date" class="form-control" name="signed_contract_date"
+                                        id="signed_contract_date" placeholder="Signing date">
+                                </div>
                             </div>
-                            <div class="col" style="margin-top: 10px;">
-                                <label class="fw-bold text-dark" for="signed_contract_date">Sigining date</label>
-                                <input type="date" class="form-control" name="signed_contract_date"
-                                    id="signed_contract_date" placeholder="Signing date">
+                            <div class="row align-items-start" style="margin-top: 20px;">
+                                <div class="col">
+                                    <label class="fw-bold text-dark" for="from_date">From</label>
+                                    <input type="date" class="form-control" name="from_date" id="from_date"
+                                        placeholder="From">
+                                </div>
+                                <div class="col">
+                                    <label class="fw-bold text-dark" for="to_date">To</label>
+                                    <input type="date" class="form-control" name="to_date"
+                                        id="to_date" placeholder="to_date allowance">
+                                </div>
                             </div>
-                        </div>
+                            <div class="row align-items-start" style="margin-top: 20px;">
+                                <div class="col">
+                                    <label class="fw-bold text-dark" for="basic_salary">Basic salary</label>
+                                    <input type="number" class="form-control" name="basic_salary" id="basic_salary"
+                                        placeholder="Basic salary">
+                                </div>
+                                <div class="col">
+                                    <label class="fw-bold text-dark" for="responsibility_allowance">Responsibility
+                                        allowance</label>
+                                    <input type="number" class="form-control" name="responsibility_allowance"
+                                        id="responsibility_allowance" placeholder="Responsibility allowance">
+                                </div>
+                            </div>
+                            <div class="row align-items-start" style="margin-top: 20px;">
+                                <div class="col">
+                                    <label class="fw-bold text-dark" for="lunch_support">Lunch support</label>
+                                    <input type="number" class="form-control" name="lunch_support" id="lunch_support"
+                                        placeholder="Lunch support">
+                                </div>
+                                <div class="col">
+                                    <label class="fw-bold text-dark" for="transportation_support">Transportation
+                                        support</label>
+                                    <input type="number" class="form-control" name="transportation_support"
+                                        id="transportation_support" placeholder="Transportation support">
+                                </div>
+                                <div class="col">
+                                    <label class="fw-bold text-dark" for="telephone_support">Telephone
+                                        support</label>
+                                    <input type="number" class="form-control" name="telephone_support"
+                                        id="telephone_support" placeholder="Transportation support">
+                                </div>
+                            </div>
                     </div>
                 </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-bottom: 20px">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end"
+                    style="margin-bottom: 20px;margin-top: 10px;">
                     <a type="button" class="btn btn-secondary" href="{% url 'employee:employee_table' %}">Close</a>
-                    <button type="submit" class="btn btn-primary" name="btn_addcontract" value="Contract input">Add
+                    <button type="submit" class="btn btn-primary" name="btn_addcontract" value="Contract input"
+                        style="margin-right: 20px;">Add
                         contract</button>
                 </div>
                 </form>

@@ -1,0 +1,168 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}HR | Overtime application approve{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Overtime Verification</h3>
+                    <br>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Leave & Overtime</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Overtime verification</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-body">
+                <div class="container-fluid">
+                    <table class="table" style="border: 0px solid white;">
+                        <tr>
+                            <td>
+                                <img class="rounded float-start" src="https://iili.io/me7rqG.jpg" alt="Logo" srcset=""
+                                    style="width: 150px; height: 65px">
+                            </td>
+                            <td class="row justify-content-end" style="text-align: right">
+                                <p class="text-end"
+                                    style="font-size: 18pt; color: rgb(124, 124, 124); font-family: tahoma;">
+                                    <b class="text-dark">OVERTIME RECORD</b>
+                                    <br>
+                                    <span class="text-end"
+                                        style="font-size: 18pt; color: rgb(0, 0, 0); font-family: tahoma;">Phiếu ghi
+                                        nhận thời gian làm bù phát sinh</span>
+                                </p>
+                                <p class="text-end"
+                                    style="font-size: 18pt; color: rgb(124, 124, 124); font-family: tahoma;"></p>
+                            </td>
+                        </tr>
+                    </table>
+                    <form method="post">
+                        {% csrf_token %}
+                        <p class="text-start text-dark"
+                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            <b>Overtime Period /</b>
+                            <i> Thời gian phát sinh làm bù</i>
+                        </p>
+                        <p class="text-dark text-end"><b>Month /</b><i> Tháng</i> {{ application_month }}</p>
+                        </p>
+                        <hr style="color: black;margin-top: 0px; height: 2px; background-color: black;">
+                        <div class="row text-dark">
+                            <div class="col-3">
+                                <p class="text-center">
+                                    <b>Date</b>
+                                    <br>
+                                    <i>Ngày</i>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                <p class="text-center">
+                                    <b>Time from</b>
+                                    <br>
+                                    <i>Thời gian từ</i>
+                                </p>
+                            </div>
+                            <div class="col-3">
+                                <p class="text-center">
+                                    <b>Time to</b>
+                                    <br>
+                                    <i>Thời gian đến</i>
+                                </p>
+                            </div>
+                            <div class="col-1">
+                                <p class="text-center">
+                                    <b>Total</b>
+                                    <br>
+                                    <i>Tổng cộng</i>
+                                </p>
+                            </div>
+                            <div class="col-2">
+                                <p class="text-center">
+                                    <b>Reason</b>
+                                    <br>
+                                    <i>Lý do</i>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row text-dark">
+                            <div class="col-3 text-center">
+                                {{ ot_application.ot_date }}
+                            </div>
+                            <div class="col-3 text-center">
+                                {{ ot_application.ot_time_from }}
+                            </div>
+                            <div class="col-3 text-center">
+                                {{ ot_application.ot_time_to }}
+                            </div>
+                            <div class="col-1 text-center" style="padding: 0;">
+                                {{ ot_application.ot_total_time }} Hours
+                            </div>
+                            <div class="col-2 text-center">
+                                {{ ot_application.reason }}
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <hr style="color: black;margin-top: 0px; height: 2px; background-color: black;">
+                        <br>
+                        <table class="table text-dark" style="border: 0px solid white; padding: 0;">
+                            <tr>
+                                <td>
+                                    <b>Employee</b>
+                                    <br>
+                                    <i>Nhân viên</i>
+                                </td>
+                                <td>{{ ot_application.employee }}</td>
+                                <td><b>Approved by</b>
+                                    <br>
+                                    <i>Xét duyệt bởi</i>
+                                </td>
+                                <td>{{ ot_application.approved_by }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Date</b>
+                                    <br>
+                                    <i>Ngày</i>
+                                </td>
+                                <td>
+                                    {{ ot_application.application_date }}
+                                </td>
+                                <td><b>Date</b>
+                                    <br>
+                                    <i>Ngày</i>
+                                </td>
+                                <td>
+                                    {{ approved_date }}
+                                </td>
+                            </tr>
+                        </table>
+                </div>
+                <br>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-bottom: 20px">
+                    <button type="submit" class="btn btn-outline-success" name="btn_approve" value="Period input"
+                        style="margin: 10px;">Approve</button>
+                    <button type="submit" class="btn btn-outline-danger" name="btn_reject" value="Period input"
+                        style="margin: 10px;">Reject</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

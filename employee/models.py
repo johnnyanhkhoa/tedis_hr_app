@@ -1,6 +1,7 @@
-from turtle import position
 from django.db import models
 from django.utils.timezone import now
+from datetime import datetime
+today = datetime.now()
 
 # Employee
 class Site(models.Model):
@@ -304,9 +305,10 @@ class Employee(models.Model):
     position_v = models.ForeignKey(Position_V, on_delete=models.PROTECT, null=True) #JOB
     abb_position = models.ForeignKey(Abbreviation_Position, on_delete=models.PROTECT, null=True) #JOB
     joining_date = models.DateField(max_length=50, null=True) #JOB
+    joining_year = models.IntegerField(blank=True,null=True) #JOB
     out_date = models.DateField(max_length=50, null=True, blank=True) #JOB 
-    years_of_service = models.CharField(max_length=10, blank=True, null=True) #JOB
-    from_date = models.DateField(max_length=30, blank=True, null=True) #JOB
+    years_of_service = models.IntegerField(blank=True,null=True) #JOB
+    from_date = models.DateField(max_length=30, blank=True,null=True) #JOB
     to_date = models.DateField(max_length=30, blank=True, null=True) #JOB
     sexual = models.ForeignKey(Sexual, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
     date_of_birth = models.DateField(max_length=30, blank=True, null=True) #PERSONAL
@@ -351,12 +353,26 @@ class Employee(models.Model):
 
     def __str__(self):
         return self.full_name
+    
+
+class Employee_manager(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True, related_name='employee')
+    manager = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True, related_name='manager_of_employee')
+
+    def __int__(self):
+        return self.employee 
 
 
 class Employee_children(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
     children = models.CharField(max_length=50, blank=True, null=True)
     birthday_of_children = models.DateField(max_length=30, blank=True, null=True)
+    created_by = models.IntegerField(null=True, blank=True,)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __int__(self):
         return self.employee 
@@ -369,6 +385,7 @@ class Probationary_period(models.Model):
     to_date = models.DateField(max_length=30, blank=True, null=True) 
     monthly_gross_salary = models.IntegerField(blank=True, null=True)
     monthly_allowance = models.IntegerField(blank=True, null=True)
+    letter_returning_date = models.DateField(max_length=30, blank=True, null=True)
 
     def __int__(self):
         return self.employee 
@@ -379,7 +396,14 @@ class Employee_contract(models.Model):
     contract_no = models.CharField(max_length=50, blank=True, null=True) #JOB
     contract_type = models.ForeignKey(Contract_type, on_delete=models.PROTECT, null=True, blank=True) #JOB
     signed_contract_date = models.DateField(max_length=30, blank=True, null=True) #JOB
-    created_by = models.IntegerField(null=True, blank=True,)
+    from_date = models.DateField(max_length=30, blank=True, null=True)
+    to_date = models.DateField(max_length=30, blank=True, null=True)
+    basic_salary = models.IntegerField(null=True, blank=True)
+    responsibility_allowance = models.IntegerField(null=True, blank=True)
+    lunch_support = models.IntegerField(null=True, blank=True)
+    transportation_support = models.IntegerField(null=True, blank=True)
+    telephone_support = models.IntegerField(null=True, blank=True)
+    created_by = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(null=True, default=now)
     updated_by = models.IntegerField(null=True, blank=True)
     updated_at = models.DateTimeField(null=True, blank=True)
@@ -403,3 +427,164 @@ class Employee_promotion(models.Model):
 
     def __int__(self):
         return self.employee 
+
+
+# Leave and OT
+class Status(models.Model):
+    status = models.CharField(max_length=50, blank=True, null=True)
+
+    def __int__(self):
+        return self.status    
+    
+
+class Type_of_leave(models.Model):
+    leave_type_eng = models.CharField(max_length=50, blank=True, null=True)
+    leave_type_vn = models.CharField(max_length=50, blank=True, null=True)
+    created_by = models.IntegerField(null=True, blank=True,)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.leave_type_eng
+    
+
+class Leave_application(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    emergency_contact = models.CharField(max_length=100, blank=True, null=True)
+    contact_person = models.CharField(max_length=10, blank=True, null=True)
+    relation = models.CharField(max_length=10, blank=True, null=True)
+    # Annual Leave
+    annual_from = models.CharField(max_length=50, blank=True, null=True)
+    annual_to = models.CharField(max_length=50, blank=True, null=True)
+    annual_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
+    annual_remark = models.CharField(max_length=200, blank=True, null=True)
+    # Non-paid Leave
+    non_paid_from = models.CharField(max_length=50, blank=True, null=True)
+    non_paid_to = models.CharField(max_length=50, blank=True, null=True)
+    non_paid_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
+    non_paid_remark = models.CharField(max_length=200, blank=True, null=True)
+    # Wedding Leave
+    wedding_from = models.CharField(max_length=50, blank=True, null=True)
+    wedding_to = models.CharField(max_length=50, blank=True, null=True)
+    wedding_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
+    wedding_remark = models.CharField(max_length=200, blank=True, null=True)
+    # Bereavement Leave
+    bereavement_from = models.CharField(max_length=50, blank=True, null=True)
+    bereavement_to = models.CharField(max_length=50, blank=True, null=True)
+    bereavement_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
+    bereavement_remark = models.CharField(max_length=200, blank=True, null=True)
+    # Maternity/Obstetric Leave
+    maternity_obstetric_from = models.CharField(max_length=50, blank=True, null=True)
+    maternity_obstetric_to = models.CharField(max_length=50, blank=True, null=True)
+    maternity_obstetric_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
+    maternity_obstetric_remark = models.CharField(max_length=200, blank=True, null=True)
+    # Sick Leave
+    sick_from = models.CharField(max_length=50, blank=True, null=True)
+    sick_to = models.CharField(max_length=50, blank=True, null=True)
+    sick_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
+    sick_remark = models.CharField(max_length=200, blank=True, null=True)
+    # Off in-lieu Leave
+    offinlieu_from = models.CharField(max_length=50, blank=True, null=True)
+    offinlieu_to = models.CharField(max_length=50, blank=True, null=True)
+    offinlieu_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
+    offinlieu_remark = models.CharField(max_length=200, blank=True, null=True)
+    # Other Leave
+    other_from = models.CharField(max_length=50, blank=True, null=True)
+    other_to = models.CharField(max_length=50, blank=True, null=True)
+    other_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
+    other_remark = models.CharField(max_length=200, blank=True, null=True)
+    
+    total_days = models.FloatField(null=True, blank=True)
+    temporary_replacement = models.CharField(max_length=50, blank=True, null=True)
+    application_date = models.DateField(max_length=30, blank=True, null=True)
+    approved_by = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True, related_name='leave_approved_by')
+    approved_date = models.DateField(max_length=30, blank=True, null=True)
+    status = models.ForeignKey(Status, on_delete=models.PROTECT, null=True)
+    hr_approved_date = models.DateField(max_length=30, blank=True, null=True)
+    hr_status = models.ForeignKey(Status, on_delete=models.PROTECT, null=True, related_name='hr_leave_status')
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.employee 
+    
+    
+class Overtime_application(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    application_date = models.DateField(max_length=30, blank=True, null=True)
+    month = models.CharField(max_length=5, blank=True, null=True, default=today.month)
+    ot_date = models.DateField(max_length=30, blank=True, null=True)
+    ot_time_from = models.TimeField(max_length=30, blank=True, null=True)
+    ot_time_to = models.TimeField(max_length=30, blank=True, null=True)
+    ot_total_time = models.FloatField(null=True, blank=True)
+    reason = models.CharField(max_length=100, blank=True, null=True)
+    approved_by = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True, related_name='ot_approved_by')
+    approved_date = models.DateField(max_length=30, blank=True, null=True)
+    status = models.ForeignKey(Status, on_delete=models.PROTECT, null=True)
+    hr_approved_date = models.DateField(max_length=30, blank=True, null=True)
+    hr_status = models.ForeignKey(Status, on_delete=models.PROTECT, null=True, related_name='hr_ot_status')
+    created_by = models.IntegerField(null=True, blank=True,)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.employee 
+    
+
+# Period and Day off
+class Period(models.Model):
+    period_year = models.IntegerField(null=True, blank=True)
+    start_period_date = models.DateField(max_length=30, blank=True, null=True)
+    end_period_date = models.DateField(max_length=30, blank=True, null=True)
+    total_months = models.IntegerField(null=True, blank=True)
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.period_year
+    
+
+class Dayoff(models.Model):
+    period = models.ForeignKey(Period, on_delete=models.PROTECT, null=True)
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    total_dayoff = models.IntegerField(null=True, blank=True, default=12)
+    remain_dayoff = models.IntegerField(null=True, blank=True)
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.employee 
+    
+
+class Update_dayoff(models.Model):
+    day_off = models.ForeignKey(Dayoff, on_delete=models.PROTECT, null=True)
+    plus_dayoff = models.IntegerField(null=True, blank=True, default=12)
+    minus_dayoff = models.IntegerField(null=True, blank=True)
+    reason_of_changing = models.CharField(max_length=100, blank=True, null=True)
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.day_off 
