@@ -1,0 +1,134 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>TIMESHEETS</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="text-center" style="margin-top: 50px;">
+            <h2 style="color: black;">BẢNG CHẤM CÔNG</h2>
+            <h4 style="color: black;">TIMESHEETS</h4>
+        </div>
+        <section class="section">
+            <div class="card">
+                <h3 class="card-header pull-right text-dark">
+                    Employee timesheets
+                </h3>
+                <div class="card-body">
+                    <table class="table table-bordered border-dark text-dark" id="table1">
+                        <thead>
+                            <tr>
+                                <th>Employee code</th>
+                                <th>Full name</th>
+                                <th>Department</th>
+                                <th>Total paid leave days</th>
+                                <th>Total unpaid leave days</th>
+                                <th>Total salary working day</th>
+                                <th>Total OT paid hour</th>
+                                {% for day in list_days_in_month %}
+                                {% if day.weekend == True %}
+                                <th style="background-color: rgb(105, 184, 236);">
+                                    {{day.date|date:"d"}}/{{period_month.month_number}}</th>
+                                {% elif day.holiday == True %}
+                                <th style="background-color: rgb(205, 105, 236);">
+                                    {{day.date|date:"d"}}/{{period_month.month_number}}</th>
+                                {% else %}
+                                <th>{{day.date|date:"d"}}/{{period_month.month_number}}</th>
+                                {% endif %}
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in list_data %}
+                            <tr>
+                                <td>{{ data.employee.employee_code }}</td>
+                                <td>{{ data.employee.full_name }}</td>
+                                <td>{{ data.employee.department_e }}</td>
+                                <td>{{ data.total_paid_leave_days }}</td>
+                                <td>{{ data.total_unpaid_leave_days }}</td>
+                                <td>{{ data.total_salary_working_day }}</td>
+                                <td>{{ data.total_ot_paid_hour }}</td>
+                                {% for day in data.list_employee_days %}
+                                {% if day.daily_work.weekend == True %}
+                                    {% if day.ot_time == 0.5 %}
+                                        <td style="background-color:  rgb(105, 184, 236);">1/2OT</td>
+                                    {% else %}
+                                         <td style="background-color: rgb(105, 184, 236);"></td>
+                                    {% endif %}
+                                {% elif day.ot_time != 0 %}
+                                <td>1/2OT</td>
+                                {% elif day.daily_work.holiday == True %}
+                                <td style="background-color: rgb(205, 105, 236);">HOL</td>
+                                {% elif day.paid_leave == 1.0 %}
+                                <td style="background-color: rgb(238, 236, 124);">P</td>
+                                {% elif day.paid_leave == 0.5 %}
+                                <td style="background-color: rgb(238, 236, 124);">1/2P</td>
+                                {% elif day.unpaid_leave == 1.0 %}
+                                <td style="background-color: rgb(255, 176, 123);">U</td>
+                                {% elif day.unpaid_leave == 0.5 %}
+                                <td style="background-color: rgb(255, 176, 123);">1/2U</td>
+                                {% else %}
+                                <td>X</td>
+                                {% endif %}
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-3">
+                            <table class="table table-bordered border-dark text-dark" style="margin-top:20px;">
+                                <tr>
+                                    <td class='text-center'>X</td><td>: Work</td>
+                                </tr>
+                                <tr>
+                                    <td class='text-center' style="background-color: rgb(105, 184, 236);"></td><td>: Weekend</td>
+                                </tr>
+                                <tr>
+                                    <td class='text-center' style="background-color: rgb(205, 105, 236);">HOL</td><td>: Holiday</td>
+                                </tr>
+                                <tr>
+                                    <td class='text-center' style="background-color: rgb(238, 236, 124);">P</td><td>: Paid leave</td>
+                                </tr>
+                                <tr>
+                                    <td class='text-center' style="background-color: rgb(255, 176, 123);">U</td><td>: Unpaid leave</td>
+                                </tr>
+                                <tr>
+                                    <td class='text-center'>OT</td><td>: Recuperation</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+</body>
+
+</html>

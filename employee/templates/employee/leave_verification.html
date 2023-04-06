@@ -213,11 +213,45 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                {% elif available_list_staff_application == 0 %}
+                <br>
                 <p class="text-start text-dark"
                     style="font-size: 18pt; color: rgb(124, 124, 124); font-family: tahoma;">
-
+                    All application
                 </p>
+                <table class="table table-striped" id="table1">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Employee</th>
+                            <th>Application date</th>
+                            <th>Total days</th>
+                            <th>Temporary replacement</th>
+                            <th>Approved by</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for leave_application in list_present_year_leave_application %}
+                        <tr>
+                            <th></th>
+                            <td>{{ leave_application.employee }}</td>
+                            <td>{{ leave_application.application_date }}</td>
+                            <td>{{ leave_application.total_days }}</td>
+                            <td>{{ leave_application.temporary_replacement }}</td>
+                            <td>{{ leave_application.approved_by }}</td>
+                            <td>
+                                {% if leave_application.hr_status.status == 'Pending' %}
+                                <span class="badge bg-warning">{{ leave_application.hr_status.status }}</span>
+                                {% elif leave_application.hr_status.status == 'Approved' %}
+                                <span class="badge bg-success">{{ leave_application.hr_status.status }}</span>
+                                {% elif leave_application.hr_status.status == 'Reject' %}
+                                <span class="badge bg-danger">{{ leave_application.hr_status.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 {% endif %}
             </div>
         </div>

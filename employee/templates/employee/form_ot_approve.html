@@ -155,6 +155,17 @@
                 </div>
                 <br>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-bottom: 20px">
+                    {% if role == 3 %}
+                    <div class="col-2">
+                        <label class="fw-bold text-dark" for="basicInput">Choose recuperation or overtime</label>
+                        <select name="type" class="form-select" required>
+                            <option selected>_____</option>
+                            <option value="recuperation">Recuperation</option>
+                            <option value="overtime">Overtime</option>
+                        </select>
+                        <input type="number" class="form-control" step="0.25" name="time_input" id="timeInput" placeholder="Days if recuperation/Hours if OT" style="margin-top:10px">
+                    </div>
+                    {% endif %}
                     <button type="submit" class="btn btn-outline-success" name="btn_approve" value="Period input"
                         style="margin: 10px;">Approve</button>
                     <button type="submit" class="btn btn-outline-danger" name="btn_reject" value="Period input"

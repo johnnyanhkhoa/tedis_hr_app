@@ -5,6 +5,16 @@
 
 {% block main_content %}
 <div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
     <header class="mb-3">
         <a href="#" class="burger-btn d-block d-xl-none">
             <i class="bi bi-justify fs-3"></i>
@@ -107,14 +117,14 @@
                         <div class="row text-dark">
                             <div class="col-3">
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 <p class="text-center">
                                     <b>From</b>
                                     <br>
                                     <i>Từ</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 <p class="text-center">
                                     <b>To</b>
                                     <br>
@@ -128,7 +138,7 @@
                                     <i>Số ngày</i>
                                 </p>
                             </div>
-                            <div class="col-2">
+                            <div class="col-4">
                                 <p class="text-center">
                                     <b>Remarks</b>
                                     <br>
@@ -144,12 +154,12 @@
                                     <i>Phép hằng năm</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="annual_from" id="annual_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="annual_from" id="annual_from"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.annual_from }}">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="annual_to" id="annual_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="annual_to" id="annual_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.annual_to }}">
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -157,8 +167,10 @@
                                     id="annual_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.annual_number_of_leave_days }}">
                             </div>
-                            <div class="col-2">
-                                {{ leave_application.annual_remark }}
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="annual_remark"
+                                    id="annual_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
+                                    value="{{ leave_application.annual_remark }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -169,12 +181,12 @@
                                     <i>Nghỉ không lương</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="non_paid_from" id="non_paid_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="non_paid_from" id="non_paid_from"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.non_paid_from }}">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="non_paid_to" id="non_paid_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="non_paid_to" id="non_paid_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.non_paid_to }}">
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -182,8 +194,10 @@
                                     id="non_paid_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.non_paid_number_of_leave_days }}">
                             </div>
-                            <div class="col-2">
-                                {{ leave_application.non_paid_remark }}
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="non_paid_remark"
+                                    id="non_paid_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
+                                    value="{{ leave_application.non_paid_remark }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -194,12 +208,12 @@
                                     <i>Lễ cưới</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="wedding_from" id="wedding_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="wedding_from" id="wedding_from"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.wedding_from }}">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="wedding_to" id="wedding_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="wedding_to" id="wedding_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.wedding_to }}">
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -207,24 +221,26 @@
                                     id="wedding_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.wedding_number_of_leave_days }}">
                             </div>
-                            <div class="col-2">
-                                {{ leave_application.wedding_remark }}
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="wedding_remark"
+                                    id="wedding_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
+                                    value="{{ leave_application.wedding_remark }}">
                             </div>
                         </div>
                         <div class="row text-dark">
                             <div class="col-3">
                                 <p class="text-start">
-                                    <b>Bereavment Leave</b>
+                                    <b>Bereavement Leave</b>
                                     <br>
                                     <i>Nghỉ đám tang</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="bereavement_from" id="bereavement_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="bereavement_from" id="bereavement_from"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.bereavement_from }}">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="bereavement_to" id="bereavement_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="bereavement_to" id="bereavement_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.bereavement_to }}">
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -232,8 +248,10 @@
                                     id="bereavement_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.bereavement_number_of_leave_days }}">
                             </div>
-                            <div class="col-2">
-                                {{ leave_application.bereavement_remark }}
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="bereavement_remark"
+                                    id="bereavement_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
+                                    value="{{ leave_application.bereavement_remark }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -244,13 +262,13 @@
                                     <i>Nghỉ thai sản / Nghỉ khám thai</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="maternity_obstetric_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="maternity_obstetric_from"
                                     id="maternity_obstetric_from" placeholder="hh:mm DD/MM/YYYY"
                                     value="{{ leave_application.maternity_obstetric_from }}">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="maternity_obstetric_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="maternity_obstetric_to"
                                     id="maternity_obstetric_to" placeholder="hh:mm DD/MM/YYYY"
                                     value="{{ leave_application.maternity_obstetric_to }}">
                             </div>
@@ -259,8 +277,10 @@
                                     id="maternity_obstetric_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.maternity_obstetric_number_of_leave_days }}">
                             </div>
-                            <div class="col-2">
-                                {{ leave_application.maternity_obstetric_remark }}
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="maternity_obstetric_remark"
+                                    id="maternity_obstetric_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
+                                    value="{{ leave_application.maternity_obstetric_remark }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -271,12 +291,12 @@
                                     <i>Nghỉ ốm</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="sick_from" id="sick_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="sick_from" id="sick_from"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.sick_from }}">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="sick_to" id="sick_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="sick_to" id="sick_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.sick_to }}">
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -284,8 +304,10 @@
                                     id="sick_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.sick_number_of_leave_days }}">
                             </div>
-                            <div class="col-2">
-                                {{ leave_application.sick_remark }}
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="sick_remark"
+                                    id="sick_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
+                                    value="{{ leave_application.sick_remark }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -296,12 +318,12 @@
                                     <i>Nghỉ bù</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="offinlieu_from" id="offinlieu_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="offinlieu_from" id="offinlieu_from"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.offinlieu_from }}">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="offinlieu_to" id="offinlieu_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="offinlieu_to" id="offinlieu_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.offinlieu_to }}">
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -309,8 +331,10 @@
                                     id="offinlieu_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.offinlieu_number_of_leave_days }}">
                             </div>
-                            <div class="col-2">
-                                {{ leave_application.offinlieu_remark }}
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="offinlieu_remark"
+                                    id="offinlieu_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
+                                    value="{{ leave_application.offinlieu_remark }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -321,12 +345,12 @@
                                     <i>Khác</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="other_from" id="other_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="other_from" id="other_from"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.other_from }}">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="other_to" id="other_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="other_to" id="other_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.other_to }}">
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -334,8 +358,10 @@
                                     id="other_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.other_number_of_leave_days }}">
                             </div>
-                            <div class="col-2">
-                                {{ leave_application.other_remark }}
+                            <div class="col-4">
+                                <input type="text" class="form-control" name="other_remark"
+                                    id="other_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
+                                    value="{{ leave_application.other_remark }}">
                             </div>
                         </div>
                         <div class="row text-dark" style="border-top: 1px solid black;">
@@ -354,6 +380,27 @@
                             </div>
                             <div class="col-2">
                             </div>
+                        </div>
+                        <br>
+                        <div class="row text-dark" style="border: 1px solid rgb(255, 108, 108);">
+                            <p class="text-start" style="color: rgb(255, 108, 108);">
+                                <b style="font-size: larger;"><u>Ghi chú !</u></b>
+                                <br>
+                                <i>
+                                    <b>- Nghỉ 1 ngày:</b> nghỉ cả ngày 01/01/2023 => from <u>01/01/2023</u> to <u>01/01/2023</u>
+                                </i>
+                                <br>
+                                <i>
+                                    <b>- Nghỉ 1/2 ngày:</b> nghỉ nửa ngày 01/01/2023 => from <u>01/01/2023</u> to <u>01/01/2023</u> ; Remarks: <u>01/01/2023</u>
+                                </i>
+                                <br>
+                                <i><b>- Nghỉ nhiều ngày:</b>
+                                    <br>
+                                    Nghỉ từ ngày 01/01/2023 đến ngày hết ngày 03/01/2023 => from <u>01/01/2023</u> to <u>03/01/2023</u>
+                                    <br>
+                                    Nghỉ từ ngày 01/01/2023 đến ngày 03/01/2023, trong đó nghỉ nửa ngày 01/01/2023 và 02/01/2023 => from <u>01/01/2023</u> to <u>03/01/2023</u> ; Remarks: <u>01/01/2023 02/01/2023</u>
+                                </i>
+                            </p>
                         </div>
                         <br>
                         <br>

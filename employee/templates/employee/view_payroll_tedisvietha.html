@@ -1,0 +1,446 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}{{period_month.month_name}} | Payroll Tedis-VietHa{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+{% comment %} khai báo thư viện cho dataTable {% endcomment %}
+<link rel="stylesheet" href="{% static 'hr/vendors/simple-datatables/style.css' %}">
+<style>
+    table {
+        counter-reset: rowNumber;
+      }
+      
+      table tbody tr th::before {
+        display: table-cell;
+        counter-increment: rowNumber;
+        content: counter(rowNumber);
+        padding-right: 0.3em;
+        text-align: right;
+      }
+</style>
+
+<div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Payroll Tedis-VietHa {{period_month.month_name}}</h3>
+                    <h5>Working days: <b><u>{{ total_working_day }}</u></b></h5>
+                    <p class="text-subtitle text-muted"></p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">List timesheets</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Payroll Tedis</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        {% if payrollExist == 1 %}
+        <section class="section">
+            <div class="card">
+                <div class="card-header pull-right">
+                    Payroll information
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb breadcrumb-right" style="margin-right: 20px;">
+                            <div class="dropdown dropdown-color-icon">
+                                <button class="btn btn-primary dropdown-toggle" type="button"
+                                    id="dropdownMenuButtonEmoji" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    <span Class="me-50"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-gear-wide-connected" viewBox="0 0 16 16">
+                                            <path
+                                                d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434l.071-.286zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5zm0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78h4.723zM5.048 3.967c-.03.021-.058.043-.087.065l.087-.065zm-.431.355A4.984 4.984 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8 4.617 4.322zm.344 7.646.087.065-.087-.065z" />
+                                        </svg></span> Action
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonEmoji">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-success" name="get_payroll"
+                                            value="Payroll input" style="width: 240px;text-align: left;"><svg
+                                                xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-file-earmark-excel"
+                                                viewBox="0 0 16 16">
+                                                <path
+                                                    d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z" />
+                                                <path
+                                                    d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
+                                            </svg>
+                                            &ensp;Export Payroll</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered border-dark" id="table1">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Employee code</th>
+                                <th>Full name</th>
+                                <th>Joining Date</th>
+                                <th>Department</th>
+                                <th>Title</th>
+                                <th>{{period_month.period.period_year}} Salary (VND)</th>
+                                <th>Working days</th>
+                                <th>% Adjust</th>
+                                <th>Gross Income</th>
+                                <th>Transportation</th>
+                                <th>Phone</th>
+                                <th>Lunch</th>
+                                <th>Travel</th>
+                                <th>Responsibility</th>
+                                <th>Seniority Bonus</th>
+                                <th>Others</th>
+                                <th>Outstanding annual leave</th>
+                                <th>OTC Incentive</th>
+                                <th>KPI Achievement</th>
+                                <th>13th salary(Pro-ata)</th>
+                                <th>Incentive last month</th>
+                                <th>Incentive last quarter</th>
+                                <th>Taxable Overtime</th>
+                                <th>Non Taxable Overtime</th>
+                                <th>SHUI(10.5%)(Employee pay)</th>
+                                <th>Recuperation of SHU Ins.(10.5%)(staff pay)</th>
+                                <th>SHUI(21.5%)(Company pay)</th>
+                                <th>Recuperation of SHU Ins.(21.5%)(Company pay)</th>
+                                <th>Occupational accident and disease Ins.(0.5%)(Pay for staffs)</th>
+                                <th>Trade Union fee (Company pay)</th>
+                                <th>Trade Union fee (Employee pay)</th>
+                                <th>Family deduction</th>
+                                <th>Taxable Income</th>
+                                <th>Taxed Income</th>
+                                <th>PIT 13th salary</th>
+                                <th>PIT</th>
+                                <th>PIT balance</th>
+                                <th>1st payment</th>
+                                <th>Net Income</th>
+                                <th>Transfer Bank</th>
+                                <th>Total Cost</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in list_payroll_info %}
+                            <tr>
+                                <th></th>
+                                <td>{{ data.payroll_info.employee.employee_code }}</td>
+                                <td>{{ data.payroll_info.employee.full_name }}</td>
+                                <td>{{ data.payroll_info.employee.joining_date|date:"d/m/Y" }}</td>
+                                <td>{{ data.payroll_info.employee.department_e }}</td>
+                                <td>{{ data.payroll_info.employee.position_e }}</td>
+                                <td>{{ data.payroll_info.newest_salary|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.working_days }}</td>
+                                <td>{{ data.payroll_info.adjust_percent }}%</td>
+                                <td>{{ data.payroll_info.gross_income|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.transportation|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.phone|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.lunch|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.travel|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.responsibility|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.seniority_bonus|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.other|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.outstanding_annual_leave|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.OTC_incentive|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.KPI_achievement|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.month_13_salary_Pro_ata|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.incentive_last_month|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.incentive_last_quy_last_year|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.taxable_overtime|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.nontaxable_overtime|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.SHUI_10point5percent_employee_pay|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.recuperation_of_SHU_Ins_10point5percent_staff_pay|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.SHUI_21point5percent_company_pay|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.recuperation_of_SHU_Ins_21point5percent_company_pay|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.trade_union_fee_company_pay|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.trade_union_fee_employee_pay|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.family_deduction|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.taxable_income|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.taxed_income|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.PIT_13th_salary|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.PIT|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.PIT_balance|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.first_payment|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.net_income|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.transfer_bank|floatformat:0|intcomma }}</td>
+                                <td>{{ data.payroll_info.total_cost|floatformat:0|intcomma }}</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-dark dropdown-toggle" type="button"
+                                            id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z" />
+                                                <path
+                                                    d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z" />
+                                            </svg>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
+                                            <a class="dropdown-item"
+                                                href="{% url 'employee:payroll_tedis_vietha_edit' data.payroll_info.id %}"><svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                    <path
+                                                        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                                </svg>
+                                                &ensp;Update</a>
+                                            {% comment %} <a class="dropdown-item"
+                                                href="{% url 'employee:employee_delete' employee.id %}"
+                                                style="color: red;"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                    height="16" fill="currentColor" class="bi bi-trash"
+                                                    viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                                </svg>
+                                                &ensp;Delete employee</a>
+                                            <hr style="margin-top: 0; margin-bottom:0">
+                                            <a class="dropdown-item"
+                                                href="{% url 'employee:probationary_period_form' employee.id %}"><svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-file-text" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1H5z" />
+                                                    <path
+                                                        d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z" />
+                                                </svg>
+                                                &ensp;Make job offer</a>
+                                            <a class="dropdown-item"
+                                                href="{% url 'employee:add_children' employee.id %}"><svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z" />
+                                                </svg>
+                                                &ensp;Add children/relatives</a>
+                                            <a class="dropdown-item"
+                                                href="{% url 'employee:add_contract' employee.id %}"><svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-list-columns" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd"
+                                                        d="M0 .5A.5.5 0 0 1 .5 0h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 0 .5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 2h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 4h10a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 6h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 8h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Z" />
+                                                </svg>
+                                                &ensp;Make Labour contract</a>
+                                            <a class="dropdown-item"
+                                                href="{% url 'employee:add_promotion' employee.id %}"><svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-box-arrow-in-up"
+                                                    viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd"
+                                                        d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z" />
+                                                </svg>
+                                                &ensp;Make Job promotion</a> {% endcomment %}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+        {% elif payrollExist == 0 %}
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Add information to create payroll</h4>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <form method="post">
+                                {% csrf_token %}
+                                {% comment %} <input type="hidden" name="employee_id" value="{{ employee.id }}" /> {% endcomment %}
+                                <div class="form-group">
+                                    <label class="fw-bold text-dark" for="adjust_percent">% Adjust</label>
+                                    <input type="text" class="form-control" name="adjust_percent" id="adjust_percent"
+                                        placeholder="Input number (e.g: 100% -> 100)">
+                                </div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end"
+                            style="margin-bottom: 20px; margin-top: 20px;">
+                            {% comment %} <a type="button" class="btn btn-secondary"
+                                href="{% url 'employee:employee_table' %}">Close</a> {% endcomment %}
+                            <button type="submit" class="btn btn-primary" name="btn_adjust_percent"
+                                value="Payroll input">Create payroll</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    </div>
+
+
+</div>
+
+
+
+
+<script src="{% static 'hr/vendors/simple-datatables/simple-datatables.js' %}"></script>
+<script>
+    // Simple Datatable
+    let table1 = document.querySelector('#table1');
+    let dataTable = new simpleDatatables.DataTable(table1);
+</script>
+<!-- Modal Filter -->
+<div class="modal fade" id="FilterModal" tabindex="-1" aria-labelledby="FilterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="FilterModalLabel">Filter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="GET" action=".">
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label for="site">Site</label>
+                            <select class="form-control" name="site">
+                                <option selected></option>
+                                {% for site in list_site %}
+                                <option value="{{ site.id }}">{{ site }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="division">Division</label>
+                            <select id="division" class="form-control" name="division">
+                                <option selected></option>
+                                {% for division in list_division %}
+                                <option value="{{ division.id }}">{{ division }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="department_e">Department</label>
+                            <select id="department_e" class="form-control" name="department_e">
+                                <option selected></option>
+                                {% for department_e in list_department_e %}
+                                <option value="{{ department_e.id }}">{{ department_e }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label for="area">Area</label>
+                            <select id="area" class="form-control" name="area">
+                                <option selected></option>
+                                {% for area in list_area %}
+                                <option value="{{ area.id }}">{{ area }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="gp">GP</label>
+                            <select id="gp" class="form-control" name="gp">
+                                <option selected></option>
+                                {% for gp in list_gp %}
+                                <option value="{{ gp.id }}">{{ gp }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="university">University</label>
+                            <select id="university" class="form-control" name="university">
+                                <option selected></option>
+                                {% for university in list_university %}
+                                <option value="{{ university.id }}">{{ university }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="contract_type">Contract type</label>
+                            <select id="contract_type" class="form-control" name="contract_type">
+                                <option selected></option>
+                                {% for contract_type in list_contract_type %}
+                                <option value="{{ contract_type.id }}">{{ contract_type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label for="sexual">Sexual</label>
+                            <select class="form-control" name="sexual">
+                                <option selected></option>
+                                {% for sexual in list_sexual %}
+                                <option value="{{ sexual.id }}">{{ sexual }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="ethic_group">Ethic group</label>
+                            <select id="ethic_group" class="form-control" name="ethic_group">
+                                <option selected></option>
+                                {% for ethic_group in list_ethic_group %}
+                                <option value="{{ ethic_group.id }}">{{ ethic_group }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="marital_status">Marital status</label>
+                            <select id="marital_status" class="form-control" name="marital_status">
+                                <option selected></option>
+                                {% for marital_status in list_maritial_status %}
+                                <option value="{{ marital_status.id }}">{{ marital_status }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="certificate_e">Certificate</label>
+                            <select id="certificate_e" class="form-control" name="certificate_e">
+                                <option selected></option>
+                                {% for certificate_e in list_certificate_e %}
+                                <option value="{{ certificate_e.id }}">{{ certificate_e }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" name="btnDangKy">Search</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

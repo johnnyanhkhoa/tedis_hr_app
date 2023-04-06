@@ -1,23 +1,17 @@
-{% load static %} {% load humanize %}
+{% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HR - JV job offer letter</title>
+    <title>HR - RO HDLD</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap"
-        rel="stylesheet" />
-    <link rel="stylesheet" href="{% static 'hr/css/bootstrap.css' %}" />
-
-    <link rel="stylesheet" href="{% static 'hr/vendors/iconly/bold.css' %}" />
-
-    <link rel="stylesheet" href="{% static 'hr/vendors/perfect-scrollbar/perfect-scrollbar.css' %}" />
-    <link rel="stylesheet" href="{% static 'hr/vendors/bootstrap-icons/bootstrap-icons.css' %}" />
-    <link rel="stylesheet" href="{% static 'hr/css/app.css' %}" />
-    <link rel="shortcut icon" href="{% static 'hr/images/favicon.svg' %}" type="image/x-icon" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <style type="text/css">
         #tb1 {
@@ -40,6 +34,7 @@
             margin: 0;
         }
     </style>
+
 </head>
 
 <body>
@@ -78,9 +73,9 @@
                 <td class="row justify-content-start" style="text-align: right"></td>
                 <td class="row justify-content-end" style="text-align: right">
                     <p class="text-end text-dark" style="font-size: 12pt; font-family: calibri; text-align: right">
-                        TP.HCM, ngày 02 tháng 05 năm 2021
+                        TP.HCM, ngày {{signed_contract_date_day}} tháng {{signed_contract_date_month}} năm {{signed_contract_date_year}}
                         <br />
-                        <i>HCMC, 2 May 2021</i>
+                        <i>HCMC, {{signed_contract_date_day}} {{signed_contract_date_month_name}} {{signed_contract_date_year}}</i>
                     </p>
                 </td>
             </tr>
@@ -185,10 +180,10 @@
                     <i style="font-size: 10pt">And from other side, Mr/Mrs</i>
                 </td>
                 <td style="vertical-align: top">:</td>
-                <td style="vertical-align: top">tên nhân viên</td>
+                <td style="vertical-align: top">{{latest_contract.employee.full_name}}</td>
                 <td></td>
                 <td>
-                    Mã NV: employee code
+                    Mã NV: {{latest_contract.employee.employee_code}}
                     <br />
                     <i style="font-size: 10pt">Employee code</i>
                 </td>
@@ -200,10 +195,10 @@
                     <i style="font-size: 10pt">Gender</i>
                 </td>
                 <td style="vertical-align: top">:</td>
-                <td style="vertical-align: top">Nữ</td>
+                <td style="vertical-align: top">{{latest_contract.employee.sexual}}</td>
                 <td></td>
                 <td>
-                    Sinh năm: year of birth
+                    Ngày sinh: {{latest_contract.employee.date_of_birth}}
                     <br />
                     <i style="font-size: 10pt">Year of birth</i>
                 </td>
@@ -215,7 +210,7 @@
                     <i style="font-size: 10pt">Place of birth</i>
                 </td>
                 <td style="vertical-align: top">:</td>
-                <td style="vertical-align: top">TP.HCM</td>
+                <td style="vertical-align: top">{{latest_contract.employee.place_of_birth}}</td>
                 <td></td>
                 <td>
                     Quốc Tịch: Việt Nam
@@ -230,7 +225,7 @@
                     <i style="font-size: 10pt">Permanent address</i>
                 </td>
                 <td style="vertical-align: top">:</td>
-                <td style="vertical-align: top">Permanent address</td>
+                <td style="vertical-align: top">{{latest_contract.employee.permanent_address}}</td>
             </tr>
             <tr>
                 <td>
@@ -239,7 +234,7 @@
                     <i style="font-size: 10pt">Occupation</i>
                 </td>
                 <td style="vertical-align: top">:</td>
-                <td style="vertical-align: top">Occupation</td>
+                <td style="vertical-align: top">{{latest_contract.employee.position_v}}</td>
             </tr>
             <tr>
                 <td>
@@ -248,14 +243,14 @@
                     <i style="font-size: 10pt">ID Card N<sup>o</sup></i>
                 </td>
                 <td style="vertical-align: top">:</td>
-                <td style="vertical-align: top">id card no</td>
+                <td style="vertical-align: top">{{latest_contract.employee.id_card_no}}</td>
                 <td>
-                    Cấp ngày: date
+                    Cấp ngày: {{latest_contract.employee.issued_date_of_id_card}}
                     <br />
                     <i style="font-size: 10pt">Issued on</i>
                 </td>
                 <td>
-                    Tại:
+                    Tại: {{latest_contract.employee.issued_place_of_id_card}}
                     <br />
                     <i style="font-size: 10pt">At:</i>
                 </td>
@@ -288,9 +283,9 @@
             <tr>
                 <td style="vertical-align: top">&bull;</td>
                 <td>
-                    Từ ngày:&emsp;02/05/2021&emsp;&emsp;&emsp;Đến:&emsp;02/11/2021
+                    Từ ngày:&emsp;{{from_date_day}}/{{from_date_month}}/{{from_date_year}}&emsp;&emsp;&emsp;Đến:&emsp;{{to_date_day}}/{{to_date_month}}/{{to_date_year}}
                     <br />
-                    <i style="font-size: 10pt">From <span style="margin-left: 162px">To</span></i>
+                    <i style="font-size: 10pt">From <span style="margin-left: 166px">To</span></i>
                 </td>
             </tr>
             <tr>
@@ -305,9 +300,9 @@
             <tr>
                 <td style="vertical-align: top">&bull;</td>
                 <td>
-                    Chức vụ: Quản lý Nhân sự
+                    Chức vụ: {{latest_contract.employee.position_v}}
                     <br />
-                    <i style="font-size: 10pt">Position: HR Manager</i>
+                    <i style="font-size: 10pt">Position: {{latest_contract.employee.position_e}}</i>
                 </td>
             </tr>
             <tr>
@@ -315,7 +310,7 @@
                 <td>
                     Công việc phải làm: Theo bảng mô tả công việc
                     <br />
-                    <i style="font-size: 10pt">Tasks: Accorditng to Job Description</i>
+                    <i style="font-size: 10pt">Tasks: According to Job Description</i>
                 </td>
             </tr>
         </table>
@@ -369,7 +364,7 @@
             <tr>
                 <td style="vertical-align: top">&bull;</td>
                 <td>
-                    Mức lương:&emsp;11,000,000/- VND/tháng
+                    Mức lương:&emsp;{{ latest_contract.basic_salary|floatformat:0|intcomma }}/- VND/tháng
                     <br />
                     <i style="font-size: 10pt">Basic salary</i>
                 </td>
@@ -377,7 +372,7 @@
             <tr>
                 <td style="vertical-align: top">&bull;</td>
                 <td>
-                    Phụ cấp trách nhiệm:&emsp;11,000,000/- VND/tháng
+                    Phụ cấp trách nhiệm:&emsp;{{ latest_contract.responsibility_allowance|floatformat:0|intcomma }}/- VND/tháng
                     <br />
                     <i style="font-size: 10pt">Responsibility allowance</i>
                 </td>
@@ -399,7 +394,7 @@
                             <td>
                                 Hỗ trợ tiền ăn trưa/ <i style="font-size: 10pt">Lunch:</i>
                             </td>
-                            <td>500,000/-</td>
+                            <td>{{ latest_contract.lunch_support|floatformat:0|intcomma }}/-</td>
                             <td>VNĐ/tháng</td>
                         </tr>
                         <tr>
@@ -407,7 +402,7 @@
                             <td>
                                 Hỗ trợ đi lại/ <i style="font-size: 10pt">Transportation:</i>
                             </td>
-                            <td>500,000/-</td>
+                            <td>{{ latest_contract.transportation_support|floatformat:0|intcomma }}/-</td>
                             <td>VNĐ/tháng</td>
                         </tr>
                         <tr>
@@ -415,9 +410,33 @@
                             <td>
                                 Hỗ trợ điện thoại/ <i style="font-size: 10pt">Telephone:</i>
                             </td>
-                            <td>500,000/-</td>
+                            <td>{{ latest_contract.telephone_support|floatformat:0|intcomma }}/-</td>
                             <td>VNĐ/tháng</td>
                         </tr>
+                        {% if latest_contract.travel_support != NULL and latest_contract.travel_support != 0 %}
+                        <tr>
+                            <td style="text-align: center">-</td>
+                            <td>
+                                Hỗ trợ du lịch/ <i style="font-size: 10pt">Travel support:</i>
+                            </td>
+                            <td>{{ latest_contract.travel_support|floatformat:0|intcomma }}/-</td>
+                            <td>VNĐ/tháng</td>
+                        </tr>
+                        {% else %}
+
+                        {% endif %}
+                        {% if latest_contract.seniority_bonus != NULL and latest_contract.seniority_bonus != 0 %}
+                        <tr>
+                            <td style="text-align: center">-</td>
+                            <td>
+                                Tiền thưởng thâm niên/ <i style="font-size: 10pt">Seniority bonus:</i>
+                            </td>
+                            <td>{{ latest_contract.seniority_bonus|floatformat:0|intcomma }}/-</td>
+                            <td>VNĐ/tháng</td>
+                        </tr>
+                        {% else %}
+
+                        {% endif %}
                     </table>
                 </td>
             </tr>
@@ -765,10 +784,10 @@
                 <td style="vertical-align: top">&#10070;</td>
                 <td>
                     Hợp Đồng lao Động được lập thành 02 bản có giá trị ngang nhau, mỗi
-                    bên giữ 01 bản và có hiệu lực từ ngày 02 tháng 05 năm 2021.
+                    bên giữ 01 bản và có hiệu lực từ ngày {{from_date_day}} tháng {{from_date_month}} năm {{from_date_year}}.
                     <br />
                     <i style="font-size: 10pt">Labor contract is made in two (02) copies of equal validity; each
-                        party keeps one copy and comes into force on 2 May 2021.
+                        party keeps one copy and comes into force on {{from_date_day}} {{from_date_month_name}} {{from_date_year}}.
                     </i>
                 </td>
             </tr>
@@ -787,9 +806,9 @@
             <tr>
                 <td style="vertical-align: top">&#10070;</td>
                 <td>
-                    Hợp Đồng này làm tại TP. HCM, ngày 02 tháng 05 năm 2021.
+                    Hợp Đồng này làm tại TP. HCM, ngày {{signed_contract_date_day}} tháng {{signed_contract_date_month}} năm {{signed_contract_date_year}}.
                     <br />
-                    <i style="font-size: 10pt">This labor contract is made at Ho Chi Minh city on 2 May 2021.
+                    <i style="font-size: 10pt">This labor contract is made at Ho Chi Minh city on {{signed_contract_date_day}} {{signed_contract_date_month_name}} {{signed_contract_date_year}}.
                     </i>
                 </td>
             </tr>
@@ -813,20 +832,26 @@
             </tr>
             <tr height="100"></tr>
             <tr>
-                <td><b>Trần Thị Tuyết Trinh</b></td>
+                <td><b>{{latest_contract.employee.full_name}}</b></td>
                 <td><b>SEVERINE EDGARD-ROSA</b></td>
             </tr>
             <tr height="65"></tr>
         </table>
     </div>
 
-    <script src="{% static 'hr/vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
-    <script src="{% static 'hr/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 
-    <script src="{% static 'hr/vendors/apexcharts/apexcharts.js' %}"></script>
-    <script src="{% static 'hr/js/pages/dashboard.js' %}"></script>
-
-    <script src="{% static 'hr/js/main.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 </body>
 
 </html>

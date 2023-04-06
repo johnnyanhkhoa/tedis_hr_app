@@ -38,14 +38,14 @@
                     <ul class="menu">
                         <li class="sidebar-title">Menu</li>
 
-                        <li class="sidebar-item active ">
+                        {% comment %} <li class="sidebar-item active ">
                             <a href="index.html" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
                                 <span>Dashboard</span>
                             </a>
-                        </li>
+                        </li> {% endcomment %}
 
-                        <li class="sidebar-item  has-sub">
+                        {% comment %} <li class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-stack"></i>
                                 <span>Components</span>
@@ -94,9 +94,9 @@
                                     <a href="component-tooltip.html">Tooltip</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
 
-                        <li class="sidebar-item  has-sub">
+                        {% comment %} <li class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-collection-fill"></i>
                                 <span>Extra Components</span>
@@ -118,9 +118,9 @@
                                     <a href="extra-component-divider.html">Divider</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
 
-                        <li class="sidebar-item  has-sub">
+                        {% comment %} <li class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-grid-1x2-fill"></i>
                                 <span>Layouts</span>
@@ -139,9 +139,9 @@
                                     <a href="layout-horizontal.html">Horizontal Menu</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
 
-                        <li class="sidebar-title">Forms &amp; Tables</li>
+                        {% comment %} <li class="sidebar-title">Forms &amp; Tables</li>
 
                         <li class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
@@ -203,14 +203,14 @@
                                 <i class="bi bi-grid-1x2-fill"></i>
                                 <span>Table</span>
                             </a>
-                        </li>
+                        </li> {% endcomment %}
 
-                        <li class="sidebar-item  ">
+                        {% comment %} <li class="sidebar-item  ">
                             <a href="{% url 'employee:employee_table' %}" class='sidebar-link'>
                                 <i class="bi bi-file-earmark-spreadsheet-fill"></i>
                                 <span>Datatable</span>
                             </a>
-                        </li>
+                        </li> {% endcomment %}
         
                         <li class="sidebar-item has-sub" style="width:250px">
                             <a href="#" class='sidebar-link'>
@@ -250,8 +250,20 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="sidebar-item  ">
+                            <a href="{% url 'employee:report_leave' 61 %}" class='sidebar-link'>
+                                <i class="bi bi-bar-chart-line"></i>
+                                <span>Report</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item  ">
+                            <a href="{% url 'employee:blank_period' %}" class='sidebar-link'>
+                                <i class="bi bi-calendar-range"></i>
+                                <span>Period</span>
+                            </a>
+                        </li>
 
-                        <li class="sidebar-title">Extra UI</li>
+                        {% comment %} <li class="sidebar-title">Extra UI</li>
 
                         <li class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
@@ -269,9 +281,9 @@
                                     <a href="ui-widgets-todolist.html">To-do List</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
 
-                        <li class="sidebar-item  has-sub">
+                        {% comment %} <li class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-egg-fill"></i>
                                 <span>Icons</span>
@@ -287,9 +299,9 @@
                                     <a href="ui-icons-dripicons.html">Dripicons</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
 
-                        <li class="sidebar-item  has-sub">
+                        {% comment %} <li class="sidebar-item  has-sub">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-bar-chart-fill"></i>
                                 <span>Charts</span>
@@ -413,7 +425,7 @@
                                 <i class="bi bi-cash"></i>
                                 <span>Donate</span>
                             </a>
-                        </li>
+                        </li> {% endcomment %}
 
                     </ul>
                 </div>

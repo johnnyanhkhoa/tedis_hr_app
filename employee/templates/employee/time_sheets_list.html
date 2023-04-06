@@ -1,0 +1,299 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}HR | List timesheets{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+{% comment %} khai báo thư viện cho dataTable {% endcomment %}
+<link rel="stylesheet" href="{% static 'hr/vendors/simple-datatables/style.css' %}">
+<style>
+    table {
+        counter-reset: rowNumber;
+    }
+
+    table tbody tr th::before {
+        display: table-cell;
+        counter-increment: rowNumber;
+        content: counter(rowNumber);
+        padding-right: 0.3em;
+        text-align: right;
+    }
+</style>
+
+<div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>{{period_month.month_name}}</h3>
+                    <h5>Total <b><u>{{ total_working_day }}</u></b> working days</h5>
+                    <p class="text-subtitle text-muted">Employee timesheets</p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Period</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">List timesheets</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <section class="section">
+            <div class="card">
+                <div class="card-header pull-right">
+                    Employee timesheets
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb breadcrumb-right" style="margin-right: 20px;">
+                            <div class="dropdown dropdown-color-icon">
+                                <button class="btn btn-primary dropdown-toggle" type="button"
+                                    id="dropdownMenuButtonEmoji" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    <span Class="me-50"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-gear-wide-connected" viewBox="0 0 16 16">
+                                            <path
+                                                d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434l.071-.286zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5zm0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78h4.723zM5.048 3.967c-.03.021-.058.043-.087.065l.087-.065zm-.431.355A4.984 4.984 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8 4.617 4.322zm.344 7.646.087.065-.087-.065z" />
+                                        </svg></span> Action
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonEmoji">
+                                    <a class="btn btn-outline-danger"
+                                        href="{% url 'employee:pdf_time_sheets' period_month.id %}"
+                                        style="width: 240px;text-align: left;"><svg xmlns="http://www.w3.org/2000/svg"
+                                            width="16" height="16" fill="currentColor" class="bi bi-file-earmark-pdf"
+                                            viewBox="0 0 16 16">
+                                            <path
+                                                d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
+                                            <path
+                                                d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.697 19.697 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.066.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.712 5.712 0 0 1-.911-.95 11.651 11.651 0 0 0-1.997.406 11.307 11.307 0 0 1-1.02 1.51c-.292.35-.609.656-.927.787a.793.793 0 0 1-.58.029zm1.379-1.901c-.166.076-.32.156-.459.238-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361.01.022.02.036.026.044a.266.266 0 0 0 .035-.012c.137-.056.355-.235.635-.572a8.18 8.18 0 0 0 .45-.606zm1.64-1.33a12.71 12.71 0 0 1 1.01-.193 11.744 11.744 0 0 1-.51-.858 20.801 20.801 0 0 1-.5 1.05zm2.446.45c.15.163.296.3.435.41.24.19.407.253.498.256a.107.107 0 0 0 .07-.015.307.307 0 0 0 .094-.125.436.436 0 0 0 .059-.2.095.095 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a3.876 3.876 0 0 0-.612-.053zM8.078 7.8a6.7 6.7 0 0 0 .2-.828c.031-.188.043-.343.038-.465a.613.613 0 0 0-.032-.198.517.517 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822.024.111.054.227.09.346z" />
+                                        </svg>
+                                        &ensp;Export PDF</a>
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-success" name="get_timesheet"
+                                            value="Period input" style="width: 240px;text-align: left;"><svg
+                                                xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-file-earmark-excel"
+                                                viewBox="0 0 16 16">
+                                                <path
+                                                    d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z" />
+                                                <path
+                                                    d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
+                                            </svg>
+                                            &ensp;Export Excel</button>
+                                    </form>
+                                    {% if role == 3 %}
+                                    <hr style="margin-top: 3; margin-bottom:3">
+                                    <a class="dropdown-item"
+                                        href="{% url 'employee:payroll_tedis' period_month.id %}"
+                                        style="width: 240px;text-align: left;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-spreadsheet" viewBox="0 0 16 16">
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v4h10V2a1 1 0 0 0-1-1H4zm9 6h-3v2h3V7zm0 3h-3v2h3v-2zm0 3h-3v2h2a1 1 0 0 0 1-1v-1zm-4 2v-2H6v2h3zm-4 0v-2H3v1a1 1 0 0 0 1 1h1zm-2-3h2v-2H3v2zm0-3h2V7H3v2zm3-2v2h3V7H6zm3 3H6v2h3v-2z"/>
+                                          </svg>
+                                        &ensp;View Tedis payroll</a>
+                                    <a class="dropdown-item"
+                                    href="{% url 'employee:payroll_tedis_vietha' period_month.id %}"
+                                    style="width: 240px;text-align: left;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-spreadsheet" viewBox="0 0 16 16">
+                                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v4h10V2a1 1 0 0 0-1-1H4zm9 6h-3v2h3V7zm0 3h-3v2h3v-2zm0 3h-3v2h2a1 1 0 0 0 1-1v-1zm-4 2v-2H6v2h3zm-4 0v-2H3v1a1 1 0 0 0 1 1h1zm-2-3h2v-2H3v2zm0-3h2V7H3v2zm3-2v2h3V7H6zm3 3H6v2h3v-2z"/>
+                                        </svg>
+                                    &ensp;View Tedis-VietHa payroll</a>
+                                    <a class="dropdown-item"
+                                    href="{% url 'employee:payroll_vietha' period_month.id %}"
+                                    style="width: 240px;text-align: left;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-spreadsheet" viewBox="0 0 16 16">
+                                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v4h10V2a1 1 0 0 0-1-1H4zm9 6h-3v2h3V7zm0 3h-3v2h3v-2zm0 3h-3v2h2a1 1 0 0 0 1-1v-1zm-4 2v-2H6v2h3zm-4 0v-2H3v1a1 1 0 0 0 1 1h1zm-2-3h2v-2H3v2zm0-3h2V7H3v2zm3-2v2h3V7H6zm3 3H6v2h3v-2z"/>
+                                        </svg>
+                                    &ensp;View VietHa payroll</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped" id="table1">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Full name</th>
+                                <th>Department</th>
+                                <th>Area</th>
+                                <th>Position</th>
+                                <th>Total paid leave days</th>
+                                <th>Total unpaid leave days</th>
+                                <th>Total salary working day</th>
+                                <th>Total OT paid hour</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in list_data %}
+                            <tr>
+                                <th></th>
+                                <td>{{ data.employee.full_name }}</td>
+                                <td>{{ data.employee.department_e }}</td>
+                                <td>{{ data.employee.area }}</td>
+                                <td>{{ data.employee.position_e }}</td>
+                                <td>{{ data.total_paid_leave_days }}</td>
+                                <td>{{ data.total_unpaid_leave_days }}</td>
+                                <td>{{ data.total_salary_working_day }}</td>
+                                <td>{{ data.total_ot_paid_hour }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+</div>
+
+
+
+
+<script src="{% static 'hr/vendors/simple-datatables/simple-datatables.js' %}"></script>
+<script>
+    // Simple Datatable
+    let table1 = document.querySelector('#table1');
+    let dataTable = new simpleDatatables.DataTable(table1);
+</script>
+<!-- Modal Filter -->
+<div class="modal fade" id="FilterModal" tabindex="-1" aria-labelledby="FilterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="FilterModalLabel">Filter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="GET" action=".">
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label for="site">Site</label>
+                            <select class="form-control" name="site">
+                                <option selected></option>
+                                {% for site in list_site %}
+                                <option value="{{ site.id }}">{{ site }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="division">Division</label>
+                            <select id="division" class="form-control" name="division">
+                                <option selected></option>
+                                {% for division in list_division %}
+                                <option value="{{ division.id }}">{{ division }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="department_e">Department</label>
+                            <select id="department_e" class="form-control" name="department_e">
+                                <option selected></option>
+                                {% for department_e in list_department_e %}
+                                <option value="{{ department_e.id }}">{{ department_e }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label for="area">Area</label>
+                            <select id="area" class="form-control" name="area">
+                                <option selected></option>
+                                {% for area in list_area %}
+                                <option value="{{ area.id }}">{{ area }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="gp">GP</label>
+                            <select id="gp" class="form-control" name="gp">
+                                <option selected></option>
+                                {% for gp in list_gp %}
+                                <option value="{{ gp.id }}">{{ gp }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="university">University</label>
+                            <select id="university" class="form-control" name="university">
+                                <option selected></option>
+                                {% for university in list_university %}
+                                <option value="{{ university.id }}">{{ university }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="contract_type">Contract type</label>
+                            <select id="contract_type" class="form-control" name="contract_type">
+                                <option selected></option>
+                                {% for contract_type in list_contract_type %}
+                                <option value="{{ contract_type.id }}">{{ contract_type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label for="sexual">Sexual</label>
+                            <select class="form-control" name="sexual">
+                                <option selected></option>
+                                {% for sexual in list_sexual %}
+                                <option value="{{ sexual.id }}">{{ sexual }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="ethic_group">Ethic group</label>
+                            <select id="ethic_group" class="form-control" name="ethic_group">
+                                <option selected></option>
+                                {% for ethic_group in list_ethic_group %}
+                                <option value="{{ ethic_group.id }}">{{ ethic_group }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="marital_status">Marital status</label>
+                            <select id="marital_status" class="form-control" name="marital_status">
+                                <option selected></option>
+                                {% for marital_status in list_maritial_status %}
+                                <option value="{{ marital_status.id }}">{{ marital_status }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="certificate_e">Certificate</label>
+                            <select id="certificate_e" class="form-control" name="certificate_e">
+                                <option selected></option>
+                                {% for certificate_e in list_certificate_e %}
+                                <option value="{{ certificate_e.id }}">{{ certificate_e }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" name="btnDangKy">Search</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

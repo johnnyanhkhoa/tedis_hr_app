@@ -78,8 +78,8 @@
                                 </div>
                                 <div class="col">
                                     <label class="fw-bold text-dark" for="to_date">To</label>
-                                    <input type="date" class="form-control" name="to_date"
-                                        id="to_date" placeholder="to_date allowance">
+                                    <input type="date" class="form-control" name="to_date" id="to_date"
+                                        placeholder="to_date allowance">
                                 </div>
                             </div>
                             <div class="row align-items-start" style="margin-top: 20px;">
@@ -93,6 +93,11 @@
                                         allowance</label>
                                     <input type="number" class="form-control" name="responsibility_allowance"
                                         id="responsibility_allowance" placeholder="Responsibility allowance">
+                                </div>
+                                <div class="col">
+                                    <label class="fw-bold text-dark" for="seniority_bonus">Seniority bonus</label>
+                                    <input type="number" class="form-control" name="seniority_bonus"
+                                        id="seniority_bonus" placeholder="Seniority bonus">
                                 </div>
                             </div>
                             <div class="row align-items-start" style="margin-top: 20px;">
@@ -111,10 +116,20 @@
                                     <label class="fw-bold text-dark" for="telephone_support">Telephone
                                         support</label>
                                     <input type="number" class="form-control" name="telephone_support"
-                                        id="telephone_support" placeholder="Transportation support">
+                                        id="telephone_support" placeholder="Telephone support">
+                                </div>
+                                <div class="col">
+                                    <label class="fw-bold text-dark" for="travel_support">Travel
+                                        support</label>
+                                    <input type="number" class="form-control" name="travel_support"
+                                        id="travel_support" placeholder="Travel support">
                                 </div>
                             </div>
                     </div>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end"
+                    style="margin-bottom: 20px;margin-top: 10px;margin-right: 10px;">
+                    <p style="color: red;">Input 0 if NONE value for input fields !</p>
                 </div>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end"
                     style="margin-bottom: 20px;margin-top: 10px;">
@@ -128,16 +143,4 @@
     </div>
 </div>
 </section>
-</div>
-<footer>
-    <div class="footer clearfix mb-0 text-muted">
-        <div class="float-start">
-            <p>2022 &copy; Bumi</p>
-        </div>
-        <div class="float-end">
-            <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a>Bumi</a></p>
-        </div>
-    </div>
-</footer>
-</div>
 {% endblock %}

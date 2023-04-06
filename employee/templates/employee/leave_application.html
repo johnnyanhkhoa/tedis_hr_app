@@ -120,18 +120,18 @@
                         <div class="row text-dark">
                             <div class="col-3">
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 <p class="text-center">
                                     <b>From</b>
                                     <br>
                                     <i>Từ</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 <p class="text-center">
                                     <b>To</b>
                                     <br>
-                                    <i>Đến</i>
+                                    <i>Đến hết</i>
                                 </p>
                             </div>
                             <div class="col-1">
@@ -141,11 +141,11 @@
                                     <i>Số ngày</i>
                                 </p>
                             </div>
-                            <div class="col-2">
+                            <div class="col-4">
                                 <p class="text-center">
                                     <b>Remarks</b>
                                     <br>
-                                    <i>Ghi chú</i>
+                                    <i>Ghi chú (Ngày nghỉ <u>nửa buổi</u> nếu có)</i>
                                 </p>
                             </div>
                         </div>
@@ -157,21 +157,21 @@
                                     <i>Phép hằng năm</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="annual_from" id="annual_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="annual_from" id="annual_from"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="annual_to" id="annual_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="annual_to" id="annual_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
                             <div class="col-1" style="padding: 0;">
                                 <input type="text" class="form-control" name="annual_number_of_leave_days"
                                     id="annual_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
+                            <div class="col-4">
                                 <textarea class="form-control" id="annual_remark" name="annual_remark"
-                                    placeholder="Remarks" rows="1"></textarea>
+                                    placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -182,21 +182,21 @@
                                     <i>Nghỉ không lương</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="non_paid_from" id="non_paid_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="non_paid_from" id="non_paid_from"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="non_paid_to" id="non_paid_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="non_paid_to" id="non_paid_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
                             <div class="col-1" style="padding: 0;">
                                 <input type="text" class="form-control" name="non_paid_number_of_leave_days"
                                     id="non_paid_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
+                            <div class="col-4">
                                 <textarea class="form-control" id="non_paid_remark" name="non_paid_remark"
-                                    placeholder="Remarks" rows="1"></textarea>
+                                    placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -207,21 +207,21 @@
                                     <i>Lễ cưới</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="wedding_from" id="wedding_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="wedding_from" id="wedding_from"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="wedding_to" id="wedding_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="wedding_to" id="wedding_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
                             <div class="col-1" style="padding: 0;">
                                 <input type="text" class="form-control" name="wedding_number_of_leave_days"
                                     id="wedding_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
+                            <div class="col-4">
                                 <textarea class="form-control" id="wedding_remark" name="wedding_remark"
-                                    placeholder="Remarks" rows="1"></textarea>
+                                    placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -232,21 +232,21 @@
                                     <i>Nghỉ đám tang</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="bereavment_from" id="bereavment_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="bereavement_from" id="bereavement_from"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="bereavment_to" id="bereavment_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="bereavement_to" id="bereavement_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
                             <div class="col-1" style="padding: 0;">
                                 <input type="text" class="form-control" name="bereavement_number_of_leave_days"
                                     id="bereavement_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
+                            <div class="col-4">
                                 <textarea class="form-control" id="bereavement_remark" name="bereavement_remark"
-                                    placeholder="Remarks" rows="1"></textarea>
+                                    placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -257,21 +257,21 @@
                                     <i>Nghỉ thai sản / Nghỉ khám thai</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="maternity_obstetric_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="maternity_obstetric_from"
                                     id="maternity_obstetric_from" placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="maternity_obstetric_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="maternity_obstetric_to"
                                     id="maternity_obstetric_to" placeholder="hh:mm DD/MM/YYYY">
                             </div>
                             <div class="col-1" style="padding: 0;">
                                 <input type="text" class="form-control" name="maternity_obstetric_number_of_leave_days"
                                     id="maternity_obstetric_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
+                            <div class="col-4">
                                 <textarea class="form-control" id="maternity_obstetric_remark"
-                                    name="maternity_obstetric_remark" placeholder="Remarks" rows="1"></textarea>
+                                    name="maternity_obstetric_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -282,20 +282,20 @@
                                     <i>Nghỉ ốm</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="sick_from" id="sick_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="sick_from" id="sick_from"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="sick_to" id="sick_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="sick_to" id="sick_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
                             <div class="col-1" style="padding: 0;">
                                 <input type="text" class="form-control" name="sick_number_of_leave_days"
                                     id="sick_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="sick_remark" name="sick_remark" placeholder="Remarks"
+                            <div class="col-4">
+                                <textarea class="form-control" id="sick_remark" name="sick_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
                                     rows="1"></textarea>
                             </div>
                         </div>
@@ -307,21 +307,21 @@
                                     <i>Nghỉ bù</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="offinlieu_from" id="offinlieu_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="offinlieu_from" id="offinlieu_from"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="offinlieu_to" id="offinlieu_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="offinlieu_to" id="offinlieu_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
                             <div class="col-1" style="padding: 0;">
                                 <input type="text" class="form-control" name="offinlieu_number_of_leave_days"
                                     id="offinlieu_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
+                            <div class="col-4">
                                 <textarea class="form-control" id="offinlieu_remark" name="offinlieu_remark"
-                                    placeholder="Remarks" rows="1"></textarea>
+                                    placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -332,22 +332,43 @@
                                     <i>Khác</i>
                                 </p>
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="other_from" id="other_from"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="other_from" id="other_from"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-3">
-                                <input type="text" class="form-control" name="other_to" id="other_to"
+                            <div class="col-2">
+                                <input type="date" class="form-control" name="other_to" id="other_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
                             <div class="col-1" style="padding: 0;">
                                 <input type="text" class="form-control" name="other_number_of_leave_days"
                                     id="other_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
+                            <div class="col-4">
                                 <textarea class="form-control" id="other_remark" name="other_remark"
-                                    placeholder="Remarks" rows="1"></textarea>
+                                    placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
                             </div>
+                        </div>
+                        <br>
+                        <div class="row text-dark" style="border: 1px solid rgb(255, 108, 108);">
+                            <p class="text-start" style="color: rgb(255, 108, 108);">
+                                <b style="font-size: larger;"><u>Ghi chú !</u></b>
+                                <br>
+                                <i>
+                                    <b>- Nghỉ 1 ngày:</b> nghỉ cả ngày 01/01/2023 => from <u>01/01/2023</u> to <u>01/01/2023</u>
+                                </i>
+                                <br>
+                                <i>
+                                    <b>- Nghỉ 1/2 ngày:</b> nghỉ nửa ngày 01/01/2023 => from <u>01/01/2023</u> to <u>01/01/2023</u> ; Remarks: <u>01/01/2023</u>
+                                </i>
+                                <br>
+                                <i><b>- Nghỉ nhiều ngày:</b>
+                                    <br>
+                                    Nghỉ từ ngày 01/01/2023 đến ngày hết ngày 03/01/2023 => from <u>01/01/2023</u> to <u>03/01/2023</u>
+                                    <br>
+                                    Nghỉ từ ngày 01/01/2023 đến ngày 03/01/2023, trong đó nghỉ nửa ngày 01/01/2023 và 02/01/2023 => from <u>01/01/2023</u> to <u>03/01/2023</u> ; Remarks: <u>01/01/2023 02/01/2023</u>
+                                </i>
+                            </p>
                         </div>
                         <br>
                         <br>

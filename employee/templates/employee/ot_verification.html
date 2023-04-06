@@ -203,11 +203,45 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                {% elif available_list_staff_application == 0 %}
+                <br>
                 <p class="text-start text-dark"
                     style="font-size: 18pt; color: rgb(124, 124, 124); font-family: tahoma;">
-
+                    All application
                 </p>
+                <table class="table table-striped" id="table1">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Employee</th>
+                            <th>Application date</th>
+                            <th>Overtime date</th>
+                            <th>Total hours</th>
+                            <th>Approved by</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ot_application in list_present_year_ot_application %}
+                        <tr>
+                            <th></th>
+                            <td>{{ ot_application.employee }}</td>
+                            <td>{{ ot_application.application_date }}</td>
+                            <td>{{ ot_application.ot_date }}</td>
+                            <td>{{ ot_application.ot_total_time }} Hours</td>
+                            <td>{{ ot_application.approved_by }}</td>
+                            <td>
+                                {% if ot_application.hr_status.status == 'Pending' %}
+                                <span class="badge bg-warning">{{ ot_application.hr_status.status }}</span>
+                                {% elif ot_application.hr_status.status == 'Approved' %}
+                                <span class="badge bg-success">{{ ot_application.hr_status.status }}</span>
+                                {% elif ot_application.hr_status.status == 'Reject' %}
+                                <span class="badge bg-danger">{{ ot_application.hr_status.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 {% endif %}
             </div>
         </div>
