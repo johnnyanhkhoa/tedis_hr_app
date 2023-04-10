@@ -2456,8 +2456,8 @@ def payroll_tedis(request,pk):
                 SHUI_21point5percent_company_pay = 0
             # Get recuperation_of_SHU_Ins_21point5percent_company_pay
             recuperation_of_SHU_Ins_21point5percent_company_pay = 0
-            # Get occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
-            occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs = 0
+            # Get occupational_accident_and_disease
+            occupational_accident_and_disease = 0
             # Get trade_union_fee_company_pay_2percent
             combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
             if SHUI_10point5percent_employee_pay > 0: 
@@ -2482,9 +2482,9 @@ def payroll_tedis(request,pk):
             if list_contracts.count() != 0:
                 if list_contracts[0].contract_type == contract_type_CT or list_contracts[0].contract_type == contract_type_CTminus :
                     sum_K_AA = gross_income + salary_recuperation + overtime + transportation + phone + lunch + training_fee + toxic_allowance + travel + responsibility + seniority_bonus + other + total_allowance_recuperation + benefits + severance_allowance + outstanding_annual_leave + month_13_salary_Pro_ata
-                    taxable_income = sum_K_AA - lunch - severance_allowance + occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
+                    taxable_income = sum_K_AA - lunch - severance_allowance + occupational_accident_and_disease
                 else:
-                    taxable_income = sum_K_AA - severance_allowance + occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
+                    taxable_income = sum_K_AA - severance_allowance + occupational_accident_and_disease
             else:
                 taxable_income = 0
             # Get taxed_income
@@ -2521,12 +2521,12 @@ def payroll_tedis(request,pk):
             deduct = 0
             # Get net_income
             sum_K_AA = gross_income + salary_recuperation + overtime + transportation + phone + lunch + training_fee + toxic_allowance + travel + responsibility + seniority_bonus + other + total_allowance_recuperation + benefits + severance_allowance + outstanding_annual_leave + month_13_salary_Pro_ata
-            net_income = sum_K_AA + occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs - SHUI_10point5percent_employee_pay - recuperation_of_SHU_Ins_10point5percent_staff_pay - PIT - deduct
+            net_income = sum_K_AA + occupational_accident_and_disease - SHUI_10point5percent_employee_pay - recuperation_of_SHU_Ins_10point5percent_staff_pay - PIT - deduct
             # Get transfer_bank
             transfer_bank = 0
             # Get total_cost
             sum_K_AA = gross_income + salary_recuperation + overtime + transportation + phone + lunch + training_fee + toxic_allowance + travel + responsibility + seniority_bonus + other + total_allowance_recuperation + benefits + severance_allowance + outstanding_annual_leave + month_13_salary_Pro_ata
-            total_cost = round((sum_K_AA + SHUI_21point5percent_company_pay + recuperation_of_SHU_Ins_21point5percent_company_pay + occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs + trade_union_fee_company_pay_2percent + trade_union_fee_member + transfer_bank - deduct),1)
+            total_cost = round((sum_K_AA + SHUI_21point5percent_company_pay + recuperation_of_SHU_Ins_21point5percent_company_pay + occupational_accident_and_disease + trade_union_fee_company_pay_2percent + trade_union_fee_member + transfer_bank - deduct),1)
             
 
     
@@ -2534,7 +2534,7 @@ def payroll_tedis(request,pk):
             payroll_employee_info = Payroll_Tedis(month=period_month,employee=employee,newest_salary=newest_salary,working_days=working_days,adjust_percent=adjust_percent,
                                                   gross_income=gross_income,salary_recuperation=salary_recuperation,overtime=overtime,transportation=transportation,phone=phone,lunch=lunch, training_fee=training_fee, toxic_allowance=toxic_allowance, travel=travel,responsibility=responsibility,seniority_bonus=seniority_bonus,
                                                   other=other,total_allowance_recuperation=total_allowance_recuperation,benefits=benefits,severance_allowance=severance_allowance,outstanding_annual_leave=outstanding_annual_leave,month_13_salary_Pro_ata=month_13_salary_Pro_ata, 
-                                                  recuperation_of_SHU_Ins_10point5percent_staff_pay=recuperation_of_SHU_Ins_10point5percent_staff_pay,SHUI_10point5percent_employee_pay=SHUI_10point5percent_employee_pay,recuperation_of_SHU_Ins_21point5percent_company_pay=recuperation_of_SHU_Ins_21point5percent_company_pay,SHUI_21point5percent_company_pay=SHUI_21point5percent_company_pay,occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs=occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs,
+                                                  recuperation_of_SHU_Ins_10point5percent_staff_pay=recuperation_of_SHU_Ins_10point5percent_staff_pay,SHUI_10point5percent_employee_pay=SHUI_10point5percent_employee_pay,recuperation_of_SHU_Ins_21point5percent_company_pay=recuperation_of_SHU_Ins_21point5percent_company_pay,SHUI_21point5percent_company_pay=SHUI_21point5percent_company_pay,occupational_accident_and_disease=occupational_accident_and_disease,
                                                   trade_union_fee_company_pay_2percent=trade_union_fee_company_pay_2percent,trade_union_fee_member=trade_union_fee_member,
                                                   family_deduction=family_deduction,taxable_income=taxable_income,taxed_income=taxed_income,PIT=PIT,deduct=deduct,net_income=net_income,transfer_bank=transfer_bank,total_cost=total_cost)
             payroll_employee_info.save()
@@ -2652,7 +2652,7 @@ def payroll_tedis(request,pk):
         ttrecuperation_of_SHU_Ins_10point5percent_staff_pay = 0
         ttSHUI_21point5percent_company_pay = 0
         ttrecuperation_of_SHU_Ins_21point5percent_company_pay = 0
-        ttoccupational_accident_and_disease_Ins_0point5percent_pay_for_staffs = 0
+        ttoccupational_accident_and_disease = 0
         tttrade_union_fee_company_pay_2percent = 0
         tttrade_union_fee_member = 0
         ttfamily_deduction = 0
@@ -2698,7 +2698,7 @@ def payroll_tedis(request,pk):
             ws.write(3+index, 27, str("{:,}".format(data['payroll_info'].recuperation_of_SHU_Ins_10point5percent_staff_pay)),style_normal)
             ws.write(3+index, 28, str("{:,}".format(data['payroll_info'].SHUI_21point5percent_company_pay)),style_normal)
             ws.write(3+index, 29, str("{:,}".format(data['payroll_info'].recuperation_of_SHU_Ins_21point5percent_company_pay)),style_normal)
-            ws.write(3+index, 30, str("{:,}".format(data['payroll_info'].occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs)),style_normal)
+            ws.write(3+index, 30, str("{:,}".format(data['payroll_info'].occupational_accident_and_disease)),style_normal)
             ws.write(3+index, 31, str("{:,}".format(data['payroll_info'].trade_union_fee_company_pay_2percent)),style_normal)
             ws.write(3+index, 32, str("{:,}".format(data['payroll_info'].trade_union_fee_member)),style_normal)
             ws.write(3+index, 33, str("{:,}".format(data['payroll_info'].family_deduction)),style_normal)
@@ -2733,7 +2733,7 @@ def payroll_tedis(request,pk):
             ttrecuperation_of_SHU_Ins_10point5percent_staff_pay += data['payroll_info'].recuperation_of_SHU_Ins_10point5percent_staff_pay
             ttSHUI_21point5percent_company_pay += data['payroll_info'].SHUI_21point5percent_company_pay
             ttrecuperation_of_SHU_Ins_21point5percent_company_pay += data['payroll_info'].recuperation_of_SHU_Ins_21point5percent_company_pay
-            ttoccupational_accident_and_disease_Ins_0point5percent_pay_for_staffs += data['payroll_info'].occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
+            ttoccupational_accident_and_disease += data['payroll_info'].occupational_accident_and_disease
             tttrade_union_fee_company_pay_2percent += data['payroll_info'].trade_union_fee_company_pay_2percent
             tttrade_union_fee_member += data['payroll_info'].trade_union_fee_member
             ttfamily_deduction += data['payroll_info'].family_deduction
@@ -2770,7 +2770,7 @@ def payroll_tedis(request,pk):
         ws.write(last_row, 27, str("{:,}".format(ttrecuperation_of_SHU_Ins_10point5percent_staff_pay)),style_table_head)
         ws.write(last_row, 28, str("{:,}".format(ttSHUI_21point5percent_company_pay)),style_table_head)
         ws.write(last_row, 29, str("{:,}".format(ttrecuperation_of_SHU_Ins_21point5percent_company_pay)),style_table_head)
-        ws.write(last_row, 30, str("{:,}".format(ttoccupational_accident_and_disease_Ins_0point5percent_pay_for_staffs)),style_table_head)
+        ws.write(last_row, 30, str("{:,}".format(ttoccupational_accident_and_disease)),style_table_head)
         ws.write(last_row, 31, str("{:,}".format(tttrade_union_fee_company_pay_2percent)),style_table_head)
         ws.write(last_row, 32, str("{:,}".format(tttrade_union_fee_member)),style_table_head)
         ws.write(last_row, 33, str("{:,}".format(ttfamily_deduction)),style_table_head)
@@ -2887,9 +2887,9 @@ def payroll_tedis_edit(request, pk):
                 SHUI_21point5percent_company_pay = 0
         else:
             SHUI_21point5percent_company_pay = 0
-        # Get recuperation_of_SHU_Ins_21point5percent_company_pay,occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
+        # Get recuperation_of_SHU_Ins_21point5percent_company_pay,occupational_accident_and_disease
         recuperation_of_SHU_Ins_21point5percent_company_pay = request.POST.get('recuperation_of_SHU_Ins_21point5percent_company_pay')
-        occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs = request.POST.get('occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs')
+        occupational_accident_and_disease = request.POST.get('occupational_accident_and_disease')
         # Get trade_union_fee_company_pay_2percent
         combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
         if SHUI_10point5percent_employee_pay > 0: 
@@ -2912,9 +2912,9 @@ def payroll_tedis_edit(request, pk):
         if list_contracts.count() != 0:
             if list_contracts[0].contract_type == contract_type_CT or list_contracts[0].contract_type == contract_type_CTminus :
                 sum_K_AA = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
-                taxable_income = sum_K_AA - float(lunch) - float(severance_allowance) + float(occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs)
+                taxable_income = sum_K_AA - float(lunch) - float(severance_allowance) + float(occupational_accident_and_disease)
             else:
-                taxable_income = sum_K_AA - float(severance_allowance) + float(occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs)
+                taxable_income = sum_K_AA - float(severance_allowance) + float(occupational_accident_and_disease)
         else:
             taxable_income = 0
         # Get taxed_income
@@ -2951,18 +2951,18 @@ def payroll_tedis_edit(request, pk):
         deduct = request.POST.get('deduct')
         # Get net_income
         sum_K_AA = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
-        net_income = sum_K_AA + float(occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs) - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(PIT) - float(deduct)
+        net_income = sum_K_AA + float(occupational_accident_and_disease) - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(PIT) - float(deduct)
         # Get transfer_bank
         transfer_bank = request.POST.get('transfer_bank')
         # Get total_cost
         sum_K_AA = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
-        total_cost = round((sum_K_AA + float(SHUI_21point5percent_company_pay) + float(recuperation_of_SHU_Ins_21point5percent_company_pay) + float(occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs) + float(trade_union_fee_company_pay_2percent) + float(trade_union_fee_member) + float(transfer_bank) - float(deduct)),0)
+        total_cost = round((sum_K_AA + float(SHUI_21point5percent_company_pay) + float(recuperation_of_SHU_Ins_21point5percent_company_pay) + float(occupational_accident_and_disease) + float(trade_union_fee_company_pay_2percent) + float(trade_union_fee_member) + float(transfer_bank) - float(deduct)),0)
         # Update and save
         payroll_update_info = Payroll_Tedis(id=payroll_info.id,month=month,employee=employee,newest_salary=newest_salary,working_days=working_days,adjust_percent=adjust_percent,gross_income=gross_income,
                                             salary_recuperation=salary_recuperation,overtime=overtime,transportation=transportation,phone=phone,lunch=lunch,training_fee=training_fee,toxic_allowance=toxic_allowance,travel=travel,responsibility=responsibility,seniority_bonus=seniority_bonus,
                                             other=other,total_allowance_recuperation=total_allowance_recuperation,benefits=benefits,severance_allowance=severance_allowance,outstanding_annual_leave=outstanding_annual_leave,month_13_salary_Pro_ata=month_13_salary_Pro_ata,
                                             SHUI_10point5percent_employee_pay=SHUI_10point5percent_employee_pay,recuperation_of_SHU_Ins_10point5percent_staff_pay=recuperation_of_SHU_Ins_10point5percent_staff_pay,SHUI_21point5percent_company_pay=SHUI_21point5percent_company_pay,recuperation_of_SHU_Ins_21point5percent_company_pay=recuperation_of_SHU_Ins_21point5percent_company_pay,
-                                            occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs=occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs,
+                                            occupational_accident_and_disease=occupational_accident_and_disease,
                                             trade_union_fee_company_pay_2percent=trade_union_fee_company_pay_2percent,trade_union_fee_member=trade_union_fee_member,
                                             family_deduction=family_deduction,taxable_income=taxable_income,taxed_income=taxed_income,PIT=PIT,deduct=deduct,net_income=net_income,transfer_bank=transfer_bank,total_cost=total_cost)
         payroll_update_info.save()
@@ -3123,8 +3123,8 @@ def payroll_tedis_vietha(request,pk):
                 SHUI_21point5percent_company_pay = 0
             # Get recuperation_of_SHU_Ins_21point5percent_company_pay
             recuperation_of_SHU_Ins_21point5percent_company_pay = 0
-            # Get occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
-            occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs = 0
+            # Get occupational_accident_and_disease
+            occupational_accident_and_disease = 0
             # Get trade_union_fee_company_pay
             combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
             if SHUI_10point5percent_employee_pay > 0:
@@ -3151,10 +3151,10 @@ def payroll_tedis_vietha(request,pk):
             if list_contracts.count() != 0:
                 if list_contracts[0].contract_type == contract_type_CT or list_contracts[0].contract_type == contract_type_CTminus or list_contracts[0].contract_type == contract_type_CTminusHUU:
                     sum_K_Y = gross_income + transportation + phone + lunch + travel + responsibility + seniority_bonus + other + outstanding_annual_leave + OTC_incentive + KPI_achievement + month_13_salary_Pro_ata + incentive_last_month + incentive_last_quy_last_year + taxable_overtime
-                    taxable_income = sum_K_Y + occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs - lunch
+                    taxable_income = sum_K_Y + occupational_accident_and_disease - lunch
                 else:
                     sum_K_Z = gross_income + transportation + phone + lunch + travel + responsibility + seniority_bonus + other + outstanding_annual_leave + OTC_incentive + KPI_achievement + month_13_salary_Pro_ata + incentive_last_month + incentive_last_quy_last_year + taxable_overtime + nontaxable_overtime
-                    taxable_income = sum_K_Z + occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
+                    taxable_income = sum_K_Z + occupational_accident_and_disease
             else: 
                 taxable_income = 0   
             # Get taxed_income
@@ -3194,17 +3194,17 @@ def payroll_tedis_vietha(request,pk):
             first_payment = 0
             # Get net_income
             sum_K_Z = gross_income + transportation + phone + lunch + travel + responsibility + seniority_bonus + other + outstanding_annual_leave + OTC_incentive + KPI_achievement + month_13_salary_Pro_ata + incentive_last_month + incentive_last_quy_last_year + taxable_overtime + nontaxable_overtime
-            net_income = sum_K_Z + occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs - SHUI_10point5percent_employee_pay - recuperation_of_SHU_Ins_10point5percent_staff_pay - PIT_balance - first_payment
+            net_income = sum_K_Z + occupational_accident_and_disease - SHUI_10point5percent_employee_pay - recuperation_of_SHU_Ins_10point5percent_staff_pay - PIT_balance - first_payment
             # Get transfer_bank
             transfer_bank = 0
             # Get total_cost
-            total_cost = round(sum_K_Z + SHUI_21point5percent_company_pay + recuperation_of_SHU_Ins_21point5percent_company_pay + occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs + trade_union_fee_company_pay + trade_union_fee_employee_pay + transfer_bank)
+            total_cost = round(sum_K_Z + SHUI_21point5percent_company_pay + recuperation_of_SHU_Ins_21point5percent_company_pay + occupational_accident_and_disease + trade_union_fee_company_pay + trade_union_fee_employee_pay + transfer_bank)
             
             payroll_employee_info = Payroll_Tedis_Vietha(month=period_month,employee=employee,newest_salary=newest_salary,working_days=working_days,adjust_percent=adjust_percent,
                                                   gross_income=gross_income,transportation=transportation,phone=phone,lunch=lunch,travel=travel,responsibility=responsibility,seniority_bonus=seniority_bonus,
                                                   other=other,outstanding_annual_leave=outstanding_annual_leave,OTC_incentive=OTC_incentive,KPI_achievement=KPI_achievement,month_13_salary_Pro_ata=month_13_salary_Pro_ata,incentive_last_month=incentive_last_month,incentive_last_quy_last_year=incentive_last_quy_last_year,taxable_overtime=taxable_overtime,nontaxable_overtime=nontaxable_overtime,
                                                   SHUI_10point5percent_employee_pay=SHUI_10point5percent_employee_pay,recuperation_of_SHU_Ins_10point5percent_staff_pay=recuperation_of_SHU_Ins_10point5percent_staff_pay,SHUI_21point5percent_company_pay=SHUI_21point5percent_company_pay,recuperation_of_SHU_Ins_21point5percent_company_pay=recuperation_of_SHU_Ins_21point5percent_company_pay,
-                                                  occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs=occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs,
+                                                  occupational_accident_and_disease=occupational_accident_and_disease,
                                                   trade_union_fee_company_pay=trade_union_fee_company_pay,trade_union_fee_employee_pay=trade_union_fee_employee_pay,family_deduction=family_deduction,taxable_income=taxable_income,taxed_income=taxed_income,PIT_13th_salary=PIT_13th_salary,PIT=PIT,PIT_balance=PIT_balance,
                                                   first_payment=first_payment,net_income=net_income,transfer_bank=transfer_bank,total_cost=total_cost)
             payroll_employee_info.save()
@@ -3320,7 +3320,7 @@ def payroll_tedis_vietha(request,pk):
         ttrecuperation_of_SHU_Ins_10point5percent_staff_pay = 0
         ttSHUI_21point5percent_company_pay = 0
         ttrecuperation_of_SHU_Ins_21point5percent_company_pay = 0
-        ttoccupational_accident_and_disease_Ins_0point5percent_pay_for_staffs = 0
+        ttoccupational_accident_and_disease = 0
         tttrade_union_fee_company_pay = 0
         tttrade_union_fee_employee_pay = 0
         ttfamily_deduction = 0
@@ -3367,7 +3367,7 @@ def payroll_tedis_vietha(request,pk):
             ws.write(3+index, 26, str("{:,}".format(data['payroll_info'].recuperation_of_SHU_Ins_10point5percent_staff_pay)),style_normal)
             ws.write(3+index, 27, str("{:,}".format(data['payroll_info'].SHUI_21point5percent_company_pay)),style_normal)
             ws.write(3+index, 28, str("{:,}".format(data['payroll_info'].recuperation_of_SHU_Ins_21point5percent_company_pay)),style_normal)
-            ws.write(3+index, 29, str("{:,}".format(data['payroll_info'].occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs)),style_normal)
+            ws.write(3+index, 29, str("{:,}".format(data['payroll_info'].occupational_accident_and_disease)),style_normal)
             ws.write(3+index, 30, str("{:,}".format(data['payroll_info'].trade_union_fee_company_pay)),style_normal)
             ws.write(3+index, 31, str("{:,}".format(data['payroll_info'].trade_union_fee_employee_pay)),style_normal)
             ws.write(3+index, 32, str("{:,}".format(data['payroll_info'].family_deduction)),style_normal)
@@ -3403,7 +3403,7 @@ def payroll_tedis_vietha(request,pk):
             ttrecuperation_of_SHU_Ins_10point5percent_staff_pay += data['payroll_info'].recuperation_of_SHU_Ins_10point5percent_staff_pay
             ttSHUI_21point5percent_company_pay += data['payroll_info'].SHUI_21point5percent_company_pay
             ttrecuperation_of_SHU_Ins_21point5percent_company_pay += data['payroll_info'].recuperation_of_SHU_Ins_21point5percent_company_pay
-            ttoccupational_accident_and_disease_Ins_0point5percent_pay_for_staffs += data['payroll_info'].occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
+            ttoccupational_accident_and_disease += data['payroll_info'].occupational_accident_and_disease
             tttrade_union_fee_company_pay += data['payroll_info'].trade_union_fee_company_pay
             tttrade_union_fee_employee_pay += data['payroll_info'].trade_union_fee_employee_pay
             ttfamily_deduction += data['payroll_info'].family_deduction
@@ -3441,7 +3441,7 @@ def payroll_tedis_vietha(request,pk):
         ws.write(last_row, 26, str("{:,}".format(ttrecuperation_of_SHU_Ins_10point5percent_staff_pay)),style_table_head)
         ws.write(last_row, 27, str("{:,}".format(ttSHUI_21point5percent_company_pay)),style_table_head)
         ws.write(last_row, 28, str("{:,}".format(ttrecuperation_of_SHU_Ins_21point5percent_company_pay)),style_table_head)
-        ws.write(last_row, 29, str("{:,}".format(ttoccupational_accident_and_disease_Ins_0point5percent_pay_for_staffs)),style_table_head)
+        ws.write(last_row, 29, str("{:,}".format(ttoccupational_accident_and_disease)),style_table_head)
         ws.write(last_row, 30, str("{:,}".format(tttrade_union_fee_company_pay)),style_table_head)
         ws.write(last_row, 31, str("{:,}".format(tttrade_union_fee_employee_pay)),style_table_head)
         ws.write(last_row, 32, str("{:,}".format(ttfamily_deduction)),style_table_head)
@@ -3559,9 +3559,9 @@ def payroll_tedis_vietha_edit(request, pk):
                 SHUI_21point5percent_company_pay = 0    
         else:
             SHUI_21point5percent_company_pay = 0
-        # Get recuperation_of_SHU_Ins_21point5percent_company_pay,occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
+        # Get recuperation_of_SHU_Ins_21point5percent_company_pay,occupational_accident_and_disease
         recuperation_of_SHU_Ins_21point5percent_company_pay = request.POST.get('recuperation_of_SHU_Ins_21point5percent_company_pay')
-        occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs = request.POST.get('occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs')
+        occupational_accident_and_disease = request.POST.get('occupational_accident_and_disease')
         # Get trade_union_fee_company_pay
         combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
         if SHUI_10point5percent_employee_pay > 0:
@@ -3586,10 +3586,10 @@ def payroll_tedis_vietha_edit(request, pk):
         if list_contracts.count() != 0:
             if list_contracts[0].contract_type == contract_type_CT or list_contracts[0].contract_type == contract_type_CTminus or list_contracts[0].contract_type == contract_type_CTminusHUU:
                 sum_K_Y = float(gross_income) + float(transportation) + float(phone) + float(lunch) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(outstanding_annual_leave) + float(OTC_incentive) + float(KPI_achievement) + float(month_13_salary_Pro_ata) + float(incentive_last_month) + float(incentive_last_quy_last_year) + float(taxable_overtime)
-                taxable_income = float(sum_K_Y) + float(occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs) - float(lunch)
+                taxable_income = float(sum_K_Y) + float(occupational_accident_and_disease) - float(lunch)
             else:
                 sum_K_Z = float(gross_income) + float(transportation) + float(phone) + float(lunch) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(outstanding_annual_leave) + float(OTC_incentive) + float(KPI_achievement) + float(month_13_salary_Pro_ata) + float(incentive_last_month) + float(incentive_last_quy_last_year) + float(taxable_overtime) + float(nontaxable_overtime)
-                taxable_income = float(sum_K_Z) + float(occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs)
+                taxable_income = float(sum_K_Z) + float(occupational_accident_and_disease)
         else: 
             taxable_income = 0   
         # Get taxed_income
@@ -3629,17 +3629,17 @@ def payroll_tedis_vietha_edit(request, pk):
         first_payment = request.POST.get('first_payment')
         # Get net_income
         sum_K_Z = float(gross_income) + float(transportation) + float(phone) + float(lunch) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(outstanding_annual_leave) + float(OTC_incentive) + float(KPI_achievement) + float(month_13_salary_Pro_ata) + float(incentive_last_month) + float(incentive_last_quy_last_year) + float(taxable_overtime) + float(nontaxable_overtime)
-        net_income = sum_K_Z + float(occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs) - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(PIT_balance) - float(first_payment)
+        net_income = sum_K_Z + float(occupational_accident_and_disease) - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(PIT_balance) - float(first_payment)
         # Get transfer_bank
         transfer_bank = request.POST.get('transfer_bank')
         # Get total_cost
-        total_cost = round(sum_K_Z + float(SHUI_21point5percent_company_pay) + float(recuperation_of_SHU_Ins_21point5percent_company_pay) + float(occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs) + float(trade_union_fee_company_pay) + float(trade_union_fee_employee_pay) + float(transfer_bank))
+        total_cost = round(sum_K_Z + float(SHUI_21point5percent_company_pay) + float(recuperation_of_SHU_Ins_21point5percent_company_pay) + float(occupational_accident_and_disease) + float(trade_union_fee_company_pay) + float(trade_union_fee_employee_pay) + float(transfer_bank))
         # Update and save
         payroll_update_info = Payroll_Tedis_Vietha(id=payroll_info.id,month=month,employee=employee,newest_salary=newest_salary,working_days=working_days,adjust_percent=adjust_percent,gross_income=gross_income,
                                             transportation=transportation,phone=phone,lunch=lunch,travel=travel,responsibility=responsibility,seniority_bonus=seniority_bonus,
                                             other=other,outstanding_annual_leave=outstanding_annual_leave,OTC_incentive=OTC_incentive,KPI_achievement=KPI_achievement,month_13_salary_Pro_ata=month_13_salary_Pro_ata,incentive_last_month=incentive_last_month,incentive_last_quy_last_year=incentive_last_quy_last_year,taxable_overtime=taxable_overtime,nontaxable_overtime=nontaxable_overtime,
                                             SHUI_10point5percent_employee_pay=SHUI_10point5percent_employee_pay,recuperation_of_SHU_Ins_10point5percent_staff_pay=recuperation_of_SHU_Ins_10point5percent_staff_pay,SHUI_21point5percent_company_pay=SHUI_21point5percent_company_pay,recuperation_of_SHU_Ins_21point5percent_company_pay=recuperation_of_SHU_Ins_21point5percent_company_pay,
-                                            occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs=occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs,
+                                            occupational_accident_and_disease=occupational_accident_and_disease,
                                             trade_union_fee_company_pay=trade_union_fee_company_pay,trade_union_fee_employee_pay=trade_union_fee_employee_pay,
                                             family_deduction=family_deduction,taxable_income=taxable_income,taxed_income=taxed_income,PIT_13th_salary=PIT_13th_salary,PIT=PIT,PIT_balance=PIT_balance,first_payment=first_payment,net_income=net_income,transfer_bank=transfer_bank,total_cost=total_cost)
         payroll_update_info.save()
@@ -3786,8 +3786,8 @@ def payroll_vietha(request,pk):
                         SHUI_21point5percent_company_pay = 0
             else:
                 SHUI_21point5percent_company_pay = 0
-            # Get occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
-            occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs = 0
+            # Get occupational_accident_and_disease
+            occupational_accident_and_disease = 0
             # Get trade_union_fee_company_pay
             combo = newest_salary + responsibility/float(adjust_percent/100)
             if SHUI_10point5percent_employee_pay > 0:
@@ -3810,10 +3810,10 @@ def payroll_vietha(request,pk):
             if list_contracts.count() != 0:
                 if list_contracts[0].contract_type == contract_type_CT or list_contracts[0].contract_type == contract_type_CTminus:
                     sum_K_X = gross_income + salary_recuperation + overtime + transportation + phone + lunch + responsibility + outstanding_annual_leave + bonus_open_new_pharmacy + other + incentive_last_quy_last_year + incentive_last_month + yearly_incentive_last_year + month_13_salary_Pro_ata
-                    taxable_income = sum_K_X + occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs - lunch
+                    taxable_income = sum_K_X + occupational_accident_and_disease - lunch
                 else:
                     sum_K_X = gross_income + salary_recuperation + overtime + transportation + phone + lunch + responsibility + outstanding_annual_leave + bonus_open_new_pharmacy + other + incentive_last_quy_last_year + incentive_last_month + yearly_incentive_last_year + month_13_salary_Pro_ata
-                    taxable_income = sum_K_X + occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
+                    taxable_income = sum_K_X + occupational_accident_and_disease
             else: 
                 taxable_income = 0   
             # Get taxed_income
@@ -3853,12 +3853,12 @@ def payroll_vietha(request,pk):
             PIT_balance = PIT_this_month - PIT_for_13th_salary
             # Get net_income
             sum_K_W = gross_income + salary_recuperation + overtime + transportation + phone + lunch + responsibility + outstanding_annual_leave + bonus_open_new_pharmacy + other + incentive_last_quy_last_year + incentive_last_month + yearly_incentive_last_year
-            net_income = round(sum_K_W + occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs - SHUI_10point5percent_employee_pay - PIT_balance, 0)
+            net_income = round(sum_K_W + occupational_accident_and_disease - SHUI_10point5percent_employee_pay - PIT_balance, 0)
             # Get transfer_bank
             transfer_bank = 0
             # Get total_cost
             sum_K_W = gross_income + salary_recuperation + overtime + transportation + phone + lunch + responsibility + outstanding_annual_leave + bonus_open_new_pharmacy + other + incentive_last_quy_last_year + incentive_last_month + yearly_incentive_last_year
-            total_cost = round(sum_K_W + SHUI_21point5percent_company_pay + occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs + trade_union_fee_company_pay + trade_union_fee_staff_pay + transfer_bank,0)
+            total_cost = round(sum_K_W + SHUI_21point5percent_company_pay + occupational_accident_and_disease + trade_union_fee_company_pay + trade_union_fee_staff_pay + transfer_bank,0)
 
             
             payroll_employee_info = Payroll_Vietha(month=period_month,employee=employee,newest_salary=newest_salary,working_days=working_days,adjust_percent=adjust_percent,gross_income=gross_income,
@@ -3866,7 +3866,7 @@ def payroll_vietha(request,pk):
                                                    outstanding_annual_leave=outstanding_annual_leave,bonus_open_new_pharmacy=bonus_open_new_pharmacy,other=other,
                                                    incentive_last_quy_last_year=incentive_last_quy_last_year,incentive_last_month=incentive_last_month,yearly_incentive_last_year=yearly_incentive_last_year,month_13_salary_Pro_ata=month_13_salary_Pro_ata,
                                                    SHUI_10point5percent_employee_pay=SHUI_10point5percent_employee_pay,SHUI_21point5percent_company_pay=SHUI_21point5percent_company_pay,
-                                                   occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs=occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs,
+                                                   occupational_accident_and_disease=occupational_accident_and_disease,
                                                    trade_union_fee_company_pay=trade_union_fee_company_pay,trade_union_fee_staff_pay=trade_union_fee_staff_pay,
                                                    family_deduction=family_deduction,taxable_income=taxable_income,taxed_income=taxed_income,
                                                    PIT_for_13th_salary=PIT_for_13th_salary,PIT_this_month=PIT_this_month,PIT_finalization=PIT_finalization,PIT_balance=PIT_balance,
@@ -3977,7 +3977,7 @@ def payroll_vietha(request,pk):
         ttmonth_13_salary_Pro_ata = 0
         ttSHUI_10point5percent_employee_pay = 0
         ttSHUI_21point5percent_company_pay = 0
-        ttoccupational_accident_and_disease_Ins_0point5percent_pay_for_staffs = 0
+        ttoccupational_accident_and_disease = 0
         tttrade_union_fee_company_pay = 0
         tttrade_union_fee_staff_pay = 0
         ttfamily_deduction = 0
@@ -4020,7 +4020,7 @@ def payroll_vietha(request,pk):
             ws.write(3+index, 22, str("{:,}".format(data['payroll_info'].month_13_salary_Pro_ata)),style_normal)
             ws.write(3+index, 23, str("{:,}".format(data['payroll_info'].SHUI_10point5percent_employee_pay)),style_normal)
             ws.write(3+index, 24, str("{:,}".format(data['payroll_info'].SHUI_21point5percent_company_pay)),style_normal)
-            ws.write(3+index, 25, str("{:,}".format(data['payroll_info'].occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs)),style_normal)
+            ws.write(3+index, 25, str("{:,}".format(data['payroll_info'].occupational_accident_and_disease)),style_normal)
             ws.write(3+index, 26, str("{:,}".format(data['payroll_info'].trade_union_fee_company_pay)),style_normal)
             ws.write(3+index, 27, str("{:,}".format(data['payroll_info'].trade_union_fee_staff_pay)),style_normal)
             ws.write(3+index, 28, str("{:,}".format(data['payroll_info'].family_deduction)),style_normal)
@@ -4052,7 +4052,7 @@ def payroll_vietha(request,pk):
             ttmonth_13_salary_Pro_ata += data['payroll_info'].month_13_salary_Pro_ata
             ttSHUI_10point5percent_employee_pay += data['payroll_info'].SHUI_10point5percent_employee_pay
             ttSHUI_21point5percent_company_pay += data['payroll_info'].SHUI_21point5percent_company_pay
-            ttoccupational_accident_and_disease_Ins_0point5percent_pay_for_staffs += data['payroll_info'].occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
+            ttoccupational_accident_and_disease += data['payroll_info'].occupational_accident_and_disease
             tttrade_union_fee_company_pay += data['payroll_info'].trade_union_fee_company_pay
             tttrade_union_fee_staff_pay += data['payroll_info'].trade_union_fee_staff_pay
             ttfamily_deduction += data['payroll_info'].family_deduction
@@ -4086,7 +4086,7 @@ def payroll_vietha(request,pk):
         ws.write(last_row, 22, str("{:,}".format(ttmonth_13_salary_Pro_ata)),style_table_head)
         ws.write(last_row, 23, str("{:,}".format(ttSHUI_10point5percent_employee_pay)),style_table_head)
         ws.write(last_row, 24, str("{:,}".format(ttSHUI_21point5percent_company_pay)),style_table_head)
-        ws.write(last_row, 25, str("{:,}".format(ttoccupational_accident_and_disease_Ins_0point5percent_pay_for_staffs)),style_table_head)
+        ws.write(last_row, 25, str("{:,}".format(ttoccupational_accident_and_disease)),style_table_head)
         ws.write(last_row, 26, str("{:,}".format(tttrade_union_fee_company_pay)),style_table_head)
         ws.write(last_row, 27, str("{:,}".format(tttrade_union_fee_staff_pay)),style_table_head)
         ws.write(last_row, 28, str("{:,}".format(ttfamily_deduction)),style_table_head)
@@ -4195,8 +4195,8 @@ def payroll_vietha_edit(request, pk):
                     SHUI_21point5percent_company_pay = 0
         else:
             SHUI_21point5percent_company_pay = 0
-        # Get occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs
-        occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs = request.POST.get('occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs')
+        # Get occupational_accident_and_disease
+        occupational_accident_and_disease = request.POST.get('occupational_accident_and_disease')
         # Get trade_union_fee_company_pay
         combo = newest_salary + float(responsibility)/float(adjust_percent/100)
         if SHUI_10point5percent_employee_pay > 0:
@@ -4217,10 +4217,10 @@ def payroll_vietha_edit(request, pk):
         if list_contracts.count() != 0:
             if list_contracts[0].contract_type == contract_type_CT or list_contracts[0].contract_type == contract_type_CTminus:
                 sum_K_X = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(responsibility) + float(outstanding_annual_leave) + float(bonus_open_new_pharmacy) + float(other) + float(incentive_last_quy_last_year) + float(incentive_last_month) + float(yearly_incentive_last_year) + float(month_13_salary_Pro_ata)
-                taxable_income = sum_K_X + float(occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs) - float(lunch)
+                taxable_income = sum_K_X + float(occupational_accident_and_disease) - float(lunch)
             else:
                 sum_K_X = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(responsibility) + float(outstanding_annual_leave) + float(bonus_open_new_pharmacy) + float(other) + float(incentive_last_quy_last_year) + float(incentive_last_month) + float(yearly_incentive_last_year) + float(month_13_salary_Pro_ata)
-                taxable_income = sum_K_X + float(occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs)
+                taxable_income = sum_K_X + float(occupational_accident_and_disease)
         else: 
             taxable_income = 0   
         # Get taxed_income
@@ -4260,12 +4260,12 @@ def payroll_vietha_edit(request, pk):
         PIT_balance = PIT_this_month - float(PIT_for_13th_salary)
         # Get net_income
         sum_K_W = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(responsibility) + float(outstanding_annual_leave) + float(bonus_open_new_pharmacy) + float(other) + float(incentive_last_quy_last_year) + float(incentive_last_month) + float(yearly_incentive_last_year)
-        net_income = round(sum_K_W + float(occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs) - float(SHUI_10point5percent_employee_pay) - float(PIT_balance), 0)
+        net_income = round(sum_K_W + float(occupational_accident_and_disease) - float(SHUI_10point5percent_employee_pay) - float(PIT_balance), 0)
         # Get transfer_bank
         transfer_bank = request.POST.get('transfer_bank')
         # Get total_cost
         sum_K_W = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(responsibility) + float(outstanding_annual_leave) + float(bonus_open_new_pharmacy) + float(other) + float(incentive_last_quy_last_year) + float(incentive_last_month) + float(yearly_incentive_last_year)
-        total_cost = round(sum_K_W + float(SHUI_21point5percent_company_pay) + float(occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs) + float(trade_union_fee_company_pay) + float(trade_union_fee_staff_pay) + float(transfer_bank),0)
+        total_cost = round(sum_K_W + float(SHUI_21point5percent_company_pay) + float(occupational_accident_and_disease) + float(trade_union_fee_company_pay) + float(trade_union_fee_staff_pay) + float(transfer_bank),0)
         
         # Update and save
         payroll_update_info = Payroll_Vietha(id=payroll_info.id,month=month,employee=employee,newest_salary=newest_salary,working_days=working_days,adjust_percent=adjust_percent,gross_income=gross_income,
@@ -4273,7 +4273,7 @@ def payroll_vietha_edit(request, pk):
                                             outstanding_annual_leave=outstanding_annual_leave,bonus_open_new_pharmacy=bonus_open_new_pharmacy,other=other,
                                             incentive_last_quy_last_year=incentive_last_quy_last_year,incentive_last_month=incentive_last_month,yearly_incentive_last_year=yearly_incentive_last_year,month_13_salary_Pro_ata=month_13_salary_Pro_ata,
                                             SHUI_10point5percent_employee_pay=SHUI_10point5percent_employee_pay,SHUI_21point5percent_company_pay=SHUI_21point5percent_company_pay,
-                                            occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs=occupational_accident_and_disease_Ins_0point5percent_pay_for_staffs,
+                                            occupational_accident_and_disease=occupational_accident_and_disease,
                                             trade_union_fee_company_pay=trade_union_fee_company_pay,trade_union_fee_staff_pay=trade_union_fee_staff_pay,
                                             family_deduction=family_deduction,taxable_income=taxable_income,taxed_income=taxed_income,
                                             PIT_for_13th_salary=PIT_for_13th_salary,PIT_this_month=PIT_this_month,PIT_finalization=PIT_finalization,PIT_balance=PIT_balance,
