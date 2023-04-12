@@ -2787,6 +2787,84 @@ def payroll_tedis(request,pk):
         wb.save(response)
         return response
 
+    
+    # Export pit
+    if request.POST.get('get_pit'):   
+        file_name = str(period_month.month_name) + '_PIT-Tedis.xls'
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
+        # Style
+        # xlwt color url: https://docs.google.com/spreadsheets/d/1ihNaZcUh7961yU7db1-Db0lbws4NT24B7koY8v8GHNQ/pubhtml?gid=1072579560&single=true
+        style_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold off,height 200, name Times New Roman, colour black;' % 'white')
+        style_head_red = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color gray25, top thin;'
+                                    'font: bold off,height 200, name Arial, colour red;' % 'white')
+        style_head_11pt_bold = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                           'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 220, name Times New Roman, colour black; align: horiz center, vert center' % 'white')
+        style_head_11pt_bold.alignment.wrap = 1
+        style_head_11pt_bold_left = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                           'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 220, name Times New Roman, colour black; align: horiz left, vert center' % 'white')
+        style_head_11pt_bold_green = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                           'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 220, name Times New Roman, colour black; align: horiz center, vert center' % 'lime')
+        style_head_small = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 300, colour black;' % 'white')
+        style_table_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 220, colour black; align: horiz center, vert center' % 'pale_blue')
+        style_table_head.alignment.wrap = 1
+        style_normal = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold off, colour black; align: horiz center, vert center' % 'white')
+        style_normal.alignment.wrap = 1
+
+        wb = xlwt.Workbook()
+        ws = wb.add_sheet('Payroll Tedis')
+
+        # Table
+        
+        # Set col width
+        ws.col(0).width = 2000
+        ws.col(1).width = 3500
+        for col in range(2,14):
+            ws.col(col).width = 5000
+        
+        # Set row height
+        ws.row(0).height_mismatch = True
+        ws.row(0).height = 330
+        ws.row(1).height_mismatch = True
+        ws.row(1).height = 670
+
+        
+
+        
+        # Top
+        ws.write_merge(0, 1, 0, 0, 'STT', style_head_11pt_bold)
+        ws.write_merge(0, 1, 1, 1, 'Mã nhân viên', style_head_11pt_bold)
+        ws.write_merge(0, 1, 2, 2, 'Họ và tên', style_head_11pt_bold_left)
+        ws.write_merge(0, 1, 3, 3, 'CCCD', style_head_11pt_bold)
+        ws.write_merge(0, 1, 4, 4, 'MST cá nhân', style_head_11pt_bold)
+        ws.write_merge(0, 0, 5, 8, 'Thu nhập chịu thuế', style_head_11pt_bold)
+        ws.write(1, 5, 'Thu nhập chịu thuế', style_head_11pt_bold_green)
+        ws.write(1, 6, 'Tổng TNCT thuộc diện khấu trừ thuế', style_head_11pt_bold)
+        ws.write(1, 7, 'Bảo hiểm bắt buộc', style_head_11pt_bold)
+        ws.write(1, 8, 'Khấu trừ', style_head_11pt_bold)
+        ws.write_merge(0, 0, 9, 12, 'Thu nhập tính thuế', style_head_11pt_bold)
+        ws.write(1, 9, 'Thu nhập tính thuế', style_head_11pt_bold_green)
+        ws.write(1, 10, 'Thưởng', style_head_11pt_bold)  
+        ws.write(1, 11, 'Khác', style_head_11pt_bold) 
+        ws.write(1, 12, 'Cộng', style_head_11pt_bold)        
+        ws.write_merge(0, 1, 13, 13, 'Thuế TNCN phải nộp', style_head_11pt_bold_green)
+        ws.write_merge(0, 1, 14, 14, 'Ghi Chú', style_head_11pt_bold_left)
+        
+        
+        wb.save(response)
+        return response
+
   
     
     return render(request, 'employee/view_payroll_tedis.html', {
@@ -4487,13 +4565,19 @@ def report_leave(request,pk):
                                     'font: bold 1,height 640, colour black;' % 'white')
         style_table_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
                             'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold 1,height 220, colour black;' % 'white')
+                                    'font: bold 1,height 220, colour black; align: horiz center, vert center' % 'pale_blue')
+        style_table_head.alignment.wrap = 1
         style_normal = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
                             'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold off, colour black;' % 'white')   
+                                    'font: bold off, colour black; align: horiz center, vert center' % 'white')
+        style_normal.alignment.wrap = 1
 
         wb = xlwt.Workbook()
         ws = wb.add_sheet('Leave & OT')
+        
+        # Set col width
+        for col in range(0,10):
+            ws.col(col).width = 5000
 
         # Table
         # Top

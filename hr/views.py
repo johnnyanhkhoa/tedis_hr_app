@@ -14,7 +14,10 @@ def index(request):
     user_info = User.objects.all()
     s_user = request.session.get('s_user')
     employee_pk = s_user[2]
-    employee = Employee.objects.get(pk=employee_pk)
+    try:
+        employee = Employee.objects.get(pk=employee_pk)
+    except Employee.DoesNotExist:
+        employee = 'admin'
         
     return render(request, 'hr/dist/index.html' , {
         'user_info' : user_info,

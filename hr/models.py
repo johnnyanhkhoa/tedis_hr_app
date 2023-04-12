@@ -18,7 +18,7 @@ class Permission(models.Model):
 
 
 class User(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True, blank=True)
     user_id = models.IntegerField(blank=False)
     user_name = models.CharField(max_length=20, blank=False)
     user_password = models.CharField(max_length=100, blank=False)
