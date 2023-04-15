@@ -32,12 +32,16 @@ urlpatterns = [
     path('period/<int:pk>/', views.period, name='period'),
     path('list_time_sheets/<int:pk>/', views.list_time_sheets, name='list_time_sheets'),
     path('pdf_time_sheets/<int:pk>/', views.pdf_time_sheets, name='pdf_time_sheets'),
+    # Payroll
     path('payroll_tedis/<int:pk>/', views.payroll_tedis, name='payroll_tedis'),
     path('payroll_tedis_edit/<int:pk>/', views.payroll_tedis_edit, name='payroll_tedis_edit'),
     path('payroll_tedis_vietha/<int:pk>/', views.payroll_tedis_vietha, name='payroll_tedis_vietha'),
     path('payroll_tedis_vietha_edit/<int:pk>/', views.payroll_tedis_vietha_edit, name='payroll_tedis_vietha_edit'),
     path('payroll_vietha/<int:pk>/', views.payroll_vietha, name='payroll_vietha'),
     path('payroll_vietha_edit/<int:pk>/', views.payroll_vietha_edit, name='payroll_vietha_edit'),
+    # Report Payroll
+    path('report_payroll_tedis/<int:pk>/', views.report_payroll_tedis, name='report_payroll_tedis'),
+    # Report leave
     path('report_leave/<int:pk>/', views.report_leave, name='report_leave'),
     # path('dayoff/', views.dayoff, name='dayoff'),
     

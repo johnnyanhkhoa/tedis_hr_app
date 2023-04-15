@@ -2788,85 +2788,6 @@ def payroll_tedis(request,pk):
         return response
 
     
-    # Export pit
-    if request.POST.get('get_pit'):   
-        file_name = str(period_month.month_name) + '_PIT-Tedis.xls'
-        response = HttpResponse(content_type='application/ms-excel')
-        response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
-        # Style
-        # xlwt color url: https://docs.google.com/spreadsheets/d/1ihNaZcUh7961yU7db1-Db0lbws4NT24B7koY8v8GHNQ/pubhtml?gid=1072579560&single=true
-        style_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                                    'font: bold off,height 200, name Times New Roman, colour black;' % 'white')
-        style_head_red = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                                     'borders: top_color gray25, top thin;'
-                                    'font: bold off,height 200, name Arial, colour red;' % 'white')
-        style_head_11pt_bold = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                                           'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold 1,height 220, name Times New Roman, colour black; align: horiz center, vert center' % 'white')
-        style_head_11pt_bold.alignment.wrap = 1
-        style_head_11pt_bold_left = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                                           'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold 1,height 220, name Times New Roman, colour black; align: horiz left, vert center' % 'white')
-        style_head_11pt_bold_green = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                                           'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold 1,height 220, name Times New Roman, colour black; align: horiz center, vert center' % 'lime')
-        style_head_small = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold 1,height 300, colour black;' % 'white')
-        style_table_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold 1,height 220, colour black; align: horiz center, vert center' % 'pale_blue')
-        style_table_head.alignment.wrap = 1
-        style_normal = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold off, colour black; align: horiz center, vert center' % 'white')
-        style_normal.alignment.wrap = 1
-
-        wb = xlwt.Workbook()
-        ws = wb.add_sheet('Payroll Tedis')
-
-        # Table
-        
-        # Set col width
-        ws.col(0).width = 2000
-        ws.col(1).width = 3500
-        for col in range(2,14):
-            ws.col(col).width = 5000
-        
-        # Set row height
-        ws.row(0).height_mismatch = True
-        ws.row(0).height = 330
-        ws.row(1).height_mismatch = True
-        ws.row(1).height = 670
-
-        
-
-        
-        # Top
-        ws.write_merge(0, 1, 0, 0, 'STT', style_head_11pt_bold)
-        ws.write_merge(0, 1, 1, 1, 'Mã nhân viên', style_head_11pt_bold)
-        ws.write_merge(0, 1, 2, 2, 'Họ và tên', style_head_11pt_bold_left)
-        ws.write_merge(0, 1, 3, 3, 'CCCD', style_head_11pt_bold)
-        ws.write_merge(0, 1, 4, 4, 'MST cá nhân', style_head_11pt_bold)
-        ws.write_merge(0, 0, 5, 8, 'Thu nhập chịu thuế', style_head_11pt_bold)
-        ws.write(1, 5, 'Thu nhập chịu thuế', style_head_11pt_bold_green)
-        ws.write(1, 6, 'Tổng TNCT thuộc diện khấu trừ thuế', style_head_11pt_bold)
-        ws.write(1, 7, 'Bảo hiểm bắt buộc', style_head_11pt_bold)
-        ws.write(1, 8, 'Khấu trừ', style_head_11pt_bold)
-        ws.write_merge(0, 0, 9, 12, 'Thu nhập tính thuế', style_head_11pt_bold)
-        ws.write(1, 9, 'Thu nhập tính thuế', style_head_11pt_bold_green)
-        ws.write(1, 10, 'Thưởng', style_head_11pt_bold)  
-        ws.write(1, 11, 'Khác', style_head_11pt_bold) 
-        ws.write(1, 12, 'Cộng', style_head_11pt_bold)        
-        ws.write_merge(0, 1, 13, 13, 'Thuế TNCN phải nộp', style_head_11pt_bold_green)
-        ws.write_merge(0, 1, 14, 14, 'Ghi Chú', style_head_11pt_bold_left)
-        
-        
-        wb.save(response)
-        return response
-
-  
-    
     return render(request, 'employee/view_payroll_tedis.html', {
         'period_month' : period_month,
         'payrollExist': payrollExist,
@@ -2879,6 +2800,14 @@ def payroll_tedis_edit(request, pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
         return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
     
     # Get payroll info
     payroll_info = Payroll_Tedis.objects.get(pk=pk)
@@ -3552,6 +3481,14 @@ def payroll_tedis_vietha_edit(request, pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
         return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
     
     # Get payroll info
     payroll_info = Payroll_Tedis_Vietha.objects.get(pk=pk)
@@ -4197,6 +4134,14 @@ def payroll_vietha_edit(request, pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
         return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
     
     # Get payroll info
     payroll_info = Payroll_Vietha.objects.get(pk=pk)
@@ -4366,6 +4311,261 @@ def payroll_vietha_edit(request, pk):
     return render(request, 'employee/payroll_vietha_edit.html', {
         'payroll_info' : payroll_info,
         'month_total_working_days' : month_total_working_days,
+        
+    })
+    
+    
+# Payroll report
+def report_payroll_tedis(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
+    # Get month
+    period_month = Month_in_period.objects.get(pk=pk)
+    
+    # Get report data
+    site_RO = Site.objects.get(site='RO')
+    list_employee_tedis = Employee.objects.filter(site=site_RO)
+    # PIT
+    report_pit_payroll = Report_PIT_Payroll_Tedis.objects.filter(employee__in=list_employee_tedis,month=period_month)
+    if report_pit_payroll.count() > 0:
+        report_payrollExist = 1
+    else:
+        report_pit_payroll = ''
+        report_payrollExist = 0    
+    # Transfer HCM
+    report_transfer_payroll = Report_TransferHCM_Payroll_Tedis.objects.filter(employee__in=list_employee_tedis,month=period_month)
+    if report_transfer_payroll.count() > 0:
+        report_payrollExist = 1
+    else:
+        report_transfer_payroll = ''
+        report_payrollExist = 0 
+    # Payment
+    
+    
+    # Create report 
+    if request.POST.get('btn_create_report'): 
+        # Create PIT
+        payroll_tedis = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis,month=period_month)
+        for payroll in payroll_tedis: 
+            # thu_nhap_chiu_thue
+            thu_nhap_chiu_thue = payroll.taxable_income
+            # tong_tnct_khau_tru_thue
+            if payroll.PIT > 0:
+                tong_tnct_khau_tru_thue = payroll.taxable_income
+            else:
+                tong_tnct_khau_tru_thue = 0
+            # bao_hiem_bat_buoc
+            bao_hiem_bat_buoc = payroll.SHUI_10point5percent_employee_pay
+            # khau_tru
+            khau_tru = payroll.family_deduction
+            # thu_nhap_tinh_thue
+            thu_nhap_tinh_thue = payroll.taxed_income
+            # thuong,khac,cong
+            thuong = 0
+            khac = 0
+            cong = 0
+            # thue_tnct_phai_nop
+            thue_tnct_phai_nop = payroll.PIT
+            # ghi_chu 
+            ghi_chu = ''
+            
+            pit_info = Report_PIT_Payroll_Tedis(month=period_month,payroll=payroll,employee=payroll.employee,
+                                                thu_nhap_chiu_thue=thu_nhap_chiu_thue,tong_tnct_khau_tru_thue=tong_tnct_khau_tru_thue,bao_hiem_bat_buoc=bao_hiem_bat_buoc,khau_tru=khau_tru,
+                                                thu_nhap_tinh_thue=thu_nhap_tinh_thue,thuong=thuong,khac=khac,cong=cong,
+                                                thue_tnct_phai_nop=thue_tnct_phai_nop,ghi_chu=ghi_chu)
+            pit_info.save()
+        # Create Report_TransferHCM_Payroll_Tedis
+        payroll_tedis = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis,month=period_month)
+        for payroll in payroll_tedis: 
+            transferHCM_info = Report_TransferHCM_Payroll_Tedis(month=period_month,payroll=payroll,employee=payroll.employee,
+                                                amount=payroll.net_income)
+            transferHCM_info.save()
+            
+        messages.success(request, 'SUCCESS: Report created')
+        return redirect('employee:report_payroll_tedis',pk=period_month.id)
+    
+    
+    # Export report
+    if request.POST.get('export'):   
+        # Export excel
+        file_name = str(period_month.month_number) + ' Salary ' + str(period_month.month_name) + '_TD.xlsx'
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
+        # Style
+        # xlwt color url: https://docs.google.com/spreadsheets/d/1ihNaZcUh7961yU7db1-Db0lbws4NT24B7koY8v8GHNQ/pubhtml?gid=1072579560&single=true
+        style_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold off,height 200, name Times New Roman, colour black;' % 'white')
+        style_head_red = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color gray25, top thin;'
+                                    'font: bold off,height 200, name Arial, colour red;' % 'white')
+        style_head_11pt_bold = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                           'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 220, name Times New Roman, colour black; align: horiz center, vert center' % 'white')
+        style_head_11pt_bold.alignment.wrap = 1
+        style_head_11pt_bold_left = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                           'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 220, name Times New Roman, colour black; align: horiz left, vert center' % 'white')
+        style_head_11pt_bold_green = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                           'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 220, name Times New Roman, colour black; align: horiz center, vert center' % 'lime')
+        style_head_small = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 300, colour black;' % 'white')
+        style_table_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 220, colour black; align: horiz center, vert center' % 'pale_blue')
+        style_table_head.alignment.wrap = 1
+        style_normal = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold off, colour black; align: horiz center, vert center' % 'white')
+        style_normal.alignment.wrap = 1
+
+        wb = xlwt.Workbook()
+        
+        
+        '''Sheet PIT'''
+        # Create sheet
+        ws_PIT = wb.add_sheet('PIT')
+        # Set col width
+        ws_PIT.col(0).width = 2000
+        ws_PIT.col(1).width = 3500
+        for col in range(2,14):
+            ws_PIT.col(col).width = 5000
+        
+        # Set row height
+        ws_PIT.row(0).height_mismatch = True
+        ws_PIT.row(0).height = 330
+        ws_PIT.row(1).height_mismatch = True
+        ws_PIT.row(1).height = 670
+        # Top
+        ws_PIT.write_merge(0, 1, 0, 0, 'STT', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 1, 1, 1, 'Mã nhân viên', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 1, 2, 2, 'Họ và tên', style_head_11pt_bold_left)
+        ws_PIT.write_merge(0, 1, 3, 3, 'CCCD', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 1, 4, 4, 'MST cá nhân', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 0, 5, 8, 'Thu nhập chịu thuế', style_head_11pt_bold)
+        ws_PIT.write(1, 5, 'Thu nhập chịu thuế', style_head_11pt_bold_green)
+        ws_PIT.write(1, 6, 'Tổng TNCT thuộc diện khấu trừ thuế', style_head_11pt_bold)
+        ws_PIT.write(1, 7, 'Bảo hiểm bắt buộc', style_head_11pt_bold)
+        ws_PIT.write(1, 8, 'Khấu trừ', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 0, 9, 12, 'Thu nhập tính thuế', style_head_11pt_bold)
+        ws_PIT.write(1, 9, 'Thu nhập tính thuế', style_head_11pt_bold_green)
+        ws_PIT.write(1, 10, 'Thưởng', style_head_11pt_bold)  
+        ws_PIT.write(1, 11, 'Khác', style_head_11pt_bold) 
+        ws_PIT.write(1, 12, 'Cộng', style_head_11pt_bold)        
+        ws_PIT.write_merge(0, 1, 13, 13, 'Thuế TNCN phải nộp', style_head_11pt_bold_green)
+        ws_PIT.write_merge(0, 1, 14, 14, 'Ghi Chú', style_head_11pt_bold_left)
+        # Body
+        # A
+        ws_PIT.write(2, 0, 'A', style_head_11pt_bold)
+        ws_PIT.write(2, 2, 'Người Việt Nam', style_head_11pt_bold)
+        for col_row2 in range(3,15):
+            ws_PIT.write(2, col_row2, '', style_head_11pt_bold)
+        # PIT data
+        for index, pit_data in enumerate(report_pit_payroll):
+            # Set row height
+            ws_PIT.row(3+index).height_mismatch = True
+            ws_PIT.row(3+index).height = 400
+            # Write data
+            ws_PIT.write(3+index, 0, str(index+1),style_normal)
+            ws_PIT.write(3+index, 1, str(pit_data.employee.employee_code),style_normal)
+            ws_PIT.write(3+index, 2, str(pit_data.employee.full_name),style_normal)
+            ws_PIT.write(3+index, 3, str(pit_data.employee.id_card_no),style_normal)
+            ws_PIT.write(3+index, 4, str(pit_data.employee.personal_income_tax),style_normal)
+            ws_PIT.write(3+index, 5, str("{:,}".format(round(pit_data.thu_nhap_chiu_thue),0)),style_normal)
+            ws_PIT.write(3+index, 6, str("{:,}".format(round(pit_data.tong_tnct_khau_tru_thue),0)),style_normal)
+            ws_PIT.write(3+index, 7, str("{:,}".format(round(pit_data.bao_hiem_bat_buoc),0)),style_normal)
+            ws_PIT.write(3+index, 8, str("{:,}".format(round(pit_data.khau_tru),0)),style_normal)
+            ws_PIT.write(3+index, 9, str("{:,}".format(round(pit_data.thu_nhap_tinh_thue),0)),style_normal)
+            ws_PIT.write(3+index, 10, str("{:,}".format(round(pit_data.thuong),0)),style_normal)
+            ws_PIT.write(3+index, 11, str("{:,}".format(round(pit_data.khac),0)),style_normal)
+            ws_PIT.write(3+index, 12, str("{:,}".format(round(pit_data.cong),0)),style_normal)
+            ws_PIT.write(3+index, 13, str("{:,}".format(round(pit_data.thue_tnct_phai_nop),0)),style_normal)
+            ws_PIT.write(3+index, 14, str(pit_data.ghi_chu),style_normal)
+
+        
+        '''Sheet Transfer HCM'''
+        # Create sheet
+        ws_PIT = wb.add_sheet('Transfer HCM')
+        # Set col width
+        ws_PIT.col(0).width = 2000
+        ws_PIT.col(1).width = 3500
+        for col in range(2,14):
+            ws_PIT.col(col).width = 5000
+        
+        # Set row height
+        ws_PIT.row(0).height_mismatch = True
+        ws_PIT.row(0).height = 330
+        ws_PIT.row(1).height_mismatch = True
+        ws_PIT.row(1).height = 670
+        # Top
+        ws_PIT.write_merge(0, 1, 0, 0, 'STT', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 1, 1, 1, 'Mã nhân viên', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 1, 2, 2, 'Họ và tên', style_head_11pt_bold_left)
+        ws_PIT.write_merge(0, 1, 3, 3, 'CCCD', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 1, 4, 4, 'MST cá nhân', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 0, 5, 8, 'Thu nhập chịu thuế', style_head_11pt_bold)
+        ws_PIT.write(1, 5, 'Thu nhập chịu thuế', style_head_11pt_bold_green)
+        ws_PIT.write(1, 6, 'Tổng TNCT thuộc diện khấu trừ thuế', style_head_11pt_bold)
+        ws_PIT.write(1, 7, 'Bảo hiểm bắt buộc', style_head_11pt_bold)
+        ws_PIT.write(1, 8, 'Khấu trừ', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 0, 9, 12, 'Thu nhập tính thuế', style_head_11pt_bold)
+        ws_PIT.write(1, 9, 'Thu nhập tính thuế', style_head_11pt_bold_green)
+        ws_PIT.write(1, 10, 'Thưởng', style_head_11pt_bold)  
+        ws_PIT.write(1, 11, 'Khác', style_head_11pt_bold) 
+        ws_PIT.write(1, 12, 'Cộng', style_head_11pt_bold)        
+        ws_PIT.write_merge(0, 1, 13, 13, 'Thuế TNCN phải nộp', style_head_11pt_bold_green)
+        ws_PIT.write_merge(0, 1, 14, 14, 'Ghi Chú', style_head_11pt_bold_left)
+        # Body
+        # A
+        ws_PIT.write(2, 0, 'A', style_head_11pt_bold)
+        ws_PIT.write(2, 2, 'Người Việt Nam', style_head_11pt_bold)
+        for col_row2 in range(3,15):
+            ws_PIT.write(2, col_row2, '', style_head_11pt_bold)
+        # PIT data
+        for index, pit_data in enumerate(report_pit_payroll):
+            # Set row height
+            ws_PIT.row(3+index).height_mismatch = True
+            ws_PIT.row(3+index).height = 400
+            # Write data
+            ws_PIT.write(3+index, 0, str(index+1),style_normal)
+            ws_PIT.write(3+index, 1, str(pit_data.employee.employee_code),style_normal)
+            ws_PIT.write(3+index, 2, str(pit_data.employee.full_name),style_normal)
+            ws_PIT.write(3+index, 3, str(pit_data.employee.id_card_no),style_normal)
+            ws_PIT.write(3+index, 4, str(pit_data.employee.personal_income_tax),style_normal)
+            ws_PIT.write(3+index, 5, str("{:,}".format(round(pit_data.thu_nhap_chiu_thue),0)),style_normal)
+            ws_PIT.write(3+index, 6, str("{:,}".format(round(pit_data.tong_tnct_khau_tru_thue),0)),style_normal)
+            ws_PIT.write(3+index, 7, str("{:,}".format(round(pit_data.bao_hiem_bat_buoc),0)),style_normal)
+            ws_PIT.write(3+index, 8, str("{:,}".format(round(pit_data.khau_tru),0)),style_normal)
+            ws_PIT.write(3+index, 9, str("{:,}".format(round(pit_data.thu_nhap_tinh_thue),0)),style_normal)
+            ws_PIT.write(3+index, 10, str("{:,}".format(round(pit_data.thuong),0)),style_normal)
+            ws_PIT.write(3+index, 11, str("{:,}".format(round(pit_data.khac),0)),style_normal)
+            ws_PIT.write(3+index, 12, str("{:,}".format(round(pit_data.cong),0)),style_normal)
+            ws_PIT.write(3+index, 13, str("{:,}".format(round(pit_data.thue_tnct_phai_nop),0)),style_normal)
+            ws_PIT.write(3+index, 14, str(pit_data.ghi_chu),style_normal)
+            
+        
+        wb.save(response)
+        return response
+        
+        
+        
+    
+    return render(request, 'employee/view_report_payroll_tedis.html', {
+        'period_month' : period_month,
+        'report_payrollExist' : report_payrollExist,
+        'report_pit_payroll' : report_pit_payroll,
+        'report_transfer_payroll' : report_transfer_payroll,
         
     })
     
