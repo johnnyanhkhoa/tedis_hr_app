@@ -22,7 +22,8 @@ import json
 from django.core.serializers import serialize
 # XLWT
 import xlwt
-from io import StringIO
+from io import StringIO, BytesIO
+from PIL import Image
 # Random
 import random
 # Math
@@ -2325,16 +2326,17 @@ def payroll_tedis(request,pk):
     period_month = Month_in_period.objects.get(pk=pk)
     
     
-    # Get payroll data
+    # Get payroll HCM data
     site_RO = Site.objects.get(site='RO')
-    list_employee_tedis = Employee.objects.filter(site=site_RO)
+    area_HCM = Area.objects.get(area='HCMC')
+    list_employee_tedis_HCM = Employee.objects.filter(site=site_RO, area=area_HCM)
     # Get total_working_days
     list_work_days = Daily_work.objects.filter(month=period_month,weekend=False,holiday=False)
-    daily_work_info = Daily_work_for_employee.objects.filter(employee=list_employee_tedis[0], daily_work__in=list_work_days)
+    daily_work_info = Daily_work_for_employee.objects.filter(employee=list_employee_tedis_HCM[0], daily_work__in=list_work_days)
     total_working_day = daily_work_info.count()
     # Create payroll dict
-    list_payroll_info = []
-    for employee in list_employee_tedis:
+    list_payroll_HCM_info = []
+    for employee in list_employee_tedis_HCM:
         try:
             payroll_info = Payroll_Tedis.objects.get(employee=employee,month=period_month)
             payrollExist = 1
@@ -2349,18 +2351,49 @@ def payroll_tedis(request,pk):
                 
                 
             }
-            list_payroll_info.append(data)
+            list_payroll_HCM_info.append(data)
+        except Payroll_Tedis.DoesNotExist:
+            payrollExist = 0
+            
+    # Get payroll HANOI data
+    site_RO = Site.objects.get(site='RO')
+    area_HANOI = Area.objects.get(area='HANOI')
+    list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+    # Get total_working_days
+    list_work_days = Daily_work.objects.filter(month=period_month,weekend=False,holiday=False)
+    daily_work_info = Daily_work_for_employee.objects.filter(employee=list_employee_tedis_HANOI[0], daily_work__in=list_work_days)
+    total_working_day = daily_work_info.count()
+    # Create payroll dict
+    list_payroll_HANOI_info = []
+    for employee in list_employee_tedis_HANOI:
+        try:
+            payroll_info = Payroll_Tedis.objects.get(employee=employee,month=period_month)
+            payrollExist = 1
+            # Make data
+            # Get working days
+            list_work_days = Daily_work.objects.filter(month=period_month,weekend=False,holiday=False)
+            daily_work_info = Daily_work_for_employee.objects.filter(employee=employee, daily_work__in=list_work_days)
+            unpaid_leave_info = Daily_work_for_employee.objects.filter(employee=employee,daily_work__in=list_work_days, unpaid_leave__gt=0)
+            working_days = daily_work_info.count() - unpaid_leave_info.count()    
+            data = {
+                'payroll_info': payroll_info,
+                
+                
+            }
+            list_payroll_HANOI_info.append(data)
         except Payroll_Tedis.DoesNotExist:
             payrollExist = 0
         
     # Create payroll data
     if request.POST.get('btn_adjust_percent'):
+        '''Payroll HCM'''
         # Get % Adjust  
         adjust_percent = float(request.POST.get('adjust_percent'))
         
         site_RO = Site.objects.get(site='RO')
-        list_employee_tedis = Employee.objects.filter(site=site_RO)
-        for employee in list_employee_tedis:
+        area_HCM = Area.objects.get(area='HCMC')
+        list_employee_tedis_HCM = Employee.objects.filter(site=site_RO, area=area_HCM)
+        for employee in list_employee_tedis_HCM:
             # Get Salary info
             list_contracts = Employee_contract.objects.filter(employee=employee).order_by('-created_at')
             if list_contracts.count() == 0:
@@ -2538,6 +2571,159 @@ def payroll_tedis(request,pk):
                                                   trade_union_fee_company_pay_2percent=trade_union_fee_company_pay_2percent,trade_union_fee_member=trade_union_fee_member,
                                                   family_deduction=family_deduction,taxable_income=taxable_income,taxed_income=taxed_income,PIT=PIT,deduct=deduct,net_income=net_income,transfer_bank=transfer_bank,total_cost=total_cost)
             payroll_employee_info.save()
+        
+        
+        '''Payroll HANOI'''
+        # Get % Adjust  
+        adjust_percent = float(request.POST.get('adjust_percent'))
+        
+        site_RO = Site.objects.get(site='RO')
+        area_HANOI = Area.objects.get(area='HANOI')
+        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+        for employee in list_employee_tedis_HANOI:
+            # Get Salary info
+            list_contracts = Employee_contract.objects.filter(employee=employee).order_by('-created_at')
+            if list_contracts.count() == 0:
+                newest_salary = 0
+            else:
+                newest_salary = list_contracts[0].basic_salary
+            # Get working days
+            list_work_days = Daily_work.objects.filter(month=period_month,weekend=False,holiday=False)
+            daily_work_info = Daily_work_for_employee.objects.filter(employee=employee, daily_work__in=list_work_days)
+            unpaid_leave_info = Daily_work_for_employee.objects.filter(employee=employee,daily_work__in=list_work_days, unpaid_leave__gt=0)
+            working_days = daily_work_info.count() - unpaid_leave_info.count()
+            total_working_day = daily_work_info.count()
+            # Get gross income
+            gross_income = round(float(newest_salary) * float(adjust_percent)/100 * float(working_days)/float(total_working_day),0)
+            # Get salary_recuperation
+            salary_recuperation = 0
+            # Get OT hour to pay salary
+            ot_applications = Overtime_application.objects.filter(employee=employee,application_date__month=period_month.month_number,application_date__year=period_month.period.period_year, ot_paid_hour__gt=0)
+            total_paid_hour = 0
+            for application in ot_applications:
+                total_paid_hour += application.ot_paid_hour
+            salary_per_hour = newest_salary/total_working_day/8
+            overtime = round(salary_per_hour * total_paid_hour,0)
+            # Get transportation, phone, lunch, training_fee, toxic_allowance, travel, responsibility, seniority_bonus
+            if list_contracts.count() == 0:
+                transportation = 0
+                phone = 0
+                lunch = 0
+                training_fee = 0
+                toxic_allowance = 0
+                travel = 0
+                responsibility = 0
+                seniority_bonus = 0
+            else:
+                transportation = round(list_contracts[0].transportation_support * working_days / total_working_day)
+                phone = round(list_contracts[0].telephone_support * working_days / total_working_day)
+                lunch = round(list_contracts[0].lunch_support * working_days / total_working_day)
+                training_fee = 0
+                toxic_allowance = 0
+                travel = round(list_contracts[0].travel_support * working_days / total_working_day)
+                responsibility = round(list_contracts[0].responsibility_allowance * working_days / total_working_day)
+                seniority_bonus = round(list_contracts[0].seniority_bonus * working_days / total_working_day)
+            # Get other, total_allowance_recuperation, benefits, severance_allowance, outstanding_annual_leave, month_13_salary_Pro_ata
+            other = 0
+            total_allowance_recuperation = 0
+            benefits = 0
+            severance_allowance = 0 
+            outstanding_annual_leave = 0
+            month_13_salary_Pro_ata = 0
+            # Get SHUI_10point5percent_employee_pay
+            combo = newest_salary + responsibility
+            # 1st if
+            if combo > 29800000:
+                first_value = 29800000 * 0.095
+            else: 
+                first_value = combo * 0.095
+            
+            # 2nd if
+            if combo > 93600000:
+                second_value = 93600000 * 0.01
+            else: 
+                second_value = combo * 0.01
+            SHUI_10point5percent_employee_pay = round(first_value + second_value,0)
+            # Get recuperation_of_SHU_Ins_10point5percent_staff_pay
+            recuperation_of_SHU_Ins_10point5percent_staff_pay = 0
+            # Get SHUI_21point5percent_company_pay
+            combo = newest_salary + responsibility
+            # 1st if
+            if combo > 29800000:
+                first_value = 29800000 * 0.205
+            else: 
+                first_value = combo * 0.205
+            
+            # 2nd if
+            if combo > 93600000:
+                second_value = 93600000 * 0.01
+            else: 
+                second_value = combo * 0.01
+            SHUI_21point5percent_company_pay = round(first_value + second_value,0)
+            # Get recuperation_of_SHU_Ins_21point5percent_company_pay
+            recuperation_of_SHU_Ins_21point5percent_company_pay = 0
+            # Get occupational_accident_and_disease
+            occupational_accident_and_disease = 0
+            # Get trade_union_fee_company_pay_2percent
+            if SHUI_10point5percent_employee_pay > 0: 
+                if newest_salary > 29800000:
+                    SalarytoBH = 29800000
+                else:
+                    SalarytoBH = newest_salary
+            else:
+                SalarytoBH = 0
+            trade_union_fee_company_pay_2percent = round(SalarytoBH * 2/100)
+            # Get trade_union_fee_member
+            trade_union_fee_member = 0
+            # Get family_deduction
+            list_of_dependents = Employee_children.objects.filter(employee=employee)
+            number_of_dependents = list_of_dependents.count()
+            family_deduction = 11000000 + (number_of_dependents * 4400000)
+            # Get taxable_income
+            sum_K_AA = gross_income + salary_recuperation + overtime + transportation + phone + lunch + training_fee + toxic_allowance + travel + responsibility + seniority_bonus + other + total_allowance_recuperation + benefits + severance_allowance + outstanding_annual_leave + month_13_salary_Pro_ata
+            taxable_income = sum_K_AA - lunch + occupational_accident_and_disease
+            # Get taxed_income
+            if taxable_income - SHUI_10point5percent_employee_pay - recuperation_of_SHU_Ins_10point5percent_staff_pay - family_deduction < 0:
+                taxed_income = 0
+            else:
+                taxed_income = taxable_income - SHUI_10point5percent_employee_pay - recuperation_of_SHU_Ins_10point5percent_staff_pay - family_deduction
+            # Get PIT
+            if 5000000 < taxed_income <= 10000000:
+                PIT_before_round = (taxed_income * 0.1) - 250000
+            elif 10000000 < taxed_income <= 18000000:
+                PIT_before_round = (taxed_income * 0.15) - 750000
+            elif 18000000 < taxed_income <= 32000000:
+                PIT_before_round = (taxed_income * 0.2) - 1650000
+            elif 32000000 < taxed_income <= 52000000:
+                PIT_before_round = (taxed_income * 0.25) - 3250000
+            elif 52000000 < taxed_income <= 80000000:
+                PIT_before_round = (taxed_income * 0.3) - 5850000
+            elif taxed_income > 80000000:
+                PIT_before_round = (taxed_income * 0.35) - 9850000
+            else: 
+                PIT_before_round = taxed_income * 0.05
+            PIT = round(PIT_before_round)
+            # Get deduct
+            deduct = 0
+            # Get net_income
+            sum_K_AA = gross_income + salary_recuperation + overtime + transportation + phone + lunch + training_fee + toxic_allowance + travel + responsibility + seniority_bonus + other + total_allowance_recuperation + benefits + severance_allowance + outstanding_annual_leave + month_13_salary_Pro_ata
+            net_income = sum_K_AA + occupational_accident_and_disease - SHUI_10point5percent_employee_pay - recuperation_of_SHU_Ins_10point5percent_staff_pay - PIT - deduct
+            # Get transfer_bank
+            transfer_bank = 0
+            # Get total_cost
+            sum_K_AA = gross_income + salary_recuperation + overtime + transportation + phone + lunch + training_fee + toxic_allowance + travel + responsibility + seniority_bonus + other + total_allowance_recuperation + benefits + severance_allowance + outstanding_annual_leave + month_13_salary_Pro_ata
+            total_cost = round((sum_K_AA + SHUI_21point5percent_company_pay + recuperation_of_SHU_Ins_21point5percent_company_pay + occupational_accident_and_disease + trade_union_fee_company_pay_2percent + trade_union_fee_member),0)
+            
+
+    
+            
+            payroll_employee_info = Payroll_Tedis(month=period_month,employee=employee,newest_salary=newest_salary,working_days=working_days,adjust_percent=adjust_percent,
+                                                  gross_income=gross_income,salary_recuperation=salary_recuperation,overtime=overtime,transportation=transportation,phone=phone,lunch=lunch, training_fee=training_fee, toxic_allowance=toxic_allowance, travel=travel,responsibility=responsibility,seniority_bonus=seniority_bonus,
+                                                  other=other,total_allowance_recuperation=total_allowance_recuperation,benefits=benefits,severance_allowance=severance_allowance,outstanding_annual_leave=outstanding_annual_leave,month_13_salary_Pro_ata=month_13_salary_Pro_ata, 
+                                                  recuperation_of_SHU_Ins_10point5percent_staff_pay=recuperation_of_SHU_Ins_10point5percent_staff_pay,SHUI_10point5percent_employee_pay=SHUI_10point5percent_employee_pay,recuperation_of_SHU_Ins_21point5percent_company_pay=recuperation_of_SHU_Ins_21point5percent_company_pay,SHUI_21point5percent_company_pay=SHUI_21point5percent_company_pay,occupational_accident_and_disease=occupational_accident_and_disease,
+                                                  trade_union_fee_company_pay_2percent=trade_union_fee_company_pay_2percent,trade_union_fee_member=trade_union_fee_member,
+                                                  family_deduction=family_deduction,taxable_income=taxable_income,taxed_income=taxed_income,PIT=PIT,deduct=deduct,net_income=net_income,transfer_bank=transfer_bank,total_cost=total_cost)
+            payroll_employee_info.save()
         messages.success(request, 'SUCCESS: Payroll created')
         return redirect('employee:payroll_tedis',pk=period_month.id)
             
@@ -2567,66 +2753,69 @@ def payroll_tedis(request,pk):
         style_normal.alignment.wrap = 1
 
         wb = xlwt.Workbook()
-        ws = wb.add_sheet('Payroll Tedis')
+        
+        '''Sheet Payroll HCM'''
+        HCM_sheet_name = str(period_month.month_name) + ' HCM'
+        ws_HCM = wb.add_sheet(HCM_sheet_name)
 
         # Table
         
         # Set col width
         for col in range(0,41):
-            ws.col(col).width = 5000
+            ws_HCM.col(col).width = 5000
         
 
         
         # Top
-        ws.write_merge(0, 0, 0, 6, 'TEDIS REP. OFFICE IN HO CHI MINH', style_head)
-        ws.write(1, 0, 'Room 2B, Floor 2 & 4 - 150 Nguyen Luong Bang, Tan Phu Ward, District 7', style_head_small)
-        ws.write_merge(0, 0, 9, 11, 'PAYROLL IN ' + str(period_month.month_name),style_head)
+        ws_HCM.write_merge(0, 0, 0, 6, 'TEDIS REP. OFFICE IN HO CHI MINH', style_head)
+        ws_HCM.write(1, 0, 'Room 2B, Floor 2 & 4 - 150 Nguyen Luong Bang, Tan Phu Ward, District 7', style_head_small)
+        ws_HCM.write_merge(0, 0, 9, 11, 'PAYROLL IN ' + str(period_month.month_name),style_head)
         
         # Body
         # Set row height
-        ws.row(2).set_style(xlwt.easyxf('font:height 500;'))
+        ws_HCM.row(2).set_style(xlwt.easyxf('font:height 500;'))
         # Body head
-        ws.write(2, 0, 'No.', style_table_head)
-        ws.write(2, 1, 'Employee code', style_table_head)
-        ws.write(2, 2, 'Full name', style_table_head)
-        ws.write(2, 3, 'Joining Date', style_table_head)
-        ws.write(2, 4, 'Department/Area', style_table_head)
-        ws.write(2, 5, 'Job Title', style_table_head)
-        ws.write(2, 6, 'Salary ' + str(period_month.period.period_year) + ' (VND)', style_table_head)
-        ws.write(2, 7, 'Working days', style_table_head)
-        ws.write(2, 8, '% Adjust', style_table_head)
-        ws.write(2, 9, 'Gross Income', style_table_head)
-        ws.write(2, 10, 'Salary recuperation', style_table_head)
-        ws.write(2, 11, 'Overtime', style_table_head)
-        ws.write(2, 12, 'Transportation', style_table_head)
-        ws.write(2, 13, 'Phone', style_table_head)
-        ws.write(2, 14, 'Lunch', style_table_head)
-        ws.write(2, 15, 'Training fee', style_table_head)
-        ws.write(2, 16, 'Toxic Allowance', style_table_head)
-        ws.write(2, 17, 'Travel', style_table_head)
-        ws.write(2, 18, 'Responsibility', style_table_head)
-        ws.write(2, 19, 'Seniority Bonus', style_table_head)
-        ws.write(2, 20, 'Other', style_table_head)
-        ws.write(2, 21, 'Total allowance recuperation', style_table_head)
-        ws.write(2, 22, 'Benefits', style_table_head)
-        ws.write(2, 23, 'Severance Allowance', style_table_head)
-        ws.write(2, 24, 'Outstanding annual leave', style_table_head)
-        ws.write(2, 25, '13th salary (pro-rata)', style_table_head)
-        ws.write(2, 26, 'SHUI(10.5%)(Employee pay)', style_table_head)
-        ws.write(2, 27, 'Recuperation of SHU Ins.(10.5%)(staff pay)', style_table_head)
-        ws.write(2, 28, 'SHUI(21.5%)(Company pay)', style_table_head)
-        ws.write(2, 29, 'Recuperation of SHU Ins.(21.5%)(Company pay)', style_table_head)
-        ws.write(2, 30, 'Occupational accident and disease Ins.(0.5%)(Pay for staffs)', style_table_head)
-        ws.write(2, 31, 'Trade Union fee (Company pay 2%)', style_table_head)
-        ws.write(2, 32, 'Trade Union fee (Employee pay)', style_table_head)
-        ws.write(2, 33, 'Family deduction', style_table_head)
-        ws.write(2, 34, 'Taxable Income', style_table_head)
-        ws.write(2, 35, 'Taxed Income', style_table_head)
-        ws.write(2, 36, 'PIT', style_table_head)
-        ws.write(2, 37, 'Deduct', style_table_head)
-        ws.write(2, 38, 'Net Income', style_table_head)
-        ws.write(2, 39, 'Transfer Bank', style_table_head)
-        ws.write(2, 40, 'Total Cost', style_table_head)
+        ws_HCM.write(2, 0, 'No.', style_table_head)
+        ws_HCM.write(2, 1, 'Employee code', style_table_head)
+        ws_HCM.write(2, 2, 'Full name', style_table_head)
+        ws_HCM.write(2, 3, 'Joining Date', style_table_head)
+        ws_HCM.write(2, 4, 'Department/Area', style_table_head)
+        ws_HCM.write(2, 5, 'Job Title', style_table_head)
+        ws_HCM.write(2, 6, 'Salary ' + str(period_month.period.period_year) + ' (VND)', style_table_head)
+        ws_HCM.write(2, 7, 'Working days', style_table_head)
+        ws_HCM.write(2, 8, '% Adjust', style_table_head)
+        ws_HCM.write(2, 9, 'Gross Income', style_table_head)
+        ws_HCM.write(2, 10, 'Salary recuperation', style_table_head)
+        ws_HCM.write(2, 11, 'Overtime', style_table_head)
+        ws_HCM.write(2, 12, 'Transportation', style_table_head)
+        ws_HCM.write(2, 13, 'Phone', style_table_head)
+        ws_HCM.write(2, 14, 'Lunch', style_table_head)
+        ws_HCM.write(2, 15, 'Training fee', style_table_head)
+        ws_HCM.write(2, 16, 'Toxic Allowance', style_table_head)
+        ws_HCM.write(2, 17, 'Travel', style_table_head)
+        ws_HCM.write(2, 18, 'Responsibility', style_table_head)
+        ws_HCM.write(2, 19, 'Seniority Bonus', style_table_head)
+        ws_HCM.write(2, 20, 'Other', style_table_head)
+        ws_HCM.write(2, 21, 'Total allowance recuperation', style_table_head)
+        ws_HCM.write(2, 22, 'Benefits', style_table_head)
+        ws_HCM.write(2, 23, 'Severance Allowance', style_table_head)
+        ws_HCM.write(2, 24, 'Outstanding annual leave', style_table_head)
+        ws_HCM.write(2, 25, '13th salary (pro-rata)', style_table_head)
+        ws_HCM.write(2, 26, 'SHUI(10.5%)(Employee pay)', style_table_head)
+        ws_HCM.write(2, 27, 'Recuperation of SHU Ins.(10.5%)(staff pay)', style_table_head)
+        ws_HCM.write(2, 28, 'SHUI(21.5%)(Company pay)', style_table_head)
+        ws_HCM.write(2, 29, 'Recuperation of SHU Ins.(21.5%)(Company pay)', style_table_head)
+        ws_HCM.write(2, 30, 'Occupational accident and disease Ins.(0.5%)(Pay for staffs)', style_table_head)
+        ws_HCM.write(2, 31, 'Trade Union fee (Company pay 2%)', style_table_head)
+        ws_HCM.write(2, 32, 'Trade Union fee (Employee pay)', style_table_head)
+        ws_HCM.write(2, 33, 'Family deduction', style_table_head)
+        ws_HCM.write(2, 34, 'Taxable Income', style_table_head)
+        ws_HCM.write(2, 35, 'Taxed Income', style_table_head)
+        ws_HCM.write(2, 36, 'PIT', style_table_head)
+        ws_HCM.write(2, 37, 'Deduct', style_table_head)
+        ws_HCM.write(2, 38, 'Net Income', style_table_head)
+        ws_HCM.write(2, 39, 'Transfer Bank', style_table_head)
+        ws_HCM.write(2, 40, 'Total Cost', style_table_head)
         
         # Body
         # Create total var
@@ -2664,51 +2853,51 @@ def payroll_tedis(request,pk):
         tttransfer_bank = 0
         tttotal_cost = 0
         
-        for index, data in enumerate(list_payroll_info):
+        for index, data in enumerate(list_payroll_HCM_info):
             # Set row height
-            ws.row(3+index).set_style(xlwt.easyxf('font:height 500;'))
+            ws_HCM.row(3+index).set_style(xlwt.easyxf('font:height 500;'))
             # Write data
-            ws.write(3+index, 0, str(index+1),style_normal)
-            ws.write(3+index, 1, str(data['payroll_info'].employee.employee_code),style_normal)
-            ws.write(3+index, 2, str(data['payroll_info'].employee.full_name),style_normal)
-            ws.write(3+index, 3, str(data['payroll_info'].employee.joining_date.strftime('%d/%m/%Y')),style_normal)
-            ws.write(3+index, 4, str(data['payroll_info'].employee.department_e),style_normal)
-            ws.write(3+index, 5, str(data['payroll_info'].employee.position_e),style_normal)
-            ws.write(3+index, 6, str("{:,}".format(data['payroll_info'].newest_salary)),style_normal)
-            ws.write(3+index, 7, str(data['payroll_info'].working_days),style_normal)
-            ws.write(3+index, 8, str(data['payroll_info'].adjust_percent) + '%',style_normal)
-            ws.write(3+index, 9, str("{:,}".format(data['payroll_info'].gross_income)),style_normal)
-            ws.write(3+index, 10, str("{:,}".format(data['payroll_info'].salary_recuperation)),style_normal)
-            ws.write(3+index, 11, str("{:,}".format(data['payroll_info'].overtime)),style_normal)
-            ws.write(3+index, 12, str("{:,}".format(data['payroll_info'].transportation)),style_normal)
-            ws.write(3+index, 13, str("{:,}".format(data['payroll_info'].phone)),style_normal)
-            ws.write(3+index, 14, str("{:,}".format(data['payroll_info'].lunch)),style_normal)
-            ws.write(3+index, 15, str("{:,}".format(data['payroll_info'].training_fee)),style_normal)
-            ws.write(3+index, 16, str("{:,}".format(data['payroll_info'].toxic_allowance)),style_normal)
-            ws.write(3+index, 17, str("{:,}".format(data['payroll_info'].travel)),style_normal)
-            ws.write(3+index, 18, str("{:,}".format(data['payroll_info'].responsibility)),style_normal)
-            ws.write(3+index, 19, str("{:,}".format(data['payroll_info'].seniority_bonus)),style_normal)
-            ws.write(3+index, 20, str("{:,}".format(data['payroll_info'].other)),style_normal)
-            ws.write(3+index, 21, str("{:,}".format(data['payroll_info'].total_allowance_recuperation)),style_normal)
-            ws.write(3+index, 22, str("{:,}".format(data['payroll_info'].benefits)),style_normal)
-            ws.write(3+index, 23, str("{:,}".format(data['payroll_info'].severance_allowance)),style_normal)
-            ws.write(3+index, 24, str("{:,}".format(data['payroll_info'].outstanding_annual_leave)),style_normal)
-            ws.write(3+index, 25, str("{:,}".format(data['payroll_info'].month_13_salary_Pro_ata)),style_normal)
-            ws.write(3+index, 26, str("{:,}".format(data['payroll_info'].SHUI_10point5percent_employee_pay)),style_normal)
-            ws.write(3+index, 27, str("{:,}".format(data['payroll_info'].recuperation_of_SHU_Ins_10point5percent_staff_pay)),style_normal)
-            ws.write(3+index, 28, str("{:,}".format(data['payroll_info'].SHUI_21point5percent_company_pay)),style_normal)
-            ws.write(3+index, 29, str("{:,}".format(data['payroll_info'].recuperation_of_SHU_Ins_21point5percent_company_pay)),style_normal)
-            ws.write(3+index, 30, str("{:,}".format(data['payroll_info'].occupational_accident_and_disease)),style_normal)
-            ws.write(3+index, 31, str("{:,}".format(data['payroll_info'].trade_union_fee_company_pay_2percent)),style_normal)
-            ws.write(3+index, 32, str("{:,}".format(data['payroll_info'].trade_union_fee_member)),style_normal)
-            ws.write(3+index, 33, str("{:,}".format(data['payroll_info'].family_deduction)),style_normal)
-            ws.write(3+index, 34, str("{:,}".format(data['payroll_info'].taxable_income)),style_normal)
-            ws.write(3+index, 35, str("{:,}".format(data['payroll_info'].taxed_income)),style_normal)
-            ws.write(3+index, 36, str("{:,}".format(data['payroll_info'].PIT)),style_normal)
-            ws.write(3+index, 37, str("{:,}".format(data['payroll_info'].deduct)),style_normal)
-            ws.write(3+index, 38, str("{:,}".format(data['payroll_info'].net_income)),style_normal)
-            ws.write(3+index, 39, str("{:,}".format(data['payroll_info'].transfer_bank)),style_normal)
-            ws.write(3+index, 40, str("{:,}".format(data['payroll_info'].total_cost)),style_normal)
+            ws_HCM.write(3+index, 0, str(index+1),style_normal)
+            ws_HCM.write(3+index, 1, str(data['payroll_info'].employee.employee_code),style_normal)
+            ws_HCM.write(3+index, 2, str(data['payroll_info'].employee.full_name),style_normal)
+            ws_HCM.write(3+index, 3, str(data['payroll_info'].employee.joining_date.strftime('%d/%m/%Y')),style_normal)
+            ws_HCM.write(3+index, 4, str(data['payroll_info'].employee.department_e),style_normal)
+            ws_HCM.write(3+index, 5, str(data['payroll_info'].employee.position_e),style_normal)
+            ws_HCM.write(3+index, 6, str("{:,}".format(data['payroll_info'].newest_salary)),style_normal)
+            ws_HCM.write(3+index, 7, str(data['payroll_info'].working_days),style_normal)
+            ws_HCM.write(3+index, 8, str(data['payroll_info'].adjust_percent) + '%',style_normal)
+            ws_HCM.write(3+index, 9, str("{:,}".format(data['payroll_info'].gross_income)),style_normal)
+            ws_HCM.write(3+index, 10, str("{:,}".format(data['payroll_info'].salary_recuperation)),style_normal)
+            ws_HCM.write(3+index, 11, str("{:,}".format(data['payroll_info'].overtime)),style_normal)
+            ws_HCM.write(3+index, 12, str("{:,}".format(data['payroll_info'].transportation)),style_normal)
+            ws_HCM.write(3+index, 13, str("{:,}".format(data['payroll_info'].phone)),style_normal)
+            ws_HCM.write(3+index, 14, str("{:,}".format(data['payroll_info'].lunch)),style_normal)
+            ws_HCM.write(3+index, 15, str("{:,}".format(data['payroll_info'].training_fee)),style_normal)
+            ws_HCM.write(3+index, 16, str("{:,}".format(data['payroll_info'].toxic_allowance)),style_normal)
+            ws_HCM.write(3+index, 17, str("{:,}".format(data['payroll_info'].travel)),style_normal)
+            ws_HCM.write(3+index, 18, str("{:,}".format(data['payroll_info'].responsibility)),style_normal)
+            ws_HCM.write(3+index, 19, str("{:,}".format(data['payroll_info'].seniority_bonus)),style_normal)
+            ws_HCM.write(3+index, 20, str("{:,}".format(data['payroll_info'].other)),style_normal)
+            ws_HCM.write(3+index, 21, str("{:,}".format(data['payroll_info'].total_allowance_recuperation)),style_normal)
+            ws_HCM.write(3+index, 22, str("{:,}".format(data['payroll_info'].benefits)),style_normal)
+            ws_HCM.write(3+index, 23, str("{:,}".format(data['payroll_info'].severance_allowance)),style_normal)
+            ws_HCM.write(3+index, 24, str("{:,}".format(data['payroll_info'].outstanding_annual_leave)),style_normal)
+            ws_HCM.write(3+index, 25, str("{:,}".format(data['payroll_info'].month_13_salary_Pro_ata)),style_normal)
+            ws_HCM.write(3+index, 26, str("{:,}".format(data['payroll_info'].SHUI_10point5percent_employee_pay)),style_normal)
+            ws_HCM.write(3+index, 27, str("{:,}".format(data['payroll_info'].recuperation_of_SHU_Ins_10point5percent_staff_pay)),style_normal)
+            ws_HCM.write(3+index, 28, str("{:,}".format(data['payroll_info'].SHUI_21point5percent_company_pay)),style_normal)
+            ws_HCM.write(3+index, 29, str("{:,}".format(data['payroll_info'].recuperation_of_SHU_Ins_21point5percent_company_pay)),style_normal)
+            ws_HCM.write(3+index, 30, str("{:,}".format(data['payroll_info'].occupational_accident_and_disease)),style_normal)
+            ws_HCM.write(3+index, 31, str("{:,}".format(data['payroll_info'].trade_union_fee_company_pay_2percent)),style_normal)
+            ws_HCM.write(3+index, 32, str("{:,}".format(data['payroll_info'].trade_union_fee_member)),style_normal)
+            ws_HCM.write(3+index, 33, str("{:,}".format(data['payroll_info'].family_deduction)),style_normal)
+            ws_HCM.write(3+index, 34, str("{:,}".format(data['payroll_info'].taxable_income)),style_normal)
+            ws_HCM.write(3+index, 35, str("{:,}".format(data['payroll_info'].taxed_income)),style_normal)
+            ws_HCM.write(3+index, 36, str("{:,}".format(data['payroll_info'].PIT)),style_normal)
+            ws_HCM.write(3+index, 37, str("{:,}".format(data['payroll_info'].deduct)),style_normal)
+            ws_HCM.write(3+index, 38, str("{:,}".format(data['payroll_info'].net_income)),style_normal)
+            ws_HCM.write(3+index, 39, str("{:,}".format(data['payroll_info'].transfer_bank)),style_normal)
+            ws_HCM.write(3+index, 40, str("{:,}".format(data['payroll_info'].total_cost)),style_normal)
             # Get total line data
             last_row = 3+index+1
             ttnewest_salary += data['payroll_info'].newest_salary
@@ -2745,42 +2934,260 @@ def payroll_tedis(request,pk):
             tttransfer_bank += data['payroll_info'].transfer_bank
             tttotal_cost += data['payroll_info'].total_cost
         # Total line in bottom of table 
-        ws.write_merge(last_row, last_row, 0, 5, 'TOTAL', style_table_head)
-        ws.write(last_row, 6, str("{:,}".format(ttnewest_salary)),style_table_head)
-        ws.write(last_row, 7, '-',style_table_head)
-        ws.write(last_row, 8, '-',style_table_head)
-        ws.write(last_row, 9, str("{:,}".format(ttgross_income)),style_table_head)
-        ws.write(last_row, 10, str("{:,}".format(ttsalary_recuperation)),style_table_head)
-        ws.write(last_row, 11, str("{:,}".format(ttovertime)),style_table_head)
-        ws.write(last_row, 12, str("{:,}".format(tttransportation)),style_table_head)
-        ws.write(last_row, 13, str("{:,}".format(ttphone)),style_table_head)
-        ws.write(last_row, 14, str("{:,}".format(ttlunch)),style_table_head)
-        ws.write(last_row, 15, str("{:,}".format(tttraining_fee)),style_table_head)
-        ws.write(last_row, 16, str("{:,}".format(tttoxic_allowance)),style_table_head)
-        ws.write(last_row, 17, str("{:,}".format(tttravel)),style_table_head)
-        ws.write(last_row, 18, str("{:,}".format(ttresponsibility)),style_table_head)
-        ws.write(last_row, 19, str("{:,}".format(ttseniority_bonus)),style_table_head)
-        ws.write(last_row, 20, str("{:,}".format(ttother)),style_table_head)
-        ws.write(last_row, 21, str("{:,}".format(tttotal_allowance_recuperation)),style_table_head)
-        ws.write(last_row, 22, str("{:,}".format(ttbenefits)),style_table_head)
-        ws.write(last_row, 23, str("{:,}".format(ttseverance_allowance)),style_table_head)
-        ws.write(last_row, 24, str("{:,}".format(ttoutstanding_annual_leave)),style_table_head)
-        ws.write(last_row, 25, str("{:,}".format(ttmonth_13_salary_Pro_ata)),style_table_head)
-        ws.write(last_row, 26, str("{:,}".format(ttSHUI_10point5percent_employee_pay)),style_table_head)
-        ws.write(last_row, 27, str("{:,}".format(ttrecuperation_of_SHU_Ins_10point5percent_staff_pay)),style_table_head)
-        ws.write(last_row, 28, str("{:,}".format(ttSHUI_21point5percent_company_pay)),style_table_head)
-        ws.write(last_row, 29, str("{:,}".format(ttrecuperation_of_SHU_Ins_21point5percent_company_pay)),style_table_head)
-        ws.write(last_row, 30, str("{:,}".format(ttoccupational_accident_and_disease)),style_table_head)
-        ws.write(last_row, 31, str("{:,}".format(tttrade_union_fee_company_pay_2percent)),style_table_head)
-        ws.write(last_row, 32, str("{:,}".format(tttrade_union_fee_member)),style_table_head)
-        ws.write(last_row, 33, str("{:,}".format(ttfamily_deduction)),style_table_head)
-        ws.write(last_row, 34, str("{:,}".format(tttaxable_income)),style_table_head)
-        ws.write(last_row, 35, str("{:,}".format(tttaxed_income)),style_table_head)
-        ws.write(last_row, 36, str("{:,}".format(ttPIT)),style_table_head)
-        ws.write(last_row, 37, str("{:,}".format(ttdeduct)),style_table_head)
-        ws.write(last_row, 38, str("{:,}".format(ttnet_income)),style_table_head)
-        ws.write(last_row, 39, str("{:,}".format(tttransfer_bank)),style_table_head)
-        ws.write(last_row, 40, str("{:,}".format(tttotal_cost)),style_table_head)
+        ws_HCM.write_merge(last_row, last_row, 0, 5, 'TOTAL', style_table_head)
+        ws_HCM.write(last_row, 6, str("{:,}".format(ttnewest_salary)),style_table_head)
+        ws_HCM.write(last_row, 7, '-',style_table_head)
+        ws_HCM.write(last_row, 8, '-',style_table_head)
+        ws_HCM.write(last_row, 9, str("{:,}".format(ttgross_income)),style_table_head)
+        ws_HCM.write(last_row, 10, str("{:,}".format(ttsalary_recuperation)),style_table_head)
+        ws_HCM.write(last_row, 11, str("{:,}".format(ttovertime)),style_table_head)
+        ws_HCM.write(last_row, 12, str("{:,}".format(tttransportation)),style_table_head)
+        ws_HCM.write(last_row, 13, str("{:,}".format(ttphone)),style_table_head)
+        ws_HCM.write(last_row, 14, str("{:,}".format(ttlunch)),style_table_head)
+        ws_HCM.write(last_row, 15, str("{:,}".format(tttraining_fee)),style_table_head)
+        ws_HCM.write(last_row, 16, str("{:,}".format(tttoxic_allowance)),style_table_head)
+        ws_HCM.write(last_row, 17, str("{:,}".format(tttravel)),style_table_head)
+        ws_HCM.write(last_row, 18, str("{:,}".format(ttresponsibility)),style_table_head)
+        ws_HCM.write(last_row, 19, str("{:,}".format(ttseniority_bonus)),style_table_head)
+        ws_HCM.write(last_row, 20, str("{:,}".format(ttother)),style_table_head)
+        ws_HCM.write(last_row, 21, str("{:,}".format(tttotal_allowance_recuperation)),style_table_head)
+        ws_HCM.write(last_row, 22, str("{:,}".format(ttbenefits)),style_table_head)
+        ws_HCM.write(last_row, 23, str("{:,}".format(ttseverance_allowance)),style_table_head)
+        ws_HCM.write(last_row, 24, str("{:,}".format(ttoutstanding_annual_leave)),style_table_head)
+        ws_HCM.write(last_row, 25, str("{:,}".format(ttmonth_13_salary_Pro_ata)),style_table_head)
+        ws_HCM.write(last_row, 26, str("{:,}".format(ttSHUI_10point5percent_employee_pay)),style_table_head)
+        ws_HCM.write(last_row, 27, str("{:,}".format(ttrecuperation_of_SHU_Ins_10point5percent_staff_pay)),style_table_head)
+        ws_HCM.write(last_row, 28, str("{:,}".format(ttSHUI_21point5percent_company_pay)),style_table_head)
+        ws_HCM.write(last_row, 29, str("{:,}".format(ttrecuperation_of_SHU_Ins_21point5percent_company_pay)),style_table_head)
+        ws_HCM.write(last_row, 30, str("{:,}".format(ttoccupational_accident_and_disease)),style_table_head)
+        ws_HCM.write(last_row, 31, str("{:,}".format(tttrade_union_fee_company_pay_2percent)),style_table_head)
+        ws_HCM.write(last_row, 32, str("{:,}".format(tttrade_union_fee_member)),style_table_head)
+        ws_HCM.write(last_row, 33, str("{:,}".format(ttfamily_deduction)),style_table_head)
+        ws_HCM.write(last_row, 34, str("{:,}".format(tttaxable_income)),style_table_head)
+        ws_HCM.write(last_row, 35, str("{:,}".format(tttaxed_income)),style_table_head)
+        ws_HCM.write(last_row, 36, str("{:,}".format(ttPIT)),style_table_head)
+        ws_HCM.write(last_row, 37, str("{:,}".format(ttdeduct)),style_table_head)
+        ws_HCM.write(last_row, 38, str("{:,}".format(ttnet_income)),style_table_head)
+        ws_HCM.write(last_row, 39, str("{:,}".format(tttransfer_bank)),style_table_head)
+        ws_HCM.write(last_row, 40, str("{:,}".format(tttotal_cost)),style_table_head)
+        
+        
+        '''Sheet Payroll HANOI'''
+        HANOI_sheet_name = str(period_month.month_name) + ' HAN'
+        ws_HAN = wb.add_sheet(HANOI_sheet_name)
+
+        # Table
+        
+        # Set col width
+        for col in range(0,41):
+            ws_HAN.col(col).width = 5000
+        
+
+        
+        # Top
+        ws_HAN.write_merge(0, 0, 0, 6, 'TEDIS REP. OFFICE IN HANOI', style_head)
+        ws_HAN.write(1, 0, 'Giang Vo Lake View Building, Unit 202, D10 Giang Vo St. Ba Dinh District', style_head_small)
+        ws_HAN.write_merge(0, 0, 9, 11, 'PAYROLL IN ' + str(period_month.month_name),style_head)
+        
+        # Body
+        # Set row height
+        ws_HAN.row(2).set_style(xlwt.easyxf('font:height 500;'))
+        # Body head
+        ws_HAN.write(2, 0, 'No.', style_table_head)
+        ws_HAN.write(2, 1, 'Employee code', style_table_head)
+        ws_HAN.write(2, 2, 'Full name', style_table_head)
+        ws_HAN.write(2, 3, 'Joining Date', style_table_head)
+        ws_HAN.write(2, 4, 'Department/Area', style_table_head)
+        ws_HAN.write(2, 5, 'Job Title', style_table_head)
+        ws_HAN.write(2, 6, 'Salary ' + str(period_month.period.period_year) + ' (VND)', style_table_head)
+        ws_HAN.write(2, 7, 'Working days', style_table_head)
+        ws_HAN.write(2, 8, '% Adjust', style_table_head)
+        ws_HAN.write(2, 9, 'Gross Income', style_table_head)
+        ws_HAN.write(2, 10, 'Salary recuperation', style_table_head)
+        ws_HAN.write(2, 11, 'Overtime', style_table_head)
+        ws_HAN.write(2, 12, 'Transportation', style_table_head)
+        ws_HAN.write(2, 13, 'Phone', style_table_head)
+        ws_HAN.write(2, 14, 'Lunch', style_table_head)
+        ws_HAN.write(2, 15, 'Training fee', style_table_head)
+        ws_HAN.write(2, 16, 'Toxic Allowance', style_table_head)
+        ws_HAN.write(2, 17, 'Travel', style_table_head)
+        ws_HAN.write(2, 18, 'Responsibility', style_table_head)
+        ws_HAN.write(2, 19, 'Seniority Bonus', style_table_head)
+        ws_HAN.write(2, 20, 'Other', style_table_head)
+        ws_HAN.write(2, 21, 'Total allowance recuperation', style_table_head)
+        ws_HAN.write(2, 22, 'Benefits', style_table_head)
+        ws_HAN.write(2, 23, 'Severance Allowance', style_table_head)
+        ws_HAN.write(2, 24, 'Outstanding annual leave', style_table_head)
+        ws_HAN.write(2, 25, '13th salary (pro-rata)', style_table_head)
+        ws_HAN.write(2, 26, 'SHUI(10.5%)(Employee pay)', style_table_head)
+        ws_HAN.write(2, 27, 'Recuperation of SHU Ins.(10.5%)(staff pay)', style_table_head)
+        ws_HAN.write(2, 28, 'SHUI(21.5%)(Company pay)', style_table_head)
+        ws_HAN.write(2, 29, 'Recuperation of SHU Ins.(21.5%)(Company pay)', style_table_head)
+        ws_HAN.write(2, 30, 'Occupational accident and disease Ins.(0.5%)(Pay for staffs)', style_table_head)
+        ws_HAN.write(2, 31, 'Trade Union fee (Company pay 2%)', style_table_head)
+        ws_HAN.write(2, 32, 'Trade Union fee (Employee pay)', style_table_head)
+        ws_HAN.write(2, 33, 'Family deduction', style_table_head)
+        ws_HAN.write(2, 34, 'Taxable Income', style_table_head)
+        ws_HAN.write(2, 35, 'Taxed Income', style_table_head)
+        ws_HAN.write(2, 36, 'PIT', style_table_head)
+        ws_HAN.write(2, 37, 'Deduct', style_table_head)
+        ws_HAN.write(2, 38, 'Net Income', style_table_head)
+        ws_HAN.write(2, 39, 'Transfer Bank', style_table_head)
+        ws_HAN.write(2, 40, 'Total Cost', style_table_head)
+        
+        # Body
+        # Create total var
+        ttnewest_salary = 0
+        ttgross_income = 0
+        ttsalary_recuperation = 0
+        ttovertime = 0
+        tttransportation = 0
+        ttphone = 0
+        ttlunch = 0
+        tttraining_fee = 0
+        tttoxic_allowance = 0
+        tttravel = 0
+        ttresponsibility = 0
+        ttseniority_bonus = 0
+        ttother = 0
+        tttotal_allowance_recuperation = 0
+        ttbenefits = 0
+        ttseverance_allowance = 0
+        ttoutstanding_annual_leave = 0
+        ttmonth_13_salary_Pro_ata = 0
+        ttSHUI_10point5percent_employee_pay = 0
+        ttrecuperation_of_SHU_Ins_10point5percent_staff_pay = 0
+        ttSHUI_21point5percent_company_pay = 0
+        ttrecuperation_of_SHU_Ins_21point5percent_company_pay = 0
+        ttoccupational_accident_and_disease = 0
+        tttrade_union_fee_company_pay_2percent = 0
+        tttrade_union_fee_member = 0
+        ttfamily_deduction = 0
+        tttaxable_income = 0
+        tttaxed_income = 0
+        ttPIT = 0
+        ttdeduct = 0
+        ttnet_income = 0
+        tttransfer_bank = 0
+        tttotal_cost = 0
+        
+        for index, data in enumerate(list_payroll_HANOI_info):
+            # Set row height
+            ws_HAN.row(3+index).set_style(xlwt.easyxf('font:height 500;'))
+            # Write data
+            ws_HAN.write(3+index, 0, str(index+1),style_normal)
+            ws_HAN.write(3+index, 1, str(data['payroll_info'].employee.employee_code),style_normal)
+            ws_HAN.write(3+index, 2, str(data['payroll_info'].employee.full_name),style_normal)
+            ws_HAN.write(3+index, 3, str(data['payroll_info'].employee.joining_date.strftime('%d/%m/%Y')),style_normal)
+            ws_HAN.write(3+index, 4, str(data['payroll_info'].employee.department_e),style_normal)
+            ws_HAN.write(3+index, 5, str(data['payroll_info'].employee.position_e),style_normal)
+            ws_HAN.write(3+index, 6, str("{:,}".format(data['payroll_info'].newest_salary)),style_normal)
+            ws_HAN.write(3+index, 7, str(data['payroll_info'].working_days),style_normal)
+            ws_HAN.write(3+index, 8, str(data['payroll_info'].adjust_percent) + '%',style_normal)
+            ws_HAN.write(3+index, 9, str("{:,}".format(data['payroll_info'].gross_income)),style_normal)
+            ws_HAN.write(3+index, 10, str("{:,}".format(data['payroll_info'].salary_recuperation)),style_normal)
+            ws_HAN.write(3+index, 11, str("{:,}".format(data['payroll_info'].overtime)),style_normal)
+            ws_HAN.write(3+index, 12, str("{:,}".format(data['payroll_info'].transportation)),style_normal)
+            ws_HAN.write(3+index, 13, str("{:,}".format(data['payroll_info'].phone)),style_normal)
+            ws_HAN.write(3+index, 14, str("{:,}".format(data['payroll_info'].lunch)),style_normal)
+            ws_HAN.write(3+index, 15, str("{:,}".format(data['payroll_info'].training_fee)),style_normal)
+            ws_HAN.write(3+index, 16, str("{:,}".format(data['payroll_info'].toxic_allowance)),style_normal)
+            ws_HAN.write(3+index, 17, str("{:,}".format(data['payroll_info'].travel)),style_normal)
+            ws_HAN.write(3+index, 18, str("{:,}".format(data['payroll_info'].responsibility)),style_normal)
+            ws_HAN.write(3+index, 19, str("{:,}".format(data['payroll_info'].seniority_bonus)),style_normal)
+            ws_HAN.write(3+index, 20, str("{:,}".format(data['payroll_info'].other)),style_normal)
+            ws_HAN.write(3+index, 21, str("{:,}".format(data['payroll_info'].total_allowance_recuperation)),style_normal)
+            ws_HAN.write(3+index, 22, str("{:,}".format(data['payroll_info'].benefits)),style_normal)
+            ws_HAN.write(3+index, 23, str("{:,}".format(data['payroll_info'].severance_allowance)),style_normal)
+            ws_HAN.write(3+index, 24, str("{:,}".format(data['payroll_info'].outstanding_annual_leave)),style_normal)
+            ws_HAN.write(3+index, 25, str("{:,}".format(data['payroll_info'].month_13_salary_Pro_ata)),style_normal)
+            ws_HAN.write(3+index, 26, str("{:,}".format(data['payroll_info'].SHUI_10point5percent_employee_pay)),style_normal)
+            ws_HAN.write(3+index, 27, str("{:,}".format(data['payroll_info'].recuperation_of_SHU_Ins_10point5percent_staff_pay)),style_normal)
+            ws_HAN.write(3+index, 28, str("{:,}".format(data['payroll_info'].SHUI_21point5percent_company_pay)),style_normal)
+            ws_HAN.write(3+index, 29, str("{:,}".format(data['payroll_info'].recuperation_of_SHU_Ins_21point5percent_company_pay)),style_normal)
+            ws_HAN.write(3+index, 30, str("{:,}".format(data['payroll_info'].occupational_accident_and_disease)),style_normal)
+            ws_HAN.write(3+index, 31, str("{:,}".format(data['payroll_info'].trade_union_fee_company_pay_2percent)),style_normal)
+            ws_HAN.write(3+index, 32, str("{:,}".format(data['payroll_info'].trade_union_fee_member)),style_normal)
+            ws_HAN.write(3+index, 33, str("{:,}".format(data['payroll_info'].family_deduction)),style_normal)
+            ws_HAN.write(3+index, 34, str("{:,}".format(data['payroll_info'].taxable_income)),style_normal)
+            ws_HAN.write(3+index, 35, str("{:,}".format(data['payroll_info'].taxed_income)),style_normal)
+            ws_HAN.write(3+index, 36, str("{:,}".format(data['payroll_info'].PIT)),style_normal)
+            ws_HAN.write(3+index, 37, str("{:,}".format(data['payroll_info'].deduct)),style_normal)
+            ws_HAN.write(3+index, 38, str("{:,}".format(data['payroll_info'].net_income)),style_normal)
+            ws_HAN.write(3+index, 39, str("{:,}".format(data['payroll_info'].transfer_bank)),style_normal)
+            ws_HAN.write(3+index, 40, str("{:,}".format(data['payroll_info'].total_cost)),style_normal)
+            # Get total line data
+            last_row = 3+index+1
+            ttnewest_salary += data['payroll_info'].newest_salary
+            ttgross_income += data['payroll_info'].gross_income
+            ttsalary_recuperation += data['payroll_info'].salary_recuperation
+            ttovertime += data['payroll_info'].overtime
+            tttransportation += data['payroll_info'].transportation
+            ttphone += data['payroll_info'].phone
+            ttlunch += data['payroll_info'].lunch
+            tttraining_fee += data['payroll_info'].training_fee
+            tttoxic_allowance += data['payroll_info'].toxic_allowance
+            tttravel += data['payroll_info'].travel
+            ttresponsibility += data['payroll_info'].responsibility
+            ttseniority_bonus += data['payroll_info'].seniority_bonus
+            ttother += data['payroll_info'].other
+            tttotal_allowance_recuperation += data['payroll_info'].total_allowance_recuperation
+            ttbenefits += data['payroll_info'].benefits
+            ttseverance_allowance += data['payroll_info'].severance_allowance
+            ttoutstanding_annual_leave += data['payroll_info'].outstanding_annual_leave
+            ttmonth_13_salary_Pro_ata += data['payroll_info'].month_13_salary_Pro_ata
+            ttSHUI_10point5percent_employee_pay += data['payroll_info'].SHUI_10point5percent_employee_pay
+            ttrecuperation_of_SHU_Ins_10point5percent_staff_pay += data['payroll_info'].recuperation_of_SHU_Ins_10point5percent_staff_pay
+            ttSHUI_21point5percent_company_pay += data['payroll_info'].SHUI_21point5percent_company_pay
+            ttrecuperation_of_SHU_Ins_21point5percent_company_pay += data['payroll_info'].recuperation_of_SHU_Ins_21point5percent_company_pay
+            ttoccupational_accident_and_disease += data['payroll_info'].occupational_accident_and_disease
+            tttrade_union_fee_company_pay_2percent += data['payroll_info'].trade_union_fee_company_pay_2percent
+            tttrade_union_fee_member += data['payroll_info'].trade_union_fee_member
+            ttfamily_deduction += data['payroll_info'].family_deduction
+            tttaxable_income += data['payroll_info'].taxable_income
+            tttaxed_income += data['payroll_info'].taxed_income
+            ttPIT += data['payroll_info'].PIT
+            ttdeduct += data['payroll_info'].deduct
+            ttnet_income += data['payroll_info'].net_income
+            tttransfer_bank += data['payroll_info'].transfer_bank
+            tttotal_cost += data['payroll_info'].total_cost
+        # Total line in bottom of table 
+        ws_HAN.write_merge(last_row, last_row, 0, 5, 'TOTAL', style_table_head)
+        ws_HAN.write(last_row, 6, str("{:,}".format(ttnewest_salary)),style_table_head)
+        ws_HAN.write(last_row, 7, '-',style_table_head)
+        ws_HAN.write(last_row, 8, '-',style_table_head)
+        ws_HAN.write(last_row, 9, str("{:,}".format(ttgross_income)),style_table_head)
+        ws_HAN.write(last_row, 10, str("{:,}".format(ttsalary_recuperation)),style_table_head)
+        ws_HAN.write(last_row, 11, str("{:,}".format(ttovertime)),style_table_head)
+        ws_HAN.write(last_row, 12, str("{:,}".format(tttransportation)),style_table_head)
+        ws_HAN.write(last_row, 13, str("{:,}".format(ttphone)),style_table_head)
+        ws_HAN.write(last_row, 14, str("{:,}".format(ttlunch)),style_table_head)
+        ws_HAN.write(last_row, 15, str("{:,}".format(tttraining_fee)),style_table_head)
+        ws_HAN.write(last_row, 16, str("{:,}".format(tttoxic_allowance)),style_table_head)
+        ws_HAN.write(last_row, 17, str("{:,}".format(tttravel)),style_table_head)
+        ws_HAN.write(last_row, 18, str("{:,}".format(ttresponsibility)),style_table_head)
+        ws_HAN.write(last_row, 19, str("{:,}".format(ttseniority_bonus)),style_table_head)
+        ws_HAN.write(last_row, 20, str("{:,}".format(ttother)),style_table_head)
+        ws_HAN.write(last_row, 21, str("{:,}".format(tttotal_allowance_recuperation)),style_table_head)
+        ws_HAN.write(last_row, 22, str("{:,}".format(ttbenefits)),style_table_head)
+        ws_HAN.write(last_row, 23, str("{:,}".format(ttseverance_allowance)),style_table_head)
+        ws_HAN.write(last_row, 24, str("{:,}".format(ttoutstanding_annual_leave)),style_table_head)
+        ws_HAN.write(last_row, 25, str("{:,}".format(ttmonth_13_salary_Pro_ata)),style_table_head)
+        ws_HAN.write(last_row, 26, str("{:,}".format(ttSHUI_10point5percent_employee_pay)),style_table_head)
+        ws_HAN.write(last_row, 27, str("{:,}".format(ttrecuperation_of_SHU_Ins_10point5percent_staff_pay)),style_table_head)
+        ws_HAN.write(last_row, 28, str("{:,}".format(ttSHUI_21point5percent_company_pay)),style_table_head)
+        ws_HAN.write(last_row, 29, str("{:,}".format(ttrecuperation_of_SHU_Ins_21point5percent_company_pay)),style_table_head)
+        ws_HAN.write(last_row, 30, str("{:,}".format(ttoccupational_accident_and_disease)),style_table_head)
+        ws_HAN.write(last_row, 31, str("{:,}".format(tttrade_union_fee_company_pay_2percent)),style_table_head)
+        ws_HAN.write(last_row, 32, str("{:,}".format(tttrade_union_fee_member)),style_table_head)
+        ws_HAN.write(last_row, 33, str("{:,}".format(ttfamily_deduction)),style_table_head)
+        ws_HAN.write(last_row, 34, str("{:,}".format(tttaxable_income)),style_table_head)
+        ws_HAN.write(last_row, 35, str("{:,}".format(tttaxed_income)),style_table_head)
+        ws_HAN.write(last_row, 36, str("{:,}".format(ttPIT)),style_table_head)
+        ws_HAN.write(last_row, 37, str("{:,}".format(ttdeduct)),style_table_head)
+        ws_HAN.write(last_row, 38, str("{:,}".format(ttnet_income)),style_table_head)
+        ws_HAN.write(last_row, 39, str("{:,}".format(tttransfer_bank)),style_table_head)
+        ws_HAN.write(last_row, 40, str("{:,}".format(tttotal_cost)),style_table_head)
          
 
 
@@ -2791,7 +3198,8 @@ def payroll_tedis(request,pk):
     return render(request, 'employee/view_payroll_tedis.html', {
         'period_month' : period_month,
         'payrollExist': payrollExist,
-        'list_payroll_info' : list_payroll_info,
+        'list_payroll_HCM_info' : list_payroll_HCM_info,
+        'list_payroll_HANOI_info' : list_payroll_HANOI_info,
         'total_working_day' : total_working_day,
     })
 
@@ -2818,163 +3226,291 @@ def payroll_tedis_edit(request, pk):
     
     # Update payroll info
     if request.POST.get('btnupdatepayroll'):
-        # Get month,employee,newest_salary,working_days,adjust_percent
-        month = payroll_info.month
-        employee = payroll_info.employee
-        newest_salary = payroll_info.newest_salary
-        working_days = payroll_info.working_days
-        adjust_percent = payroll_info.adjust_percent
-        # Get gross_income
-        gross_income = round(float(newest_salary) * float(adjust_percent)/100 * float(working_days)/float(month_total_working_days) )
-        # Get salary_recuperation
-        salary_recuperation = request.POST.get('salary_recuperation')
-        # Get overtime
-        overtime = payroll_info.overtime
-        # Get transportation,phone,lunch
-        transportation = payroll_info.transportation
-        phone = payroll_info.phone
-        lunch = payroll_info.lunch
-        # Get training_fee
-        training_fee = request.POST.get('training_fee')
-        # Get toxic_allowance
-        toxic_allowance = request.POST.get('toxic_allowance')
-        # Get travel,responsibility,seniority_bonus
-        travel = payroll_info.travel
-        responsibility = payroll_info.responsibility
-        seniority_bonus = payroll_info.seniority_bonus
-        # Get other,total_allowance_recuperation,benefits,severance_allowance,outstanding_annual_leave,month_13_salary_Pro_ata
-        other = request.POST.get('other')
-        total_allowance_recuperation = request.POST.get('total_allowance_recuperation')
-        benefits = request.POST.get('benefits')
-        severance_allowance = request.POST.get('severance_allowance')
-        outstanding_annual_leave = request.POST.get('outstanding_annual_leave')
-        month_13_salary_Pro_ata = request.POST.get('month_13_salary_Pro_ata')
-        # Get SHUI_10point5percent_employee_pay
-        contract_type_CT = Contract_type.objects.get(contract_type='CT')
-        list_contracts = Employee_contract.objects.filter(employee=employee).order_by('-created_at')
-        if list_contracts.count() != 0:
-            if list_contracts[0].contract_type == contract_type_CT:
-                combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
-                # 1st if
-                if combo > 29800000:
-                    first_value = 29800000 * 0.095
+        '''HCM'''
+        area_HCM = Area.objects.get(area='HCMC')
+        if payroll_info.employee.area == area_HCM:
+            # Get month,employee,newest_salary,working_days,adjust_percent
+            month = payroll_info.month
+            employee = payroll_info.employee
+            newest_salary = payroll_info.newest_salary
+            working_days = payroll_info.working_days
+            adjust_percent = payroll_info.adjust_percent
+            # Get gross_income
+            gross_income = round(float(newest_salary) * float(adjust_percent)/100 * float(working_days)/float(month_total_working_days) )
+            # Get salary_recuperation
+            salary_recuperation = request.POST.get('salary_recuperation')
+            # Get overtime
+            overtime = payroll_info.overtime
+            # Get transportation,phone,lunch
+            transportation = payroll_info.transportation
+            phone = payroll_info.phone
+            lunch = payroll_info.lunch
+            # Get training_fee
+            training_fee = request.POST.get('training_fee')
+            # Get toxic_allowance
+            toxic_allowance = request.POST.get('toxic_allowance')
+            # Get travel,responsibility,seniority_bonus
+            travel = payroll_info.travel
+            responsibility = payroll_info.responsibility
+            seniority_bonus = payroll_info.seniority_bonus
+            # Get other,total_allowance_recuperation,benefits,severance_allowance,outstanding_annual_leave,month_13_salary_Pro_ata
+            other = request.POST.get('other')
+            total_allowance_recuperation = request.POST.get('total_allowance_recuperation')
+            benefits = request.POST.get('benefits')
+            severance_allowance = request.POST.get('severance_allowance')
+            outstanding_annual_leave = request.POST.get('outstanding_annual_leave')
+            month_13_salary_Pro_ata = request.POST.get('month_13_salary_Pro_ata')
+            # Get SHUI_10point5percent_employee_pay
+            contract_type_CT = Contract_type.objects.get(contract_type='CT')
+            list_contracts = Employee_contract.objects.filter(employee=employee).order_by('-created_at')
+            if list_contracts.count() != 0:
+                if list_contracts[0].contract_type == contract_type_CT:
+                    combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
+                    # 1st if
+                    if combo > 29800000:
+                        first_value = 29800000 * 0.095
+                    else: 
+                        first_value = combo * 0.095
+                    
+                    # 2nd if
+                    if combo > 93600000:
+                        second_value = 93600000 * 0.01
+                    else: 
+                        second_value = combo * 0.01
+                    SHUI_10point5percent_employee_pay = round(first_value + second_value)
                 else: 
-                    first_value = combo * 0.095
-                
-                # 2nd if
-                if combo > 93600000:
-                    second_value = 93600000 * 0.01
-                else: 
-                    second_value = combo * 0.01
-                SHUI_10point5percent_employee_pay = round(first_value + second_value)
-            else: 
+                    SHUI_10point5percent_employee_pay = 0
+            else:
                 SHUI_10point5percent_employee_pay = 0
-        else:
-            SHUI_10point5percent_employee_pay = 0
-        # Get recuperation_of_SHU_Ins_10point5percent_staff_pay
-        recuperation_of_SHU_Ins_10point5percent_staff_pay = request.POST.get('recuperation_of_SHU_Ins_10point5percent_staff_pay')
-        # Get SHUI_21point5percent_company_pay
-        contract_type_CT = Contract_type.objects.get(contract_type='CT')
-        if list_contracts.count() != 0:
-            if list_contracts[0].contract_type == contract_type_CT:
-                combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
-                # 1st if
-                if combo > 29800000:
-                    first_value = 29800000 * 0.205
+            # Get recuperation_of_SHU_Ins_10point5percent_staff_pay
+            recuperation_of_SHU_Ins_10point5percent_staff_pay = request.POST.get('recuperation_of_SHU_Ins_10point5percent_staff_pay')
+            # Get SHUI_21point5percent_company_pay
+            contract_type_CT = Contract_type.objects.get(contract_type='CT')
+            if list_contracts.count() != 0:
+                if list_contracts[0].contract_type == contract_type_CT:
+                    combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
+                    # 1st if
+                    if combo > 29800000:
+                        first_value = 29800000 * 0.205
+                    else: 
+                        first_value = combo * 0.205
+                    
+                    # 2nd if
+                    if combo > 93600000:
+                        second_value = 93600000 * 0.01
+                    else: 
+                        second_value = combo * 0.01
+                    SHUI_21point5percent_company_pay = round(first_value + second_value)
                 else: 
-                    first_value = combo * 0.205
-                
-                # 2nd if
-                if combo > 93600000:
-                    second_value = 93600000 * 0.01
-                else: 
-                    second_value = combo * 0.01
-                SHUI_21point5percent_company_pay = round(first_value + second_value)
-            else: 
+                    SHUI_21point5percent_company_pay = 0
+            else:
                 SHUI_21point5percent_company_pay = 0
-        else:
-            SHUI_21point5percent_company_pay = 0
-        # Get recuperation_of_SHU_Ins_21point5percent_company_pay,occupational_accident_and_disease
-        recuperation_of_SHU_Ins_21point5percent_company_pay = request.POST.get('recuperation_of_SHU_Ins_21point5percent_company_pay')
-        occupational_accident_and_disease = request.POST.get('occupational_accident_and_disease')
-        # Get trade_union_fee_company_pay_2percent
-        combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
-        if SHUI_10point5percent_employee_pay > 0: 
+            # Get recuperation_of_SHU_Ins_21point5percent_company_pay,occupational_accident_and_disease
+            recuperation_of_SHU_Ins_21point5percent_company_pay = request.POST.get('recuperation_of_SHU_Ins_21point5percent_company_pay')
+            occupational_accident_and_disease = request.POST.get('occupational_accident_and_disease')
+            # Get trade_union_fee_company_pay_2percent
+            combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
+            if SHUI_10point5percent_employee_pay > 0: 
+                if combo > 29800000:
+                    SalarytoBH = 29800000
+                else:
+                    SalarytoBH = combo
+            else:
+                SalarytoBH = 0
+            trade_union_fee_company_pay_2percent = round(SalarytoBH * 2/100)
+            # Get trade_union_fee_member
+            if trade_union_fee_company_pay_2percent > 0:
+                trade_union_fee_member = 4680000 * 1/100
+            else:
+                trade_union_fee_member = 0
+            # Get family_deduction
+            family_deduction = payroll_info.family_deduction
+            # Get taxable_income
+            contract_type_CTminus = Contract_type.objects.get(contract_type='CT-')
+            if list_contracts.count() != 0:
+                if list_contracts[0].contract_type == contract_type_CT or list_contracts[0].contract_type == contract_type_CTminus :
+                    sum_K_AA = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
+                    taxable_income = sum_K_AA - float(lunch) - float(severance_allowance) + float(occupational_accident_and_disease)
+                else:
+                    taxable_income = sum_K_AA - float(severance_allowance) + float(occupational_accident_and_disease)
+            else:
+                taxable_income = 0
+            # Get taxed_income
+            if taxable_income - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(family_deduction) < 0:
+                taxed_income = 0
+            else:
+                taxed_income = float(taxable_income) - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(family_deduction)
+            # Get PIT
+            if list_contracts.count() != 0:
+                if list_contracts[0].contract_type == contract_type_CT or list_contracts[0].contract_type == contract_type_CTminus :
+                    if 5000000 < taxed_income <= 10000000:
+                        PIT_before_round = (taxed_income * 0.1) - 250000
+                    elif 10000000 < taxed_income <= 18000000:
+                        PIT_before_round = (taxed_income * 0.15) - 750000
+                    elif 18000000 < taxed_income <= 32000000:
+                        PIT_before_round = (taxed_income * 0.2) - 1650000
+                    elif 32000000 < taxed_income <= 52000000:
+                    
+                        PIT_before_round = (taxed_income * 0.25) - 3250000
+                    elif 52000000 < taxed_income <= 80000000:
+                        PIT_before_round = (taxed_income * 0.3) - 5850000
+                    elif taxed_income > 80000000:
+                        PIT_before_round = (taxed_income * 0.35) - 9850000
+                    else: 
+                        PIT_before_round = taxed_income * 0.05
+                elif taxed_income >= 2000000:
+                    PIT_before_round = taxed_income * 10/100
+                else:
+                    PIT_before_round = 0                     
+            else:
+                PIT_before_round = 0
+            PIT = round(PIT_before_round)
+            # Get deduct
+            deduct = request.POST.get('deduct')
+            # Get net_income
+            sum_K_AA = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
+            net_income = sum_K_AA + float(occupational_accident_and_disease) - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(PIT) - float(deduct)
+            # Get transfer_bank
+            transfer_bank = request.POST.get('transfer_bank')
+            # Get total_cost
+            sum_K_AA = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
+            total_cost = round((sum_K_AA + float(SHUI_21point5percent_company_pay) + float(recuperation_of_SHU_Ins_21point5percent_company_pay) + float(occupational_accident_and_disease) + float(trade_union_fee_company_pay_2percent) + float(trade_union_fee_member) + float(transfer_bank) - float(deduct)),0)
+            # Update and save
+            payroll_update_info = Payroll_Tedis(id=payroll_info.id,month=month,employee=employee,newest_salary=newest_salary,working_days=working_days,adjust_percent=adjust_percent,gross_income=gross_income,
+                                                salary_recuperation=salary_recuperation,overtime=overtime,transportation=transportation,phone=phone,lunch=lunch,training_fee=training_fee,toxic_allowance=toxic_allowance,travel=travel,responsibility=responsibility,seniority_bonus=seniority_bonus,
+                                                other=other,total_allowance_recuperation=total_allowance_recuperation,benefits=benefits,severance_allowance=severance_allowance,outstanding_annual_leave=outstanding_annual_leave,month_13_salary_Pro_ata=month_13_salary_Pro_ata,
+                                                SHUI_10point5percent_employee_pay=SHUI_10point5percent_employee_pay,recuperation_of_SHU_Ins_10point5percent_staff_pay=recuperation_of_SHU_Ins_10point5percent_staff_pay,SHUI_21point5percent_company_pay=SHUI_21point5percent_company_pay,recuperation_of_SHU_Ins_21point5percent_company_pay=recuperation_of_SHU_Ins_21point5percent_company_pay,
+                                                occupational_accident_and_disease=occupational_accident_and_disease,
+                                                trade_union_fee_company_pay_2percent=trade_union_fee_company_pay_2percent,trade_union_fee_member=trade_union_fee_member,
+                                                family_deduction=family_deduction,taxable_income=taxable_income,taxed_income=taxed_income,PIT=PIT,deduct=deduct,net_income=net_income,transfer_bank=transfer_bank,total_cost=total_cost)
+            payroll_update_info.save()
+            messages.success(request, 'SUCCESS: Payroll updated')
+            return redirect('employee:payroll_tedis_edit',pk=payroll_info.id)
+        
+        '''HANOI'''
+        area_HANOI = Area.objects.get(area='HANOI')
+        if payroll_info.employee.area == area_HANOI:
+            # Get month,employee,newest_salary,working_days,adjust_percent
+            month = payroll_info.month
+            employee = payroll_info.employee
+            newest_salary = payroll_info.newest_salary
+            working_days = payroll_info.working_days
+            adjust_percent = payroll_info.adjust_percent
+            # Get gross_income
+            gross_income = round(float(newest_salary) * float(adjust_percent)/100 * float(working_days)/float(month_total_working_days) )
+            # Get salary_recuperation
+            salary_recuperation = request.POST.get('salary_recuperation')
+            # Get overtime
+            overtime = payroll_info.overtime
+            # Get transportation,phone,lunch
+            transportation = payroll_info.transportation
+            phone = payroll_info.phone
+            lunch = payroll_info.lunch
+            # Get training_fee
+            training_fee = request.POST.get('training_fee')
+            # Get toxic_allowance
+            toxic_allowance = request.POST.get('toxic_allowance')
+            # Get travel,responsibility,seniority_bonus
+            travel = payroll_info.travel
+            responsibility = payroll_info.responsibility
+            seniority_bonus = payroll_info.seniority_bonus
+            # Get other,total_allowance_recuperation,benefits,severance_allowance,outstanding_annual_leave,month_13_salary_Pro_ata
+            other = request.POST.get('other')
+            total_allowance_recuperation = request.POST.get('total_allowance_recuperation')
+            benefits = request.POST.get('benefits')
+            severance_allowance = request.POST.get('severance_allowance')
+            outstanding_annual_leave = request.POST.get('outstanding_annual_leave')
+            month_13_salary_Pro_ata = request.POST.get('month_13_salary_Pro_ata')
+            # Get SHUI_10point5percent_employee_pay
+            combo = newest_salary + responsibility
+            # 1st if
             if combo > 29800000:
-                SalarytoBH = 29800000
+                first_value = 29800000 * 0.095
+            else: 
+                first_value = combo * 0.095
+            
+            # 2nd if
+            if combo > 93600000:
+                second_value = 93600000 * 0.01
+            else: 
+                second_value = combo * 0.01
+            SHUI_10point5percent_employee_pay = round(first_value + second_value,0)
+            # Get recuperation_of_SHU_Ins_10point5percent_staff_pay
+            recuperation_of_SHU_Ins_10point5percent_staff_pay = request.POST.get('recuperation_of_SHU_Ins_10point5percent_staff_pay')
+            # Get SHUI_21point5percent_company_pay
+            combo = newest_salary + responsibility
+            # 1st if
+            if combo > 29800000:
+                first_value = 29800000 * 0.205
+            else: 
+                first_value = combo * 0.205
+            
+            # 2nd if
+            if combo > 93600000:
+                second_value = 93600000 * 0.01
+            else: 
+                second_value = combo * 0.01
+            SHUI_21point5percent_company_pay = round(first_value + second_value,0)
+            # Get recuperation_of_SHU_Ins_21point5percent_company_pay,occupational_accident_and_disease
+            recuperation_of_SHU_Ins_21point5percent_company_pay = request.POST.get('recuperation_of_SHU_Ins_21point5percent_company_pay')
+            occupational_accident_and_disease = request.POST.get('occupational_accident_and_disease')
+            if SHUI_10point5percent_employee_pay > 0: 
+                if newest_salary > 29800000:
+                    SalarytoBH = 29800000
+                else:
+                    SalarytoBH = newest_salary
             else:
-                SalarytoBH = combo
-        else:
-            SalarytoBH = 0
-        trade_union_fee_company_pay_2percent = round(SalarytoBH * 2/100)
-        # Get trade_union_fee_member
-        if trade_union_fee_company_pay_2percent > 0:
-            trade_union_fee_member = 4680000 * 1/100
-        else:
-            trade_union_fee_member = 0
-        # Get family_deduction
-        family_deduction = payroll_info.family_deduction
-        # Get taxable_income
-        contract_type_CTminus = Contract_type.objects.get(contract_type='CT-')
-        if list_contracts.count() != 0:
-            if list_contracts[0].contract_type == contract_type_CT or list_contracts[0].contract_type == contract_type_CTminus :
-                sum_K_AA = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
-                taxable_income = sum_K_AA - float(lunch) - float(severance_allowance) + float(occupational_accident_and_disease)
+                SalarytoBH = 0
+            trade_union_fee_company_pay_2percent = round(SalarytoBH * 2/100)
+            # Get trade_union_fee_member
+            trade_union_fee_member = payroll_info.trade_union_fee_member
+            # Get family_deduction
+            family_deduction = payroll_info.family_deduction
+            # Get taxable_income
+            sum_K_AA = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
+            taxable_income = sum_K_AA - float(lunch) + float(occupational_accident_and_disease)
+            # Get taxed_income
+            if float(taxable_income) - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(family_deduction) < 0:
+                taxed_income = 0
             else:
-                taxable_income = sum_K_AA - float(severance_allowance) + float(occupational_accident_and_disease)
-        else:
-            taxable_income = 0
-        # Get taxed_income
-        if taxable_income - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(family_deduction) < 0:
-            taxed_income = 0
-        else:
-            taxed_income = float(taxable_income) - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(family_deduction)
-        # Get PIT
-        if list_contracts.count() != 0:
-            if list_contracts[0].contract_type == contract_type_CT or list_contracts[0].contract_type == contract_type_CTminus :
-                if 5000000 < taxed_income <= 10000000:
-                    PIT_before_round = (taxed_income * 0.1) - 250000
-                elif 10000000 < taxed_income <= 18000000:
-                    PIT_before_round = (taxed_income * 0.15) - 750000
-                elif 18000000 < taxed_income <= 32000000:
-                    PIT_before_round = (taxed_income * 0.2) - 1650000
-                elif 32000000 < taxed_income <= 52000000:
-                
-                    PIT_before_round = (taxed_income * 0.25) - 3250000
-                elif 52000000 < taxed_income <= 80000000:
-                    PIT_before_round = (taxed_income * 0.3) - 5850000
-                elif taxed_income > 80000000:
-                    PIT_before_round = (taxed_income * 0.35) - 9850000
-                else: 
-                    PIT_before_round = taxed_income * 0.05
-            elif taxed_income >= 2000000:
-                PIT_before_round = taxed_income * 10/100
-            else:
-                PIT_before_round = 0                     
-        else:
-            PIT_before_round = 0
-        PIT = round(PIT_before_round)
-        # Get deduct
-        deduct = request.POST.get('deduct')
-        # Get net_income
-        sum_K_AA = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
-        net_income = sum_K_AA + float(occupational_accident_and_disease) - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(PIT) - float(deduct)
-        # Get transfer_bank
-        transfer_bank = request.POST.get('transfer_bank')
-        # Get total_cost
-        sum_K_AA = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
-        total_cost = round((sum_K_AA + float(SHUI_21point5percent_company_pay) + float(recuperation_of_SHU_Ins_21point5percent_company_pay) + float(occupational_accident_and_disease) + float(trade_union_fee_company_pay_2percent) + float(trade_union_fee_member) + float(transfer_bank) - float(deduct)),0)
-        # Update and save
-        payroll_update_info = Payroll_Tedis(id=payroll_info.id,month=month,employee=employee,newest_salary=newest_salary,working_days=working_days,adjust_percent=adjust_percent,gross_income=gross_income,
-                                            salary_recuperation=salary_recuperation,overtime=overtime,transportation=transportation,phone=phone,lunch=lunch,training_fee=training_fee,toxic_allowance=toxic_allowance,travel=travel,responsibility=responsibility,seniority_bonus=seniority_bonus,
-                                            other=other,total_allowance_recuperation=total_allowance_recuperation,benefits=benefits,severance_allowance=severance_allowance,outstanding_annual_leave=outstanding_annual_leave,month_13_salary_Pro_ata=month_13_salary_Pro_ata,
-                                            SHUI_10point5percent_employee_pay=SHUI_10point5percent_employee_pay,recuperation_of_SHU_Ins_10point5percent_staff_pay=recuperation_of_SHU_Ins_10point5percent_staff_pay,SHUI_21point5percent_company_pay=SHUI_21point5percent_company_pay,recuperation_of_SHU_Ins_21point5percent_company_pay=recuperation_of_SHU_Ins_21point5percent_company_pay,
-                                            occupational_accident_and_disease=occupational_accident_and_disease,
-                                            trade_union_fee_company_pay_2percent=trade_union_fee_company_pay_2percent,trade_union_fee_member=trade_union_fee_member,
-                                            family_deduction=family_deduction,taxable_income=taxable_income,taxed_income=taxed_income,PIT=PIT,deduct=deduct,net_income=net_income,transfer_bank=transfer_bank,total_cost=total_cost)
-        payroll_update_info.save()
-        messages.success(request, 'SUCCESS: Payroll updated')
-        return redirect('employee:payroll_tedis_edit',pk=payroll_info.id)
+                taxed_income = float(taxable_income) - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(family_deduction)
+            # Get PIT
+            if 5000000 < taxed_income <= 10000000:
+                PIT_before_round = (taxed_income * 0.1) - 250000
+            elif 10000000 < taxed_income <= 18000000:
+                PIT_before_round = (taxed_income * 0.15) - 750000
+            elif 18000000 < taxed_income <= 32000000:
+                PIT_before_round = (taxed_income * 0.2) - 1650000
+            elif 32000000 < taxed_income <= 52000000:
+                PIT_before_round = (taxed_income * 0.25) - 3250000
+            elif 52000000 < taxed_income <= 80000000:
+                PIT_before_round = (taxed_income * 0.3) - 5850000
+            elif taxed_income > 80000000:
+                PIT_before_round = (taxed_income * 0.35) - 9850000
+            else: 
+                PIT_before_round = taxed_income * 0.05
+            PIT = round(PIT_before_round)
+            # Get deduct
+            deduct = request.POST.get('deduct')
+            # Get net_income
+            sum_K_AA = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
+            net_income = sum_K_AA + float(occupational_accident_and_disease) - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(PIT) - float(deduct)
+            # Get transfer_bank
+            transfer_bank = request.POST.get('transfer_bank')
+            # Get total_cost
+            sum_K_AA = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
+            total_cost = round((sum_K_AA + float(SHUI_21point5percent_company_pay) + float(recuperation_of_SHU_Ins_21point5percent_company_pay) + float(occupational_accident_and_disease) + float(trade_union_fee_company_pay_2percent) + float(trade_union_fee_member)),0)
+            # Update and save
+            payroll_update_info = Payroll_Tedis(id=payroll_info.id,month=month,employee=employee,newest_salary=newest_salary,working_days=working_days,adjust_percent=adjust_percent,gross_income=gross_income,
+                                                salary_recuperation=salary_recuperation,overtime=overtime,transportation=transportation,phone=phone,lunch=lunch,training_fee=training_fee,toxic_allowance=toxic_allowance,travel=travel,responsibility=responsibility,seniority_bonus=seniority_bonus,
+                                                other=other,total_allowance_recuperation=total_allowance_recuperation,benefits=benefits,severance_allowance=severance_allowance,outstanding_annual_leave=outstanding_annual_leave,month_13_salary_Pro_ata=month_13_salary_Pro_ata,
+                                                SHUI_10point5percent_employee_pay=SHUI_10point5percent_employee_pay,recuperation_of_SHU_Ins_10point5percent_staff_pay=recuperation_of_SHU_Ins_10point5percent_staff_pay,SHUI_21point5percent_company_pay=SHUI_21point5percent_company_pay,recuperation_of_SHU_Ins_21point5percent_company_pay=recuperation_of_SHU_Ins_21point5percent_company_pay,
+                                                occupational_accident_and_disease=occupational_accident_and_disease,
+                                                trade_union_fee_company_pay_2percent=trade_union_fee_company_pay_2percent,trade_union_fee_member=trade_union_fee_member,
+                                                family_deduction=family_deduction,taxable_income=taxable_income,taxed_income=taxed_income,PIT=PIT,deduct=deduct,net_income=net_income,transfer_bank=transfer_bank,total_cost=total_cost)
+            payroll_update_info.save()
+            messages.success(request, 'SUCCESS: Payroll updated')
+            return redirect('employee:payroll_tedis_edit',pk=payroll_info.id)
         
         
         
@@ -4334,28 +4870,36 @@ def report_payroll_tedis(request, pk):
     
     # Get report data
     site_RO = Site.objects.get(site='RO')
-    list_employee_tedis = Employee.objects.filter(site=site_RO)
+    area_HCM = Area.objects.get(area='HCMC')
+    list_employee_tedis_HCM = Employee.objects.filter(site=site_RO, area=area_HCM)
     # PIT
-    report_pit_payroll = Report_PIT_Payroll_Tedis.objects.filter(employee__in=list_employee_tedis,month=period_month)
+    report_pit_payroll = Report_PIT_Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
     if report_pit_payroll.count() > 0:
         report_payrollExist = 1
     else:
         report_pit_payroll = ''
         report_payrollExist = 0    
     # Transfer HCM
-    report_transfer_payroll = Report_TransferHCM_Payroll_Tedis.objects.filter(employee__in=list_employee_tedis,month=period_month)
+    report_transfer_payroll = Report_TransferHCM_Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
     if report_transfer_payroll.count() > 0:
         report_payrollExist = 1
     else:
         report_transfer_payroll = ''
         report_payrollExist = 0 
     # Payment
+    report_payment_payroll = Report_Payment_Payroll_Tedis.objects.filter(month=period_month).order_by('item')
+    if report_payment_payroll.count() > 0:
+        report_payrollExist = 1
+    else:
+        report_payment_payroll = ''
+        report_payrollExist = 0 
     
     
+        
     # Create report 
     if request.POST.get('btn_create_report'): 
         # Create PIT
-        payroll_tedis = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis,month=period_month)
+        payroll_tedis = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
         for payroll in payroll_tedis: 
             # thu_nhap_chiu_thue
             thu_nhap_chiu_thue = payroll.taxable_income
@@ -4384,15 +4928,566 @@ def report_payroll_tedis(request, pk):
                                                 thu_nhap_tinh_thue=thu_nhap_tinh_thue,thuong=thuong,khac=khac,cong=cong,
                                                 thue_tnct_phai_nop=thue_tnct_phai_nop,ghi_chu=ghi_chu)
             pit_info.save()
+            
         # Create Report_TransferHCM_Payroll_Tedis
-        payroll_tedis = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis,month=period_month)
+        payroll_tedis = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
         for payroll in payroll_tedis: 
             transferHCM_info = Report_TransferHCM_Payroll_Tedis(month=period_month,payroll=payroll,employee=payroll.employee,
                                                 amount=payroll.net_income)
             transferHCM_info.save()
             
+        
+        # Create Report_Payment_Payroll_Tedis
+        '''Salary'''
+        # Salary Employee HCM
+        amount = 0
+        payroll_tedis_HCM = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
+        for payroll in payroll_tedis_HCM:
+            amount += round(payroll.net_income, 0)
+        month_string = str(period_month.month_number) + '/' + str(period_month.period.period_year)
+        payment_salary_employee_HCM_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                                        item='SALARY',description='EMPLOYEES',area='HCM',amount=amount,
+                                                                        paidby='Transfer',paidto='Employees',account_no='Lương tháng ' + month_string)
+        payment_salary_employee_HCM_info.save()
+        # Salary Employee HANOI
+        amount = 0
+        site_RO = Site.objects.get(site='RO')
+        area_HANOI = Area.objects.get(area='HANOI')
+        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+        payroll_tedis_HANOI = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HANOI,month=period_month)
+        for payroll in payroll_tedis_HANOI:
+            amount += round(payroll.net_income, 0)
+        month_string = str(period_month.month_number) + '/' + str(period_month.period.period_year)
+        payment_salary_employee_HANOI_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                                        item='SALARY',description='EMPLOYEES',area='HANOI',amount=amount,
+                                                                        paidby='Transfer',paidto='Employees',account_no='Lương tháng ' + month_string)
+        payment_salary_employee_HANOI_info.save()
+        # Salary MARJORIE HCM
+        payment_salary_MARJORIE_HCM_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                                        item='SALARY',description='MARJORIE',area='HCM',amount=0,
+                                                                        paidby='Cash',paidto='Marjorie',account_no='')
+        payment_salary_MARJORIE_HCM_info.save()
+        '''SHUI'''
+        # SHUI Company HCM
+        SHUI_Company_amount = 0
+        payroll_tedis_HCM = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
+        for payroll in payroll_tedis_HCM:
+            SHUI_Company_amount += round(payroll.SHUI_21point5percent_company_pay)
+        payment_SHUI_Company_HCM_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                                    item='SHUI',description='SHUI Company',area='HCM',amount=SHUI_Company_amount,
+                                                                    paidby='Transfer',paidto='District 7 SI',account_no='BHXH Quận 7 - 018.100.978.9789 - Vietcombank (Mã đơn vị: YV0047G, VPĐD Tedis tại TP.HCM)')
+        payment_SHUI_Company_HCM_info.save()
+        # SHUI Employees HCM
+        SHUI_Employees_amount = 0
+        payroll_tedis_HCM = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
+        for payroll in payroll_tedis_HCM:
+            SHUI_Employees_amount += round(payroll.SHUI_10point5percent_employee_pay)
+        payment_SHUI_Employees_HCM_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                                    item='SHUI',description='SHUI Employees',area='HCM',amount=SHUI_Employees_amount,
+                                                                    paidby='Transfer',paidto='',account_no='BHXH Quận 7 - 018.100.978.9789 - Vietcombank (Mã đơn vị: YV0047G, VPĐD Tedis tại TP.HCM)')
+        payment_SHUI_Employees_HCM_info.save()
+        # SHUI Company HANOI
+        SHUI_Company_amount = 0
+        site_RO = Site.objects.get(site='RO')
+        area_HANOI = Area.objects.get(area='HANOI')
+        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+        payroll_tedis_HANOI = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HANOI,month=period_month)
+        for payroll in payroll_tedis_HANOI:
+            SHUI_Company_amount += round(payroll.SHUI_21point5percent_company_pay)
+        payment_SHUI_Company_HANOI_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                                    item='SHUI',description='SHUI Company',area='HANOI',amount=SHUI_Company_amount,
+                                                                    paidby='Transfer',paidto='',account_no='BHXH Quận Ba Đình - 144.02.02.901.025 - Agribank - CN Bắc HN (Mã đơn vị: YV0043A, VPDĐ Công ty Tedis tại TP. Hà Nội)')
+        payment_SHUI_Company_HANOI_info.save()
+        # SHUI Employees HANOI
+        SHUI_Employees_amount = 0
+        site_RO = Site.objects.get(site='RO')
+        area_HANOI = Area.objects.get(area='HANOI')
+        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+        payroll_tedis_HANOI = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HANOI,month=period_month)
+        for payroll in payroll_tedis_HANOI:
+            SHUI_Employees_amount += round(payroll.SHUI_10point5percent_employee_pay)
+        payment_SHUI_Employees_HANOI_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                                    item='SHUI',description='SHUI Employees',area='HANOI',amount=SHUI_Employees_amount,
+                                                                    paidby='Transfer',paidto='',account_no='BHXH Quận Ba Đình - 144.02.02.901.025 - Agribank - CN Bắc HN (Mã đơn vị: YV0043A, VPDĐ Công ty Tedis tại TP. Hà Nội)')
+        payment_SHUI_Employees_HANOI_info.save()
+        '''PIT'''
+        # PIT HCM
+        PIT_HCM_amount = 0
+        payroll_tedis_HCM = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
+        for payroll in payroll_tedis_HCM:
+            PIT_HCM_amount += round(payroll.PIT)
+        payment_PIT_HCM_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                            item='PIT',description='PIT HCM',area='HCM',amount=PIT_HCM_amount,
+                                                            paidby='Transfer',paidto='Tax HCM',account_no='Cục thuế TP.HCM - 7111.1056137 - KBNN TP.HCM')
+        payment_PIT_HCM_info.save()
+        # PIT HANOI
+        PIT_HANOI_amount = 0
+        site_RO = Site.objects.get(site='RO')
+        area_HANOI = Area.objects.get(area='HANOI')
+        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+        payroll_tedis_HANOI = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HANOI,month=period_month)
+        for payroll in payroll_tedis_HANOI:
+            PIT_HANOI_amount += round(payroll.PIT)
+        payment_PIT_HANOI_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                            item='PIT',description='PIT HANOI',area='HANOI',amount=PIT_HANOI_amount,
+                                                            paidby='Transfer',paidto='Tax Hanoi',account_no='Cục thuế TP.Hà Nội - 7111 - KBNN TP.Hà Nội  NH Vietcombank')
+        payment_PIT_HANOI_info.save()
+        # PIT MARJORIE
+        month_string = str(period_month.month_number) + '/' + str(period_month.period.period_year)
+        payment_PIT_MARJORIE_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                                item='PIT',description='PIT Ms. MARJORIE',area='HCM',amount=0,
+                                                                paidby='Tax HCM',paidto='Tax HCM ',account_no='Cục thuế TP.HCM - 7111.1056137 - KBNN TP.HCM  MST 0310648270  tháng ' + month_string)
+        payment_PIT_MARJORIE_info.save()
+        '''TRADE UNION'''
+        # Trade Union fee HCM
+        trade_union_fee_company_HCM_amount = 0
+        payroll_tedis_HCM = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
+        for payroll in payroll_tedis_HCM:
+            trade_union_fee_company_HCM_amount += round(payroll.trade_union_fee_company_pay_2percent)
+        payment_trade_union_fee_company_HCM_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                            item='TRADE UNION',description='Trade Union fee HCM',area='HCM',amount=trade_union_fee_company_HCM_amount,
+                                                            paidby='Transfer',paidto='Trade Union',account_no='Công đoàn Việt Nam - 117001366668 - NH Vietinbank - CN Hoàng Mai - Hà Nội  Nội dung: MST 0304653674 VPĐD TEDIS tại TP.HCM đóng KPCĐ 2% tháng 03/2023')
+        payment_trade_union_fee_company_HCM_info.save()
+        # Trade Union HCM (member fee)
+        trade_union_fee_member_HCM_amount = 0
+        payroll_tedis_HCM = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
+        for payroll in payroll_tedis_HCM:
+            trade_union_fee_member_HCM_amount += round(payroll.trade_union_fee_member)
+        payment_trade_union_fee_member_HCM_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                            item='TRADE UNION',description='Trade Union HCM (member fee)',area='HCM',amount=trade_union_fee_member_HCM_amount,
+                                                            paidby='Transfer',paidto='Trade Union',account_no='BCH CONG DOAN VPDD TEDIS TAI TPHCM - 127000041929 - NH TMCP Công thương Việt Nam - CN 4 - HCM  Nội dung: MST 0304653674 VPĐD TEDIS tại TP.HCM đóng ĐPCĐ 1% tháng 03/2023')
+        payment_trade_union_fee_member_HCM_info.save()
+        # Trade Union fee HA NOI
+        trade_union_fee_company_HANOI_amount = 0
+        site_RO = Site.objects.get(site='RO')
+        area_HANOI = Area.objects.get(area='HANOI')
+        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+        payroll_tedis_HANOI = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HANOI,month=period_month)
+        for payroll in payroll_tedis_HANOI:
+            trade_union_fee_company_HANOI_amount += round(payroll.trade_union_fee_company_pay_2percent)
+        payment_trade_union_fee_company_HANOI_info = Report_Payment_Payroll_Tedis(month=period_month,
+                                                            item='TRADE UNION',description='Trade Union fee HA NOI',area='HANOI',amount=trade_union_fee_company_HANOI_amount,
+                                                            paidby='Transfer',paidto='Trade Union',account_no='Liên đoàn lao động Quận Ba Đình - 111000000272 - NH Vietinbank - CN Ba Đình - Hà Nội  Nội dung: MST 0102666127 VPĐD CÔNG TY TEDIS TẠI TP. HÀ NỘI nộp KPCĐ 2% tháng 03/2023')
+        payment_trade_union_fee_company_HANOI_info.save()
+        
+        
+        
         messages.success(request, 'SUCCESS: Report created')
         return redirect('employee:report_payroll_tedis',pk=period_month.id)
+        
+    
+    
+    # Export report
+    if request.POST.get('export'):   
+        # Export excel
+        file_name = str(period_month.month_number) + ' Salary ' + str(period_month.month_name) + '_TD.xlsx'
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
+        # Style
+        # xlwt color url: https://docs.google.com/spreadsheets/d/1ihNaZcUh7961yU7db1-Db0lbws4NT24B7koY8v8GHNQ/pubhtml?gid=1072579560&single=true
+        style_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold off,height 200, name Times New Roman, colour black;' % 'white')
+        style_total_red = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 200, name Arial, colour red; align: horiz center, vert center' % 'white')
+        style_total_red_onlyvertcen = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 200, name Arial, colour red; align: vert center' % 'white')
+        style_head_11pt_bold = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                           'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 220, name Times New Roman, colour black; align: horiz center, vert center' % 'white')
+        style_head_11pt_bold.alignment.wrap = 1
+        style_head_11pt_bold_left = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                           'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 220, name Times New Roman, colour black; align: horiz left, vert center' % 'white')
+        style_head_11pt_bold_green = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                           'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 220, name Times New Roman, colour black; align: horiz center, vert center' % 'lime')
+        style_head_small = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 300, colour black;' % 'white')
+        style_table_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 220, colour black; align: horiz center, vert center' % 'pale_blue')
+        style_table_head.alignment.wrap = 1
+        style_normal = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold off, colour black; align: horiz center, vert center' % 'white')
+        style_normal.alignment.wrap = 1
+
+        wb = xlwt.Workbook()
+        
+        
+        '''Sheet PIT'''
+        # Create sheet
+        ws_PIT = wb.add_sheet('PIT')
+        # Set col width
+        ws_PIT.col(0).width = 2000
+        ws_PIT.col(1).width = 3500
+        for col in range(2,14):
+            ws_PIT.col(col).width = 5000
+        
+        # Set row height
+        ws_PIT.row(0).height_mismatch = True
+        ws_PIT.row(0).height = 330
+        ws_PIT.row(1).height_mismatch = True
+        ws_PIT.row(1).height = 670
+        # Top
+        ws_PIT.write_merge(0, 1, 0, 0, 'STT', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 1, 1, 1, 'Mã nhân viên', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 1, 2, 2, 'Họ và tên', style_head_11pt_bold_left)
+        ws_PIT.write_merge(0, 1, 3, 3, 'CCCD', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 1, 4, 4, 'MST cá nhân', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 0, 5, 8, 'Thu nhập chịu thuế', style_head_11pt_bold)
+        ws_PIT.write(1, 5, 'Thu nhập chịu thuế', style_head_11pt_bold_green)
+        ws_PIT.write(1, 6, 'Tổng TNCT thuộc diện khấu trừ thuế', style_head_11pt_bold)
+        ws_PIT.write(1, 7, 'Bảo hiểm bắt buộc', style_head_11pt_bold)
+        ws_PIT.write(1, 8, 'Khấu trừ', style_head_11pt_bold)
+        ws_PIT.write_merge(0, 0, 9, 12, 'Thu nhập tính thuế', style_head_11pt_bold)
+        ws_PIT.write(1, 9, 'Thu nhập tính thuế', style_head_11pt_bold_green)
+        ws_PIT.write(1, 10, 'Thưởng', style_head_11pt_bold)  
+        ws_PIT.write(1, 11, 'Khác', style_head_11pt_bold) 
+        ws_PIT.write(1, 12, 'Cộng', style_head_11pt_bold)        
+        ws_PIT.write_merge(0, 1, 13, 13, 'Thuế TNCN phải nộp', style_head_11pt_bold_green)
+        ws_PIT.write_merge(0, 1, 14, 14, 'Ghi Chú', style_head_11pt_bold_left)
+        # Body
+        # A
+        ws_PIT.write(2, 0, 'A', style_head_11pt_bold)
+        ws_PIT.write(2, 2, 'Người Việt Nam', style_head_11pt_bold)
+        for col_row2 in range(3,15):
+            ws_PIT.write(2, col_row2, '', style_head_11pt_bold)
+        # PIT data
+        # Khai báo total
+        ttthu_nhap_chiu_thue = 0
+        tttong_tnct_khau_tru_thue = 0
+        ttbao_hiem_bat_buoc = 0
+        ttkhau_tru = 0
+        ttthu_nhap_tinh_thue = 0
+        ttthuong = 0
+        ttkhac = 0
+        ttcong = 0
+        ttthue_tnct_phai_nop = 0
+        ttghichu = 0
+        
+        for index, pit_data in enumerate(report_pit_payroll):
+            # Set row height
+            ws_PIT.row(3+index).height_mismatch = True
+            ws_PIT.row(3+index).height = 400
+            # Write data
+            ws_PIT.write(3+index, 0, str(index+1),style_normal)
+            ws_PIT.write(3+index, 1, str(pit_data.employee.employee_code),style_normal)
+            ws_PIT.write(3+index, 2, str(pit_data.employee.full_name),style_normal)
+            ws_PIT.write(3+index, 3, str(pit_data.employee.id_card_no),style_normal)
+            ws_PIT.write(3+index, 4, str(pit_data.employee.personal_income_tax),style_normal)
+            ws_PIT.write(3+index, 5, str("{:,}".format(round(pit_data.thu_nhap_chiu_thue),0)),style_normal)
+            ws_PIT.write(3+index, 6, str("{:,}".format(round(pit_data.tong_tnct_khau_tru_thue),0)),style_normal)
+            ws_PIT.write(3+index, 7, str("{:,}".format(round(pit_data.bao_hiem_bat_buoc),0)),style_normal)
+            ws_PIT.write(3+index, 8, str("{:,}".format(round(pit_data.khau_tru),0)),style_normal)
+            ws_PIT.write(3+index, 9, str("{:,}".format(round(pit_data.thu_nhap_tinh_thue),0)),style_normal)
+            ws_PIT.write(3+index, 10, str("{:,}".format(round(pit_data.thuong),0)),style_normal)
+            ws_PIT.write(3+index, 11, str("{:,}".format(round(pit_data.khac),0)),style_normal)
+            ws_PIT.write(3+index, 12, str("{:,}".format(round(pit_data.cong),0)),style_normal)
+            ws_PIT.write(3+index, 13, str("{:,}".format(round(pit_data.thue_tnct_phai_nop),0)),style_normal)
+            ws_PIT.write(3+index, 14, str(pit_data.ghi_chu),style_normal)
+            # Total
+            ttthu_nhap_chiu_thue += round(pit_data.thu_nhap_chiu_thue,0)
+            tttong_tnct_khau_tru_thue += round(pit_data.tong_tnct_khau_tru_thue,0)
+            ttbao_hiem_bat_buoc += round(pit_data.bao_hiem_bat_buoc,0) 
+            ttkhau_tru += round(pit_data.khau_tru,0)
+            ttthu_nhap_tinh_thue += round(pit_data.thu_nhap_tinh_thue,0)
+            ttthuong += round(pit_data.thuong,0)
+            ttkhac += round(pit_data.khac,0)
+            ttcong += round(pit_data.cong,0)
+            ttthue_tnct_phai_nop += round(pit_data.thue_tnct_phai_nop,0)
+            if pit_data.thue_tnct_phai_nop > 0:
+                ttghichu += 1
+            last_row = 3+index+1
+        # Total
+        # Set row height
+        ws_PIT.row(last_row).height_mismatch = True
+        ws_PIT.row(last_row).height = 400
+        # data
+        ws_PIT.write(last_row, 0, str(index+1), style_total_red)
+        ws_PIT.write_merge(last_row, last_row, 1, 4, 'Tổng Cộng A', style_total_red_onlyvertcen)
+        ws_PIT.write(last_row, 5, str("{:,}".format(round(ttthu_nhap_chiu_thue),0)), style_total_red)
+        ws_PIT.write(last_row, 6, str("{:,}".format(round(tttong_tnct_khau_tru_thue),0)), style_total_red)
+        ws_PIT.write(last_row, 7, str("{:,}".format(round(ttbao_hiem_bat_buoc),0)), style_total_red)
+        ws_PIT.write(last_row, 8, str("{:,}".format(round(ttkhau_tru),0)), style_total_red)
+        ws_PIT.write(last_row, 9, str("{:,}".format(round(ttthu_nhap_tinh_thue),0)), style_total_red)
+        ws_PIT.write(last_row, 10, str("{:,}".format(round(ttthuong),0)), style_total_red)
+        ws_PIT.write(last_row, 11, str("{:,}".format(round(ttkhac),0)), style_total_red)
+        ws_PIT.write(last_row, 12, str("{:,}".format(round(ttcong),0)), style_total_red)
+        ws_PIT.write(last_row, 13, str("{:,}".format(round(ttthue_tnct_phai_nop),0)), style_total_red)
+        ws_PIT.write(last_row, 14, str(ttghichu), style_total_red)
+
+        
+        '''Sheet Transfer HCM'''
+        # Style
+        # xlwt color url: https://docs.google.com/spreadsheets/d/1ihNaZcUh7961yU7db1-Db0lbws4NT24B7koY8v8GHNQ/pubhtml?gid=1072579560&single=true
+        style_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold off,height 200, name Times New Roman, colour black;' % 'white')
+        style_head_red = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color gray25, top thin;'
+                                    'font: bold off,height 200, name Arial, colour red;' % 'white')
+        style_head_12pt_bold_vertbot = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 240, name Arial, colour black; align: vert bottom' % 'white')
+        style_head_12pt_vertcen = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 240, name Arial, colour black; align: vert center' % 'white')
+        style_head_24pt_bold = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 480, name Arial, colour black; align: horiz center, vert center' % 'white')
+        style_11pt_horizright = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: horiz right, vert center' % 'white')
+        style_11pt_horizleft = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: horiz left, vert center' % 'white')
+        style_tablehead_grey25 = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color black, bottom_color black, right_color black, left_color black, left medium, right medium, top medium, bottom medium;'
+                                    'font: bold 1,height 220, name Arial, colour black; align: horiz center, vert center' % 'gray25')
+        style_tablehead_grey25.alignment.wrap = 1
+        style_tablebody = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: horiz center, vert center' % 'white')
+        style_tablebody.alignment.wrap = 1
+        style_tablebody_onlyvertcenter = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: vert center' % 'white')
+        style_tablebody_onlyvertcenter.alignment.wrap = 1
+        style_footer = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 240, name Arial, colour black; align: vert center' % 'white')
+        
+        # Create sheet
+        ws_TransferHCM = wb.add_sheet('Transfer HCM')
+        # Set col width
+        ws_TransferHCM.col(0).width = 2000
+        ws_TransferHCM.col(1).width = 3500
+        for col in range(2,7):
+            if col == 4:
+                ws_TransferHCM.col(col).width = 9000
+            else:
+                ws_TransferHCM.col(col).width = 5000
+        
+        # Set row height
+        ws_TransferHCM.row(0).height_mismatch = True
+        ws_TransferHCM.row(0).height = 700
+        ws_TransferHCM.row(1).height_mismatch = True
+        ws_TransferHCM.row(1).height = 670
+        ws_TransferHCM.row(2).height_mismatch = True
+        ws_TransferHCM.row(2).height = 800
+        ws_TransferHCM.row(3).height_mismatch = True
+        ws_TransferHCM.row(3).height = 400
+        ws_TransferHCM.row(4).height_mismatch = True
+        ws_TransferHCM.row(4).height = 700
+        # Head
+        # img = Image.open("hr/static/hr/images/logo/logo_tedis_white.png")
+        # image_parts = img.split()
+        # r = image_parts[0]
+        # g = image_parts[1]
+        # b = image_parts[2]
+        # img = Image.merge("RGB", (r, g, b))
+        # fo = BytesIO()
+        # img.save(fo, format='bmp')
+        # ws_TransferHCM.insert_bitmap_data(fo.getvalue(),1,1)
+        # img.close()
+        ws_TransferHCM.write(0, 3, 'TEDIS REP. OFFICE IN HO CHI MINH', style_head_12pt_bold_vertbot)
+        ws_TransferHCM.write(1, 3, 'Room 2B, Floor 2 & 4 - 150 Nguyen Luong Bang, Tan Phu Ward, District 7', style_head_12pt_vertcen)
+        ws_TransferHCM.write_merge(2, 2, 0, 6, 'SALARY TRANSFER LIST', style_head_24pt_bold)
+        ws_TransferHCM.write(3, 5, 'Date:', style_11pt_horizright)
+        ws_TransferHCM.write(3, 6, datetime.now().strftime('%d/%m/%Y'), style_11pt_horizleft)
+        
+        # Table
+        # Table-head
+        ws_TransferHCM.write(4, 0, 'No', style_tablehead_grey25)
+        ws_TransferHCM.write(4, 1, 'Employee Code', style_tablehead_grey25)
+        ws_TransferHCM.write(4, 2, 'Full Name', style_tablehead_grey25)
+        ws_TransferHCM.write(4, 3, 'Bank Account No.', style_tablehead_grey25)
+        ws_TransferHCM.write(4, 4, 'With Bank', style_tablehead_grey25)
+        ws_TransferHCM.write(4, 5, "Bank's Address", style_tablehead_grey25)
+        ws_TransferHCM.write(4, 6, 'Amount', style_tablehead_grey25)
+        # Table-Body
+        total_amount = 0
+        for index, transfer_data in enumerate(report_transfer_payroll):
+            # Set row height
+            ws_TransferHCM.row(5+index).height_mismatch = True
+            ws_TransferHCM.row(5+index).height = 650
+            # Write data
+            ws_TransferHCM.write(5+index, 0, str(index+1),style_tablebody)
+            ws_TransferHCM.write(5+index, 1, str(transfer_data.employee.employee_code),style_tablebody_onlyvertcenter)
+            ws_TransferHCM.write(5+index, 2, str(transfer_data.employee.full_name),style_tablebody_onlyvertcenter)
+            ws_TransferHCM.write(5+index, 3, str(transfer_data.employee.account_no),style_tablebody_onlyvertcenter)
+            ws_TransferHCM.write(5+index, 4, str(transfer_data.employee.bank) + ' - ' + str(transfer_data.employee.branch),style_tablebody_onlyvertcenter)
+            ws_TransferHCM.write(5+index, 5, str(transfer_data.employee.bank_address),style_tablebody_onlyvertcenter)
+            ws_TransferHCM.write(5+index, 6, str("{:,}".format(round(transfer_data.amount),0)),style_normal)
+            total_amount += round(transfer_data.amount, 0)
+            last_row = 5 + index + 1
+        # Table-footer
+        ws_TransferHCM.row(last_row).height_mismatch = True
+        ws_TransferHCM.row(last_row).height = 700
+        ws_TransferHCM.write_merge(last_row, last_row, 0, 5, 'TOTAL', style_tablehead_grey25)
+        ws_TransferHCM.write(last_row, 6, str("{:,}".format(round(total_amount),0)), style_tablehead_grey25) 
+        # Footer
+        # Set row height
+        for i in range(last_row+1, last_row+6):
+            if i == last_row+3:
+                ws_TransferHCM.row(i).height_mismatch = True
+                ws_TransferHCM.row(i).height = 2000
+            else: 
+                ws_TransferHCM.row(i).height_mismatch = True
+                ws_TransferHCM.row(i).height = 650
+        ws_TransferHCM.write(last_row+2, 5, 'Approved by', style_footer)
+        ws_TransferHCM.write(last_row+4, 5, 'Vũ Châu Kim Anh', style_footer) 
+            
+        
+        wb.save(response)
+        return response
+        
+        
+        
+    
+    return render(request, 'employee/view_report_payroll_tedis.html', {
+        'period_month' : period_month,
+        'report_payrollExist' : report_payrollExist,
+        'report_pit_payroll' : report_pit_payroll,
+        'report_transfer_payroll' : report_transfer_payroll,
+        'report_payment_payroll' : report_payment_payroll,
+        
+    })
+
+
+
+def PIT_report_payroll_tedis_edit(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
+    # Get payroll info
+    pit_info = Report_PIT_Payroll_Tedis.objects.get(pk=pk)
+    
+    
+    # Update payroll info
+    if request.POST.get('btnupdatepit'):
+        thuong = request.POST.get('thuong')
+        khac = request.POST.get('khac')
+        cong = request.POST.get('cong')
+        ghi_chu = request.POST.get('ghi_chu')
+        # Get unchange data
+        month = pit_info.month
+        payroll = pit_info.payroll
+        employee = pit_info.employee
+        
+        thu_nhap_chiu_thue = pit_info.thu_nhap_chiu_thue
+        tong_tnct_khau_tru_thue = pit_info.tong_tnct_khau_tru_thue
+        bao_hiem_bat_buoc = pit_info.bao_hiem_bat_buoc
+        khau_tru = pit_info.khau_tru
+        
+        thu_nhap_tinh_thue = pit_info.thu_nhap_tinh_thue
+        
+        thue_tnct_phai_nop = pit_info.thue_tnct_phai_nop
+        
+        
+        # Update and save
+        pit_update_info = Report_PIT_Payroll_Tedis(id=pit_info.id,thuong=thuong,khac=khac,cong=cong,ghi_chu=ghi_chu,
+                                                   month=month,payroll=payroll,employee=employee,
+                                                   thu_nhap_chiu_thue=thu_nhap_chiu_thue,tong_tnct_khau_tru_thue=tong_tnct_khau_tru_thue,bao_hiem_bat_buoc=bao_hiem_bat_buoc,khau_tru=khau_tru,
+                                                   thu_nhap_tinh_thue=thu_nhap_tinh_thue,
+                                                   thue_tnct_phai_nop=thue_tnct_phai_nop)
+        pit_update_info.save()
+        messages.success(request, 'SUCCESS: PIT updated')
+        return redirect('employee:report_payroll_tedis',pk=pit_info.month.id)
+        
+        
+        
+    
+    return render(request, 'employee/edit_PIT_report_payroll_tedis.html', {
+        'pit_info' : pit_info,
+        
+    })
+    
+
+
+def report_payroll_tedis_vietha(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
+    # Get month
+    period_month = Month_in_period.objects.get(pk=pk)
+    
+    # Get report data
+    site_JV = Site.objects.get(site='JV')
+    list_employee_tedis_vietha = Employee.objects.filter(site=site_JV)
+    # PIT
+    report_pit_payroll = Report_PIT_Payroll_Tedis_VietHa.objects.filter(employee__in=list_employee_tedis_vietha,month=period_month)
+    if report_pit_payroll.count() > 0:
+        report_payrollExist = 1
+    else:
+        report_pit_payroll = ''
+        report_payrollExist = 0    
+    # Transfer HCM
+    # report_transfer_payroll = Report_TransferHCM_Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_vietha,month=period_month)
+    # if report_transfer_payroll.count() > 0:
+    #     report_payrollExist = 1
+    # else:
+    #     report_transfer_payroll = ''
+    #     report_payrollExist = 0 
+    # Payment
+    
+    
+    # Create report 
+    if request.POST.get('btn_create_report'): 
+        # Create PIT
+        payroll_tedis_viet = Payroll_Tedis_Vietha.objects.filter(employee__in=list_employee_tedis_vietha,month=period_month)
+        for payroll in payroll_tedis_viet: 
+            # thu_nhap_chiu_thue
+            thu_nhap_chiu_thue = payroll.taxable_income
+            # tong_tnct_khau_tru_thue
+            if payroll.PIT > 0:
+                tong_tnct_khau_tru_thue = payroll.taxable_income
+            else:
+                tong_tnct_khau_tru_thue = 0
+            # bao_hiem_bat_buoc
+            bao_hiem_bat_buoc = payroll.SHUI_10point5percent_employee_pay
+            # khau_tru
+            khau_tru = payroll.family_deduction
+            # thu_nhap_tinh_thue
+            thu_nhap_tinh_thue = payroll.taxed_income
+            # thuong,khac,cong
+            thuong = 0
+            khac = 0
+            cong = 0
+            # thue_tnct_phai_nop
+            thue_tnct_phai_nop = payroll.PIT
+            # ghi_chu 
+            ghi_chu = ''
+            
+            pit_info = Report_PIT_Payroll_Tedis_VietHa(month=period_month,payroll=payroll,employee=payroll.employee,
+                                                thu_nhap_chiu_thue=thu_nhap_chiu_thue,tong_tnct_khau_tru_thue=tong_tnct_khau_tru_thue,bao_hiem_bat_buoc=bao_hiem_bat_buoc,khau_tru=khau_tru,
+                                                thu_nhap_tinh_thue=thu_nhap_tinh_thue,thuong=thuong,khac=khac,cong=cong,
+                                                thue_tnct_phai_nop=thue_tnct_phai_nop,ghi_chu=ghi_chu)
+            pit_info.save()
+        # Create Report_TransferHCM_Payroll_Tedis
+        # payroll_tedis = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_vietha,month=period_month)
+        # for payroll in payroll_tedis: 
+        #     transferHCM_info = Report_TransferHCM_Payroll_Tedis(month=period_month,payroll=payroll,employee=payroll.employee,
+        #                                         amount=payroll.net_income)
+        #     transferHCM_info.save()
+            
+        messages.success(request, 'SUCCESS: Report created')
+        return redirect('employee:report_payroll_tedis_vietha',pk=period_month.id)
     
     
     # Export report
@@ -4495,64 +5590,118 @@ def report_payroll_tedis(request, pk):
 
         
         '''Sheet Transfer HCM'''
+        # Style
+        # xlwt color url: https://docs.google.com/spreadsheets/d/1ihNaZcUh7961yU7db1-Db0lbws4NT24B7koY8v8GHNQ/pubhtml?gid=1072579560&single=true
+        style_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold off,height 200, name Times New Roman, colour black;' % 'white')
+        style_head_red = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color gray25, top thin;'
+                                    'font: bold off,height 200, name Arial, colour red;' % 'white')
+        style_head_12pt_bold_vertbot = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 240, name Arial, colour black; align: vert bottom' % 'white')
+        style_head_12pt_vertcen = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 240, name Arial, colour black; align: vert center' % 'white')
+        style_head_24pt_bold = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 480, name Arial, colour black; align: horiz center, vert center' % 'white')
+        style_11pt_horizright = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: horiz right, vert center' % 'white')
+        style_11pt_horizleft = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: horiz left, vert center' % 'white')
+        style_tablehead_grey25 = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color black, bottom_color black, right_color black, left_color black, left medium, right medium, top medium, bottom medium;'
+                                    'font: bold 1,height 220, name Arial, colour black; align: horiz center, vert center' % 'gray25')
+        style_tablehead_grey25.alignment.wrap = 1
+        style_tablebody = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: horiz center, vert center' % 'white')
+        style_tablebody.alignment.wrap = 1
+        style_tablebody_onlyvertcenter = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: vert center' % 'white')
+        style_tablebody_onlyvertcenter.alignment.wrap = 1
+        style_footer = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 240, name Arial, colour black; align: vert center' % 'white')
+        
         # Create sheet
-        ws_PIT = wb.add_sheet('Transfer HCM')
+        ws_TransferHCM = wb.add_sheet('Transfer HCM')
         # Set col width
-        ws_PIT.col(0).width = 2000
-        ws_PIT.col(1).width = 3500
-        for col in range(2,14):
-            ws_PIT.col(col).width = 5000
+        ws_TransferHCM.col(0).width = 2000
+        ws_TransferHCM.col(1).width = 3500
+        for col in range(2,7):
+            if col == 4:
+                ws_TransferHCM.col(col).width = 9000
+            else:
+                ws_TransferHCM.col(col).width = 5000
         
         # Set row height
-        ws_PIT.row(0).height_mismatch = True
-        ws_PIT.row(0).height = 330
-        ws_PIT.row(1).height_mismatch = True
-        ws_PIT.row(1).height = 670
-        # Top
-        ws_PIT.write_merge(0, 1, 0, 0, 'STT', style_head_11pt_bold)
-        ws_PIT.write_merge(0, 1, 1, 1, 'Mã nhân viên', style_head_11pt_bold)
-        ws_PIT.write_merge(0, 1, 2, 2, 'Họ và tên', style_head_11pt_bold_left)
-        ws_PIT.write_merge(0, 1, 3, 3, 'CCCD', style_head_11pt_bold)
-        ws_PIT.write_merge(0, 1, 4, 4, 'MST cá nhân', style_head_11pt_bold)
-        ws_PIT.write_merge(0, 0, 5, 8, 'Thu nhập chịu thuế', style_head_11pt_bold)
-        ws_PIT.write(1, 5, 'Thu nhập chịu thuế', style_head_11pt_bold_green)
-        ws_PIT.write(1, 6, 'Tổng TNCT thuộc diện khấu trừ thuế', style_head_11pt_bold)
-        ws_PIT.write(1, 7, 'Bảo hiểm bắt buộc', style_head_11pt_bold)
-        ws_PIT.write(1, 8, 'Khấu trừ', style_head_11pt_bold)
-        ws_PIT.write_merge(0, 0, 9, 12, 'Thu nhập tính thuế', style_head_11pt_bold)
-        ws_PIT.write(1, 9, 'Thu nhập tính thuế', style_head_11pt_bold_green)
-        ws_PIT.write(1, 10, 'Thưởng', style_head_11pt_bold)  
-        ws_PIT.write(1, 11, 'Khác', style_head_11pt_bold) 
-        ws_PIT.write(1, 12, 'Cộng', style_head_11pt_bold)        
-        ws_PIT.write_merge(0, 1, 13, 13, 'Thuế TNCN phải nộp', style_head_11pt_bold_green)
-        ws_PIT.write_merge(0, 1, 14, 14, 'Ghi Chú', style_head_11pt_bold_left)
-        # Body
-        # A
-        ws_PIT.write(2, 0, 'A', style_head_11pt_bold)
-        ws_PIT.write(2, 2, 'Người Việt Nam', style_head_11pt_bold)
-        for col_row2 in range(3,15):
-            ws_PIT.write(2, col_row2, '', style_head_11pt_bold)
-        # PIT data
-        for index, pit_data in enumerate(report_pit_payroll):
+        ws_TransferHCM.row(0).height_mismatch = True
+        ws_TransferHCM.row(0).height = 700
+        ws_TransferHCM.row(1).height_mismatch = True
+        ws_TransferHCM.row(1).height = 670
+        ws_TransferHCM.row(2).height_mismatch = True
+        ws_TransferHCM.row(2).height = 800
+        ws_TransferHCM.row(3).height_mismatch = True
+        ws_TransferHCM.row(3).height = 400
+        ws_TransferHCM.row(4).height_mismatch = True
+        ws_TransferHCM.row(4).height = 700
+        # Head
+        # img = Image.open("hr/static/hr/images/logo/logo_tedis_white.png")
+        # image_parts = img.split()
+        # r = image_parts[0]
+        # g = image_parts[1]
+        # b = image_parts[2]
+        # img = Image.merge("RGB", (r, g, b))
+        # fo = BytesIO()
+        # img.save(fo, format='bmp')
+        # ws_TransferHCM.insert_bitmap_data(fo.getvalue(),1,1)
+        # img.close()
+        ws_TransferHCM.write(0, 3, 'TEDIS REP. OFFICE IN HO CHI MINH', style_head_12pt_bold_vertbot)
+        ws_TransferHCM.write(1, 3, 'Room 2B, Floor 2 & 4 - 150 Nguyen Luong Bang, Tan Phu Ward, District 7', style_head_12pt_vertcen)
+        ws_TransferHCM.write_merge(2, 2, 0, 6, 'SALARY TRANSFER LIST', style_head_24pt_bold)
+        ws_TransferHCM.write(3, 5, 'Date:', style_11pt_horizright)
+        ws_TransferHCM.write(3, 6, datetime.now().strftime('%d/%m/%Y'), style_11pt_horizleft)
+        
+        # Table
+        # Table-head
+        ws_TransferHCM.write(4, 0, 'No', style_tablehead_grey25)
+        ws_TransferHCM.write(4, 1, 'Employee Code', style_tablehead_grey25)
+        ws_TransferHCM.write(4, 2, 'Full Name', style_tablehead_grey25)
+        ws_TransferHCM.write(4, 3, 'Bank Account No.', style_tablehead_grey25)
+        ws_TransferHCM.write(4, 4, 'With Bank', style_tablehead_grey25)
+        ws_TransferHCM.write(4, 5, "Bank's Address", style_tablehead_grey25)
+        ws_TransferHCM.write(4, 6, 'Amount', style_tablehead_grey25)
+        # Table-Body
+        total_amount = 0
+        for index, transfer_data in enumerate(report_transfer_payroll):
             # Set row height
-            ws_PIT.row(3+index).height_mismatch = True
-            ws_PIT.row(3+index).height = 400
+            ws_TransferHCM.row(5+index).height_mismatch = True
+            ws_TransferHCM.row(5+index).height = 650
             # Write data
-            ws_PIT.write(3+index, 0, str(index+1),style_normal)
-            ws_PIT.write(3+index, 1, str(pit_data.employee.employee_code),style_normal)
-            ws_PIT.write(3+index, 2, str(pit_data.employee.full_name),style_normal)
-            ws_PIT.write(3+index, 3, str(pit_data.employee.id_card_no),style_normal)
-            ws_PIT.write(3+index, 4, str(pit_data.employee.personal_income_tax),style_normal)
-            ws_PIT.write(3+index, 5, str("{:,}".format(round(pit_data.thu_nhap_chiu_thue),0)),style_normal)
-            ws_PIT.write(3+index, 6, str("{:,}".format(round(pit_data.tong_tnct_khau_tru_thue),0)),style_normal)
-            ws_PIT.write(3+index, 7, str("{:,}".format(round(pit_data.bao_hiem_bat_buoc),0)),style_normal)
-            ws_PIT.write(3+index, 8, str("{:,}".format(round(pit_data.khau_tru),0)),style_normal)
-            ws_PIT.write(3+index, 9, str("{:,}".format(round(pit_data.thu_nhap_tinh_thue),0)),style_normal)
-            ws_PIT.write(3+index, 10, str("{:,}".format(round(pit_data.thuong),0)),style_normal)
-            ws_PIT.write(3+index, 11, str("{:,}".format(round(pit_data.khac),0)),style_normal)
-            ws_PIT.write(3+index, 12, str("{:,}".format(round(pit_data.cong),0)),style_normal)
-            ws_PIT.write(3+index, 13, str("{:,}".format(round(pit_data.thue_tnct_phai_nop),0)),style_normal)
-            ws_PIT.write(3+index, 14, str(pit_data.ghi_chu),style_normal)
+            ws_TransferHCM.write(5+index, 0, str(index+1),style_tablebody)
+            ws_TransferHCM.write(5+index, 1, str(transfer_data.employee.employee_code),style_tablebody_onlyvertcenter)
+            ws_TransferHCM.write(5+index, 2, str(transfer_data.employee.full_name),style_tablebody_onlyvertcenter)
+            ws_TransferHCM.write(5+index, 3, str(transfer_data.employee.account_no),style_tablebody_onlyvertcenter)
+            ws_TransferHCM.write(5+index, 4, str(transfer_data.employee.bank) + ' - ' + str(transfer_data.employee.branch),style_tablebody_onlyvertcenter)
+            ws_TransferHCM.write(5+index, 5, str(transfer_data.employee.bank_address),style_tablebody_onlyvertcenter)
+            ws_TransferHCM.write(5+index, 6, str("{:,}".format(round(transfer_data.amount),0)),style_normal)
+            total_amount += round(transfer_data.amount, 0)
+            last_row = 5 + index + 1
+        # Table-footer
+        ws_TransferHCM.row(last_row).height_mismatch = True
+        ws_TransferHCM.row(last_row).height = 700
+        ws_TransferHCM.write_merge(last_row, last_row, 0, 5, 'TOTAL', style_tablehead_grey25)
+        ws_TransferHCM.write(last_row, 6, str("{:,}".format(round(total_amount),0)), style_tablehead_grey25) 
+        # Footer
+        # Set row height
+        for i in range(last_row+1, last_row+6):
+            if i == last_row+3:
+                ws_TransferHCM.row(i).height_mismatch = True
+                ws_TransferHCM.row(i).height = 2000
+            else: 
+                ws_TransferHCM.row(i).height_mismatch = True
+                ws_TransferHCM.row(i).height = 650
+        ws_TransferHCM.write(last_row+2, 5, 'Approved by', style_footer)
+        ws_TransferHCM.write(last_row+4, 5, 'Vũ Châu Kim Anh', style_footer) 
             
         
         wb.save(response)
@@ -4561,11 +5710,11 @@ def report_payroll_tedis(request, pk):
         
         
     
-    return render(request, 'employee/view_report_payroll_tedis.html', {
+    return render(request, 'employee/view_report_payroll_tedis_vietha.html', {
         'period_month' : period_month,
         'report_payrollExist' : report_payrollExist,
         'report_pit_payroll' : report_pit_payroll,
-        'report_transfer_payroll' : report_transfer_payroll,
+        # 'report_transfer_payroll' : report_transfer_payroll,
         
     })
     

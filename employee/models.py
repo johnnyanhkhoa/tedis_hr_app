@@ -843,3 +843,55 @@ class Report_TransferHCM_Payroll_Tedis(models.Model):
 
     def __int__(self):
         return self.month
+
+
+class Report_Payment_Payroll_Tedis(models.Model):
+    month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
+    # fields
+    item = models.CharField(max_length=50, blank=True, null=True)
+    description = models.CharField(max_length=100, blank=True, null=True)
+    area = models.CharField(max_length=10, blank=True, null=True)
+    amount = models.FloatField(blank=True, null=True)
+    paidby = models.CharField(max_length=10, blank=True, null=True)
+    paidto = models.CharField(max_length=10, blank=True, null=True)
+    account_no = models.TextField(null=True,blank=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.month
+
+
+# Report Payroll Tedis-VietHa
+class Report_PIT_Payroll_Tedis_VietHa(models.Model):
+    month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
+    payroll = models.ForeignKey(Payroll_Tedis_Vietha, on_delete=models.PROTECT, null=True)
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    # Thu nhập chịu thuế
+    thu_nhap_chiu_thue = models.FloatField(blank=True, null=True)
+    tong_tnct_khau_tru_thue = models.FloatField(blank=True, null=True)
+    bao_hiem_bat_buoc = models.FloatField(blank=True, null=True)
+    khau_tru = models.FloatField(blank=True, null=True)
+    # Thu nhập tính thuế
+    thu_nhap_tinh_thue = models.FloatField(blank=True, null=True)
+    thuong = models.FloatField(blank=True, null=True)
+    khac = models.FloatField(blank=True, null=True)
+    cong = models.FloatField(blank=True, null=True)
+    # Others
+    thue_tnct_phai_nop = models.FloatField(blank=True, null=True)
+    ghi_chu = models.CharField(max_length=500, blank=True, null=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.month

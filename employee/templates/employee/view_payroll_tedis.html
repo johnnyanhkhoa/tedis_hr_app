@@ -18,6 +18,9 @@
         padding-right: 0.3em;
         text-align: right;
       }
+    .table-container {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    }
 </style>
 
 <div id="main">
@@ -101,182 +104,374 @@
                             </div>
                         </ol>
                     </nav>
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item text-dark" role="presentation">
+                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                                type="button" role="tab" aria-controls="home" aria-selected="true">Payroll HCM</button>
+                        </li>
+                        <li class="nav-item text-dark" role="presentation">
+                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
+                                type="button" role="tab" aria-controls="profile" aria-selected="false">Payroll HANOI</button>
+                        </li>
+                    </ul>
                 </div>
                 <div class="card-body">
-                    <table class="table table-striped table-bordered border-dark" id="table1">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Employee code</th>
-                                <th>Full name</th>
-                                <th>Joining Date</th>
-                                <th>Department/Area</th>
-                                <th>Job Title</th>
-                                <th>Salary (VND)</th>
-                                <th>Working days</th>
-                                <th>% Adjust</th>
-                                <th>Gross Income</th>
-                                <th>Salary recuperation</th>
-                                <th>Overtime</th>
-                                <th>Transportation</th>
-                                <th>Phone</th>
-                                <th>Lunch</th>
-                                <th>Training fee</th>
-                                <th>Toxic Allowance</th>
-                                <th>Travel</th>
-                                <th>Responsibility</th>
-                                <th>Seniority Bonus</th>
-                                <th>Other</th>
-                                <th>Total allowance recuperation</th>
-                                <th>Benefits</th>
-                                <th>Severance Allowance</th>
-                                <th>Outstanding annual leave</th>
-                                <th>13th salary(Pro-ata)</th>
-                                <th>SHUI(10.5%)(Employee pay)</th>
-                                <th>Recuperation of SHU Ins.(10.5%)(staff pay)</th>
-                                <th>SHUI(21.5%)(Company pay)</th>
-                                <th>Recuperation of SHU Ins.(21.5%)(Company pay)</th>
-                                <th>Occupational accident and disease Ins.(0.5%)(Pay for staffs)</th>
-                                <th>Trade Union fee (Company pay 2%)</th>
-                                <th>Trade Union fee (Member)</th>
-                                <th>Family deduction</th>
-                                <th>Taxable Income</th>
-                                <th>Taxed Income</th>
-                                <th>PIT</th>
-                                <th>Deduct</th>
-                                <th>Net Income</th>
-                                <th>Transfer Bank</th>
-                                <th>Total Cost</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for data in list_payroll_info %}
-                            <tr>
-                                <th></th>
-                                <td>{{ data.payroll_info.employee.employee_code }}</td>
-                                <td>{{ data.payroll_info.employee.full_name }}</td>
-                                <td>{{ data.payroll_info.employee.joining_date|date:"d/m/Y" }}</td>
-                                <td>{{ data.payroll_info.employee.department_e }}</td>
-                                <td>{{ data.payroll_info.employee.position_e }}</td>
-                                <td>{{ data.payroll_info.newest_salary|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.working_days }}</td>
-                                <td>{{ data.payroll_info.adjust_percent }}%</td>
-                                <td>{{ data.payroll_info.gross_income|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.salary_recuperation|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.overtime|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.transportation|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.phone|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.lunch|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.training_fee|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.toxic_allowance|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.travel|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.responsibility|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.seniority_bonus|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.other|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.total_allowance_recuperation|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.benefits|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.severance_allowance|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.outstanding_annual_leave|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.month_13_salary_Pro_ata|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.SHUI_10point5percent_employee_pay|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.recuperation_of_SHU_Ins_10point5percent_staff_pay|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.SHUI_21point5percent_company_pay|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.recuperation_of_SHU_Ins_21point5percent_company_pay|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.occupational_accident_and_disease|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.trade_union_fee_company_pay_2percent|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.trade_union_fee_member|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.family_deduction|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.taxable_income|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.taxed_income|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.PIT|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.deduct|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.net_income|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.transfer_bank|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.total_cost|floatformat:0|intcomma }}</td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="btn btn-dark dropdown-toggle" type="button"
-                                            id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z" />
-                                                <path
-                                                    d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z" />
-                                            </svg>
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
-                                            <a class="dropdown-item"
-                                                href="{% url 'employee:payroll_tedis_edit' data.payroll_info.id %}"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                                    <path
-                                                        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                                </svg>
-                                                &ensp;Update</a>
-                                            {% comment %} <a class="dropdown-item"
-                                                href="{% url 'employee:employee_delete' employee.id %}"
-                                                style="color: red;"><svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                    height="16" fill="currentColor" class="bi bi-trash"
-                                                    viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                                                    <path fill-rule="evenodd"
-                                                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                                                </svg>
-                                                &ensp;Delete employee</a>
-                                            <hr style="margin-top: 0; margin-bottom:0">
-                                            <a class="dropdown-item"
-                                                href="{% url 'employee:probationary_period_form' employee.id %}"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    fill="currentColor" class="bi bi-file-text" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1H5z" />
-                                                    <path
-                                                        d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z" />
-                                                </svg>
-                                                &ensp;Make job offer</a>
-                                            <a class="dropdown-item"
-                                                href="{% url 'employee:add_children' employee.id %}"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
-                                                    <path fill-rule="evenodd"
-                                                        d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z" />
-                                                </svg>
-                                                &ensp;Add children/relatives</a>
-                                            <a class="dropdown-item"
-                                                href="{% url 'employee:add_contract' employee.id %}"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    fill="currentColor" class="bi bi-list-columns" viewBox="0 0 16 16">
-                                                    <path fill-rule="evenodd"
-                                                        d="M0 .5A.5.5 0 0 1 .5 0h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 0 .5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 2h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 4h10a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 6h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 8h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Z" />
-                                                </svg>
-                                                &ensp;Make Labour contract</a>
-                                            <a class="dropdown-item"
-                                                href="{% url 'employee:add_promotion' employee.id %}"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    fill="currentColor" class="bi bi-box-arrow-in-up"
-                                                    viewBox="0 0 16 16">
-                                                    <path fill-rule="evenodd"
-                                                        d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
-                                                    <path fill-rule="evenodd"
-                                                        d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z" />
-                                                </svg>
-                                                &ensp;Make Job promotion</a> {% endcomment %}
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <table class="table table-striped table-bordered border-dark" id="table1">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Employee code</th>
+                                        <th>Full name</th>
+                                        <th>Joining Date</th>
+                                        <th>Department/Area</th>
+                                        <th>Job Title</th>
+                                        <th>Salary (VND)</th>
+                                        <th>Working days</th>
+                                        <th>% Adjust</th>
+                                        <th>Gross Income</th>
+                                        <th>Salary recuperation</th>
+                                        <th>Overtime</th>
+                                        <th>Transportation</th>
+                                        <th>Phone</th>
+                                        <th>Lunch</th>
+                                        <th>Training fee</th>
+                                        <th>Toxic Allowance</th>
+                                        <th>Travel</th>
+                                        <th>Responsibility</th>
+                                        <th>Seniority Bonus</th>
+                                        <th>Other</th>
+                                        <th>Total allowance recuperation</th>
+                                        <th>Benefits</th>
+                                        <th>Severance Allowance</th>
+                                        <th>Outstanding annual leave</th>
+                                        <th>13th salary(Pro-ata)</th>
+                                        <th>SHUI(10.5%)(Employee pay)</th>
+                                        <th>Recuperation of SHU Ins.(10.5%)(staff pay)</th>
+                                        <th>SHUI(21.5%)(Company pay)</th>
+                                        <th>Recuperation of SHU Ins.(21.5%)(Company pay)</th>
+                                        <th>Occupational accident and disease Ins.(0.5%)(Pay for staffs)</th>
+                                        <th>Trade Union fee (Company pay 2%)</th>
+                                        <th>Trade Union fee (Member)</th>
+                                        <th>Family deduction</th>
+                                        <th>Taxable Income</th>
+                                        <th>Taxed Income</th>
+                                        <th>PIT</th>
+                                        <th>Deduct</th>
+                                        <th>Net Income</th>
+                                        <th>Transfer Bank</th>
+                                        <th>Total Cost</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for data in list_payroll_HCM_info %}
+                                    <tr>
+                                        <th></th>
+                                        <td>{{ data.payroll_info.employee.employee_code }}</td>
+                                        <td>{{ data.payroll_info.employee.full_name }}</td>
+                                        <td>{{ data.payroll_info.employee.joining_date|date:"d/m/Y" }}</td>
+                                        <td>{{ data.payroll_info.employee.department_e }}</td>
+                                        <td>{{ data.payroll_info.employee.position_e }}</td>
+                                        <td>{{ data.payroll_info.newest_salary|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.working_days }}</td>
+                                        <td>{{ data.payroll_info.adjust_percent }}%</td>
+                                        <td>{{ data.payroll_info.gross_income|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.salary_recuperation|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.overtime|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.transportation|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.phone|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.lunch|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.training_fee|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.toxic_allowance|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.travel|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.responsibility|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.seniority_bonus|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.other|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.total_allowance_recuperation|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.benefits|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.severance_allowance|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.outstanding_annual_leave|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.month_13_salary_Pro_ata|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.SHUI_10point5percent_employee_pay|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.recuperation_of_SHU_Ins_10point5percent_staff_pay|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.SHUI_21point5percent_company_pay|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.recuperation_of_SHU_Ins_21point5percent_company_pay|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.occupational_accident_and_disease|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.trade_union_fee_company_pay_2percent|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.trade_union_fee_member|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.family_deduction|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.taxable_income|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.taxed_income|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.PIT|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.deduct|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.net_income|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.transfer_bank|floatformat:0|intcomma }}</td>
+                                        <td>{{ data.payroll_info.total_cost|floatformat:0|intcomma }}</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-dark dropdown-toggle" type="button"
+                                                    id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="false">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z" />
+                                                        <path
+                                                            d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z" />
+                                                    </svg>
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
+                                                    <a class="dropdown-item"
+                                                        href="{% url 'employee:payroll_tedis_edit' data.payroll_info.id %}"><svg
+                                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                            <path
+                                                                d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                                        </svg>
+                                                        &ensp;Update</a>
+                                                    {% comment %} <a class="dropdown-item"
+                                                        href="{% url 'employee:employee_delete' employee.id %}"
+                                                        style="color: red;"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" fill="currentColor" class="bi bi-trash"
+                                                            viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                                            <path fill-rule="evenodd"
+                                                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                                        </svg>
+                                                        &ensp;Delete employee</a>
+                                                    <hr style="margin-top: 0; margin-bottom:0">
+                                                    <a class="dropdown-item"
+                                                        href="{% url 'employee:probationary_period_form' employee.id %}"><svg
+                                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            fill="currentColor" class="bi bi-file-text" viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1H5z" />
+                                                            <path
+                                                                d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z" />
+                                                        </svg>
+                                                        &ensp;Make job offer</a>
+                                                    <a class="dropdown-item"
+                                                        href="{% url 'employee:add_children' employee.id %}"><svg
+                                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                                                            <path fill-rule="evenodd"
+                                                                d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z" />
+                                                        </svg>
+                                                        &ensp;Add children/relatives</a>
+                                                    <a class="dropdown-item"
+                                                        href="{% url 'employee:add_contract' employee.id %}"><svg
+                                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            fill="currentColor" class="bi bi-list-columns" viewBox="0 0 16 16">
+                                                            <path fill-rule="evenodd"
+                                                                d="M0 .5A.5.5 0 0 1 .5 0h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 0 .5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 2h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 4h10a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 6h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 8h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Z" />
+                                                        </svg>
+                                                        &ensp;Make Labour contract</a>
+                                                    <a class="dropdown-item"
+                                                        href="{% url 'employee:add_promotion' employee.id %}"><svg
+                                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            fill="currentColor" class="bi bi-box-arrow-in-up"
+                                                            viewBox="0 0 16 16">
+                                                            <path fill-rule="evenodd"
+                                                                d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
+                                                            <path fill-rule="evenodd"
+                                                                d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z" />
+                                                        </svg>
+                                                        &ensp;Make Job promotion</a> {% endcomment %}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
 
-                        </tbody>
-                    </table>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="table-container">
+                                <table class="table table-striped table-bordered border-dark">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Employee code</th>
+                                            <th>Full name</th>
+                                            <th>Joining Date</th>
+                                            <th>Department/Area</th>
+                                            <th>Job Title</th>
+                                            <th>Salary (VND)</th>
+                                            <th>Working days</th>
+                                            <th>% Adjust</th>
+                                            <th>Gross Income</th>
+                                            <th>Salary recuperation</th>
+                                            <th>Overtime</th>
+                                            <th>Transportation</th>
+                                            <th>Phone</th>
+                                            <th>Lunch</th>
+                                            <th>Training fee</th>
+                                            <th>Toxic Allowance</th>
+                                            <th>Travel</th>
+                                            <th>Responsibility</th>
+                                            <th>Seniority Bonus</th>
+                                            <th>Other</th>
+                                            <th>Total allowance recuperation</th>
+                                            <th>Benefits</th>
+                                            <th>Severance Allowance</th>
+                                            <th>Outstanding annual leave</th>
+                                            <th>13th salary(Pro-ata)</th>
+                                            <th>SHUI(10.5%)(Employee pay)</th>
+                                            <th>Recuperation of SHU Ins.(10.5%)(staff pay)</th>
+                                            <th>SHUI(21.5%)(Company pay)</th>
+                                            <th>Recuperation of SHU Ins.(21.5%)(Company pay)</th>
+                                            <th>Occupational accident and disease Ins.(0.5%)(Pay for staffs)</th>
+                                            <th>Trade Union fee (Company pay 2%)</th>
+                                            <th>Trade Union fee (Member)</th>
+                                            <th>Family deduction</th>
+                                            <th>Taxable Income</th>
+                                            <th>Taxed Income</th>
+                                            <th>PIT</th>
+                                            <th>Deduct</th>
+                                            <th>Net Income</th>
+                                            <th>Transfer Bank</th>
+                                            <th>Total Cost</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for data in list_payroll_HANOI_info %}
+                                        <tr>
+                                            <th></th>
+                                            <td>{{ data.payroll_info.employee.employee_code }}</td>
+                                            <td>{{ data.payroll_info.employee.full_name }}</td>
+                                            <td>{{ data.payroll_info.employee.joining_date|date:"d/m/Y" }}</td>
+                                            <td>{{ data.payroll_info.employee.department_e }}</td>
+                                            <td>{{ data.payroll_info.employee.position_e }}</td>
+                                            <td>{{ data.payroll_info.newest_salary|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.working_days }}</td>
+                                            <td>{{ data.payroll_info.adjust_percent }}%</td>
+                                            <td>{{ data.payroll_info.gross_income|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.salary_recuperation|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.overtime|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.transportation|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.phone|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.lunch|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.training_fee|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.toxic_allowance|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.travel|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.responsibility|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.seniority_bonus|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.other|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.total_allowance_recuperation|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.benefits|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.severance_allowance|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.outstanding_annual_leave|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.month_13_salary_Pro_ata|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.SHUI_10point5percent_employee_pay|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.recuperation_of_SHU_Ins_10point5percent_staff_pay|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.SHUI_21point5percent_company_pay|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.recuperation_of_SHU_Ins_21point5percent_company_pay|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.occupational_accident_and_disease|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.trade_union_fee_company_pay_2percent|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.trade_union_fee_member|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.family_deduction|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.taxable_income|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.taxed_income|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.PIT|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.deduct|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.net_income|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.transfer_bank|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.payroll_info.total_cost|floatformat:0|intcomma }}</td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-dark dropdown-toggle" type="button"
+                                                        id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z" />
+                                                            <path
+                                                                d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z" />
+                                                        </svg>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
+                                                        <a class="dropdown-item"
+                                                            href="{% url 'employee:payroll_tedis_edit' data.payroll_info.id %}"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                                                <path
+                                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                                <path
+                                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                                            </svg>
+                                                            &ensp;Update</a>
+                                                        {% comment %} <a class="dropdown-item"
+                                                            href="{% url 'employee:employee_delete' employee.id %}"
+                                                            style="color: red;"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                height="16" fill="currentColor" class="bi bi-trash"
+                                                                viewBox="0 0 16 16">
+                                                                <path
+                                                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                                                <path fill-rule="evenodd"
+                                                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                                            </svg>
+                                                            &ensp;Delete employee</a>
+                                                        <hr style="margin-top: 0; margin-bottom:0">
+                                                        <a class="dropdown-item"
+                                                            href="{% url 'employee:probationary_period_form' employee.id %}"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                fill="currentColor" class="bi bi-file-text" viewBox="0 0 16 16">
+                                                                <path
+                                                                    d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1H5z" />
+                                                                <path
+                                                                    d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z" />
+                                                            </svg>
+                                                            &ensp;Make job offer</a>
+                                                        <a class="dropdown-item"
+                                                            href="{% url 'employee:add_children' employee.id %}"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+                                                                <path
+                                                                    d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                                                                <path fill-rule="evenodd"
+                                                                    d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z" />
+                                                            </svg>
+                                                            &ensp;Add children/relatives</a>
+                                                        <a class="dropdown-item"
+                                                            href="{% url 'employee:add_contract' employee.id %}"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                fill="currentColor" class="bi bi-list-columns" viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M0 .5A.5.5 0 0 1 .5 0h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 0 .5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 2h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 4h10a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 6h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2A.5.5 0 0 1 .5 8h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Zm-13 2a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5Zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Z" />
+                                                            </svg>
+                                                            &ensp;Make Labour contract</a>
+                                                        <a class="dropdown-item"
+                                                            href="{% url 'employee:add_promotion' employee.id %}"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                fill="currentColor" class="bi bi-box-arrow-in-up"
+                                                                viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1h-2z" />
+                                                                <path fill-rule="evenodd"
+                                                                    d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z" />
+                                                            </svg>
+                                                            &ensp;Make Job promotion</a> {% endcomment %}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
