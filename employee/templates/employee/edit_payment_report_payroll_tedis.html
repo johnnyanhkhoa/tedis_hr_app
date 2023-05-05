@@ -1,0 +1,126 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}Payment Tedis | Update Information{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Payment Information</h3>
+                    <hr>
+                    <h4>{{payment_info.month.month_name}}</h4>
+                    <br>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Payment Tedis</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Update</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <form method="post" class="">
+                {% csrf_token %}
+                <div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="item">Item</label>
+                            <select class="form-control" name="item">
+                                <option selected value={{payment_info.item}}>{{payment_info.item}}</option>
+                                {% for item in list_items %}
+                                {% if payment_info.item == item %}
+                                {% else %}
+                                <option value={{ item }}>{{ item }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="description">Description</label>
+                            <select class="form-control" name="description">
+                                <option selected value={{payment_info.description}}>{{payment_info.description}}</option>
+                                {% for description in list_descriptions %}
+                                {% if payment_info.description == description %}
+                                {% else %}
+                                <option value={{ description }}>{{ description }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="area">Area</label>
+                            <select class="form-control" name="area">
+                                <option selected value={{payment_info.area}}>{{payment_info.area}}</option>
+                                {% for area in list_areas %}
+                                {% if payment_info.area == area %}
+                                {% else %}
+                                <option value={{ area }}>{{ area }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="amount">Amount</label>
+                            <input type="number" class="form-control" name="amount" id="amount"
+                                placeholder="Input interger" value={{payment_info.amount|floatformat:0}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="paidby">Paid by</label>
+                            <select class="form-control" name="paidby">
+                                <option selected value={{payment_info.paidby}}>{{payment_info.paidby}}</option>
+                                {% for paidby in list_paidbys %}
+                                {% if payment_info.paidby == paidby %}
+                                {% else %}
+                                <option value={{ paidby }}>{{ paidby }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="paidto">Paid to</label>
+                            <input type="text" class="form-control" name="paidto" id="paidto" placeholder="Input text" value="{{payment_info.paidto}}">
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="account_no">Account no</label>
+                            <textarea class="form-control" name="account_no" id="account_no" placeholder="Input text"
+                                style="height: 100px">{{payment_info.account_no}}</textarea>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+            <a type="button" class="btn btn-secondary"
+                href="{% url 'employee:report_payroll_tedis' payment_info.month.id %}">Close</a>
+            <button type="submit" class="btn btn-primary" name="btnupdatepayment" value="Payment update">Save
+            </button>
+        </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

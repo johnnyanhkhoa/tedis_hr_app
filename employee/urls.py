@@ -40,8 +40,12 @@ urlpatterns = [
     path('payroll_vietha/<int:pk>/', views.payroll_vietha, name='payroll_vietha'),
     path('payroll_vietha_edit/<int:pk>/', views.payroll_vietha_edit, name='payroll_vietha_edit'),
     # Report Payroll
+    # Tedis
     path('report_payroll_tedis/<int:pk>/', views.report_payroll_tedis, name='report_payroll_tedis'),
     path('PIT_report_payroll_tedis_edit/<int:pk>/', views.PIT_report_payroll_tedis_edit, name='PIT_report_payroll_tedis_edit'),
+    path('payment_report_payroll_tedis_edit/<int:pk>/', views.payment_report_payroll_tedis_edit, name='payment_report_payroll_tedis_edit'),
+    path('payment_report_payroll_tedis_delete/<int:pk>/', views.payment_report_payroll_tedis_delete, name='payment_report_payroll_tedis_delete'),
+    # Tedis-VietHa
     path('report_payroll_tedis_vietha/<int:pk>/', views.report_payroll_tedis_vietha, name='report_payroll_tedis_vietha'),
     # Report leave
     path('report_leave/<int:pk>/', views.report_leave, name='report_leave'),

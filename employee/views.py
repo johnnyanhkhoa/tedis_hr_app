@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.hashers import PBKDF2PasswordHasher, Argon2PasswordHasher, CryptPasswordHasher, BCryptPasswordHasher
-from django.db.models import Q
+from django.db.models import Q, Case, When, Value
 from employee.models import *
 from hr.models import User
 from employee.form import *
@@ -4887,7 +4887,8 @@ def report_payroll_tedis(request, pk):
         report_transfer_payroll = ''
         report_payrollExist = 0 
     # Payment
-    report_payment_payroll = Report_Payment_Payroll_Tedis.objects.filter(month=period_month).order_by('item')
+    item_order = {'SALARY': 1, 'SHUI': 2, 'PIT': 3, 'TRADE UNION': 4}
+    report_payment_payroll = Report_Payment_Payroll_Tedis.objects.filter(month=period_month).order_by(Case(*[When(item=item, then=Value(order)) for item, order in item_order.items()], default=Value(999)))
     if report_payment_payroll.count() > 0:
         report_payrollExist = 1
     else:
@@ -5036,7 +5037,7 @@ def report_payroll_tedis(request, pk):
         month_string = str(period_month.month_number) + '/' + str(period_month.period.period_year)
         payment_PIT_MARJORIE_info = Report_Payment_Payroll_Tedis(month=period_month,
                                                                 item='PIT',description='PIT Ms. MARJORIE',area='HCM',amount=0,
-                                                                paidby='Tax HCM',paidto='Tax HCM ',account_no='Cục thuế TP.HCM - 7111.1056137 - KBNN TP.HCM  MST 0310648270  tháng ' + month_string)
+                                                                paidby='Transfer',paidto='Tax HCM ',account_no='Cục thuế TP.HCM - 7111.1056137 - KBNN TP.HCM  MST 0310648270  tháng ' + month_string)
         payment_PIT_MARJORIE_info.save()
         '''TRADE UNION'''
         # Trade Union fee HCM
@@ -5073,6 +5074,24 @@ def report_payroll_tedis(request, pk):
         
         
         messages.success(request, 'SUCCESS: Report created')
+        return redirect('employee:report_payroll_tedis',pk=period_month.id)
+
+    # Add payment record 
+    if request.POST.get('btnAddPayment'):
+        month_id = request.POST.get('month')
+        month = Month_in_period.objects.get(id=month_id)
+        item = request.POST.get('item')
+        description = request.POST.get('description')
+        area = request.POST.get('area')
+        amount = request.POST.get('amount')
+        paidby = request.POST.get('paidby')
+        paidto = request.POST.get('paidto')
+        account_no = request.POST.get('account_no')
+        payment_newrecord_info = Report_Payment_Payroll_Tedis(month=month,
+                                                            item=item,description=description,area=area,amount=amount,
+                                                            paidby=paidby,paidto=paidto,account_no=account_no)
+        payment_newrecord_info.save()
+        messages.success(request, 'SUCCESS: Payment record created')
         return redirect('employee:report_payroll_tedis',pk=period_month.id)
         
     
@@ -5335,7 +5354,281 @@ def report_payroll_tedis(request, pk):
         ws_TransferHCM.write(last_row+2, 5, 'Approved by', style_footer)
         ws_TransferHCM.write(last_row+4, 5, 'Vũ Châu Kim Anh', style_footer) 
             
+    
+    
+        '''Sheet Payment HCM'''
+        # Style
+        # xlwt color url: https://docs.google.com/spreadsheets/d/1ihNaZcUh7961yU7db1-Db0lbws4NT24B7koY8v8GHNQ/pubhtml?gid=1072579560&single=true
+        style_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold off,height 200, name Times New Roman, colour black;' % 'white')
+        style_head_red = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                        'borders: top_color gray25, top thin;'
+                                    'font: bold off,height 200, name Arial, colour red;' % 'white')
+        style_head_16pt_bold_vertcen = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 320, name Arial, colour black; align: vert center' % 'white')
+        style_head_12pt_vertcen = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 240, name Arial, colour black; align: vert center' % 'white')
+        style_head_20pt_bold = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 400, name Arial, colour black; align: horiz center, vert center' % 'white')
+        style_11pt_horizright = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: horiz right, vert center' % 'white')
+        style_11pt_horizleft = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: horiz left, vert center' % 'white')
+        style_tablehead_grey25 = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                        'borders: top_color black, bottom_color black, right_color black, left_color black, left medium, right medium, top medium, bottom medium;'
+                                    'font: bold 1,height 260, name Arial, colour black; align: horiz center, vert center' % 'gray25')
+        style_tablehead_grey25.alignment.wrap = 1
+        style_tablebody_vertcen_horizcen = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                        'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 0,height 260, name Arial, colour black; align: horiz center, vert center' % 'white')
+        style_tablebody_vertcen_horizcen.alignment.wrap = 1
+        style_tablebody_vertcen_horizcen_bold = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                        'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 260, name Arial, colour black; align: horiz center, vert center' % 'white')
+        style_tablebody_vertcen_horizcen_bold.alignment.wrap = 1
+        style_tablebody_vertcen_horizleft = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                        'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 0,height 260, name Arial, colour black; align: horiz left, vert center' % 'white')
+        style_tablebody_vertcen_horizleft.alignment.wrap = 1
+        style_tablebody_vertcen_horizleft_bold = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                        'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 260, name Arial, colour black; align: horiz left, vert center' % 'white')
+        style_tablebody_vertcen_horizleft_bold.alignment.wrap = 1
+        style_tablebody_onlyvertcenter = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                        'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 0,height 260, name Arial, colour black; align: vert center' % 'white')
+        style_tablebody_onlyvertcenter.alignment.wrap = 1
+        style_footer = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 260, name Arial, colour black; align: horiz center, vert center' % 'white')
+        style_date = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 260, name Arial, colour black; align: horiz center, vert center' % 'white')
+
+        # Create sheet
+        ws_PaymentHCM = wb.add_sheet('Payment')
+        # Set col width
+        ws_PaymentHCM.col(0).width = 2000
+        for col in range(1,8):
+            if col == 5:
+                ws_PaymentHCM.col(col).width = 4000
+            elif col == 6:
+                ws_PaymentHCM.col(col).width = 4000 
+            elif col == 7:
+                ws_PaymentHCM.col(col).width = 30000 
+            else:
+                ws_PaymentHCM.col(col).width = 6000
+
+        # Set row height
+        ws_PaymentHCM.row(0).height_mismatch = True
+        ws_PaymentHCM.row(0).height = 800
+        ws_PaymentHCM.row(1).height_mismatch = True
+        ws_PaymentHCM.row(1).height = 300
+        ws_PaymentHCM.row(2).height_mismatch = True
+        ws_PaymentHCM.row(2).height = 300
+        ws_PaymentHCM.row(3).height_mismatch = True
+        ws_PaymentHCM.row(3).height = 600
+        ws_PaymentHCM.row(4).height_mismatch = True
+        ws_PaymentHCM.row(4).height = 300
+        # Head
+        ws_PaymentHCM.write(0, 2, 'TEDIS REP. OFFICE IN HO CHI MINH', style_head_16pt_bold_vertcen)
+        ws_PaymentHCM.write(1, 2, 'Room 2B, Floor 2 & 4 - 150 Nguyen Luong Bang, Tan Phu Ward, District 7', style_head_12pt_vertcen)
+        ws_PaymentHCM.write_merge(3, 3, 0, 7, 'PAYMENT REPORT IN ' + str(period_month.month_name), style_head_20pt_bold)
+
+        # Table
+        # Table-head
+        ws_PaymentHCM.write_merge(5, 6, 0, 0, 'No.', style_tablehead_grey25)
+        ws_PaymentHCM.write_merge(5, 6, 1, 1, 'ITEM', style_tablehead_grey25)
+        ws_PaymentHCM.write_merge(5, 6, 2, 2, 'DESCRIPTION', style_tablehead_grey25)
+        ws_PaymentHCM.write_merge(5, 5, 3, 4, 'AMOUNT', style_tablehead_grey25)
+        ws_PaymentHCM.write(6, 3, 'HCM (VND)', style_tablehead_grey25)
+        ws_PaymentHCM.write(6, 4, 'HANOI (VND)', style_tablehead_grey25)
+        ws_PaymentHCM.write_merge(5, 6, 5, 5, 'PAID BY', style_tablehead_grey25)
+        ws_PaymentHCM.write_merge(5, 6, 6, 6, 'PAID TO', style_tablehead_grey25)
+        ws_PaymentHCM.write_merge(5, 6, 7, 7, 'ACCOUNT NO.', style_tablehead_grey25)
+        # Table-Body
+        '''SALARY'''
+        report_payment_payroll_SALARY = Report_Payment_Payroll_Tedis.objects.filter(month=period_month, item='SALARY').order_by('description')
+        # Write NO. and ITEM column
+        no_salary = report_payment_payroll_SALARY.count()
+        ws_PaymentHCM.write_merge(7, 7+no_salary , 0, 0, '1', style_tablebody_vertcen_horizcen)
+        ws_PaymentHCM.write_merge(7, 7+no_salary , 1, 1, 'SALARY', style_tablebody_vertcen_horizcen_bold)
+        # Make subtotal var
+        subtotal_salary_hcm = 0
+        subtotal_salary_hanoi = 0
+        for index, payment_data in enumerate(report_payment_payroll_SALARY):    
+            # Set row height
+            ws_PaymentHCM.row(7+index).height_mismatch = True
+            ws_PaymentHCM.row(7+index).height = 800
+            # Write data
+            ws_PaymentHCM.write(7+index, 2, str(payment_data.description),style_tablebody_vertcen_horizleft)
+            if payment_data.area == 'HCM':
+                ws_PaymentHCM.write(7+index, 3, str("{:,}".format(round(payment_data.amount),0)),style_tablebody_onlyvertcenter)
+                ws_PaymentHCM.write(7+index, 4, '',style_tablebody_onlyvertcenter)
+                # Make subtotal
+                subtotal_salary_hcm += payment_data.amount
+            elif payment_data.area == 'HANOI':
+                ws_PaymentHCM.write(7+index, 3, '',style_tablebody_onlyvertcenter)
+                ws_PaymentHCM.write(7+index, 4, str("{:,}".format(round(payment_data.amount),0)),style_tablebody_onlyvertcenter)    
+                # Make subtotal
+                subtotal_salary_hanoi += payment_data.amount
+            ws_PaymentHCM.write(7+index, 5, str(payment_data.paidby),style_tablebody_vertcen_horizleft)
+            ws_PaymentHCM.write(7+index, 6, str(payment_data.paidto),style_tablebody_vertcen_horizleft)
+            ws_PaymentHCM.write(7+index, 7, str(payment_data.account_no),style_tablebody_vertcen_horizleft)
+        # SUBTOTAL
+        ws_PaymentHCM.write(7+no_salary, 2, 'SUBTOTAL',style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(7+no_salary, 3, str("{:,}".format(round(subtotal_salary_hcm),0)),style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(7+no_salary, 4, str("{:,}".format(round(subtotal_salary_hanoi),0)),style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(7+no_salary, 5, '',style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(7+no_salary, 6, '',style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(7+no_salary, 7, '',style_tablebody_vertcen_horizleft_bold)
+        last_row_salary = 7 + no_salary + 1
+        '''SHUI'''
+        report_payment_payroll_SHUI = Report_Payment_Payroll_Tedis.objects.filter(month=period_month, item='SHUI').order_by('-area')
+        # Write NO. and ITEM column
+        no_shui = report_payment_payroll_SHUI.count()
+        ws_PaymentHCM.write_merge(last_row_salary, last_row_salary+no_shui , 0, 0, '2', style_tablebody_vertcen_horizcen)
+        ws_PaymentHCM.write_merge(last_row_salary, last_row_salary+no_shui , 1, 1, 'SHUI', style_tablebody_vertcen_horizcen_bold)
+        # Make subtotal var
+        subtotal_shui_hcm = 0
+        subtotal_shui_hanoi = 0
+        for index, payment_data in enumerate(report_payment_payroll_SHUI):    
+            # Set row height
+            ws_PaymentHCM.row(last_row_salary+index).height_mismatch = True
+            ws_PaymentHCM.row(last_row_salary+index).height = 800
+            # Write data
+            ws_PaymentHCM.write(last_row_salary+index, 2, str(payment_data.description),style_tablebody_vertcen_horizleft)
+            if payment_data.area == 'HCM':
+                ws_PaymentHCM.write(last_row_salary+index, 3, str("{:,}".format(round(payment_data.amount),0)),style_tablebody_onlyvertcenter)
+                ws_PaymentHCM.write(last_row_salary+index, 4, '',style_tablebody_onlyvertcenter)
+                # Make subtotal
+                subtotal_shui_hcm += payment_data.amount
+            elif payment_data.area == 'HANOI':
+                ws_PaymentHCM.write(last_row_salary+index, 3, '',style_tablebody_onlyvertcenter)
+                ws_PaymentHCM.write(last_row_salary+index, 4, str("{:,}".format(round(payment_data.amount),0)),style_tablebody_onlyvertcenter)  
+                # Make subtotal
+                subtotal_shui_hanoi += payment_data.amount  
+            ws_PaymentHCM.write(last_row_salary+index, 5, str(payment_data.paidby),style_tablebody_vertcen_horizleft)
+            ws_PaymentHCM.write(last_row_salary+index, 6, str(payment_data.paidto),style_tablebody_vertcen_horizleft)
+            ws_PaymentHCM.write(last_row_salary+index, 7, str(payment_data.account_no),style_tablebody_vertcen_horizleft)
+        # SUBTOTAL
+        ws_PaymentHCM.write(last_row_salary+no_shui, 2, 'SUBTOTAL',style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_salary+no_shui, 3, str("{:,}".format(round(subtotal_shui_hcm),0)),style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_salary+no_shui, 4, str("{:,}".format(round(subtotal_shui_hanoi),0)),style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_salary+no_shui, 5, '',style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_salary+no_shui, 6, '',style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_salary+no_shui, 7, '',style_tablebody_vertcen_horizleft_bold)
+        last_row_SHUI = last_row_salary + no_shui + 1
+        '''PIT'''
+        report_payment_payroll_PIT = Report_Payment_Payroll_Tedis.objects.filter(month=period_month, item='PIT').order_by('-area')
+        # Write NO. and ITEM column
+        no_pit = report_payment_payroll_PIT.count()
+        ws_PaymentHCM.write_merge(last_row_SHUI, last_row_SHUI+no_pit , 0, 0, '3', style_tablebody_vertcen_horizcen)
+        ws_PaymentHCM.write_merge(last_row_SHUI, last_row_SHUI+no_pit , 1, 1, 'PIT', style_tablebody_vertcen_horizcen_bold)
+        # Make subtotal var
+        subtotal_pit_hcm = 0
+        subtotal_pit_hanoi = 0
+        for index, payment_data in enumerate(report_payment_payroll_PIT):    
+            # Set row height
+            ws_PaymentHCM.row(last_row_SHUI+index).height_mismatch = True
+            ws_PaymentHCM.row(last_row_SHUI+index).height = 800
+            # Write data
+            ws_PaymentHCM.write(last_row_SHUI+index, 2, str(payment_data.description),style_tablebody_vertcen_horizleft)
+            if payment_data.area == 'HCM':
+                ws_PaymentHCM.write(last_row_SHUI+index, 3, str("{:,}".format(round(payment_data.amount),0)),style_tablebody_onlyvertcenter)
+                ws_PaymentHCM.write(last_row_SHUI+index, 4, '',style_tablebody_onlyvertcenter)
+                # Make subtotal
+                subtotal_pit_hcm += payment_data.amount
+            elif payment_data.area == 'HANOI':
+                ws_PaymentHCM.write(last_row_SHUI+index, 3, '',style_tablebody_onlyvertcenter)
+                ws_PaymentHCM.write(last_row_SHUI+index, 4, str("{:,}".format(round(payment_data.amount),0)),style_tablebody_onlyvertcenter)  
+                # Make subtotal
+                subtotal_pit_hanoi += payment_data.amount  
+            ws_PaymentHCM.write(last_row_SHUI+index, 5, str(payment_data.paidby),style_tablebody_vertcen_horizleft)
+            ws_PaymentHCM.write(last_row_SHUI+index, 6, str(payment_data.paidto),style_tablebody_vertcen_horizleft)
+            ws_PaymentHCM.write(last_row_SHUI+index, 7, str(payment_data.account_no),style_tablebody_vertcen_horizleft)
+        # SUBTOTAL
+        ws_PaymentHCM.write(last_row_SHUI+no_pit, 2, 'SUBTOTAL',style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_SHUI+no_pit, 3, str("{:,}".format(round(subtotal_pit_hcm),0)),style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_SHUI+no_pit, 4, str("{:,}".format(round(subtotal_pit_hanoi),0)),style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_SHUI+no_pit, 5, '',style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_SHUI+no_pit, 6, '',style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_SHUI+no_pit, 7, '',style_tablebody_vertcen_horizleft_bold)
+        last_row_pit = last_row_SHUI + no_pit + 1
+        '''Trade union'''
+        report_payment_payroll_TRADE_UNION = Report_Payment_Payroll_Tedis.objects.filter(month=period_month, item='TRADE UNION').order_by('-area')
+        # Write NO. and ITEM column
+        no_trade_union = report_payment_payroll_TRADE_UNION.count()
+        ws_PaymentHCM.write_merge(last_row_pit, last_row_pit+no_trade_union , 0, 0, '4', style_tablebody_vertcen_horizcen)
+        ws_PaymentHCM.write_merge(last_row_pit, last_row_pit+no_trade_union , 1, 1, 'TRADE UNION', style_tablebody_vertcen_horizcen_bold)
+        # Make subtotal var
+        subtotal_trade_union_hcm = 0
+        subtotal_trade_union_hanoi = 0
+        for index, payment_data in enumerate(report_payment_payroll_TRADE_UNION):    
+            # Set row height
+            ws_PaymentHCM.row(last_row_pit+index).height_mismatch = True
+            ws_PaymentHCM.row(last_row_pit+index).height = 800
+            # Write data
+            ws_PaymentHCM.write(last_row_pit+index, 2, str(payment_data.description),style_tablebody_vertcen_horizleft)
+            if payment_data.area == 'HCM':
+                ws_PaymentHCM.write(last_row_pit+index, 3, str("{:,}".format(round(payment_data.amount),0)),style_tablebody_onlyvertcenter)
+                ws_PaymentHCM.write(last_row_pit+index, 4, '',style_tablebody_onlyvertcenter)
+                # Make subtotal
+                subtotal_trade_union_hcm += payment_data.amount
+            elif payment_data.area == 'HANOI':
+                ws_PaymentHCM.write(last_row_pit+index, 3, '',style_tablebody_onlyvertcenter)
+                ws_PaymentHCM.write(last_row_pit+index, 4, str("{:,}".format(round(payment_data.amount),0)),style_tablebody_onlyvertcenter)  
+                # Make subtotal
+                subtotal_trade_union_hanoi += payment_data.amount  
+            ws_PaymentHCM.write(last_row_pit+index, 5, str(payment_data.paidby),style_tablebody_vertcen_horizleft)
+            ws_PaymentHCM.write(last_row_pit+index, 6, str(payment_data.paidto),style_tablebody_vertcen_horizleft)
+            ws_PaymentHCM.write(last_row_pit+index, 7, str(payment_data.account_no),style_tablebody_vertcen_horizleft)
+        # SUBTOTAL
+        ws_PaymentHCM.write(last_row_pit+no_trade_union, 2, 'SUBTOTAL',style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_pit+no_trade_union, 3, str("{:,}".format(round(subtotal_trade_union_hcm),0)),style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_pit+no_trade_union, 4, str("{:,}".format(round(subtotal_trade_union_hanoi),0)),style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_pit+no_trade_union, 5, '',style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_pit+no_trade_union, 6, '',style_tablebody_vertcen_horizleft_bold)
+        ws_PaymentHCM.write(last_row_pit+no_trade_union, 7, '',style_tablebody_vertcen_horizleft_bold)
+        last_row_trade_union = last_row_pit + no_trade_union + 1
+        '''TOTAL COST BY SITE'''
+        # Make total var
+        total_cost_hcm = subtotal_salary_hcm + subtotal_shui_hcm + subtotal_pit_hcm + subtotal_trade_union_hcm
+        total_cost_hanoi = subtotal_salary_hanoi + subtotal_shui_hanoi + subtotal_pit_hanoi + subtotal_trade_union_hanoi
+        # Set row height
+        ws_PaymentHCM.row(last_row_trade_union).height_mismatch = True
+        ws_PaymentHCM.row(last_row_trade_union).height = 650
+        # Write data
+        ws_PaymentHCM.write_merge(last_row_trade_union, last_row_trade_union , 0, 2, 'TOTAL COST BY SITE', style_tablehead_grey25) 
+        ws_PaymentHCM.write(last_row_trade_union, 3, str("{:,}".format(round(total_cost_hcm),0)),style_tablehead_grey25) 
+        ws_PaymentHCM.write(last_row_trade_union, 4, str("{:,}".format(round(total_cost_hanoi),0)),style_tablehead_grey25)
+        ws_PaymentHCM.write_merge(last_row_trade_union, last_row_trade_union , 5, 7, '', style_tablehead_grey25)
+        '''TOTAL'''
+        # Make total var
+        total = total_cost_hcm + total_cost_hanoi
+        # Set row height
+        ws_PaymentHCM.row(last_row_trade_union + 1).height_mismatch = True
+        ws_PaymentHCM.row(last_row_trade_union + 1).height = 650
+        # Write data
+        ws_PaymentHCM.write_merge(last_row_trade_union + 1, last_row_trade_union + 1 , 0, 2, 'TOTAL', style_tablehead_grey25) 
+        ws_PaymentHCM.write_merge(last_row_trade_union + 1, last_row_trade_union + 1 , 3, 4, str("{:,}".format(round(total),0)), style_tablehead_grey25) 
+        ws_PaymentHCM.write_merge(last_row_trade_union + 1, last_row_trade_union + 1 , 5, 7, '', style_tablehead_grey25)               
         
+        # Footer
+        # Set row height
+        ws_PaymentHCM.row(last_row_trade_union + 2).height_mismatch = True
+        ws_PaymentHCM.row(last_row_trade_union + 2).height = 650
+        ws_PaymentHCM.row(last_row_trade_union + 3).height_mismatch = True
+        ws_PaymentHCM.row(last_row_trade_union + 3).height = 650
+        ws_PaymentHCM.row(last_row_trade_union + 4).height_mismatch = True
+        ws_PaymentHCM.row(last_row_trade_union + 4).height = 1500
+        # Write data
+        ws_PaymentHCM.write_merge(last_row_trade_union + 3, last_row_trade_union + 3 , 1, 2, 'Reviewed by', style_footer)  
+        ws_PaymentHCM.write(last_row_trade_union + 3, 7, 'Verified by', style_footer)
+        ws_PaymentHCM.write_merge(last_row_trade_union + 5, last_row_trade_union + 5 , 1, 2, 'Le Thi Thanh Tuyen', style_footer)  
+        ws_PaymentHCM.write(last_row_trade_union + 5, 7, 'Vu Chau Kim Anh', style_footer)
+        ws_PaymentHCM.write_merge(last_row_trade_union + 6, last_row_trade_union + 6 , 1, 2, datetime.now().strftime('%d/%m/%Y'), style_date)  
+        ws_PaymentHCM.write(last_row_trade_union + 6, 7, datetime.now().strftime('%d/%m/%Y'), style_date)      
+            
+
         wb.save(response)
         return response
         
@@ -5408,6 +5701,71 @@ def PIT_report_payroll_tedis_edit(request, pk):
         'pit_info' : pit_info,
         
     })
+
+
+def payment_report_payroll_tedis_edit(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
+    # Get payroll info
+    payment_info = Report_Payment_Payroll_Tedis.objects.get(pk=pk)
+    
+    # Create lists
+    list_items = ['---','SALARY','SHUI','PIT','TRADE UNION']
+    list_descriptions = ['---','EMPLOYEES','MARJORIE','SHUI Company','SHUI Employees','PIT','PIT Ms. MARJORIE',
+                         'Trade Union fee','Trade Union (member fee)']
+    list_areas = ['---','HCM','HANOI']
+    list_paidbys = ['---','Transfer','Cash']
+    
+    # Update payroll info
+    if request.POST.get('btnupdatepayment'):
+        month = payment_info.month
+        item = request.POST.get('item')
+        description = request.POST.get('description')
+        area = request.POST.get('area')
+        amount = request.POST.get('amount')
+        paidby = request.POST.get('paidby')
+        paidto = request.POST.get('paidto')
+        account_no = request.POST.get('account_no')
+    
+        # Update and save
+        payment_update_info = Report_Payment_Payroll_Tedis(id=payment_info.id,month=month,
+                                                   item=item,description=description,area=area,
+                                                   amount=amount,paidby=paidby,paidto=paidto,
+                                                   account_no=account_no)
+        payment_update_info.save()
+        messages.success(request, 'SUCCESS: Payment updated')
+        return redirect('employee:payment_report_payroll_tedis_edit',pk=payment_info.id)
+        
+        
+        
+    
+    return render(request, 'employee/edit_payment_report_payroll_tedis.html', {
+        'payment_info' : payment_info,
+        'list_items' : list_items,
+        'list_descriptions' : list_descriptions,
+        'list_areas' : list_areas,
+        'list_paidbys' : list_paidbys,
+        
+    })
+
+def payment_report_payroll_tedis_delete(request, pk):
+    try:
+        payment_info = Report_Payment_Payroll_Tedis.objects.get(id = pk)
+        payment_info.delete()
+        messages.success(request, 'SUCCESS: Payment deleted')
+    except Report_Payment_Payroll_Tedis.DoesNotExist:
+        messages.error(request, 'Error: Please try again')
+    return redirect('employee:report_payroll_tedis',pk=payment_info.month.id)
     
 
 
