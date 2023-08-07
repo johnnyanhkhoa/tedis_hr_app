@@ -2085,7 +2085,7 @@ def blank_period(request):
                 previous_period = None
                 previous_remain_dayoff = 0      
             dayoff_info = Dayoff(period=period,employee=employee,
-                                 total_dayoff=total_dayoff,remain_dayoff=total_dayoff,previous_remain_dayoff=previous_remain_dayoff,previous_remain_recuperation=previous_remain_recuperation,
+                                 total_dayoff=total_dayoff,remain_dayoff=total_dayoff,previous_remain_dayoff=previous_remain_dayoff,
                                  used_dayoff=0)
             dayoff_info.save()
         return redirect('employee:period', pk=period_info.pk)
