@@ -228,15 +228,15 @@
                             <div class="col-6">
                                 <label for="children" class="form-label fw-bold text-dark">Children/Relatives</label>
                                 <p class="text-dark " style="text-align: left; border: 1px solid black; padding:5px">
-                                {{ children.children }}
+                                    {{ children.children }}
                                 </p>
                             </div>
                             <div class="col-6">
                                 <label for="birthday_of_children" class="form-label fw-bold text-dark">Birthday
                                     of children/Relatives</label>
-                                    <p class="text-dark" style="text-align: left; border: 1px solid black; padding:5px">
+                                <p class="text-dark" style="text-align: left; border: 1px solid black; padding:5px">
                                     {{ children.birthday_of_children }}
-                                    </p>
+                                </p>
                             </div>
                         </div>
                         {% endfor %}
@@ -332,11 +332,17 @@
                                 <div class="col">
                                     <label for="joining_date" class="form-label fw-bold text-dark">Joining
                                         date</label>
+                                    <br>
                                     {{ form.joining_date }}
                                 </div>
                                 <div class="col">
                                     <label for="out_date" class="form-label fw-bold text-dark">Leaving date</label>
+                                    <br>
                                     {{ form.out_date }}
+                                </div>
+                                <div class="col">
+                                    <label for="active" class="form-label fw-bold text-dark">Status</label>
+                                    {{ form.active }}
                                 </div>
                             </div>
                             <div class="row align-items-start" style="margin-top: 10px;">

@@ -1,5 +1,5 @@
 {% extends 'hr/dist/_Master.html' %}
-{% block title_tab %}HR | List timesheets{% endblock %}
+{% block title_tab %}HR | Employee's relatives{% endblock %}
 {% load static %}
 {% load humanize %}
 
@@ -17,6 +17,11 @@
         content: counter(rowNumber);
         padding-right: 0.3em;
         text-align: right;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        /* Enable horizontal scrolling */
     }
 </style>
 
@@ -40,16 +45,15 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>{{period_month.month_name}}</h3>
-                    <h5>Working days of BO: <b><u>{{ period_month.total_work_days_bo }}</u></b></h5>
-                    <h5>Working days of WH: <b><u>{{ period_month.total_work_days_wh }}</u></b></h5>
-                    <p class="text-subtitle text-muted">Employee timesheets</p>
+                    <h3>Employee: {{employee.full_name}}</h3>
+                    <h5>Number of relatives: <b><u>{{ number_of_relatives }}</u></b></h5>
+                    <p class="text-subtitle text-muted"></p>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{% url 'employee:period' period_month.period.id %}">Period</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">List timesheets</li>
+                            <li class="breadcrumb-item"><a href="index.html">List timesheets</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Payroll Tedis</li>
                         </ol>
                     </nav>
                 </div>
@@ -58,8 +62,8 @@
         <section class="section">
             <div class="card">
                 <div class="card-header pull-right">
-                    Employee timesheets
-                    <nav aria-label="breadcrumb">
+                    Relatives information
+                    {% comment %} <nav aria-label="breadcrumb">
                         <ol class="breadcrumb breadcrumb-right" style="margin-right: 20px;">
                             <div class="dropdown dropdown-color-icon">
                                 <button class="btn btn-primary dropdown-toggle" type="button"
@@ -72,56 +76,36 @@
                                         </svg></span> Action
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonEmoji">
-                                    <a class="btn btn-outline-danger"
-                                        href="{% url 'employee:pdf_time_sheets' period_month.id %}"
-                                        style="width: 240px;text-align: left;"><svg xmlns="http://www.w3.org/2000/svg"
-                                            width="16" height="16" fill="currentColor" class="bi bi-file-earmark-pdf"
-                                            viewBox="0 0 16 16">
+                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal"><svg
+                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
                                             <path
-                                                d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
+                                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
                                             <path
-                                                d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.697 19.697 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 5.753 5.753 0 0 1 1.334.05c.364.066.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.712 5.712 0 0 1-.911-.95 11.651 11.651 0 0 0-1.997.406 11.307 11.307 0 0 1-1.02 1.51c-.292.35-.609.656-.927.787a.793.793 0 0 1-.58.029zm1.379-1.901c-.166.076-.32.156-.459.238-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361.01.022.02.036.026.044a.266.266 0 0 0 .035-.012c.137-.056.355-.235.635-.572a8.18 8.18 0 0 0 .45-.606zm1.64-1.33a12.71 12.71 0 0 1 1.01-.193 11.744 11.744 0 0 1-.51-.858 20.801 20.801 0 0 1-.5 1.05zm2.446.45c.15.163.296.3.435.41.24.19.407.253.498.256a.107.107 0 0 0 .07-.015.307.307 0 0 0 .094-.125.436.436 0 0 0 .059-.2.095.095 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a3.876 3.876 0 0 0-.612-.053zM8.078 7.8a6.7 6.7 0 0 0 .2-.828c.031-.188.043-.343.038-.465a.613.613 0 0 0-.032-.198.517.517 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822.024.111.054.227.09.346z" />
+                                                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
                                         </svg>
-                                        &ensp;Export PDF</a>
-                                    <form method="post">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-outline-success" name="get_timesheet"
-                                            value="Period input" style="width: 240px;text-align: left;"><svg
-                                                xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                fill="currentColor" class="bi bi-file-earmark-excel"
-                                                viewBox="0 0 16 16">
-                                                <path
-                                                    d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z" />
-                                                <path
-                                                    d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
-                                            </svg>
-                                            &ensp;Export Excel</button>
-                                    </form>
-                                    {% if role == 3 %}
-                                    <hr style="margin-top: 3; margin-bottom:3">
-                                    <a class="btn btn-outline-primary"
-                                        href="{% url 'employee:payroll_tedis' period_month.id %}"
-                                        style="width: 240px;text-align: left;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-spreadsheet" viewBox="0 0 16 16">
-                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v4h10V2a1 1 0 0 0-1-1H4zm9 6h-3v2h3V7zm0 3h-3v2h3v-2zm0 3h-3v2h2a1 1 0 0 0 1-1v-1zm-4 2v-2H6v2h3zm-4 0v-2H3v1a1 1 0 0 0 1 1h1zm-2-3h2v-2H3v2zm0-3h2V7H3v2zm3-2v2h3V7H6zm3 3H6v2h3v-2z"/>
-                                          </svg>
-                                        &ensp;View TD payroll</a>
-                                    <a class="btn btn-outline-primary"
-                                    href="{% url 'employee:payroll_tedis_vietha' period_month.id %}"
-                                    style="width: 240px;text-align: left;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-spreadsheet" viewBox="0 0 16 16">
-                                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v4h10V2a1 1 0 0 0-1-1H4zm9 6h-3v2h3V7zm0 3h-3v2h3v-2zm0 3h-3v2h2a1 1 0 0 0 1-1v-1zm-4 2v-2H6v2h3zm-4 0v-2H3v1a1 1 0 0 0 1 1h1zm-2-3h2v-2H3v2zm0-3h2V7H3v2zm3-2v2h3V7H6zm3 3H6v2h3v-2z"/>
+                                        &ensp;Export</a>
+                                    <hr style="margin-top: 0; margin-bottom:0">
+                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#FilterModal"><svg
+                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
+                                            <path
+                                                d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
                                         </svg>
-                                    &ensp;View TD-VH payroll</a>
-                                    <a class="btn btn-outline-primary"
-                                    href="{% url 'employee:payroll_vietha' period_month.id %}"
-                                    style="width: 240px;text-align: left;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-spreadsheet" viewBox="0 0 16 16">
-                                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v4h10V2a1 1 0 0 0-1-1H4zm9 6h-3v2h3V7zm0 3h-3v2h3v-2zm0 3h-3v2h2a1 1 0 0 0 1-1v-1zm-4 2v-2H6v2h3zm-4 0v-2H3v1a1 1 0 0 0 1 1h1zm-2-3h2v-2H3v2zm0-3h2V7H3v2zm3-2v2h3V7H6zm3 3H6v2h3v-2z"/>
+                                        &ensp;Filter</a>
+                                    <a class="dropdown-item" href="{% url 'employee:employee_table' %}"><svg
+                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                            <path
+                                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                            <path
+                                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                                         </svg>
-                                    &ensp;View VH payroll</a>
-                                    {% endif %}
+                                        &ensp;Reset filter</a>
                                 </div>
                             </div>
                         </ol>
-                    </nav>
+                    </nav> {% endcomment %}
                 </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1">
@@ -129,34 +113,61 @@
                             <tr>
                                 <th>#</th>
                                 <th>Full name</th>
-                                <th>Department</th>
-                                <th>Area</th>
-                                <th>Position</th>
-                                <th>Total paid leave days</th>
-                                <th>Total unpaid leave days</th>
-                                <th>Total salary working day</th>
-                                <th>Total OT paid hour</th>
+                                <th>Date of birth</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for data in list_data %}
+                            {% for relative in list_of_relatives %}
                             <tr>
                                 <th></th>
-                                <td>{{ data.employee.full_name }}</td>
-                                <td>{{ data.employee.department_e }}</td>
-                                <td>{{ data.employee.area }}</td>
-                                <td>{{ data.employee.position_e }}</td>
-                                <td>{{ data.total_paid_leave_days }}</td>
-                                <td>{{ data.total_unpaid_leave_days }}</td>
-                                <td>{{ data.total_salary_working_day }}</td>
-                                <td>{{ data.total_ot_paid_hour }}</td>
+                                <td>{{ relative.children }}</td>
+                                <td>{{ relative.birthday_of_children }}</td>
+                                <td style="text-align:right">
+                                    <div class="dropdown">
+                                        <button class="btn btn-dark dropdown-toggle" type="button"
+                                            id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z" />
+                                                <path
+                                                    d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z" />
+                                            </svg>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
+                                            <a class="dropdown-item"
+                                                href="{% url 'employee:edit_relatives' relative.id %}"><svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                    <path
+                                                        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                                </svg>
+                                                &ensp;Update</a>
+                                            <a class="dropdown-item"
+                                                href="{% url 'employee:relative_delete' relative.id %}"
+                                                style="color: red;"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                    height="16" fill="currentColor" class="bi bi-trash"
+                                                    viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                                </svg>
+                                                &ensp;Delete</a>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                             {% endfor %}
+
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </section>
     </div>
 

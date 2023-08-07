@@ -46,7 +46,7 @@
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Period</a></li>
+                            <li class="breadcrumb-item"><a href="#">Period</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Period</li>
                         </ol>
                     </nav>
@@ -112,7 +112,7 @@
                                 <button type="submit" class="btn btn-outline-primary" name="btn_nextperiod" value="Next period input"><i class="bi bi-caret-right"></i></button>
                             </form>
                         </h3>
-                        {%for month in month_in_period%}
+                        {% for month in month_in_period %}
                         <div class="col-3">
                             <a id="month" type="button" class="btn btn-outline-primary"
                                 href="{% url 'employee:list_time_sheets' month.id %}">{{month.month_name}}
@@ -258,9 +258,16 @@
                             <input type="number" class="form-control" name="month_number" id="month_number"
                                 placeholder="Input month in number" required>
                         </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
                         <div class="col">
-                            <label for="total_work_days">Total work days</label>
-                            <input type="number" class="form-control" name="total_work_days" id="total_work_days"
+                            <label for="total_work_days_bo">Total work days of BO</label>
+                            <input type="number" class="form-control" name="total_work_days_bo" id="total_work_days_bo"
+                                placeholder="Input number of total work days in month" required>
+                        </div>
+                        <div class="col">
+                            <label for="total_work_days_wh">Total work days of WH</label>
+                            <input type="number" class="form-control" name="total_work_days_wh" id="total_work_days_wh"
                                 placeholder="Input number of total work days in month" required>
                         </div>
                     </div>

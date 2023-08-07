@@ -1,0 +1,137 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}PIT Tedis | Update Information{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>PIT Information</h3>
+                    <hr>
+                    <h4>{{pit_info.month.month_name}}</h4>
+                    <h4>Full name: {{pit_info.employee.full_name}}</h4>
+                    <br>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">PIT Tedis</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Update</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <form method="post" class="">
+                {% csrf_token %}
+                <div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark"
+                                for="thu_nhap_chiu_thue">Thu nhập chịu thuế</label>
+                            <p style="border: 1px solid rgb(121, 121, 121);padding: 5px; color: black;">
+                                {{pit_info.thu_nhap_chiu_thue|floatformat:0|intcomma }}
+                            </p>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="tong_tnct_khau_tru_thue">Tổng TNCT thuộc diện khấu trừ thuế</label>
+                            <p style="border: 1px solid rgb(121, 121, 121);padding: 5px; color: black;">
+                                {{pit_info.tong_tnct_khau_tru_thue|floatformat:0|intcomma }}
+                            </p>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="bao_hiem_bat_buoc">Bảo hiểm bắt buộc</label>
+                            <p style="border: 1px solid rgb(121, 121, 121);padding: 5px; color: black;">
+                                {{pit_info.bao_hiem_bat_buoc|floatformat:0|intcomma }}
+                            </p>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="khau_tru">Khấu trừ</label>
+                            <p style="border: 1px solid rgb(121, 121, 121);padding: 5px; color: black;">
+                                {{pit_info.khau_tru|floatformat:0|intcomma }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="thu_nhap_tinh_thue">Thu nhập tính thuế</label>
+                            <p style="border: 1px solid rgb(121, 121, 121);padding: 5px; color: black;">
+                                {{pit_info.thu_nhap_tinh_thue|floatformat:0|intcomma }}
+                            </p>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="thuong">Thưởng</label>
+                            <input type="text" class="form-control" name="thuong" id="thuong"
+                                placeholder="Thưởng" value={{pit_info.thuong}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="khac">Khác</label>
+                            <input type="text" class="form-control" name="khac" id="khac"
+                                placeholder="Khác" value={{pit_info.khac}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="cong">Cộng</label>
+                            <input type="text" class="form-control" name="cong" id="cong"
+                                placeholder="Cộng" value={{pit_info.cong}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="thue_tnct_phai_nop">Thuế TNCN phải nộp</label>
+                            <p style="border: 1px solid rgb(121, 121, 121);padding: 5px; color: black;">
+                                {{pit_info.thue_tnct_phai_nop|floatformat:0|intcomma }}
+                            </p>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="individual_type">Individual type</label>
+                            <select class="form-control" name="individual_type">
+                                <option selected value={{pit_info.individual_type}}>{{pit_info.individual_type}}</option>
+                                {% for individual_type in list_individual_types %}
+                                    {% if pit_info.individual_type == individual_type %}
+                                        <!-- nếu giá trị đang được chọn thì không hiển thị -->
+                                        <option value="{{ individual_type }}" selected>{{ individual_type }}</option>
+                                    {% else %}
+                                        <!-- hiển thị tất cả các giá trị trong danh sách -->
+                                        <option value="{{ individual_type }}">{{ individual_type }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="ghi_chu">Ghi chú</label>
+                            <input type="text" class="form-control" name="ghi_chu" id="ghi_chu"
+                                placeholder="Ghi chú" value={{pit_info.ghi_chu}}>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+            <a type="button" class="btn btn-secondary"
+                href="{% url 'employee:report_payroll_tedis_vietha' pit_info.month.id %}">Close</a>
+            <button type="submit" class="btn btn-primary" name="btnupdatepit" value="Pit update">Save
+            </button>
+        </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

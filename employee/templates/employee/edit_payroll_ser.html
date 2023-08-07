@@ -1,0 +1,306 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}Payroll Ser | Update Information{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Payroll Information</h3>
+                    <hr>
+                    <h4>{{payroll_info.month.month_name}}</h4>
+                    <h4>Full name: {{payroll_info.employee.full_name}}</h4>
+                    <br>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'employee:report_payroll_tedis_vietha' payroll_info.month.id %}">Report payroll Tedis - VietHa</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Update</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <form method="post" class="">
+                {% csrf_token %}
+                <div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="exchange_rate_usd">Exchange rate (USD)</label>
+                            <input type="number" step="0.001" class="form-control" name="exchange_rate_usd" id="exchange_rate_usd"
+                                placeholder="$" value={{payroll_info.exchange_rate_usd}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="exchange_rate_euro">Exchange rate (EURO)</label>
+                            <input type="number" step="0.001" class="form-control" name="exchange_rate_euro" id="exchange_rate_euro"
+                                placeholder="€" value={{payroll_info.exchange_rate_euro}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="salary_usd">Salary (USD)</label>
+                            <input type="number" class="form-control" name="salary_usd" id="salary_usd"
+                                placeholder="$" value={{payroll_info.salary_usd}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="salary_vnd">Salary (VNĐ)</label>
+                            <input type="number" class="form-control" name="salary_vnd" id="salary_vnd"
+                                placeholder="" value={{payroll_info.salary_vnd}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="working_days">Working days</label>
+                            <input type="number" class="form-control" name="working_days" id="working_days"
+                                placeholder="" value={{payroll_info.working_days}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="gross_income">Gross income</label>
+                            <input type="number" class="form-control" name="gross_income" id="gross_income"
+                                placeholder="" value={{payroll_info.gross_income}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="salary_recuperation">Salary recuperation</label>
+                            <input type="number" class="form-control" name="salary_recuperation" id="salary_recuperation"
+                                placeholder="" value={{payroll_info.salary_recuperation}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="housing_euro">Housing (EURO)</label>
+                            <input type="number" step="0.001" class="form-control" name="housing_euro" id="housing_euro"
+                                placeholder="€" value={{payroll_info.housing_euro}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="housing_vnd">Housing (VND)</label>
+                            <input type="number" class="form-control" name="housing_vnd" id="housing_vnd"
+                                placeholder="" value={{payroll_info.housing_vnd}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="phone">Phone</label>
+                            <input type="number" class="form-control" name="phone" id="phone"
+                                placeholder="" value={{payroll_info.phone}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="lunch">Lunch</label>
+                            <input type="number" class="form-control" name="lunch" id="lunch"
+                                placeholder="" value={{payroll_info.lunch}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="training_fee">Training fee</label>
+                            <input type="number" class="form-control" name="training_fee" id="training_fee"
+                                placeholder="" value={{payroll_info.training_fee}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="toxic_allowance">Toxic allowance</label>
+                            <input type="number" class="form-control" name="toxic_allowance" id="toxic_allowance"
+                                placeholder="" value={{payroll_info.toxic_allowance}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="travel">Travel</label>
+                            <input type="number" class="form-control" name="travel" id="travel"
+                                placeholder="" value={{payroll_info.travel}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="responsibility">Responsibility</label>
+                            <input type="number" class="form-control" name="responsibility" id="responsibility"
+                                placeholder="" value={{payroll_info.responsibility}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="seniority_bonus">Seniority bonus</label>
+                            <input type="number" class="form-control" name="seniority_bonus" id="seniority_bonus"
+                                placeholder="" value={{payroll_info.seniority_bonus}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="other">Other</label>
+                            <input type="number" class="form-control" name="other" id="other"
+                                placeholder="" value={{payroll_info.other}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="total_allowance_recuperation">Total allowance recuperation</label>
+                            <input type="number" class="form-control" name="total_allowance_recuperation" id="total_allowance_recuperation"
+                                placeholder="" value={{payroll_info.total_allowance_recuperation}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="benefits">Benefits</label>
+                            <input type="number" class="form-control" name="benefits" id="benefits"
+                                placeholder="" value={{payroll_info.benefits}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="severance_allowance">Severance Allowance</label>
+                            <input type="number" class="form-control" name="severance_allowance" id="severance_allowance"
+                                placeholder="" value={{payroll_info.severance_allowance}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="outstanding_annual_leave">Outstanding annual leave</label>
+                            <input type="number" class="form-control" name="outstanding_annual_leave" id="outstanding_annual_leave"
+                                placeholder="" value={{payroll_info.outstanding_annual_leave}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="month_13_salary_Pro_ata">13th salary (Pro-ata)</label>
+                            <input type="number" class="form-control" name="month_13_salary_Pro_ata" id="month_13_salary_Pro_ata"
+                                placeholder="" value={{payroll_info.month_13_salary_Pro_ata}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="SHUI_9point5percent_employee_pay">SHUI(9.5%)(Employee pay)</label>
+                            <input type="number" class="form-control" name="SHUI_9point5percent_employee_pay" id="SHUI_9point5percent_employee_pay"
+                                placeholder="" value={{payroll_info.SHUI_9point5percent_employee_pay}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="recuperation_of_SHU_Ins_10point5percent_staff_pay">Recuperation of SHU Ins.(10.5%)(staff pay)</label>
+                            <input type="number" class="form-control" name="recuperation_of_SHU_Ins_10point5percent_staff_pay" id="recuperation_of_SHU_Ins_10point5percent_staff_pay"
+                                placeholder="" value={{payroll_info.recuperation_of_SHU_Ins_10point5percent_staff_pay}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="SHUI_20point5percent_employer_pay">SHUI(20.5%)(Employer pay)</label>
+                            <input type="number" class="form-control" name="SHUI_20point5percent_employer_pay" id="SHUI_20point5percent_employer_pay"
+                                placeholder="" value={{payroll_info.SHUI_20point5percent_employer_pay}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="recuperation_of_SHU_Ins_21point5percent_company_pay">Recuperation of SHU Ins.(21.5%)(Company pay)</label>
+                            <input type="number" class="form-control" name="recuperation_of_SHU_Ins_21point5percent_company_pay" id="recuperation_of_SHU_Ins_21point5percent_company_pay"
+                                placeholder="" value={{payroll_info.recuperation_of_SHU_Ins_21point5percent_company_pay}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="occupational_accident_and_disease">Occupational accident and disease Ins.(0.5%)(Pay for staffs)</label>
+                            <input type="number" class="form-control" name="occupational_accident_and_disease" id="occupational_accident_and_disease"
+                                placeholder="" value={{payroll_info.occupational_accident_and_disease}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="trade_union_fee_company_pay">Trade Union fee (Company pay 2%)</label>
+                            <input type="number" class="form-control" name="trade_union_fee_company_pay" id="trade_union_fee_company_pay"
+                                placeholder="" value={{payroll_info.trade_union_fee_company_pay}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="trade_union_fee_member">Trade Union fee (Member)</label>
+                            <input type="number" class="form-control" name="trade_union_fee_member" id="trade_union_fee_member"
+                                placeholder="" value={{payroll_info.trade_union_fee_member}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="family_deduction">Family deduction</label>
+                            <input type="number" class="form-control" name="family_deduction" id="family_deduction"
+                                placeholder="" value={{payroll_info.family_deduction}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="taxable_income">Taxable income</label>
+                            <input type="number" class="form-control" name="taxable_income" id="taxable_income"
+                                placeholder="" value={{payroll_info.taxable_income}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="taxed_income">Taxed income</label>
+                            <input type="number" class="form-control" name="taxed_income" id="taxed_income"
+                                placeholder="" value={{payroll_info.taxed_income}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="PIT">PIT</label>
+                            <input type="number" class="form-control" name="PIT" id="PIT"
+                                placeholder="" value={{payroll_info.PIT}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="first_payment_cash_advance_euro">1st Payment Cash advance (EURO)</label>
+                            <input type="number" class="form-control" name="first_payment_cash_advance_euro" id="first_payment_cash_advance_euro"
+                                placeholder="€" value={{payroll_info.first_payment_cash_advance_euro}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="second_payment_net_income_vnd">2nd Payment Net Income (VNĐ)</label>
+                            <input type="number" class="form-control" name="second_payment_net_income_vnd" id="second_payment_net_income_vnd"
+                                placeholder="" value={{payroll_info.second_payment_net_income_vnd}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="second_payment_net_income_euro">2nd Payment Net Income (EURO)</label>
+                            <input type="number" class="form-control" name="second_payment_net_income_euro" id="second_payment_net_income_euro"
+                                placeholder="€" value={{payroll_info.second_payment_net_income_euro}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="net_income">Net Income</label>
+                            <input type="number" class="form-control" name="net_income" id="net_income"
+                                placeholder="" value={{payroll_info.net_income}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="total_cost_vnd">Total Cost (VNĐ)</label>
+                            <input type="number" class="form-control" name="total_cost_vnd" id="total_cost_vnd"
+                                placeholder="" value={{payroll_info.total_cost_vnd}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="total_cost_usd">Total Cost (USD)</label>
+                            <input type="number" class="form-control" name="total_cost_usd" id="total_cost_usd"
+                                placeholder="$" value={{payroll_info.total_cost_usd}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="note">Note</label>
+                            <input type="text" class="form-control" name="note" id="note"
+                                placeholder="" value={{payroll_info.note}}>
+                        </div>
+                    </div>
+
+
+
+
+
+                </div>
+        </div>
+        <div class="modal-footer">
+            <a type="button" class="btn btn-secondary"
+                href="{% url 'employee:report_payroll_tedis_vietha' payroll_info.month.id %}">Close</a>
+            <button type="submit" class="btn btn-primary" name="btnupdatePayrollSer" value="Payroll Ser update">Save
+            </button>
+        </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

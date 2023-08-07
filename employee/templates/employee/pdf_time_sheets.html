@@ -61,13 +61,11 @@
                                 <td>{{ data.total_ot_paid_hour }}</td>
                                 {% for day in data.list_employee_days %}
                                 {% if day.daily_work.weekend == True %}
-                                    {% if day.ot_time == 0.5 %}
-                                        <td style="background-color:  rgb(105, 184, 236);">1/2OT</td>
+                                    {% if day.work == 0.5 %}
+                                        <td style="background-color:  rgb(105, 184, 236);">1/2X</td>
                                     {% else %}
                                          <td style="background-color: rgb(105, 184, 236);"></td>
                                     {% endif %}
-                                {% elif day.ot_time != 0 %}
-                                <td>1/2OT</td>
                                 {% elif day.daily_work.holiday == True %}
                                 <td style="background-color: rgb(205, 105, 236);">HOL</td>
                                 {% elif day.paid_leave == 1.0 %}
@@ -105,7 +103,7 @@
                                     <td class='text-center' style="background-color: rgb(255, 176, 123);">U</td><td>: Unpaid leave</td>
                                 </tr>
                                 <tr>
-                                    <td class='text-center'>OT</td><td>: Recuperation</td>
+                                    <td class='text-center'>OT</td><td>: Overtime</td>
                                 </tr>
                             </table>
                         </div>

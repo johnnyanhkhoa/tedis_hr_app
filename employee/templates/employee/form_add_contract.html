@@ -56,6 +56,16 @@
                                 </div>
                                 <div class="col" style="padding: 0;">
                                     <div class="col">
+                                        <label class="fw-bold text-dark" for="category_id">Contract category</label>
+                                        <select name="category_id" class="form-select" required>
+                                            {% for category in list_contract_category %}
+                                            <option value="{{ category.id }}">{{ category.contract_category }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col" style="padding: 0;">
+                                    <div class="col">
                                         <label class="fw-bold text-dark" for="type_id">Contract type</label>
                                         <select name="type_id" class="form-select" required>
                                             {% for type in list_contract_type %}

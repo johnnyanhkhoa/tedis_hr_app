@@ -1,0 +1,112 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}ConfirmedAfterProbation Tedis - VietHa | Update Information{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Confirmed After Probation Information</h3>
+                    <hr>
+                    <h4>{{confirmed_after_probation_info.month.month_name}}</h4>
+                    <br>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'employee:report_payroll_tedis_vietha' confirmed_after_probation_info.month.id %}">Report payroll Tedis - VietHa</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Update</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <form method="post" class="">
+                {% csrf_token %}
+                <div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="employee">Employee</label>
+                            <input type="text" class="form-control" name="employee" id="employee"
+                                        placeholder="Employee" value="{{confirmed_after_probation_info.employee}}" disabled>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="department">Department</label>
+                            <input type="text" class="form-control" name="department" id="department"
+                                        placeholder="Department" value="{{confirmed_after_probation_info.department}}" disabled>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="employee_code">Employee code</label>
+                            <input type="text" class="form-control" name="employee_code" id="employee_code"
+                                        placeholder="Employee code" value="{{confirmed_after_probation_info.employee.employee_code}}" disabled>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="joining_date">Joining date</label>
+                            <input type="text" class="form-control" name="joining_date" id="joining_date"
+                                        placeholder="Joining date" value="{{confirmed_after_probation_info.joining_date}}" disabled>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="sign_LC_date">Sign LC date</label>
+                            <input type="date" class="form-control" name="sign_LC_date" id="sign_LC_date" 
+                            value="{{confirmed_after_probation_info.sign_LC_date|date:"Y-m-d"}}">
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="allowance">Allowance</label>
+                            <input type="number" step="0.001" class="form-control" name="allowance" id="allowance"
+                                 value={{confirmed_after_probation_info.allowance}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="salary_after_probation">Salary after probation</label>
+                            <input type="number" step="0.001" class="form-control" name="salary_after_probation" id="salary_after_probation"
+                                 value={{confirmed_after_probation_info.salary_after_probation}}>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="SI_book_no">SI book no</label>
+                            <input type="text" class="form-control" name="SI_book_no" id="SI_book_no"
+                                        placeholder="SI book no" value="{{confirmed_after_probation_info.SI_book_no}}" disabled>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="hospital_for_HI">Hospital for HI</label>
+                            <input type="text" class="form-control" name="hospital_for_HI" id="hospital_for_HI"
+                                        placeholder="Hospital for HI" value="{{confirmed_after_probation_info.hospital_for_HI}}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <br>
+        </div>
+        <div class="modal-footer">
+            <a type="button" class="btn btn-secondary"
+                href="{% url 'employee:report_payroll_tedis_vietha' confirmed_after_probation_info.month.id %}">Close</a>
+            <button type="submit" class="btn btn-primary" name="btnupdateConfirmedAfterProbation" value="ConfirmedAfterProbation update">Save
+            </button>
+        </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

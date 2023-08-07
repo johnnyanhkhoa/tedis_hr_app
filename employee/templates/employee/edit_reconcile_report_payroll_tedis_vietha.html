@@ -1,0 +1,65 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}Other changes Tedis - VietHa | Update Information{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Reconcile remark {{reconcile_remark.month.month_name}}</h3>
+                    <hr>
+                    <h4>{{reconcile_remark.employee}}</h4>
+                    <br>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'employee:report_payroll_tedis_vietha' reconcile_remark.month.id %}">Report payroll Tedis - VietHa</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Update</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <form method="post" class="">
+                {% csrf_token %}
+                <div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="remark">Remark</label>
+                            <textarea class="form-control" name="remark" id="remark" placeholder="Input text"
+                                style="height: 100px">{{reconcile_remark.remark}}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <br>
+        </div>
+        <div class="modal-footer">
+            <a type="button" class="btn btn-secondary"
+                href="{% url 'employee:report_payroll_tedis_vietha' reconcile_remark.month.id %}">Close</a>
+            <button type="submit" class="btn btn-primary" name="btnupdateReconcile" value="Reconcile update">Save</button>
+        </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

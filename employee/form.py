@@ -192,6 +192,12 @@ class CreateEmployeeForm(forms.ModelForm):
     staff_info_submission = forms.ModelChoiceField(required=False, queryset=staff_info_submission_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Staff information submission",
     }))
+    active = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={
+        "class": "form-control", "placeholder": "1: Active ; 0: Inactive",
+    }))
+    created_at = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+        "class": "form-control", "placeholder": "created_at",
+    }))
     class Meta:
         model = Employee
         fields = '__all__'
@@ -240,6 +246,19 @@ class Probationary_period_form(forms.ModelForm):
     
     class Meta:
         model = Probationary_period
+        fields = '__all__'
+
+
+class AddManager(forms.ModelForm):
+    employee = forms.ModelChoiceField(required=False, queryset=employee_list ,widget=forms.Select(attrs={
+        "class": "form-control bg-white", "placeholder": "Employee",
+    }))
+    manager = forms.ModelChoiceField(required=False, queryset=employee_list ,widget=forms.Select(attrs={
+        "class": "form-control bg-white", "placeholder": "Employee",
+    }))
+    
+    class Meta:
+        model = Employee_manager
         fields = '__all__'
         
 

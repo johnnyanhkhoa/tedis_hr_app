@@ -145,6 +145,19 @@ class Abbreviation_Position(models.Model):
 
     def __str__(self):
         return self.abb_position
+
+
+class Contract_category(models.Model):
+    contract_category = models.CharField(max_length=100, blank=True, null=True)
+    created_by = models.IntegerField(null=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.contract_category
     
 
 class Contract_type(models.Model):
@@ -350,6 +363,15 @@ class Employee(models.Model):
     age = models.IntegerField(blank=True, null=True) #PERSONAL
     remark = models.CharField(max_length=200, blank=True, null=True) #ANOTHER
     staff_info_submisstion = models.ForeignKey(Staff_info_submission, on_delete=models.PROTECT, null=True, blank=True) #ANOTHER
+    # Active 
+    active = models.IntegerField(blank=True, null=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.full_name
@@ -383,8 +405,8 @@ class Probationary_period(models.Model):
     letter_date = models.DateField(max_length=30, blank=True, null=True)
     from_date = models.DateField(max_length=30, blank=True, null=True)
     to_date = models.DateField(max_length=30, blank=True, null=True) 
-    monthly_gross_salary = models.IntegerField(blank=True, null=True)
-    monthly_allowance = models.IntegerField(blank=True, null=True)
+    monthly_gross_salary = models.FloatField(blank=True, null=True)
+    monthly_allowance = models.FloatField(blank=True, null=True)
     letter_returning_date = models.DateField(max_length=30, blank=True, null=True)
 
     def __int__(self):
@@ -394,17 +416,18 @@ class Probationary_period(models.Model):
 class Employee_contract(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
     contract_no = models.CharField(max_length=50, blank=True, null=True) #JOB
+    contract_category = models.ForeignKey(Contract_category, on_delete=models.PROTECT, null=True, blank=True) #JOB
     contract_type = models.ForeignKey(Contract_type, on_delete=models.PROTECT, null=True, blank=True) #JOB
     signed_contract_date = models.DateField(max_length=30, blank=True, null=True) #JOB
     from_date = models.DateField(max_length=30, blank=True, null=True)
     to_date = models.DateField(max_length=30, blank=True, null=True)
-    basic_salary = models.IntegerField(null=True, blank=True)
-    responsibility_allowance = models.IntegerField(null=True, blank=True)
-    lunch_support = models.IntegerField(null=True, blank=True)
-    transportation_support = models.IntegerField(null=True, blank=True)
-    telephone_support = models.IntegerField(null=True, blank=True)
-    travel_support = models.IntegerField(null=True, blank=True)
-    seniority_bonus = models.IntegerField(null=True, blank=True)
+    basic_salary = models.FloatField(null=True, blank=True)
+    responsibility_allowance = models.FloatField(null=True, blank=True)
+    lunch_support = models.FloatField(null=True, blank=True)
+    transportation_support = models.FloatField(null=True, blank=True)
+    telephone_support = models.FloatField(null=True, blank=True)
+    travel_support = models.FloatField(null=True, blank=True)
+    seniority_bonus = models.FloatField(null=True, blank=True)
     created_by = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(null=True, default=now)
     updated_by = models.IntegerField(null=True, blank=True)
@@ -568,7 +591,8 @@ class Month_in_period(models.Model):
     month_number = models.IntegerField(null=True, blank=True)
     total_days = models.IntegerField(null=True, blank=True)
     holidays = models.CharField(max_length=500, blank=True, null=True)
-    total_work_days = models.IntegerField(null=True, blank=True)
+    total_work_days_bo = models.IntegerField(null=True, blank=True)
+    total_work_days_wh = models.IntegerField(null=True, blank=True)
     created_by = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(null=True, default=now)
     updated_by = models.IntegerField(null=True, blank=True)
@@ -635,6 +659,7 @@ class Daily_work(models.Model):
 class Daily_work_for_employee(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
     daily_work = models.ForeignKey(Daily_work, on_delete=models.PROTECT, null=True)
+    work = models.FloatField(blank=True, null=True, default=0)
     paid_leave = models.FloatField(blank=True, null=True, default=0)
     unpaid_leave = models.FloatField(blank=True, null=True, default=0)
     leave_application = models.ForeignKey(Leave_application, on_delete=models.PROTECT, null=True)
@@ -798,7 +823,7 @@ class Payroll_Tedis_Vietha(models.Model):
         return self.month
     
     
-# Report Payroll TD
+# Report Payroll Tedis
 class Report_PIT_Payroll_Tedis(models.Model):
     month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
     payroll = models.ForeignKey(Payroll_Tedis, on_delete=models.PROTECT, null=True)
@@ -872,6 +897,8 @@ class Report_PIT_Payroll_Tedis_VietHa(models.Model):
     month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
     payroll = models.ForeignKey(Payroll_Tedis_Vietha, on_delete=models.PROTECT, null=True)
     employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    # Loại cá nhân
+    individual_type = models.CharField(max_length=50, blank=True, null=True)
     # Thu nhập chịu thuế
     thu_nhap_chiu_thue = models.FloatField(blank=True, null=True)
     tong_tnct_khau_tru_thue = models.FloatField(blank=True, null=True)
@@ -885,6 +912,235 @@ class Report_PIT_Payroll_Tedis_VietHa(models.Model):
     # Others
     thue_tnct_phai_nop = models.FloatField(blank=True, null=True)
     ghi_chu = models.CharField(max_length=500, blank=True, null=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.month
+
+
+class Report_Transfer_Payroll_Tedis_VietHa(models.Model):
+    month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
+    payroll = models.ForeignKey(Payroll_Tedis_Vietha, on_delete=models.PROTECT, null=True)
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    amount = models.FloatField(blank=True, null=True)
+    # Loại employee
+    employee_type = models.CharField(max_length=50, blank=True, null=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.month
+
+
+class Report_Payment_Payroll_Tedis_VietHa(models.Model):
+    month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
+    # fields
+    item = models.CharField(max_length=50, blank=True, null=True)
+    description = models.CharField(max_length=100, blank=True, null=True)
+    amount_vnd = models.FloatField(blank=True, null=True)
+    amount_euro = models.FloatField(blank=True, null=True)
+    paidby = models.CharField(max_length=10, blank=True, null=True)
+    paidto = models.CharField(max_length=10, blank=True, null=True)
+    account_no = models.TextField(null=True,blank=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.month
+
+
+class Payroll_Ser(models.Model):
+    month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    # Exchange rate
+    exchange_rate_usd = models.FloatField(blank=True, null=True)
+    exchange_rate_euro = models.FloatField(blank=True, null=True)
+    # Payroll
+    salary_usd = models.FloatField(blank=True, null=True)
+    salary_vnd = models.FloatField(blank=True, null=True)
+    working_days = models.FloatField(blank=True, null=True)
+    gross_income = models.FloatField(blank=True, null=True)
+    salary_recuperation = models.FloatField(blank=True, null=True)
+    housing_euro = models.FloatField(blank=True, null=True)
+    housing_vnd = models.FloatField(blank=True, null=True)
+    phone = models.FloatField(blank=True, null=True)
+    lunch = models.FloatField(blank=True, null=True)
+    training_fee = models.FloatField(blank=True, null=True)
+    toxic_allowance = models.FloatField(blank=True, null=True)
+    travel = models.FloatField(blank=True, null=True, default=0)
+    responsibility = models.FloatField(blank=True, null=True)
+    seniority_bonus = models.FloatField(blank=True, null=True, default=0)
+    other = models.FloatField(blank=True, null=True, default=0)
+    total_allowance_recuperation = models.FloatField(blank=True, null=True, default=0)
+    benefits = models.FloatField(blank=True, null=True, default=0)
+    severance_allowance = models.FloatField(blank=True, null=True, default=0)
+    outstanding_annual_leave = models.FloatField(blank=True, null=True, default=0)
+    month_13_salary_Pro_ata = models.FloatField(blank=True, null=True, default=0)
+    SHUI_9point5percent_employee_pay = models.FloatField(blank=True, null=True)
+    recuperation_of_SHU_Ins_10point5percent_staff_pay = models.FloatField(blank=True, null=True, default=0)
+    SHUI_20point5percent_employer_pay = models.FloatField(blank=True, null=True)
+    recuperation_of_SHU_Ins_21point5percent_company_pay = models.FloatField(blank=True, null=True, default=0)
+    occupational_accident_and_disease = models.FloatField(blank=True, null=True, default=0)
+    trade_union_fee_company_pay = models.FloatField(blank=True, null=True)
+    trade_union_fee_member = models.FloatField(blank=True, null=True)
+    family_deduction = models.FloatField(blank=True, null=True)
+    taxable_income  = models.FloatField(blank=True, null=True)
+    taxed_income  = models.FloatField(blank=True, null=True)
+    PIT  = models.FloatField(blank=True, null=True)
+    first_payment_cash_advance_euro  = models.FloatField(blank=True, null=True)
+    second_payment_net_income_vnd  = models.FloatField(blank=True, null=True)
+    second_payment_net_income_euro  = models.FloatField(blank=True, null=True)
+    net_income = models.FloatField(blank=True, null=True)
+    total_cost_vnd = models.FloatField(blank=True, null=True)
+    total_cost_usd = models.FloatField(blank=True, null=True)
+    note = models.CharField(max_length=500, blank=True, null=True)
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.month
+    
+
+# Report Infor Payroll Tedis Vietha    
+class Report_new_staff_Tedis_VietHa(models.Model):
+    month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
+    # fields
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    department = models.ForeignKey(Department_E, on_delete=models.PROTECT, null=True)
+    joining_date = models.DateField(max_length=50, null=True)
+    gross_salary = models.FloatField(blank=True, null=True)
+    allowance = models.FloatField(blank=True, null=True)
+    remark = models.CharField(max_length=200, blank=True, null=True)
+    dependant_deduction = models.FloatField(blank=True, null=True)
+    hospital_for_HI = models.CharField(max_length=100, blank=True, null=True)
+    account_no = models.CharField(max_length=50, blank=True, null=True)
+    bank_name = models.CharField(max_length=30, blank=True, null=True)
+    PIT_code = models.IntegerField(blank=True, null=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.month
+
+
+class Report_confirmed_after_probation_Tedis_VietHa(models.Model):
+    month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
+    # fields
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    department = models.ForeignKey(Department_E, on_delete=models.PROTECT, null=True)
+    joining_date = models.DateField(max_length=50, null=True)
+    sign_LC_date = models.DateField(max_length=50, null=True)
+    allowance = models.FloatField(blank=True, null=True)
+    salary_after_probation = models.FloatField(blank=True, null=True)
+    SI_book_no = models.CharField(max_length=100, blank=True, null=True)
+    hospital_for_HI = models.CharField(max_length=100, blank=True, null=True)    
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.month
+    
+
+class Report_resigned_staff_Tedis_VietHa(models.Model):
+    month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
+    # fields
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    department = models.ForeignKey(Department_E, on_delete=models.PROTECT, null=True)
+    joining_date = models.DateField(max_length=50, null=True)
+    leaving_date = models.DateField(max_length=50, null=True)
+    allowance = models.FloatField(blank=True, null=True)
+    unused_AL = models.FloatField(max_length=200, blank=True, null=True)
+    month_13_salary = models.FloatField(blank=True, null=True, default=0)
+    severance_allowance = models.FloatField(blank=True, null=True)
+    other_allowance = models.FloatField(blank=True, null=True)
+    incentive = models.FloatField(blank=True, null=True)
+    remark = models.CharField(max_length=200, blank=True, null=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.month
+    
+
+class Report_other_changes_Tedis_VietHa(models.Model):
+    month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
+    # fields
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    new_salary = models.FloatField(blank=True, null=True, default=0)
+    allowance = models.FloatField(blank=True, null=True)
+    effective_date = models.DateField(max_length=50, null=True)
+    remark = models.CharField(max_length=200, blank=True, null=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.month
+
+
+class Report_maternity_leave_Tedis_VietHa(models.Model):
+    month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
+    # fields
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    department = models.ForeignKey(Department_E, on_delete=models.PROTECT, null=True)
+    from_date = models.DateField(max_length=50, null=True)
+    to_date = models.DateField(max_length=50, null=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.month
+    
+
+class Report_reconcile_Tedis_VietHa(models.Model):
+    month = models.ForeignKey(Month_in_period, on_delete=models.PROTECT, null=True)
+    # fields
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    remark = models.CharField(max_length=200, blank=True, null=True)
     # Properties
     created_by = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(null=True, default=now)

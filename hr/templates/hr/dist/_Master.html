@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title_tab %}{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'hr/images/logo/logo_tedis.png' %}">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -26,8 +27,8 @@
                 <div class="sidebar-header">
                     <div class="d-flex justify-content-between">
                         <div class="logo">
-                            <a href="{% url 'hr:index' %}"><img src="{% static 'hr/images/logo/logo_tedis.png' %}" alt="Logo"
-                                    srcset="" style="width: 150px; height: 75px"></a>
+                            <a href="{% url 'hr:index' %}"><img src="{% static 'hr/images/logo/logo_tedis.png' %}"
+                                    alt="Logo" srcset="" style="width: 150px; height: 75px"></a>
                         </div>
                         <div class="toggler">
                             <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
@@ -211,7 +212,7 @@
                                 <span>Datatable</span>
                             </a>
                         </li> {% endcomment %}
-        
+
                         <li class="sidebar-item has-sub" style="width:250px">
                             <a href="#" class='sidebar-link'>
                                 <i class="bi bi-person-fill"></i>
@@ -225,9 +226,6 @@
                                 <li class="submenu-item ">
                                     <a href="{% url 'employee:create_new_employee' %}">Create new employee</a>
                                 </li>
-                                <li class="submenu-item ">
-                                    <a href="#">Update personal information</a>
-                                </li>
                             </ul>
                         </li>
                         <li class="sidebar-item has-sub" style="width:250px">
@@ -235,7 +233,7 @@
                                 <i class="bi bi-file-text-fill"></i>
                                 <span>Leave & Overtime</span>
                             </a>
-                            <ul class="submenu ">
+                            <ul class="submenu">
                                 <li class="submenu-item ">
                                     <a href="{% url 'employee:leave_application' %}">Leave application</a>
                                 </li>
@@ -250,13 +248,13 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="sidebar-item  ">
-                            <a href="{% url 'employee:report_leave' 61 %}" class='sidebar-link'>
+                        <li class="sidebar-item">
+                            <a href="{% url 'employee:report_leave' %}" class='sidebar-link'>
                                 <i class="bi bi-bar-chart-line"></i>
                                 <span>Report</span>
                             </a>
                         </li>
-                        <li class="sidebar-item  ">
+                        <li class="sidebar-item">
                             <a href="{% url 'employee:blank_period' %}" class='sidebar-link'>
                                 <i class="bi bi-calendar-range"></i>
                                 <span>Period</span>
@@ -429,6 +427,19 @@
 
                     </ul>
                 </div>
+                <div class="d-flex justify-content-between" style="position: absolute; bottom: 20px;">
+                    <h4 style="margin-left: 50px; padding-top: 5px;">{{ request.session.s_user.0 }}</h4>
+                    <a class="btn btn-outline-danger" href="{% url 'hr:logout' %}"
+                        style="width: 130px;text-align: left; margin-left: 50px;"><svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-box-arrow-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z" />
+                            <path fill-rule="evenodd"
+                                d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
+                        </svg>
+                        &ensp;Sign out</a>
+                </div>
                 <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
             </div>
         </div>
@@ -438,7 +449,7 @@
         <!--End Main content-->
 
     </div>
-    
+
     <script src="{% static 'hr/vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
     <script src="{% static 'hr/js/bootstrap.bundle.min.js' %}"></script>
 

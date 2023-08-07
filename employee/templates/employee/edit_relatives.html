@@ -1,5 +1,5 @@
 {% extends 'hr/dist/_Master.html' %}
-{% block title_tab %}HR | Add manager{% endblock %}
+{% block title_tab %}HR | Employee Children{% endblock %}
 {% load static %}
 {% load humanize %}
 
@@ -25,13 +25,14 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>Add manager</h3>
+                    <h3>Children/Relatives</h3>
+                    <p class="text-subtitle text-muted">Add children/relatives</p>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Employee information</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Add manager</li>
+                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Add children/relatives</li>
                         </ol>
                     </nav>
                 </div>
@@ -48,15 +49,24 @@
                         <div class="col">
                             <form method="post">
                                 {% csrf_token %}
+                                <input type="hidden" name="employee_id" value="{{ employee.id }}" />
                                 <div class="form-group">
-                                    <label class="fw-bold text-dark" for="manager">Manager</label>
-                                    {{ form.manager }}
+                                    <label class="fw-bold text-dark" for="basicInput">Children/Relatives name</label>
+                                    <input type="text" class="form-control" name="children" id="basicInput"
+                                        placeholder="Full name" value="{{relative.children}}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="fw-bold text-dark" for="basicInput">Date of birth</label>
+                                    <input type="date" class="form-control" name="birthday_of_children" id="basicInput"
+                                        value="{{relative_date_of_birth}}">
                                 </div>
                         </div>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end"
                             style="margin-bottom: 20px; margin-top: 20px;">
-                            <button type="submit" class="btn btn-primary" name="btn_addmanager"
-                                value="Manager input">Add</button>
+                            <a type="button" class="btn btn-secondary"
+                                href="{% url 'employee:view_relatives' relative.employee.id%}">Close</a>
+                            <button type="submit" class="btn btn-primary" name="btnUpdaterelative"
+                                value="Children input">Update children/relatives</button>
                         </div>
                         </form>
                     </div>

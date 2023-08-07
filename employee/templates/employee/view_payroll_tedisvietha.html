@@ -40,14 +40,15 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>Payroll Tedis-VietHa {{period_month.month_name}}</h3>
-                    <h5>Working days: <b><u>{{ total_working_day }}</u></b></h5>
+                    <h3>Payroll Tedis - VietHa: {{period_month.month_name}}</h3>
+                    <h5>Working days of BO: <b><u>{{ working_day_bo }}</u></b></h5>
+                    <h5>Working days of WH: <b><u>{{ working_day_wh }}</u></b></h5>
                     <p class="text-subtitle text-muted"></p>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">List timesheets</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'employee:list_time_sheets' period_month.id %}">List timesheets</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Payroll Tedis</li>
                         </ol>
                     </nav>
