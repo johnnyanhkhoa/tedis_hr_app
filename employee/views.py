@@ -10756,7 +10756,10 @@ def report_leave(request):
         list_data = []
         for employee in list_employees:
             # Get total, used and leave balance
-            dayoff_info = Dayoff.objects.get(employee=employee,period=default_period)
+            try:
+                dayoff_info = Dayoff.objects.get(employee=employee,period=default_period)
+            except Dayoff.DoesNotExist:
+                dayoff_info = ''
             # Get total recuperation
             ot_applications = Overtime_application.objects.filter(employee=employee, application_date__year=default_period.period_year,ot_unpaid_day__gt=0)
             total_recuperation = 0
