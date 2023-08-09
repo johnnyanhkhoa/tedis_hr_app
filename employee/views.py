@@ -341,23 +341,39 @@ def edit_manager(request,pk):
     employee = Employee.objects.get(id = pk)
     
     # Get manager
-    manager_info = Employee_manager.objects.get(employee = pk)
+    try: 
+        manager_info = Employee_manager.objects.get(employee = pk)
     
-    # Edit manager
-    form = AddManager(instance=manager_info)
-    if request.method == 'POST':
-        form = AddManager(request.POST, instance=manager_info)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.employee = employee
-            post.save()
-            messages.success(request, 'Manager updated')
-            return redirect('/employee/')
+        # Edit manager
+        form = AddManager(instance=manager_info)
+        if request.method == 'POST':
+            form = AddManager(request.POST, instance=manager_info)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.employee = employee
+                post.save()
+                messages.success(request, 'Manager updated')
+                return redirect('/employee/')
+            
+    except Employee_manager.DoesNotExist:
+        # Add manager
+        form = AddManager()
+        if request.method == 'POST':
+            form = AddManager(request.POST)
+            if form.is_valid():
+                # Save age and another info to DB
+                request.POST.__mutable = True
+                post = form.save(commit=False)
+                post.employee = employee
+                post.save()
+                messages.success(request, 'Staff added')
+                return redirect('/employee/')
+            else:
+                print(form.errors.as_data())
     
     
     return render(request, 'employee/edit_manager.html', {
         'employee' : employee,
-        'manager_info' : manager_info,
         'form' : form,
         
     })

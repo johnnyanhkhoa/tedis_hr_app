@@ -316,7 +316,7 @@ class Employee(models.Model):
     function = models.ForeignKey(Function, on_delete=models.PROTECT, null=True) #JOB
     position_e = models.ForeignKey(Position_E, on_delete=models.PROTECT, null=True) #JOB
     position_v = models.ForeignKey(Position_V, on_delete=models.PROTECT, null=True) #JOB
-    abb_position = models.ForeignKey(Abbreviation_Position, on_delete=models.PROTECT, null=True) #JOB
+    abb_position = models.ForeignKey(Abbreviation_Position, on_delete=models.PROTECT, null=True, blank=True) #JOB
     joining_date = models.DateField(max_length=50, null=True) #JOB
     joining_year = models.IntegerField(blank=True,null=True) #JOB
     out_date = models.DateField(max_length=50, null=True, blank=True) #JOB 
