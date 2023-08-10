@@ -5987,11 +5987,13 @@ def report_payroll_tedis_vietha(request, pk):
     period_month = Month_in_period.objects.get(pk=pk)
     try:
         last_period_month = Month_in_period.objects.get(pk=pk-1)
+        # Get start date of previous month
+        start_date = datetime(last_period_month.period.period_year, last_period_month.month_number, 1)
     except Month_in_period.DoesNotExist:
         last_period_month = ''
-        
-    # Get start date of previous month
-    start_date = datetime(last_period_month.period.period_year, last_period_month.month_number, 1)
+        # Get start date of previous month
+        start_date = datetime(period_month.period.period_year, period_month.month_number, 1)
+
 
     # Get end date of present month
     if period_month.month_number == 12:
@@ -6092,791 +6094,802 @@ def report_payroll_tedis_vietha(request, pk):
     maternity_leave_reports = Report_maternity_leave_Tedis_VietHa.objects.filter(month=period_month)
     
     '''reconcile'''
-    # Get staff and coll employee:
-    list_staff = []
-    list_collaborator = []
-    contact_category_CTV = Contract_category.objects.get(contract_category='CTV')
-    for employee in list_employee_tedis_vietha_include_inactive:
-        list_contracts = Employee_contract.objects.filter(employee=employee).order_by('-created_at') 
-        if list_contracts[0].contract_category == contact_category_CTV: 
-            list_collaborator.append(employee.id)  
-        else:
-            list_staff.append(list_contracts[0].employee.id)
-    
-            
-    # Last month staff
-    list_last_month_payroll_staff = Payroll_Tedis_Vietha.objects.filter(employee__in=list_staff,month=pk-1)
-    # Define total_var
-    total_head_count = list_last_month_payroll_staff.count()
-    total_gross_income = 0
-    total_transportation = 0
-    total_phone = 0
-    total_lunch = 0
-    total_outstanding_annual_leave = 0
-    total_responsibility = 0
-    total_travel = 0
-    total_seniority_bonus = 0
-    total_other = 0
-    total_OTC_incentive = 0
-    total_KPI_achievement = 0
-    total_incentive_last_month = 0
-    total_month_13_salary_Pro_ata = 0
-    total_incentive_last_quy_last_year = 0
-    total_taxable_overtime = 0
-    total_nontaxable_overtime = 0
-    total_SHUI_10point5percent_employee_pay = 0
-    total_SHUI_21point5percent_company_pay = 0
-    total_occupational_accident_and_disease = 0
-    total_trade_union_fee_company_pay = 0
-    total_trade_union_fee_employee_pay = 0
-    total_family_deduction = 0
-    total_taxable_income = 0
-    total_taxed_income = 0
-    total_PIT = 0
-    total_net_income = 0
-    total_total_cost = 0
-    # Get total_var += payroll.
-    for payroll in list_last_month_payroll_staff:
-        total_gross_income += round(payroll.gross_income)
-        total_transportation += round(payroll.transportation)
-        total_phone += round(payroll.phone)
-        total_lunch += round(payroll.lunch)
-        total_outstanding_annual_leave += round(payroll.outstanding_annual_leave)
-        total_responsibility += round(payroll.responsibility)
-        total_travel += round(payroll.travel)
-        total_seniority_bonus += round(payroll.seniority_bonus)
-        total_other += round(payroll.other)
-        total_OTC_incentive += round(payroll.OTC_incentive)
-        total_KPI_achievement += round(payroll.KPI_achievement)
-        total_incentive_last_month += round(payroll.incentive_last_month)
-        total_month_13_salary_Pro_ata += round(payroll.month_13_salary_Pro_ata)
-        total_incentive_last_quy_last_year += round(payroll.incentive_last_quy_last_year)
-        total_taxable_overtime += round(payroll.taxable_overtime)
-        total_nontaxable_overtime += round(payroll.nontaxable_overtime)
-        total_SHUI_10point5percent_employee_pay += round(payroll.SHUI_10point5percent_employee_pay)
-        total_SHUI_21point5percent_company_pay += round(payroll.SHUI_21point5percent_company_pay)
-        total_occupational_accident_and_disease += round(payroll.occupational_accident_and_disease)
-        total_trade_union_fee_company_pay += round(payroll.trade_union_fee_company_pay)
-        total_trade_union_fee_employee_pay += round(payroll.trade_union_fee_employee_pay)
-        total_family_deduction += round(payroll.family_deduction)
-        total_taxable_income += round(payroll.taxable_income)
-        total_taxed_income += round(payroll.taxed_income)
-        total_PIT += round(payroll.PIT)
-        total_net_income += round(payroll.net_income)
-        total_total_cost += round(payroll.total_cost)
-    # Make data
-    payroll_staff_last_month = {
-        'head_count' : total_head_count,
-        'gross_income' : total_gross_income,
-        'transportation' : total_transportation,
-        'phone' : total_phone,
-        'lunch' : total_lunch,
-        'outstanding_annual_leave' : total_outstanding_annual_leave,
-        'responsibility' : total_responsibility,
-        'travel' : total_travel,
-        'seniority_bonus' : total_seniority_bonus,
-        'other' : total_other,
-        'OTC_incentive' : total_OTC_incentive,
-        'KPI_achievement' : total_KPI_achievement,
-        'incentive_last_month' : total_incentive_last_month,
-        'month_13_salary_Pro_ata' : total_month_13_salary_Pro_ata,
-        'incentive_last_quy_last_year' : total_incentive_last_quy_last_year,
-        'taxable_overtime' : total_taxable_overtime,
-        'nontaxable_overtime' : total_nontaxable_overtime,
-        'SHUI_10point5percent_employee_pay' : total_SHUI_10point5percent_employee_pay,
-        'SHUI_21point5percent_company_pay' : total_SHUI_21point5percent_company_pay,
-        'occupational_accident_and_disease' : total_occupational_accident_and_disease,
-        'trade_union_fee_company_pay' : total_trade_union_fee_company_pay,
-        'trade_union_fee_employee_pay' : total_trade_union_fee_employee_pay,
-        'family_deduction' : total_family_deduction,
-        'taxable_income' : total_taxable_income,
-        'taxed_income' : total_taxed_income,
-        'PIT' : total_PIT,
-        'net_income' : total_net_income,
-        'total_cost' : total_total_cost
-    }
-    
-    # Last month coll
-    list_last_month_payroll_coll = Payroll_Tedis_Vietha.objects.filter(employee__in=list_collaborator,month=pk-1)
-    # Define total_var
-    total_head_count = list_last_month_payroll_coll.count()
-    total_gross_income = 0
-    total_transportation = 0
-    total_phone = 0
-    total_lunch = 0
-    total_outstanding_annual_leave = 0
-    total_responsibility = 0
-    total_travel = 0
-    total_seniority_bonus = 0
-    total_other = 0
-    total_OTC_incentive = 0
-    total_KPI_achievement = 0
-    total_incentive_last_month = 0
-    total_month_13_salary_Pro_ata = 0
-    total_incentive_last_quy_last_year = 0
-    total_taxable_overtime = 0
-    total_nontaxable_overtime = 0
-    total_SHUI_10point5percent_employee_pay = 0
-    total_SHUI_21point5percent_company_pay = 0
-    total_occupational_accident_and_disease = 0
-    total_trade_union_fee_company_pay = 0
-    total_trade_union_fee_employee_pay = 0
-    total_family_deduction = 0
-    total_taxable_income = 0
-    total_taxed_income = 0
-    total_PIT = 0
-    total_net_income = 0
-    total_total_cost = 0
-    # Get total_var += payroll.
-    for payroll in list_last_month_payroll_coll:
-        total_gross_income += round(payroll.gross_income)
-        total_transportation += round(payroll.transportation)
-        total_phone += round(payroll.phone)
-        total_lunch += round(payroll.lunch)
-        total_outstanding_annual_leave += round(payroll.outstanding_annual_leave)
-        total_responsibility += round(payroll.responsibility)
-        total_travel += round(payroll.travel)
-        total_seniority_bonus += round(payroll.seniority_bonus)
-        total_other += round(payroll.other)
-        total_OTC_incentive += round(payroll.OTC_incentive)
-        total_KPI_achievement += round(payroll.KPI_achievement)
-        total_incentive_last_month += round(payroll.incentive_last_month)
-        total_month_13_salary_Pro_ata += round(payroll.month_13_salary_Pro_ata)
-        total_incentive_last_quy_last_year += round(payroll.incentive_last_quy_last_year)
-        total_taxable_overtime += round(payroll.taxable_overtime)
-        total_nontaxable_overtime += round(payroll.nontaxable_overtime)
-        total_SHUI_10point5percent_employee_pay += round(payroll.SHUI_10point5percent_employee_pay)
-        total_SHUI_21point5percent_company_pay += round(payroll.SHUI_21point5percent_company_pay)
-        total_occupational_accident_and_disease += round(payroll.occupational_accident_and_disease)
-        total_trade_union_fee_company_pay += round(payroll.trade_union_fee_company_pay)
-        total_trade_union_fee_employee_pay += round(payroll.trade_union_fee_employee_pay)
-        total_family_deduction += round(payroll.family_deduction)
-        total_taxable_income += round(payroll.taxable_income)
-        total_taxed_income += round(payroll.taxed_income)
-        total_PIT += round(payroll.PIT)
-        total_net_income += round(payroll.net_income)
-        total_total_cost += round(payroll.total_cost)
-    # Make data
-    payroll_coll_last_month = {
-        'head_count' : total_head_count,
-        'gross_income' : total_gross_income,
-        'transportation' : total_transportation,
-        'phone' : total_phone,
-        'lunch' : total_lunch,
-        'outstanding_annual_leave' : total_outstanding_annual_leave,
-        'responsibility' : total_responsibility,
-        'travel' : total_travel,
-        'seniority_bonus' : total_seniority_bonus,
-        'other' : total_other,
-        'OTC_incentive' : total_OTC_incentive,
-        'KPI_achievement' : total_KPI_achievement,
-        'incentive_last_month' : total_incentive_last_month,
-        'month_13_salary_Pro_ata' : total_month_13_salary_Pro_ata,
-        'incentive_last_quy_last_year' : total_incentive_last_quy_last_year,
-        'taxable_overtime' : total_taxable_overtime,
-        'nontaxable_overtime' : total_nontaxable_overtime,
-        'SHUI_10point5percent_employee_pay' : total_SHUI_10point5percent_employee_pay,
-        'SHUI_21point5percent_company_pay' : total_SHUI_21point5percent_company_pay,
-        'occupational_accident_and_disease' : total_occupational_accident_and_disease,
-        'trade_union_fee_company_pay' : total_trade_union_fee_company_pay,
-        'trade_union_fee_employee_pay' : total_trade_union_fee_employee_pay,
-        'family_deduction' : total_family_deduction,
-        'taxable_income' : total_taxable_income,
-        'taxed_income' : total_taxed_income,
-        'PIT' : total_PIT,
-        'net_income' : total_net_income,
-        'total_cost' : total_total_cost
-    }
-    
-    # Last month ser
     try:
-        last_month_payroll_ser = Payroll_Ser.objects.get(month=pk-1)
+        last_period_month = Month_in_period.objects.get(pk=pk-1)
+        # Get staff and coll employee:
+        list_staff = []
+        list_collaborator = []
+        contact_category_CTV = Contract_category.objects.get(contract_category='CTV')
+        for employee in list_employee_tedis_vietha_include_inactive:
+            list_contracts = Employee_contract.objects.filter(employee=employee).order_by('-created_at') 
+            if list_contracts[0].contract_category == contact_category_CTV: 
+                list_collaborator.append(employee.id)  
+            else:
+                list_staff.append(list_contracts[0].employee.id)
+        
+                
+        # Last month staff
+        list_last_month_payroll_staff = Payroll_Tedis_Vietha.objects.filter(employee__in=list_staff,month=pk-1)
+        # Define total_var
+        total_head_count = list_last_month_payroll_staff.count()
+        total_gross_income = 0
+        total_transportation = 0
+        total_phone = 0
+        total_lunch = 0
+        total_outstanding_annual_leave = 0
+        total_responsibility = 0
+        total_travel = 0
+        total_seniority_bonus = 0
+        total_other = 0
+        total_OTC_incentive = 0
+        total_KPI_achievement = 0
+        total_incentive_last_month = 0
+        total_month_13_salary_Pro_ata = 0
+        total_incentive_last_quy_last_year = 0
+        total_taxable_overtime = 0
+        total_nontaxable_overtime = 0
+        total_SHUI_10point5percent_employee_pay = 0
+        total_SHUI_21point5percent_company_pay = 0
+        total_occupational_accident_and_disease = 0
+        total_trade_union_fee_company_pay = 0
+        total_trade_union_fee_employee_pay = 0
+        total_family_deduction = 0
+        total_taxable_income = 0
+        total_taxed_income = 0
+        total_PIT = 0
+        total_net_income = 0
+        total_total_cost = 0
+        # Get total_var += payroll.
+        for payroll in list_last_month_payroll_staff:
+            total_gross_income += round(payroll.gross_income)
+            total_transportation += round(payroll.transportation)
+            total_phone += round(payroll.phone)
+            total_lunch += round(payroll.lunch)
+            total_outstanding_annual_leave += round(payroll.outstanding_annual_leave)
+            total_responsibility += round(payroll.responsibility)
+            total_travel += round(payroll.travel)
+            total_seniority_bonus += round(payroll.seniority_bonus)
+            total_other += round(payroll.other)
+            total_OTC_incentive += round(payroll.OTC_incentive)
+            total_KPI_achievement += round(payroll.KPI_achievement)
+            total_incentive_last_month += round(payroll.incentive_last_month)
+            total_month_13_salary_Pro_ata += round(payroll.month_13_salary_Pro_ata)
+            total_incentive_last_quy_last_year += round(payroll.incentive_last_quy_last_year)
+            total_taxable_overtime += round(payroll.taxable_overtime)
+            total_nontaxable_overtime += round(payroll.nontaxable_overtime)
+            total_SHUI_10point5percent_employee_pay += round(payroll.SHUI_10point5percent_employee_pay)
+            total_SHUI_21point5percent_company_pay += round(payroll.SHUI_21point5percent_company_pay)
+            total_occupational_accident_and_disease += round(payroll.occupational_accident_and_disease)
+            total_trade_union_fee_company_pay += round(payroll.trade_union_fee_company_pay)
+            total_trade_union_fee_employee_pay += round(payroll.trade_union_fee_employee_pay)
+            total_family_deduction += round(payroll.family_deduction)
+            total_taxable_income += round(payroll.taxable_income)
+            total_taxed_income += round(payroll.taxed_income)
+            total_PIT += round(payroll.PIT)
+            total_net_income += round(payroll.net_income)
+            total_total_cost += round(payroll.total_cost)
         # Make data
-        payroll_ser_last_month = {
-        'employee' : last_month_payroll_ser.employee,
-        'head_count' : 1,
-        'gross_income' : round(last_month_payroll_ser.gross_income) + round(last_month_payroll_ser.housing_vnd),
-        'SHUI_21point5percent_company_pay' : round(last_month_payroll_ser.SHUI_9point5percent_employee_pay) + round(last_month_payroll_ser.SHUI_20point5percent_employer_pay),
-        'trade_union_fee_company_pay' : round(last_month_payroll_ser.trade_union_fee_company_pay),
-        'PIT' : round(last_month_payroll_ser.PIT),
-        'net_income' : round(last_month_payroll_ser.net_income * last_month_payroll_ser.exchange_rate_euro),
-        'total_cost' : round(last_month_payroll_ser.total_cost_vnd)
-    }  
-    except Payroll_Ser.DoesNotExist:
-        payroll_ser_last_month = {
-        'head_count' : 0,
-        'gross_income' : 0,
-        'SHUI_21point5percent_company_pay' : 0,
-        'trade_union_fee_company_pay' : 0,
-        'PIT' : 0,
-        'net_income' : 0,
-        'total_cost' : 0
+        payroll_staff_last_month = {
+            'head_count' : total_head_count,
+            'gross_income' : total_gross_income,
+            'transportation' : total_transportation,
+            'phone' : total_phone,
+            'lunch' : total_lunch,
+            'outstanding_annual_leave' : total_outstanding_annual_leave,
+            'responsibility' : total_responsibility,
+            'travel' : total_travel,
+            'seniority_bonus' : total_seniority_bonus,
+            'other' : total_other,
+            'OTC_incentive' : total_OTC_incentive,
+            'KPI_achievement' : total_KPI_achievement,
+            'incentive_last_month' : total_incentive_last_month,
+            'month_13_salary_Pro_ata' : total_month_13_salary_Pro_ata,
+            'incentive_last_quy_last_year' : total_incentive_last_quy_last_year,
+            'taxable_overtime' : total_taxable_overtime,
+            'nontaxable_overtime' : total_nontaxable_overtime,
+            'SHUI_10point5percent_employee_pay' : total_SHUI_10point5percent_employee_pay,
+            'SHUI_21point5percent_company_pay' : total_SHUI_21point5percent_company_pay,
+            'occupational_accident_and_disease' : total_occupational_accident_and_disease,
+            'trade_union_fee_company_pay' : total_trade_union_fee_company_pay,
+            'trade_union_fee_employee_pay' : total_trade_union_fee_employee_pay,
+            'family_deduction' : total_family_deduction,
+            'taxable_income' : total_taxable_income,
+            'taxed_income' : total_taxed_income,
+            'PIT' : total_PIT,
+            'net_income' : total_net_income,
+            'total_cost' : total_total_cost
         }
-    
-    
-    # This month staff
-    list_this_month_payroll_staff = Payroll_Tedis_Vietha.objects.filter(employee__in=list_staff,month=pk)
-    # Define total_var
-    total_head_count = list_this_month_payroll_staff.count()
-    total_gross_income = 0
-    total_transportation = 0
-    total_phone = 0
-    total_lunch = 0
-    total_outstanding_annual_leave = 0
-    total_responsibility = 0
-    total_travel = 0
-    total_seniority_bonus = 0
-    total_other = 0
-    total_OTC_incentive = 0
-    total_KPI_achievement = 0
-    total_incentive_last_month = 0
-    total_month_13_salary_Pro_ata = 0
-    total_incentive_last_quy_last_year = 0
-    total_taxable_overtime = 0
-    total_nontaxable_overtime = 0
-    total_SHUI_10point5percent_employee_pay = 0
-    total_SHUI_21point5percent_company_pay = 0
-    total_occupational_accident_and_disease = 0
-    total_trade_union_fee_company_pay = 0
-    total_trade_union_fee_employee_pay = 0
-    total_family_deduction = 0
-    total_taxable_income = 0
-    total_taxed_income = 0
-    total_PIT = 0
-    total_net_income = 0
-    total_total_cost = 0
-    # Get total_var += payroll.
-    for payroll in list_this_month_payroll_staff:
-        total_gross_income += round(payroll.gross_income)
-        total_transportation += round(payroll.transportation)
-        total_phone += round(payroll.phone)
-        total_lunch += round(payroll.lunch)
-        total_outstanding_annual_leave += round(payroll.outstanding_annual_leave)
-        total_responsibility += round(payroll.responsibility)
-        total_travel += round(payroll.travel)
-        total_seniority_bonus += round(payroll.seniority_bonus)
-        total_other += round(payroll.other)
-        total_OTC_incentive += round(payroll.OTC_incentive)
-        total_KPI_achievement += round(payroll.KPI_achievement)
-        total_incentive_last_month += round(payroll.incentive_last_month)
-        total_month_13_salary_Pro_ata += round(payroll.month_13_salary_Pro_ata)
-        total_incentive_last_quy_last_year += round(payroll.incentive_last_quy_last_year)
-        total_taxable_overtime += round(payroll.taxable_overtime)
-        total_nontaxable_overtime += round(payroll.nontaxable_overtime)
-        total_SHUI_10point5percent_employee_pay += round(payroll.SHUI_10point5percent_employee_pay)
-        total_SHUI_21point5percent_company_pay += round(payroll.SHUI_21point5percent_company_pay)
-        total_occupational_accident_and_disease += round(payroll.occupational_accident_and_disease)
-        total_trade_union_fee_company_pay += round(payroll.trade_union_fee_company_pay)
-        total_trade_union_fee_employee_pay += round(payroll.trade_union_fee_employee_pay)
-        total_family_deduction += round(payroll.family_deduction)
-        total_taxable_income += round(payroll.taxable_income)
-        total_taxed_income += round(payroll.taxed_income)
-        total_PIT += round(payroll.PIT)
-        total_net_income += round(payroll.net_income)
-        total_total_cost += round(payroll.total_cost)
-    # Make data
-    payroll_staff_this_month = {
-        'head_count' : total_head_count,
-        'gross_income' : total_gross_income,
-        'transportation' : total_transportation,
-        'phone' : total_phone,
-        'lunch' : total_lunch,
-        'outstanding_annual_leave' : total_outstanding_annual_leave,
-        'responsibility' : total_responsibility,
-        'travel' : total_travel,
-        'seniority_bonus' : total_seniority_bonus,
-        'other' : total_other,
-        'OTC_incentive' : total_OTC_incentive,
-        'KPI_achievement' : total_KPI_achievement,
-        'incentive_last_month' : total_incentive_last_month,
-        'month_13_salary_Pro_ata' : total_month_13_salary_Pro_ata,
-        'incentive_last_quy_last_year' : total_incentive_last_quy_last_year,
-        'taxable_overtime' : total_taxable_overtime,
-        'nontaxable_overtime' : total_nontaxable_overtime,
-        'SHUI_10point5percent_employee_pay' : total_SHUI_10point5percent_employee_pay,
-        'SHUI_21point5percent_company_pay' : total_SHUI_21point5percent_company_pay,
-        'occupational_accident_and_disease' : total_occupational_accident_and_disease,
-        'trade_union_fee_company_pay' : total_trade_union_fee_company_pay,
-        'trade_union_fee_employee_pay' : total_trade_union_fee_employee_pay,
-        'family_deduction' : total_family_deduction,
-        'taxable_income' : total_taxable_income,
-        'taxed_income' : total_taxed_income,
-        'PIT' : total_PIT,
-        'net_income' : total_net_income,
-        'total_cost' : total_total_cost
-    }
-    
-    # This month coll
-    list_this_month_payroll_coll = Payroll_Tedis_Vietha.objects.filter(employee__in=list_collaborator,month=pk)
-    # Define total_var
-    total_head_count = list_this_month_payroll_coll.count()
-    total_gross_income = 0
-    total_transportation = 0
-    total_phone = 0
-    total_lunch = 0
-    total_outstanding_annual_leave = 0
-    total_responsibility = 0
-    total_travel = 0
-    total_seniority_bonus = 0
-    total_other = 0
-    total_OTC_incentive = 0
-    total_KPI_achievement = 0
-    total_incentive_last_month = 0
-    total_month_13_salary_Pro_ata = 0
-    total_incentive_last_quy_last_year = 0
-    total_taxable_overtime = 0
-    total_nontaxable_overtime = 0
-    total_SHUI_10point5percent_employee_pay = 0
-    total_SHUI_21point5percent_company_pay = 0
-    total_occupational_accident_and_disease = 0
-    total_trade_union_fee_company_pay = 0
-    total_trade_union_fee_employee_pay = 0
-    total_family_deduction = 0
-    total_taxable_income = 0
-    total_taxed_income = 0
-    total_PIT = 0
-    total_net_income = 0
-    total_total_cost = 0
-    # Get total_var += payroll.
-    for payroll in list_this_month_payroll_coll:
-        total_gross_income += round(payroll.gross_income)
-        total_transportation += round(payroll.transportation)
-        total_phone += round(payroll.phone)
-        total_lunch += round(payroll.lunch)
-        total_outstanding_annual_leave += round(payroll.outstanding_annual_leave)
-        total_responsibility += round(payroll.responsibility)
-        total_travel += round(payroll.travel)
-        total_seniority_bonus += round(payroll.seniority_bonus)
-        total_other += round(payroll.other)
-        total_OTC_incentive += round(payroll.OTC_incentive)
-        total_KPI_achievement += round(payroll.KPI_achievement)
-        total_incentive_last_month += round(payroll.incentive_last_month)
-        total_month_13_salary_Pro_ata += round(payroll.month_13_salary_Pro_ata)
-        total_incentive_last_quy_last_year += round(payroll.incentive_last_quy_last_year)
-        total_taxable_overtime += round(payroll.taxable_overtime)
-        total_nontaxable_overtime += round(payroll.nontaxable_overtime)
-        total_SHUI_10point5percent_employee_pay += round(payroll.SHUI_10point5percent_employee_pay)
-        total_SHUI_21point5percent_company_pay += round(payroll.SHUI_21point5percent_company_pay)
-        total_occupational_accident_and_disease += round(payroll.occupational_accident_and_disease)
-        total_trade_union_fee_company_pay += round(payroll.trade_union_fee_company_pay)
-        total_trade_union_fee_employee_pay += round(payroll.trade_union_fee_employee_pay)
-        total_family_deduction += round(payroll.family_deduction)
-        total_taxable_income += round(payroll.taxable_income)
-        total_taxed_income += round(payroll.taxed_income)
-        total_PIT += round(payroll.PIT)
-        total_net_income += round(payroll.net_income)
-        total_total_cost += round(payroll.total_cost)
-    # Make data
-    payroll_coll_this_month = {
-        'head_count' : total_head_count,
-        'gross_income' : total_gross_income,
-        'transportation' : total_transportation,
-        'phone' : total_phone,
-        'lunch' : total_lunch,
-        'outstanding_annual_leave' : total_outstanding_annual_leave,
-        'responsibility' : total_responsibility,
-        'travel' : total_travel,
-        'seniority_bonus' : total_seniority_bonus,
-        'other' : total_other,
-        'OTC_incentive' : total_OTC_incentive,
-        'KPI_achievement' : total_KPI_achievement,
-        'incentive_last_month' : total_incentive_last_month,
-        'month_13_salary_Pro_ata' : total_month_13_salary_Pro_ata,
-        'incentive_last_quy_last_year' : total_incentive_last_quy_last_year,
-        'taxable_overtime' : total_taxable_overtime,
-        'nontaxable_overtime' : total_nontaxable_overtime,
-        'SHUI_10point5percent_employee_pay' : total_SHUI_10point5percent_employee_pay,
-        'SHUI_21point5percent_company_pay' : total_SHUI_21point5percent_company_pay,
-        'occupational_accident_and_disease' : total_occupational_accident_and_disease,
-        'trade_union_fee_company_pay' : total_trade_union_fee_company_pay,
-        'trade_union_fee_employee_pay' : total_trade_union_fee_employee_pay,
-        'family_deduction' : total_family_deduction,
-        'taxable_income' : total_taxable_income,
-        'taxed_income' : total_taxed_income,
-        'PIT' : total_PIT,
-        'net_income' : total_net_income,
-        'total_cost' : total_total_cost
-    }
-    
-    # This month ser
-    try:
-        this_month_payroll_ser = Payroll_Ser.objects.get(month=pk)
+        
+        # Last month coll
+        list_last_month_payroll_coll = Payroll_Tedis_Vietha.objects.filter(employee__in=list_collaborator,month=pk-1)
+        # Define total_var
+        total_head_count = list_last_month_payroll_coll.count()
+        total_gross_income = 0
+        total_transportation = 0
+        total_phone = 0
+        total_lunch = 0
+        total_outstanding_annual_leave = 0
+        total_responsibility = 0
+        total_travel = 0
+        total_seniority_bonus = 0
+        total_other = 0
+        total_OTC_incentive = 0
+        total_KPI_achievement = 0
+        total_incentive_last_month = 0
+        total_month_13_salary_Pro_ata = 0
+        total_incentive_last_quy_last_year = 0
+        total_taxable_overtime = 0
+        total_nontaxable_overtime = 0
+        total_SHUI_10point5percent_employee_pay = 0
+        total_SHUI_21point5percent_company_pay = 0
+        total_occupational_accident_and_disease = 0
+        total_trade_union_fee_company_pay = 0
+        total_trade_union_fee_employee_pay = 0
+        total_family_deduction = 0
+        total_taxable_income = 0
+        total_taxed_income = 0
+        total_PIT = 0
+        total_net_income = 0
+        total_total_cost = 0
+        # Get total_var += payroll.
+        for payroll in list_last_month_payroll_coll:
+            total_gross_income += round(payroll.gross_income)
+            total_transportation += round(payroll.transportation)
+            total_phone += round(payroll.phone)
+            total_lunch += round(payroll.lunch)
+            total_outstanding_annual_leave += round(payroll.outstanding_annual_leave)
+            total_responsibility += round(payroll.responsibility)
+            total_travel += round(payroll.travel)
+            total_seniority_bonus += round(payroll.seniority_bonus)
+            total_other += round(payroll.other)
+            total_OTC_incentive += round(payroll.OTC_incentive)
+            total_KPI_achievement += round(payroll.KPI_achievement)
+            total_incentive_last_month += round(payroll.incentive_last_month)
+            total_month_13_salary_Pro_ata += round(payroll.month_13_salary_Pro_ata)
+            total_incentive_last_quy_last_year += round(payroll.incentive_last_quy_last_year)
+            total_taxable_overtime += round(payroll.taxable_overtime)
+            total_nontaxable_overtime += round(payroll.nontaxable_overtime)
+            total_SHUI_10point5percent_employee_pay += round(payroll.SHUI_10point5percent_employee_pay)
+            total_SHUI_21point5percent_company_pay += round(payroll.SHUI_21point5percent_company_pay)
+            total_occupational_accident_and_disease += round(payroll.occupational_accident_and_disease)
+            total_trade_union_fee_company_pay += round(payroll.trade_union_fee_company_pay)
+            total_trade_union_fee_employee_pay += round(payroll.trade_union_fee_employee_pay)
+            total_family_deduction += round(payroll.family_deduction)
+            total_taxable_income += round(payroll.taxable_income)
+            total_taxed_income += round(payroll.taxed_income)
+            total_PIT += round(payroll.PIT)
+            total_net_income += round(payroll.net_income)
+            total_total_cost += round(payroll.total_cost)
         # Make data
-        payroll_ser_this_month = {
-        'employee' : this_month_payroll_ser.employee,
-        'head_count' : 1,
-        'gross_income' : round(this_month_payroll_ser.gross_income) + round(this_month_payroll_ser.housing_vnd),
-        'SHUI_21point5percent_company_pay' : round(this_month_payroll_ser.SHUI_9point5percent_employee_pay) + round(this_month_payroll_ser.SHUI_20point5percent_employer_pay),
-        'trade_union_fee_company_pay' : round(this_month_payroll_ser.trade_union_fee_company_pay),
-        'PIT' : round(this_month_payroll_ser.PIT),
-        'net_income' : round(this_month_payroll_ser.net_income * this_month_payroll_ser.exchange_rate_euro),
-        'total_cost' : round(this_month_payroll_ser.total_cost_vnd)
-    }  
-    except Payroll_Ser.DoesNotExist:
-        serverine = Employee.objects.get(full_name='SEVERINE EDGARD-ROSA')
-        payroll_ser_this_month = {
-        'employee' : serverine,
-        'head_count' : 0,
-        'gross_income' : 0,
-        'SHUI_21point5percent_company_pay' : 0,
-        'trade_union_fee_company_pay' : 0,
-        'PIT' : 0,
-        'net_income' : 0,
-        'total_cost' : 0
+        payroll_coll_last_month = {
+            'head_count' : total_head_count,
+            'gross_income' : total_gross_income,
+            'transportation' : total_transportation,
+            'phone' : total_phone,
+            'lunch' : total_lunch,
+            'outstanding_annual_leave' : total_outstanding_annual_leave,
+            'responsibility' : total_responsibility,
+            'travel' : total_travel,
+            'seniority_bonus' : total_seniority_bonus,
+            'other' : total_other,
+            'OTC_incentive' : total_OTC_incentive,
+            'KPI_achievement' : total_KPI_achievement,
+            'incentive_last_month' : total_incentive_last_month,
+            'month_13_salary_Pro_ata' : total_month_13_salary_Pro_ata,
+            'incentive_last_quy_last_year' : total_incentive_last_quy_last_year,
+            'taxable_overtime' : total_taxable_overtime,
+            'nontaxable_overtime' : total_nontaxable_overtime,
+            'SHUI_10point5percent_employee_pay' : total_SHUI_10point5percent_employee_pay,
+            'SHUI_21point5percent_company_pay' : total_SHUI_21point5percent_company_pay,
+            'occupational_accident_and_disease' : total_occupational_accident_and_disease,
+            'trade_union_fee_company_pay' : total_trade_union_fee_company_pay,
+            'trade_union_fee_employee_pay' : total_trade_union_fee_employee_pay,
+            'family_deduction' : total_family_deduction,
+            'taxable_income' : total_taxable_income,
+            'taxed_income' : total_taxed_income,
+            'PIT' : total_PIT,
+            'net_income' : total_net_income,
+            'total_cost' : total_total_cost
         }
-    
-    
-    # Difference btw last month and this month
-    difference_last_this = {
-        'head_count' : payroll_staff_this_month['head_count'] + payroll_coll_this_month['head_count'] + payroll_ser_this_month['head_count'] - payroll_staff_last_month['head_count'] - payroll_coll_last_month['head_count'] - payroll_ser_last_month['head_count'],
-        'gross_income' : payroll_staff_this_month['gross_income'] + payroll_coll_this_month['gross_income'] + payroll_ser_this_month['gross_income'] - payroll_staff_last_month['gross_income'] - payroll_coll_last_month['gross_income'] - payroll_ser_last_month['gross_income'],
-        'transportation' : payroll_staff_this_month['transportation'] + payroll_coll_this_month['transportation'] - payroll_staff_last_month['transportation'] - payroll_coll_last_month['transportation'],
-        'phone' : payroll_staff_this_month['phone'] + payroll_coll_this_month['phone'] - payroll_staff_last_month['phone'] - payroll_coll_last_month['phone'],
-        'lunch' : payroll_staff_this_month['lunch'] + payroll_coll_this_month['lunch'] - payroll_staff_last_month['lunch'] - payroll_coll_last_month['lunch'],
-        'outstanding_annual_leave' : payroll_staff_this_month['outstanding_annual_leave'] + payroll_coll_this_month['outstanding_annual_leave'] - payroll_staff_last_month['outstanding_annual_leave'] - payroll_coll_last_month['outstanding_annual_leave'],
-        'responsibility' : payroll_staff_this_month['responsibility'] + payroll_coll_this_month['responsibility'] - payroll_staff_last_month['responsibility'] - payroll_coll_last_month['responsibility'],
-        'travel' : payroll_staff_this_month['travel'] + payroll_coll_this_month['travel'] - payroll_staff_last_month['travel'] - payroll_coll_last_month['travel'],
-        'seniority_bonus' : payroll_staff_this_month['seniority_bonus'] + payroll_coll_this_month['seniority_bonus'] - payroll_staff_last_month['seniority_bonus'] - payroll_coll_last_month['seniority_bonus'],
-        'other' : payroll_staff_this_month['other'] + payroll_coll_this_month['other'] - payroll_staff_last_month['other'] - payroll_coll_last_month['other'],
-        'OTC_incentive' : payroll_staff_this_month['OTC_incentive'] + payroll_coll_this_month['OTC_incentive'] - payroll_staff_last_month['OTC_incentive'] - payroll_coll_last_month['OTC_incentive'],
-        'KPI_achievement' : payroll_staff_this_month['KPI_achievement'] + payroll_coll_this_month['KPI_achievement'] - payroll_staff_last_month['KPI_achievement'] - payroll_coll_last_month['KPI_achievement'],
-        'incentive_last_month' : payroll_staff_this_month['incentive_last_month'] + payroll_coll_this_month['incentive_last_month'] - payroll_staff_last_month['incentive_last_month'] - payroll_coll_last_month['incentive_last_month'],
-        'month_13_salary_Pro_ata' : payroll_staff_this_month['month_13_salary_Pro_ata'] + payroll_coll_this_month['month_13_salary_Pro_ata'] - payroll_staff_last_month['month_13_salary_Pro_ata'] - payroll_coll_last_month['month_13_salary_Pro_ata'],
-        'incentive_last_quy_last_year' : payroll_staff_this_month['incentive_last_quy_last_year'] + payroll_coll_this_month['incentive_last_quy_last_year'] - payroll_staff_last_month['incentive_last_quy_last_year'] - payroll_coll_last_month['incentive_last_quy_last_year'],
-        'taxable_overtime' : payroll_staff_this_month['taxable_overtime'] + payroll_coll_this_month['taxable_overtime'] - payroll_staff_last_month['taxable_overtime'] - payroll_coll_last_month['taxable_overtime'],
-        'nontaxable_overtime' : payroll_staff_this_month['nontaxable_overtime'] + payroll_coll_this_month['nontaxable_overtime'] - payroll_staff_last_month['nontaxable_overtime'] - payroll_coll_last_month['nontaxable_overtime'],
-        'SHUI_10point5percent_employee_pay' : payroll_staff_this_month['SHUI_10point5percent_employee_pay'] + payroll_coll_this_month['SHUI_10point5percent_employee_pay'] - payroll_staff_last_month['SHUI_10point5percent_employee_pay'] - payroll_coll_last_month['SHUI_10point5percent_employee_pay'],
-        'SHUI_21point5percent_company_pay' : payroll_staff_this_month['SHUI_21point5percent_company_pay'] + payroll_coll_this_month['SHUI_21point5percent_company_pay'] + payroll_ser_this_month['SHUI_21point5percent_company_pay'] - payroll_staff_last_month['SHUI_21point5percent_company_pay'] - payroll_coll_last_month['SHUI_21point5percent_company_pay'] - payroll_ser_last_month['SHUI_21point5percent_company_pay'],
-        'occupational_accident_and_disease' : payroll_staff_this_month['occupational_accident_and_disease'] + payroll_coll_this_month['occupational_accident_and_disease'] - payroll_staff_last_month['occupational_accident_and_disease'] - payroll_coll_last_month['occupational_accident_and_disease'],
-        'trade_union_fee_company_pay' : payroll_staff_this_month['trade_union_fee_company_pay'] + payroll_coll_this_month['trade_union_fee_company_pay'] + payroll_ser_this_month['trade_union_fee_company_pay'] - payroll_staff_last_month['trade_union_fee_company_pay'] - payroll_coll_last_month['trade_union_fee_company_pay'] - payroll_ser_last_month['trade_union_fee_company_pay'],
-        'trade_union_fee_employee_pay' : payroll_staff_this_month['trade_union_fee_employee_pay'] + payroll_coll_this_month['trade_union_fee_employee_pay'] - payroll_staff_last_month['trade_union_fee_employee_pay'] - payroll_coll_last_month['trade_union_fee_employee_pay'],
-        'family_deduction' : payroll_staff_this_month['family_deduction'] + payroll_coll_this_month['family_deduction'] - payroll_staff_last_month['family_deduction'] - payroll_coll_last_month['family_deduction'],
-        'taxable_income' : payroll_staff_this_month['taxable_income'] + payroll_coll_this_month['taxable_income'] - payroll_staff_last_month['taxable_income'] - payroll_coll_last_month['taxable_income'],
-        'taxed_income' : payroll_staff_this_month['taxed_income'] + payroll_coll_this_month['taxed_income'] - payroll_staff_last_month['taxed_income'] - payroll_coll_last_month['taxed_income'],
-        'PIT' : payroll_staff_this_month['PIT'] + payroll_coll_this_month['PIT'] + payroll_ser_this_month['PIT'] - payroll_staff_last_month['PIT'] - payroll_coll_last_month['PIT'] - payroll_ser_last_month['PIT'],
-        'net_income' : payroll_staff_this_month['net_income'] + payroll_coll_this_month['net_income'] + payroll_ser_this_month['net_income'] - payroll_staff_last_month['net_income'] - payroll_coll_last_month['net_income'] - payroll_ser_last_month['net_income'],
-        'total_cost' : payroll_staff_this_month['total_cost'] + payroll_coll_this_month['total_cost'] + payroll_ser_this_month['total_cost'] - payroll_staff_last_month['total_cost'] - payroll_coll_last_month['total_cost'] - payroll_ser_last_month['total_cost'],
-    }
-    
-    
-    # Explain
-    list_data = []
-    for employee in list_employee_tedis_vietha_include_inactive:
-        # Get payroll last month
+        
+        # Last month ser
         try:
-            payroll_last_month = Payroll_Tedis_Vietha.objects.get(employee=employee,month=pk-1)
-            head_count_last_month = 1
-            gross_income_last_month = payroll_last_month.gross_income
-            transportation_last_month = payroll_last_month.transportation
-            phone_last_month = payroll_last_month.phone
-            lunch_last_month = payroll_last_month.lunch
-            outstanding_annual_leave_last_month = payroll_last_month.outstanding_annual_leave
-            responsibility_last_month = payroll_last_month.responsibility
-            travel_last_month = payroll_last_month.travel
-            seniority_bonus_last_month = payroll_last_month.seniority_bonus
-            other_last_month = payroll_last_month.other
-            OTC_incentive_last_month = payroll_last_month.OTC_incentive
-            KPI_achievement_last_month = payroll_last_month.KPI_achievement
-            incentive_last_month_last_month = payroll_last_month.incentive_last_month
-            month_13_salary_Pro_ata_last_month = payroll_last_month.month_13_salary_Pro_ata
-            incentive_last_quy_last_year_last_month = payroll_last_month.incentive_last_quy_last_year
-            taxable_overtime_last_month = payroll_last_month.taxable_overtime
-            nontaxable_overtime_last_month = payroll_last_month.nontaxable_overtime
-            SHUI_10point5percent_employee_pay_last_month = payroll_last_month.SHUI_10point5percent_employee_pay
-            SHUI_21point5percent_company_pay_last_month = payroll_last_month.SHUI_21point5percent_company_pay
-            occupational_accident_and_disease_last_month = payroll_last_month.occupational_accident_and_disease
-            trade_union_fee_company_pay_last_month = payroll_last_month.trade_union_fee_company_pay
-            trade_union_fee_employee_pay_last_month = payroll_last_month.trade_union_fee_employee_pay
-            family_deduction_last_month = payroll_last_month.family_deduction
-            taxable_income_last_month = payroll_last_month.taxable_income
-            taxed_income_last_month = payroll_last_month.taxed_income
-            PIT_last_month = payroll_last_month.PIT
-            net_income_last_month = payroll_last_month.net_income
-            total_cost_last_month = payroll_last_month.total_cost
-        except Payroll_Tedis_Vietha.DoesNotExist:
-            head_count_last_month = 0
-            gross_income_last_month = 0
-            transportation_last_month = 0
-            phone_last_month = 0
-            lunch_last_month = 0
-            outstanding_annual_leave_last_month = 0
-            responsibility_last_month = 0
-            travel_last_month = 0
-            seniority_bonus_last_month = 0
-            other_last_month = 0
-            OTC_incentive_last_month = 0
-            KPI_achievement_last_month = 0
-            incentive_last_month_last_month = 0
-            month_13_salary_Pro_ata_last_month = 0
-            incentive_last_quy_last_year_last_month = 0
-            taxable_overtime_last_month = 0
-            nontaxable_overtime_last_month = 0
-            SHUI_10point5percent_employee_pay_last_month = 0
-            SHUI_21point5percent_company_pay_last_month = 0
-            occupational_accident_and_disease_last_month = 0
-            trade_union_fee_company_pay_last_month = 0
-            trade_union_fee_employee_pay_last_month = 0
-            family_deduction_last_month = 0
-            taxable_income_last_month = 0
-            taxed_income_last_month = 0
-            PIT_last_month = 0
-            net_income_last_month = 0
-            total_cost_last_month = 0
-        # Get payroll this month
-        try:
-            payroll_this_month = Payroll_Tedis_Vietha.objects.get(employee=employee,month=pk)
-            head_count_this_month = 1
-            gross_income_this_month = payroll_this_month.gross_income
-            transportation_this_month = payroll_this_month.transportation
-            phone_this_month = payroll_this_month.phone
-            lunch_this_month = payroll_this_month.lunch
-            outstanding_annual_leave_this_month = payroll_this_month.outstanding_annual_leave
-            responsibility_this_month = payroll_this_month.responsibility
-            travel_this_month = payroll_this_month.travel
-            seniority_bonus_this_month = payroll_this_month.seniority_bonus
-            other_this_month = payroll_this_month.other
-            OTC_incentive_this_month = payroll_this_month.OTC_incentive
-            KPI_achievement_this_month = payroll_this_month.KPI_achievement
-            incentive_last_month_this_month = payroll_this_month.incentive_last_month
-            month_13_salary_Pro_ata_this_month = payroll_this_month.month_13_salary_Pro_ata
-            incentive_last_quy_last_year_this_month = payroll_this_month.incentive_last_quy_last_year
-            taxable_overtime_this_month = payroll_this_month.taxable_overtime
-            nontaxable_overtime_this_month = payroll_this_month.nontaxable_overtime
-            SHUI_10point5percent_employee_pay_this_month = payroll_this_month.SHUI_10point5percent_employee_pay
-            SHUI_21point5percent_company_pay_this_month = payroll_this_month.SHUI_21point5percent_company_pay
-            occupational_accident_and_disease_this_month = payroll_this_month.occupational_accident_and_disease
-            trade_union_fee_company_pay_this_month = payroll_this_month.trade_union_fee_company_pay
-            trade_union_fee_employee_pay_this_month = payroll_this_month.trade_union_fee_employee_pay
-            family_deduction_this_month = payroll_this_month.family_deduction
-            taxable_income_this_month = payroll_this_month.taxable_income
-            taxed_income_this_month = payroll_this_month.taxed_income
-            PIT_this_month = payroll_this_month.PIT
-            net_income_this_month = payroll_this_month.net_income
-            total_cost_this_month = payroll_this_month.total_cost
-        except Payroll_Tedis_Vietha.DoesNotExist:
-            head_count_this_month = 0
-            gross_income_this_month = 0
-            transportation_this_month = 0
-            phone_this_month = 0
-            lunch_this_month = 0
-            outstanding_annual_leave_this_month = 0
-            responsibility_this_month = 0
-            travel_this_month = 0
-            seniority_bonus_this_month = 0
-            other_this_month = 0
-            OTC_incentive_this_month = 0
-            KPI_achievement_this_month = 0
-            incentive_last_month_this_month = 0
-            month_13_salary_Pro_ata_this_month = 0
-            incentive_last_quy_last_year_this_month = 0
-            taxable_overtime_this_month = 0
-            nontaxable_overtime_this_month = 0
-            SHUI_10point5percent_employee_pay_this_month = 0
-            SHUI_21point5percent_company_pay_this_month = 0
-            occupational_accident_and_disease_this_month = 0
-            trade_union_fee_company_pay_this_month = 0
-            trade_union_fee_employee_pay_this_month = 0
-            family_deduction_this_month = 0
-            taxable_income_this_month = 0
-            taxed_income_this_month = 0
-            PIT_this_month = 0
-            net_income_this_month = 0
-            total_cost_this_month = 0
-            
-        # Get reconcile remark
-        try:
-            reconcile_report = Report_reconcile_Tedis_VietHa.objects.get(employee=employee,month=pk)
-            remark = reconcile_report.remark
-            remark_id = reconcile_report.id
-        except Report_reconcile_Tedis_VietHa.DoesNotExist:
-            remark = ''
-            remark_id = 0
-            
-        # Make data
-        if head_count_last_month == 0 and head_count_this_month == 0:
-            pass
-        else:
-            if round(head_count_this_month-head_count_last_month) == 0:
-                diff_head_count = ''
-            else: 
-                diff_head_count = round(head_count_this_month-head_count_last_month)
-            data = {
-                'employee' : employee,
-                'remark' : remark,
-                'remark_id' : remark_id,
-                'head_count' : diff_head_count,
-                'gross_income' : round(gross_income_this_month-gross_income_last_month),
-                'transportation' : round(transportation_this_month-transportation_last_month),
-                'phone' : round(phone_this_month-phone_last_month),
-                'lunch' : round(lunch_this_month-lunch_last_month),
-                'outstanding_annual_leave' : round(outstanding_annual_leave_this_month-outstanding_annual_leave_last_month),
-                'responsibility' : round(responsibility_this_month-responsibility_last_month),
-                'travel' : round(travel_this_month-travel_last_month),
-                'seniority_bonus' : round(seniority_bonus_this_month-seniority_bonus_last_month),
-                'other' : round(other_this_month-other_last_month),
-                'OTC_incentive' : round(OTC_incentive_this_month-OTC_incentive_last_month),
-                'KPI_achievement' : round(KPI_achievement_this_month-KPI_achievement_last_month),
-                'incentive_last_month' : round(incentive_last_month_this_month-incentive_last_month_last_month),
-                'month_13_salary_Pro_ata' : round(month_13_salary_Pro_ata_this_month-month_13_salary_Pro_ata_last_month),
-                'incentive_last_quy_last_year' : round(incentive_last_quy_last_year_this_month-incentive_last_quy_last_year_last_month),
-                'taxable_overtime' : round(taxable_overtime_this_month-taxable_overtime_last_month),
-                'nontaxable_overtime' : round(nontaxable_overtime_this_month-nontaxable_overtime_last_month),
-                'SHUI_10point5percent_employee_pay' : round(SHUI_10point5percent_employee_pay_this_month-SHUI_10point5percent_employee_pay_last_month),
-                'SHUI_21point5percent_company_pay' : round(SHUI_21point5percent_company_pay_this_month-SHUI_21point5percent_company_pay_last_month),
-                'occupational_accident_and_disease' : round(occupational_accident_and_disease_this_month-occupational_accident_and_disease_last_month),
-                'trade_union_fee_company_pay' : round(trade_union_fee_company_pay_this_month-trade_union_fee_company_pay_last_month),
-                'trade_union_fee_employee_pay' : round(trade_union_fee_employee_pay_this_month-trade_union_fee_employee_pay_last_month),
-                'family_deduction' : round(family_deduction_this_month-family_deduction_last_month),
-                'taxable_income' : round(taxable_income_this_month-taxable_income_last_month),
-                'taxed_income' : round(taxed_income_this_month-taxed_income_last_month),
-                'PIT' : round(PIT_this_month-PIT_last_month),
-                'net_income' : round(net_income_this_month-net_income_last_month),
-                'total_cost' : round(total_cost_this_month-total_cost_last_month)
+            last_month_payroll_ser = Payroll_Ser.objects.get(month=pk-1)
+            # Make data
+            payroll_ser_last_month = {
+            'employee' : last_month_payroll_ser.employee,
+            'head_count' : 1,
+            'gross_income' : round(last_month_payroll_ser.gross_income) + round(last_month_payroll_ser.housing_vnd),
+            'SHUI_21point5percent_company_pay' : round(last_month_payroll_ser.SHUI_9point5percent_employee_pay) + round(last_month_payroll_ser.SHUI_20point5percent_employer_pay),
+            'trade_union_fee_company_pay' : round(last_month_payroll_ser.trade_union_fee_company_pay),
+            'PIT' : round(last_month_payroll_ser.PIT),
+            'net_income' : round(last_month_payroll_ser.net_income * last_month_payroll_ser.exchange_rate_euro),
+            'total_cost' : round(last_month_payroll_ser.total_cost_vnd)
+        }  
+        except Payroll_Ser.DoesNotExist:
+            payroll_ser_last_month = {
+            'head_count' : 0,
+            'gross_income' : 0,
+            'SHUI_21point5percent_company_pay' : 0,
+            'trade_union_fee_company_pay' : 0,
+            'PIT' : 0,
+            'net_income' : 0,
+            'total_cost' : 0
             }
-            list_data.append(data)
-    # Make data for Ser
-    try:
-        reconcile_report_ser = Report_reconcile_Tedis_VietHa.objects.get(employee=payroll_ser_this_month['employee'],month=pk)
-        remark_ser = reconcile_report_ser.remark
-        remark_ser_id = reconcile_report_ser.id
-    except Report_reconcile_Tedis_VietHa.DoesNotExist:
-        remark_ser = ''
-        remark_ser_id = 0
-    
-    if round(payroll_ser_this_month['head_count'] - payroll_ser_last_month['head_count']) == 0:
-        diff_head_count_ser = ''
-    else: 
-        diff_head_count_ser = round(payroll_ser_this_month['head_count'] - payroll_ser_last_month['head_count'])
-    ser_data = {
-            'employee' : payroll_ser_this_month['employee'],
-            'remark' : remark_ser,
-            'remark_id' : remark_ser_id,
-            'head_count' : diff_head_count_ser,
-            'gross_income' : round(payroll_ser_this_month['gross_income'] - payroll_ser_last_month['gross_income']),
-            'transportation' : 0,
-            'phone' : 0,
-            'lunch' : 0,
-            'outstanding_annual_leave' : 0,
-            'responsibility' : 0,
-            'travel' : 0,
-            'seniority_bonus' : 0,
-            'other' : 0,
-            'OTC_incentive' : 0,
-            'KPI_achievement' : 0,
-            'incentive_last_month' : 0,
-            'month_13_salary_Pro_ata' : 0,
-            'incentive_last_quy_last_year' : 0,
-            'taxable_overtime' : 0,
-            'nontaxable_overtime' : 0,
-            'SHUI_10point5percent_employee_pay' : 0,
-            'SHUI_21point5percent_company_pay' : round(payroll_ser_this_month['SHUI_21point5percent_company_pay'] - payroll_ser_last_month['SHUI_21point5percent_company_pay']),
-            'occupational_accident_and_disease' : 0,
-            'trade_union_fee_company_pay' : round(payroll_ser_this_month['trade_union_fee_company_pay'] - payroll_ser_last_month['trade_union_fee_company_pay']),
-            'trade_union_fee_employee_pay' : 0,
-            'family_deduction' : 0,
-            'taxable_income' : 0,
-            'taxed_income' : 0,
-            'PIT' : round(payroll_ser_this_month['PIT'] - payroll_ser_last_month['PIT']),
-            'net_income' : round(payroll_ser_this_month['net_income'] - payroll_ser_last_month['net_income']),
-            'total_cost' : round(payroll_ser_this_month['total_cost'] - payroll_ser_last_month['total_cost'])
+        
+        
+        # This month staff
+        list_this_month_payroll_staff = Payroll_Tedis_Vietha.objects.filter(employee__in=list_staff,month=pk)
+        # Define total_var
+        total_head_count = list_this_month_payroll_staff.count()
+        total_gross_income = 0
+        total_transportation = 0
+        total_phone = 0
+        total_lunch = 0
+        total_outstanding_annual_leave = 0
+        total_responsibility = 0
+        total_travel = 0
+        total_seniority_bonus = 0
+        total_other = 0
+        total_OTC_incentive = 0
+        total_KPI_achievement = 0
+        total_incentive_last_month = 0
+        total_month_13_salary_Pro_ata = 0
+        total_incentive_last_quy_last_year = 0
+        total_taxable_overtime = 0
+        total_nontaxable_overtime = 0
+        total_SHUI_10point5percent_employee_pay = 0
+        total_SHUI_21point5percent_company_pay = 0
+        total_occupational_accident_and_disease = 0
+        total_trade_union_fee_company_pay = 0
+        total_trade_union_fee_employee_pay = 0
+        total_family_deduction = 0
+        total_taxable_income = 0
+        total_taxed_income = 0
+        total_PIT = 0
+        total_net_income = 0
+        total_total_cost = 0
+        # Get total_var += payroll.
+        for payroll in list_this_month_payroll_staff:
+            total_gross_income += round(payroll.gross_income)
+            total_transportation += round(payroll.transportation)
+            total_phone += round(payroll.phone)
+            total_lunch += round(payroll.lunch)
+            total_outstanding_annual_leave += round(payroll.outstanding_annual_leave)
+            total_responsibility += round(payroll.responsibility)
+            total_travel += round(payroll.travel)
+            total_seniority_bonus += round(payroll.seniority_bonus)
+            total_other += round(payroll.other)
+            total_OTC_incentive += round(payroll.OTC_incentive)
+            total_KPI_achievement += round(payroll.KPI_achievement)
+            total_incentive_last_month += round(payroll.incentive_last_month)
+            total_month_13_salary_Pro_ata += round(payroll.month_13_salary_Pro_ata)
+            total_incentive_last_quy_last_year += round(payroll.incentive_last_quy_last_year)
+            total_taxable_overtime += round(payroll.taxable_overtime)
+            total_nontaxable_overtime += round(payroll.nontaxable_overtime)
+            total_SHUI_10point5percent_employee_pay += round(payroll.SHUI_10point5percent_employee_pay)
+            total_SHUI_21point5percent_company_pay += round(payroll.SHUI_21point5percent_company_pay)
+            total_occupational_accident_and_disease += round(payroll.occupational_accident_and_disease)
+            total_trade_union_fee_company_pay += round(payroll.trade_union_fee_company_pay)
+            total_trade_union_fee_employee_pay += round(payroll.trade_union_fee_employee_pay)
+            total_family_deduction += round(payroll.family_deduction)
+            total_taxable_income += round(payroll.taxable_income)
+            total_taxed_income += round(payroll.taxed_income)
+            total_PIT += round(payroll.PIT)
+            total_net_income += round(payroll.net_income)
+            total_total_cost += round(payroll.total_cost)
+        # Make data
+        payroll_staff_this_month = {
+            'head_count' : total_head_count,
+            'gross_income' : total_gross_income,
+            'transportation' : total_transportation,
+            'phone' : total_phone,
+            'lunch' : total_lunch,
+            'outstanding_annual_leave' : total_outstanding_annual_leave,
+            'responsibility' : total_responsibility,
+            'travel' : total_travel,
+            'seniority_bonus' : total_seniority_bonus,
+            'other' : total_other,
+            'OTC_incentive' : total_OTC_incentive,
+            'KPI_achievement' : total_KPI_achievement,
+            'incentive_last_month' : total_incentive_last_month,
+            'month_13_salary_Pro_ata' : total_month_13_salary_Pro_ata,
+            'incentive_last_quy_last_year' : total_incentive_last_quy_last_year,
+            'taxable_overtime' : total_taxable_overtime,
+            'nontaxable_overtime' : total_nontaxable_overtime,
+            'SHUI_10point5percent_employee_pay' : total_SHUI_10point5percent_employee_pay,
+            'SHUI_21point5percent_company_pay' : total_SHUI_21point5percent_company_pay,
+            'occupational_accident_and_disease' : total_occupational_accident_and_disease,
+            'trade_union_fee_company_pay' : total_trade_union_fee_company_pay,
+            'trade_union_fee_employee_pay' : total_trade_union_fee_employee_pay,
+            'family_deduction' : total_family_deduction,
+            'taxable_income' : total_taxable_income,
+            'taxed_income' : total_taxed_income,
+            'PIT' : total_PIT,
+            'net_income' : total_net_income,
+            'total_cost' : total_total_cost
         }
-    list_data.append(ser_data)        
-            
-
-    # Total 
-    # Define total_var
-    total_gross_income = 0
-    total_transportation = 0
-    total_phone = 0
-    total_lunch = 0
-    total_outstanding_annual_leave = 0
-    total_responsibility = 0
-    total_travel = 0
-    total_seniority_bonus = 0
-    total_other = 0
-    total_OTC_incentive = 0
-    total_KPI_achievement = 0
-    total_incentive_last_month = 0
-    total_month_13_salary_Pro_ata = 0
-    total_incentive_last_quy_last_year = 0
-    total_taxable_overtime = 0
-    total_nontaxable_overtime = 0
-    total_SHUI_10point5percent_employee_pay = 0
-    total_SHUI_21point5percent_company_pay = 0
-    total_occupational_accident_and_disease = 0
-    total_trade_union_fee_company_pay = 0
-    total_trade_union_fee_employee_pay = 0
-    total_family_deduction = 0
-    total_taxable_income = 0
-    total_taxed_income = 0
-    total_PIT = 0
-    total_net_income = 0
-    total_total_cost = 0
-    # Get total data
-    for data in list_data:
-        if data['head_count'] == '':
-            total_head_count += 0
+        
+        # This month coll
+        list_this_month_payroll_coll = Payroll_Tedis_Vietha.objects.filter(employee__in=list_collaborator,month=pk)
+        # Define total_var
+        total_head_count = list_this_month_payroll_coll.count()
+        total_gross_income = 0
+        total_transportation = 0
+        total_phone = 0
+        total_lunch = 0
+        total_outstanding_annual_leave = 0
+        total_responsibility = 0
+        total_travel = 0
+        total_seniority_bonus = 0
+        total_other = 0
+        total_OTC_incentive = 0
+        total_KPI_achievement = 0
+        total_incentive_last_month = 0
+        total_month_13_salary_Pro_ata = 0
+        total_incentive_last_quy_last_year = 0
+        total_taxable_overtime = 0
+        total_nontaxable_overtime = 0
+        total_SHUI_10point5percent_employee_pay = 0
+        total_SHUI_21point5percent_company_pay = 0
+        total_occupational_accident_and_disease = 0
+        total_trade_union_fee_company_pay = 0
+        total_trade_union_fee_employee_pay = 0
+        total_family_deduction = 0
+        total_taxable_income = 0
+        total_taxed_income = 0
+        total_PIT = 0
+        total_net_income = 0
+        total_total_cost = 0
+        # Get total_var += payroll.
+        for payroll in list_this_month_payroll_coll:
+            total_gross_income += round(payroll.gross_income)
+            total_transportation += round(payroll.transportation)
+            total_phone += round(payroll.phone)
+            total_lunch += round(payroll.lunch)
+            total_outstanding_annual_leave += round(payroll.outstanding_annual_leave)
+            total_responsibility += round(payroll.responsibility)
+            total_travel += round(payroll.travel)
+            total_seniority_bonus += round(payroll.seniority_bonus)
+            total_other += round(payroll.other)
+            total_OTC_incentive += round(payroll.OTC_incentive)
+            total_KPI_achievement += round(payroll.KPI_achievement)
+            total_incentive_last_month += round(payroll.incentive_last_month)
+            total_month_13_salary_Pro_ata += round(payroll.month_13_salary_Pro_ata)
+            total_incentive_last_quy_last_year += round(payroll.incentive_last_quy_last_year)
+            total_taxable_overtime += round(payroll.taxable_overtime)
+            total_nontaxable_overtime += round(payroll.nontaxable_overtime)
+            total_SHUI_10point5percent_employee_pay += round(payroll.SHUI_10point5percent_employee_pay)
+            total_SHUI_21point5percent_company_pay += round(payroll.SHUI_21point5percent_company_pay)
+            total_occupational_accident_and_disease += round(payroll.occupational_accident_and_disease)
+            total_trade_union_fee_company_pay += round(payroll.trade_union_fee_company_pay)
+            total_trade_union_fee_employee_pay += round(payroll.trade_union_fee_employee_pay)
+            total_family_deduction += round(payroll.family_deduction)
+            total_taxable_income += round(payroll.taxable_income)
+            total_taxed_income += round(payroll.taxed_income)
+            total_PIT += round(payroll.PIT)
+            total_net_income += round(payroll.net_income)
+            total_total_cost += round(payroll.total_cost)
+        # Make data
+        payroll_coll_this_month = {
+            'head_count' : total_head_count,
+            'gross_income' : total_gross_income,
+            'transportation' : total_transportation,
+            'phone' : total_phone,
+            'lunch' : total_lunch,
+            'outstanding_annual_leave' : total_outstanding_annual_leave,
+            'responsibility' : total_responsibility,
+            'travel' : total_travel,
+            'seniority_bonus' : total_seniority_bonus,
+            'other' : total_other,
+            'OTC_incentive' : total_OTC_incentive,
+            'KPI_achievement' : total_KPI_achievement,
+            'incentive_last_month' : total_incentive_last_month,
+            'month_13_salary_Pro_ata' : total_month_13_salary_Pro_ata,
+            'incentive_last_quy_last_year' : total_incentive_last_quy_last_year,
+            'taxable_overtime' : total_taxable_overtime,
+            'nontaxable_overtime' : total_nontaxable_overtime,
+            'SHUI_10point5percent_employee_pay' : total_SHUI_10point5percent_employee_pay,
+            'SHUI_21point5percent_company_pay' : total_SHUI_21point5percent_company_pay,
+            'occupational_accident_and_disease' : total_occupational_accident_and_disease,
+            'trade_union_fee_company_pay' : total_trade_union_fee_company_pay,
+            'trade_union_fee_employee_pay' : total_trade_union_fee_employee_pay,
+            'family_deduction' : total_family_deduction,
+            'taxable_income' : total_taxable_income,
+            'taxed_income' : total_taxed_income,
+            'PIT' : total_PIT,
+            'net_income' : total_net_income,
+            'total_cost' : total_total_cost
+        }
+        
+        # This month ser
+        try:
+            this_month_payroll_ser = Payroll_Ser.objects.get(month=pk)
+            # Make data
+            payroll_ser_this_month = {
+            'employee' : this_month_payroll_ser.employee,
+            'head_count' : 1,
+            'gross_income' : round(this_month_payroll_ser.gross_income) + round(this_month_payroll_ser.housing_vnd),
+            'SHUI_21point5percent_company_pay' : round(this_month_payroll_ser.SHUI_9point5percent_employee_pay) + round(this_month_payroll_ser.SHUI_20point5percent_employer_pay),
+            'trade_union_fee_company_pay' : round(this_month_payroll_ser.trade_union_fee_company_pay),
+            'PIT' : round(this_month_payroll_ser.PIT),
+            'net_income' : round(this_month_payroll_ser.net_income * this_month_payroll_ser.exchange_rate_euro),
+            'total_cost' : round(this_month_payroll_ser.total_cost_vnd)
+        }  
+        except Payroll_Ser.DoesNotExist:
+            serverine = Employee.objects.get(full_name='SEVERINE EDGARD-ROSA')
+            payroll_ser_this_month = {
+            'employee' : serverine,
+            'head_count' : 0,
+            'gross_income' : 0,
+            'SHUI_21point5percent_company_pay' : 0,
+            'trade_union_fee_company_pay' : 0,
+            'PIT' : 0,
+            'net_income' : 0,
+            'total_cost' : 0
+            }
+        
+        
+        # Difference btw last month and this month
+        difference_last_this = {
+            'head_count' : payroll_staff_this_month['head_count'] + payroll_coll_this_month['head_count'] + payroll_ser_this_month['head_count'] - payroll_staff_last_month['head_count'] - payroll_coll_last_month['head_count'] - payroll_ser_last_month['head_count'],
+            'gross_income' : payroll_staff_this_month['gross_income'] + payroll_coll_this_month['gross_income'] + payroll_ser_this_month['gross_income'] - payroll_staff_last_month['gross_income'] - payroll_coll_last_month['gross_income'] - payroll_ser_last_month['gross_income'],
+            'transportation' : payroll_staff_this_month['transportation'] + payroll_coll_this_month['transportation'] - payroll_staff_last_month['transportation'] - payroll_coll_last_month['transportation'],
+            'phone' : payroll_staff_this_month['phone'] + payroll_coll_this_month['phone'] - payroll_staff_last_month['phone'] - payroll_coll_last_month['phone'],
+            'lunch' : payroll_staff_this_month['lunch'] + payroll_coll_this_month['lunch'] - payroll_staff_last_month['lunch'] - payroll_coll_last_month['lunch'],
+            'outstanding_annual_leave' : payroll_staff_this_month['outstanding_annual_leave'] + payroll_coll_this_month['outstanding_annual_leave'] - payroll_staff_last_month['outstanding_annual_leave'] - payroll_coll_last_month['outstanding_annual_leave'],
+            'responsibility' : payroll_staff_this_month['responsibility'] + payroll_coll_this_month['responsibility'] - payroll_staff_last_month['responsibility'] - payroll_coll_last_month['responsibility'],
+            'travel' : payroll_staff_this_month['travel'] + payroll_coll_this_month['travel'] - payroll_staff_last_month['travel'] - payroll_coll_last_month['travel'],
+            'seniority_bonus' : payroll_staff_this_month['seniority_bonus'] + payroll_coll_this_month['seniority_bonus'] - payroll_staff_last_month['seniority_bonus'] - payroll_coll_last_month['seniority_bonus'],
+            'other' : payroll_staff_this_month['other'] + payroll_coll_this_month['other'] - payroll_staff_last_month['other'] - payroll_coll_last_month['other'],
+            'OTC_incentive' : payroll_staff_this_month['OTC_incentive'] + payroll_coll_this_month['OTC_incentive'] - payroll_staff_last_month['OTC_incentive'] - payroll_coll_last_month['OTC_incentive'],
+            'KPI_achievement' : payroll_staff_this_month['KPI_achievement'] + payroll_coll_this_month['KPI_achievement'] - payroll_staff_last_month['KPI_achievement'] - payroll_coll_last_month['KPI_achievement'],
+            'incentive_last_month' : payroll_staff_this_month['incentive_last_month'] + payroll_coll_this_month['incentive_last_month'] - payroll_staff_last_month['incentive_last_month'] - payroll_coll_last_month['incentive_last_month'],
+            'month_13_salary_Pro_ata' : payroll_staff_this_month['month_13_salary_Pro_ata'] + payroll_coll_this_month['month_13_salary_Pro_ata'] - payroll_staff_last_month['month_13_salary_Pro_ata'] - payroll_coll_last_month['month_13_salary_Pro_ata'],
+            'incentive_last_quy_last_year' : payroll_staff_this_month['incentive_last_quy_last_year'] + payroll_coll_this_month['incentive_last_quy_last_year'] - payroll_staff_last_month['incentive_last_quy_last_year'] - payroll_coll_last_month['incentive_last_quy_last_year'],
+            'taxable_overtime' : payroll_staff_this_month['taxable_overtime'] + payroll_coll_this_month['taxable_overtime'] - payroll_staff_last_month['taxable_overtime'] - payroll_coll_last_month['taxable_overtime'],
+            'nontaxable_overtime' : payroll_staff_this_month['nontaxable_overtime'] + payroll_coll_this_month['nontaxable_overtime'] - payroll_staff_last_month['nontaxable_overtime'] - payroll_coll_last_month['nontaxable_overtime'],
+            'SHUI_10point5percent_employee_pay' : payroll_staff_this_month['SHUI_10point5percent_employee_pay'] + payroll_coll_this_month['SHUI_10point5percent_employee_pay'] - payroll_staff_last_month['SHUI_10point5percent_employee_pay'] - payroll_coll_last_month['SHUI_10point5percent_employee_pay'],
+            'SHUI_21point5percent_company_pay' : payroll_staff_this_month['SHUI_21point5percent_company_pay'] + payroll_coll_this_month['SHUI_21point5percent_company_pay'] + payroll_ser_this_month['SHUI_21point5percent_company_pay'] - payroll_staff_last_month['SHUI_21point5percent_company_pay'] - payroll_coll_last_month['SHUI_21point5percent_company_pay'] - payroll_ser_last_month['SHUI_21point5percent_company_pay'],
+            'occupational_accident_and_disease' : payroll_staff_this_month['occupational_accident_and_disease'] + payroll_coll_this_month['occupational_accident_and_disease'] - payroll_staff_last_month['occupational_accident_and_disease'] - payroll_coll_last_month['occupational_accident_and_disease'],
+            'trade_union_fee_company_pay' : payroll_staff_this_month['trade_union_fee_company_pay'] + payroll_coll_this_month['trade_union_fee_company_pay'] + payroll_ser_this_month['trade_union_fee_company_pay'] - payroll_staff_last_month['trade_union_fee_company_pay'] - payroll_coll_last_month['trade_union_fee_company_pay'] - payroll_ser_last_month['trade_union_fee_company_pay'],
+            'trade_union_fee_employee_pay' : payroll_staff_this_month['trade_union_fee_employee_pay'] + payroll_coll_this_month['trade_union_fee_employee_pay'] - payroll_staff_last_month['trade_union_fee_employee_pay'] - payroll_coll_last_month['trade_union_fee_employee_pay'],
+            'family_deduction' : payroll_staff_this_month['family_deduction'] + payroll_coll_this_month['family_deduction'] - payroll_staff_last_month['family_deduction'] - payroll_coll_last_month['family_deduction'],
+            'taxable_income' : payroll_staff_this_month['taxable_income'] + payroll_coll_this_month['taxable_income'] - payroll_staff_last_month['taxable_income'] - payroll_coll_last_month['taxable_income'],
+            'taxed_income' : payroll_staff_this_month['taxed_income'] + payroll_coll_this_month['taxed_income'] - payroll_staff_last_month['taxed_income'] - payroll_coll_last_month['taxed_income'],
+            'PIT' : payroll_staff_this_month['PIT'] + payroll_coll_this_month['PIT'] + payroll_ser_this_month['PIT'] - payroll_staff_last_month['PIT'] - payroll_coll_last_month['PIT'] - payroll_ser_last_month['PIT'],
+            'net_income' : payroll_staff_this_month['net_income'] + payroll_coll_this_month['net_income'] + payroll_ser_this_month['net_income'] - payroll_staff_last_month['net_income'] - payroll_coll_last_month['net_income'] - payroll_ser_last_month['net_income'],
+            'total_cost' : payroll_staff_this_month['total_cost'] + payroll_coll_this_month['total_cost'] + payroll_ser_this_month['total_cost'] - payroll_staff_last_month['total_cost'] - payroll_coll_last_month['total_cost'] - payroll_ser_last_month['total_cost'],
+        }
+        
+        
+        # Explain
+        list_data = []
+        for employee in list_employee_tedis_vietha_include_inactive:
+            # Get payroll last month
+            try:
+                payroll_last_month = Payroll_Tedis_Vietha.objects.get(employee=employee,month=pk-1)
+                head_count_last_month = 1
+                gross_income_last_month = payroll_last_month.gross_income
+                transportation_last_month = payroll_last_month.transportation
+                phone_last_month = payroll_last_month.phone
+                lunch_last_month = payroll_last_month.lunch
+                outstanding_annual_leave_last_month = payroll_last_month.outstanding_annual_leave
+                responsibility_last_month = payroll_last_month.responsibility
+                travel_last_month = payroll_last_month.travel
+                seniority_bonus_last_month = payroll_last_month.seniority_bonus
+                other_last_month = payroll_last_month.other
+                OTC_incentive_last_month = payroll_last_month.OTC_incentive
+                KPI_achievement_last_month = payroll_last_month.KPI_achievement
+                incentive_last_month_last_month = payroll_last_month.incentive_last_month
+                month_13_salary_Pro_ata_last_month = payroll_last_month.month_13_salary_Pro_ata
+                incentive_last_quy_last_year_last_month = payroll_last_month.incentive_last_quy_last_year
+                taxable_overtime_last_month = payroll_last_month.taxable_overtime
+                nontaxable_overtime_last_month = payroll_last_month.nontaxable_overtime
+                SHUI_10point5percent_employee_pay_last_month = payroll_last_month.SHUI_10point5percent_employee_pay
+                SHUI_21point5percent_company_pay_last_month = payroll_last_month.SHUI_21point5percent_company_pay
+                occupational_accident_and_disease_last_month = payroll_last_month.occupational_accident_and_disease
+                trade_union_fee_company_pay_last_month = payroll_last_month.trade_union_fee_company_pay
+                trade_union_fee_employee_pay_last_month = payroll_last_month.trade_union_fee_employee_pay
+                family_deduction_last_month = payroll_last_month.family_deduction
+                taxable_income_last_month = payroll_last_month.taxable_income
+                taxed_income_last_month = payroll_last_month.taxed_income
+                PIT_last_month = payroll_last_month.PIT
+                net_income_last_month = payroll_last_month.net_income
+                total_cost_last_month = payroll_last_month.total_cost
+            except Payroll_Tedis_Vietha.DoesNotExist:
+                head_count_last_month = 0
+                gross_income_last_month = 0
+                transportation_last_month = 0
+                phone_last_month = 0
+                lunch_last_month = 0
+                outstanding_annual_leave_last_month = 0
+                responsibility_last_month = 0
+                travel_last_month = 0
+                seniority_bonus_last_month = 0
+                other_last_month = 0
+                OTC_incentive_last_month = 0
+                KPI_achievement_last_month = 0
+                incentive_last_month_last_month = 0
+                month_13_salary_Pro_ata_last_month = 0
+                incentive_last_quy_last_year_last_month = 0
+                taxable_overtime_last_month = 0
+                nontaxable_overtime_last_month = 0
+                SHUI_10point5percent_employee_pay_last_month = 0
+                SHUI_21point5percent_company_pay_last_month = 0
+                occupational_accident_and_disease_last_month = 0
+                trade_union_fee_company_pay_last_month = 0
+                trade_union_fee_employee_pay_last_month = 0
+                family_deduction_last_month = 0
+                taxable_income_last_month = 0
+                taxed_income_last_month = 0
+                PIT_last_month = 0
+                net_income_last_month = 0
+                total_cost_last_month = 0
+            # Get payroll this month
+            try:
+                payroll_this_month = Payroll_Tedis_Vietha.objects.get(employee=employee,month=pk)
+                head_count_this_month = 1
+                gross_income_this_month = payroll_this_month.gross_income
+                transportation_this_month = payroll_this_month.transportation
+                phone_this_month = payroll_this_month.phone
+                lunch_this_month = payroll_this_month.lunch
+                outstanding_annual_leave_this_month = payroll_this_month.outstanding_annual_leave
+                responsibility_this_month = payroll_this_month.responsibility
+                travel_this_month = payroll_this_month.travel
+                seniority_bonus_this_month = payroll_this_month.seniority_bonus
+                other_this_month = payroll_this_month.other
+                OTC_incentive_this_month = payroll_this_month.OTC_incentive
+                KPI_achievement_this_month = payroll_this_month.KPI_achievement
+                incentive_last_month_this_month = payroll_this_month.incentive_last_month
+                month_13_salary_Pro_ata_this_month = payroll_this_month.month_13_salary_Pro_ata
+                incentive_last_quy_last_year_this_month = payroll_this_month.incentive_last_quy_last_year
+                taxable_overtime_this_month = payroll_this_month.taxable_overtime
+                nontaxable_overtime_this_month = payroll_this_month.nontaxable_overtime
+                SHUI_10point5percent_employee_pay_this_month = payroll_this_month.SHUI_10point5percent_employee_pay
+                SHUI_21point5percent_company_pay_this_month = payroll_this_month.SHUI_21point5percent_company_pay
+                occupational_accident_and_disease_this_month = payroll_this_month.occupational_accident_and_disease
+                trade_union_fee_company_pay_this_month = payroll_this_month.trade_union_fee_company_pay
+                trade_union_fee_employee_pay_this_month = payroll_this_month.trade_union_fee_employee_pay
+                family_deduction_this_month = payroll_this_month.family_deduction
+                taxable_income_this_month = payroll_this_month.taxable_income
+                taxed_income_this_month = payroll_this_month.taxed_income
+                PIT_this_month = payroll_this_month.PIT
+                net_income_this_month = payroll_this_month.net_income
+                total_cost_this_month = payroll_this_month.total_cost
+            except Payroll_Tedis_Vietha.DoesNotExist:
+                head_count_this_month = 0
+                gross_income_this_month = 0
+                transportation_this_month = 0
+                phone_this_month = 0
+                lunch_this_month = 0
+                outstanding_annual_leave_this_month = 0
+                responsibility_this_month = 0
+                travel_this_month = 0
+                seniority_bonus_this_month = 0
+                other_this_month = 0
+                OTC_incentive_this_month = 0
+                KPI_achievement_this_month = 0
+                incentive_last_month_this_month = 0
+                month_13_salary_Pro_ata_this_month = 0
+                incentive_last_quy_last_year_this_month = 0
+                taxable_overtime_this_month = 0
+                nontaxable_overtime_this_month = 0
+                SHUI_10point5percent_employee_pay_this_month = 0
+                SHUI_21point5percent_company_pay_this_month = 0
+                occupational_accident_and_disease_this_month = 0
+                trade_union_fee_company_pay_this_month = 0
+                trade_union_fee_employee_pay_this_month = 0
+                family_deduction_this_month = 0
+                taxable_income_this_month = 0
+                taxed_income_this_month = 0
+                PIT_this_month = 0
+                net_income_this_month = 0
+                total_cost_this_month = 0
+                
+            # Get reconcile remark
+            try:
+                reconcile_report = Report_reconcile_Tedis_VietHa.objects.get(employee=employee,month=pk)
+                remark = reconcile_report.remark
+                remark_id = reconcile_report.id
+            except Report_reconcile_Tedis_VietHa.DoesNotExist:
+                remark = ''
+                remark_id = 0
+                
+            # Make data
+            if head_count_last_month == 0 and head_count_this_month == 0:
+                pass
+            else:
+                if round(head_count_this_month-head_count_last_month) == 0:
+                    diff_head_count = ''
+                else: 
+                    diff_head_count = round(head_count_this_month-head_count_last_month)
+                data = {
+                    'employee' : employee,
+                    'remark' : remark,
+                    'remark_id' : remark_id,
+                    'head_count' : diff_head_count,
+                    'gross_income' : round(gross_income_this_month-gross_income_last_month),
+                    'transportation' : round(transportation_this_month-transportation_last_month),
+                    'phone' : round(phone_this_month-phone_last_month),
+                    'lunch' : round(lunch_this_month-lunch_last_month),
+                    'outstanding_annual_leave' : round(outstanding_annual_leave_this_month-outstanding_annual_leave_last_month),
+                    'responsibility' : round(responsibility_this_month-responsibility_last_month),
+                    'travel' : round(travel_this_month-travel_last_month),
+                    'seniority_bonus' : round(seniority_bonus_this_month-seniority_bonus_last_month),
+                    'other' : round(other_this_month-other_last_month),
+                    'OTC_incentive' : round(OTC_incentive_this_month-OTC_incentive_last_month),
+                    'KPI_achievement' : round(KPI_achievement_this_month-KPI_achievement_last_month),
+                    'incentive_last_month' : round(incentive_last_month_this_month-incentive_last_month_last_month),
+                    'month_13_salary_Pro_ata' : round(month_13_salary_Pro_ata_this_month-month_13_salary_Pro_ata_last_month),
+                    'incentive_last_quy_last_year' : round(incentive_last_quy_last_year_this_month-incentive_last_quy_last_year_last_month),
+                    'taxable_overtime' : round(taxable_overtime_this_month-taxable_overtime_last_month),
+                    'nontaxable_overtime' : round(nontaxable_overtime_this_month-nontaxable_overtime_last_month),
+                    'SHUI_10point5percent_employee_pay' : round(SHUI_10point5percent_employee_pay_this_month-SHUI_10point5percent_employee_pay_last_month),
+                    'SHUI_21point5percent_company_pay' : round(SHUI_21point5percent_company_pay_this_month-SHUI_21point5percent_company_pay_last_month),
+                    'occupational_accident_and_disease' : round(occupational_accident_and_disease_this_month-occupational_accident_and_disease_last_month),
+                    'trade_union_fee_company_pay' : round(trade_union_fee_company_pay_this_month-trade_union_fee_company_pay_last_month),
+                    'trade_union_fee_employee_pay' : round(trade_union_fee_employee_pay_this_month-trade_union_fee_employee_pay_last_month),
+                    'family_deduction' : round(family_deduction_this_month-family_deduction_last_month),
+                    'taxable_income' : round(taxable_income_this_month-taxable_income_last_month),
+                    'taxed_income' : round(taxed_income_this_month-taxed_income_last_month),
+                    'PIT' : round(PIT_this_month-PIT_last_month),
+                    'net_income' : round(net_income_this_month-net_income_last_month),
+                    'total_cost' : round(total_cost_this_month-total_cost_last_month)
+                }
+                list_data.append(data)
+        # Make data for Ser
+        try:
+            reconcile_report_ser = Report_reconcile_Tedis_VietHa.objects.get(employee=payroll_ser_this_month['employee'],month=pk)
+            remark_ser = reconcile_report_ser.remark
+            remark_ser_id = reconcile_report_ser.id
+        except Report_reconcile_Tedis_VietHa.DoesNotExist:
+            remark_ser = ''
+            remark_ser_id = 0
+        
+        if round(payroll_ser_this_month['head_count'] - payroll_ser_last_month['head_count']) == 0:
+            diff_head_count_ser = ''
         else: 
-            total_head_count += (data['head_count'])
-        total_gross_income += data['gross_income']
-        total_transportation += data['transportation']
-        total_phone += data['phone']
-        total_lunch += data['lunch']
-        total_outstanding_annual_leave += data['outstanding_annual_leave']
-        total_responsibility += data['responsibility']
-        total_travel += data['travel']
-        total_seniority_bonus += data['seniority_bonus']
-        total_other += data['other']
-        total_OTC_incentive += data['OTC_incentive']
-        total_KPI_achievement += data['KPI_achievement']
-        total_incentive_last_month += data['incentive_last_month']
-        total_month_13_salary_Pro_ata += data['month_13_salary_Pro_ata']
-        total_incentive_last_quy_last_year += data['incentive_last_quy_last_year']
-        total_taxable_overtime += data['taxable_overtime']
-        total_nontaxable_overtime += data['nontaxable_overtime']
-        total_SHUI_10point5percent_employee_pay += data['SHUI_10point5percent_employee_pay']
-        total_SHUI_21point5percent_company_pay += data['SHUI_21point5percent_company_pay']
-        total_occupational_accident_and_disease += data['occupational_accident_and_disease']
-        total_trade_union_fee_company_pay += data['trade_union_fee_company_pay']
-        total_trade_union_fee_employee_pay += data['trade_union_fee_employee_pay']
-        total_family_deduction += data['family_deduction']
-        total_taxable_income += data['taxable_income']
-        total_taxed_income += data['taxed_income']
-        total_PIT += data['PIT']
-        total_net_income += data['net_income']
-        total_total_cost += data['total_cost']
-    # Make total data
-    total_data = {
-        'head_count' : total_head_count,
-        'gross_income' : total_gross_income,
-        'transportation' : total_transportation,
-        'phone' : total_phone,
-        'lunch' : total_lunch,
-        'outstanding_annual_leave' : total_outstanding_annual_leave,
-        'responsibility' : total_responsibility,
-        'travel' : total_travel,
-        'seniority_bonus' : total_seniority_bonus,
-        'other' : total_other,
-        'OTC_incentive' : total_OTC_incentive,
-        'KPI_achievement' : total_KPI_achievement,
-        'incentive_last_month' : total_incentive_last_month,
-        'month_13_salary_Pro_ata' : total_month_13_salary_Pro_ata,
-        'incentive_last_quy_last_year' : total_incentive_last_quy_last_year,
-        'taxable_overtime' : total_taxable_overtime,
-        'nontaxable_overtime' : total_nontaxable_overtime,
-        'SHUI_10point5percent_employee_pay' : total_SHUI_10point5percent_employee_pay,
-        'SHUI_21point5percent_company_pay' : total_SHUI_21point5percent_company_pay,
-        'occupational_accident_and_disease' : total_occupational_accident_and_disease,
-        'trade_union_fee_company_pay' : total_trade_union_fee_company_pay,
-        'trade_union_fee_employee_pay' : total_trade_union_fee_employee_pay,
-        'family_deduction' : total_family_deduction,
-        'taxable_income' : total_taxable_income,
-        'taxed_income' : total_taxed_income,
-        'PIT' : total_PIT,
-        'net_income' : total_net_income,
-        'total_cost' : total_total_cost
-    }
-    
+            diff_head_count_ser = round(payroll_ser_this_month['head_count'] - payroll_ser_last_month['head_count'])
+        ser_data = {
+                'employee' : payroll_ser_this_month['employee'],
+                'remark' : remark_ser,
+                'remark_id' : remark_ser_id,
+                'head_count' : diff_head_count_ser,
+                'gross_income' : round(payroll_ser_this_month['gross_income'] - payroll_ser_last_month['gross_income']),
+                'transportation' : 0,
+                'phone' : 0,
+                'lunch' : 0,
+                'outstanding_annual_leave' : 0,
+                'responsibility' : 0,
+                'travel' : 0,
+                'seniority_bonus' : 0,
+                'other' : 0,
+                'OTC_incentive' : 0,
+                'KPI_achievement' : 0,
+                'incentive_last_month' : 0,
+                'month_13_salary_Pro_ata' : 0,
+                'incentive_last_quy_last_year' : 0,
+                'taxable_overtime' : 0,
+                'nontaxable_overtime' : 0,
+                'SHUI_10point5percent_employee_pay' : 0,
+                'SHUI_21point5percent_company_pay' : round(payroll_ser_this_month['SHUI_21point5percent_company_pay'] - payroll_ser_last_month['SHUI_21point5percent_company_pay']),
+                'occupational_accident_and_disease' : 0,
+                'trade_union_fee_company_pay' : round(payroll_ser_this_month['trade_union_fee_company_pay'] - payroll_ser_last_month['trade_union_fee_company_pay']),
+                'trade_union_fee_employee_pay' : 0,
+                'family_deduction' : 0,
+                'taxable_income' : 0,
+                'taxed_income' : 0,
+                'PIT' : round(payroll_ser_this_month['PIT'] - payroll_ser_last_month['PIT']),
+                'net_income' : round(payroll_ser_this_month['net_income'] - payroll_ser_last_month['net_income']),
+                'total_cost' : round(payroll_ser_this_month['total_cost'] - payroll_ser_last_month['total_cost'])
+            }
+        list_data.append(ser_data)        
+                
+
+        # Total 
+        # Define total_var
+        total_gross_income = 0
+        total_transportation = 0
+        total_phone = 0
+        total_lunch = 0
+        total_outstanding_annual_leave = 0
+        total_responsibility = 0
+        total_travel = 0
+        total_seniority_bonus = 0
+        total_other = 0
+        total_OTC_incentive = 0
+        total_KPI_achievement = 0
+        total_incentive_last_month = 0
+        total_month_13_salary_Pro_ata = 0
+        total_incentive_last_quy_last_year = 0
+        total_taxable_overtime = 0
+        total_nontaxable_overtime = 0
+        total_SHUI_10point5percent_employee_pay = 0
+        total_SHUI_21point5percent_company_pay = 0
+        total_occupational_accident_and_disease = 0
+        total_trade_union_fee_company_pay = 0
+        total_trade_union_fee_employee_pay = 0
+        total_family_deduction = 0
+        total_taxable_income = 0
+        total_taxed_income = 0
+        total_PIT = 0
+        total_net_income = 0
+        total_total_cost = 0
+        # Get total data
+        for data in list_data:
+            if data['head_count'] == '':
+                total_head_count += 0
+            else: 
+                total_head_count += (data['head_count'])
+            total_gross_income += data['gross_income']
+            total_transportation += data['transportation']
+            total_phone += data['phone']
+            total_lunch += data['lunch']
+            total_outstanding_annual_leave += data['outstanding_annual_leave']
+            total_responsibility += data['responsibility']
+            total_travel += data['travel']
+            total_seniority_bonus += data['seniority_bonus']
+            total_other += data['other']
+            total_OTC_incentive += data['OTC_incentive']
+            total_KPI_achievement += data['KPI_achievement']
+            total_incentive_last_month += data['incentive_last_month']
+            total_month_13_salary_Pro_ata += data['month_13_salary_Pro_ata']
+            total_incentive_last_quy_last_year += data['incentive_last_quy_last_year']
+            total_taxable_overtime += data['taxable_overtime']
+            total_nontaxable_overtime += data['nontaxable_overtime']
+            total_SHUI_10point5percent_employee_pay += data['SHUI_10point5percent_employee_pay']
+            total_SHUI_21point5percent_company_pay += data['SHUI_21point5percent_company_pay']
+            total_occupational_accident_and_disease += data['occupational_accident_and_disease']
+            total_trade_union_fee_company_pay += data['trade_union_fee_company_pay']
+            total_trade_union_fee_employee_pay += data['trade_union_fee_employee_pay']
+            total_family_deduction += data['family_deduction']
+            total_taxable_income += data['taxable_income']
+            total_taxed_income += data['taxed_income']
+            total_PIT += data['PIT']
+            total_net_income += data['net_income']
+            total_total_cost += data['total_cost']
+        # Make total data
+        total_data = {
+            'head_count' : total_head_count,
+            'gross_income' : total_gross_income,
+            'transportation' : total_transportation,
+            'phone' : total_phone,
+            'lunch' : total_lunch,
+            'outstanding_annual_leave' : total_outstanding_annual_leave,
+            'responsibility' : total_responsibility,
+            'travel' : total_travel,
+            'seniority_bonus' : total_seniority_bonus,
+            'other' : total_other,
+            'OTC_incentive' : total_OTC_incentive,
+            'KPI_achievement' : total_KPI_achievement,
+            'incentive_last_month' : total_incentive_last_month,
+            'month_13_salary_Pro_ata' : total_month_13_salary_Pro_ata,
+            'incentive_last_quy_last_year' : total_incentive_last_quy_last_year,
+            'taxable_overtime' : total_taxable_overtime,
+            'nontaxable_overtime' : total_nontaxable_overtime,
+            'SHUI_10point5percent_employee_pay' : total_SHUI_10point5percent_employee_pay,
+            'SHUI_21point5percent_company_pay' : total_SHUI_21point5percent_company_pay,
+            'occupational_accident_and_disease' : total_occupational_accident_and_disease,
+            'trade_union_fee_company_pay' : total_trade_union_fee_company_pay,
+            'trade_union_fee_employee_pay' : total_trade_union_fee_employee_pay,
+            'family_deduction' : total_family_deduction,
+            'taxable_income' : total_taxable_income,
+            'taxed_income' : total_taxed_income,
+            'PIT' : total_PIT,
+            'net_income' : total_net_income,
+            'total_cost' : total_total_cost
+        }
+    except Month_in_period.DoesNotExist:
+        payroll_staff_last_month=''
+        payroll_coll_last_month=''
+        payroll_ser_last_month=''
+        payroll_staff_this_month=''
+        payroll_coll_this_month=''
+        payroll_ser_this_month=''
+        difference_last_this=''
+        list_data=''
+        total_data=''
 
     # Create report 
     if request.POST.get('btn_create_report'): 
@@ -7167,12 +7180,12 @@ def report_payroll_tedis_vietha(request, pk):
                 
         # Reconcile remark
         for employee in list_employee_tedis_vietha_include_inactive:
-            reconcile_remark_info = Report_reconcile_Tedis_VietHa(month=period_month,employee=employee,remark=remark,
+            reconcile_remark_info = Report_reconcile_Tedis_VietHa(month=period_month,employee=employee,remark='',
                                                                   created_by=s_user[2],created_at=datetime.now())
             reconcile_remark_info.save()
             
         serverine = Employee.objects.get(full_name='SEVERINE EDGARD-ROSA')
-        reconcile_remark_ser_info = Report_reconcile_Tedis_VietHa(month=period_month,employee=serverine,remark=remark,
+        reconcile_remark_ser_info = Report_reconcile_Tedis_VietHa(month=period_month,employee=serverine,remark='',
                                                                   created_by=s_user[2],created_at=datetime.now())
         reconcile_remark_ser_info.save()
             
