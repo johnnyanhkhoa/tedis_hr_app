@@ -2499,7 +2499,8 @@ def payroll_tedis(request,pk):
     # Get payroll HCM data
     site_RO = Site.objects.get(site='RO')
     area_HCM = Area.objects.get(area='HCMC')
-    list_employee_tedis_HCM = Employee.objects.filter(site=site_RO, area=area_HCM)
+    list_employee_tedis_HCM = Employee.objects.filter(site=site_RO, area=area_HCM).exclude(full_name='SEVERINE EDGARD-ROSA')
+    
     # Get total_working_days
     list_work_days = Daily_work.objects.filter(month=period_month,weekend=False,holiday=False)
     daily_work_info = Daily_work_for_employee.objects.filter(employee=list_employee_tedis_HCM[0], daily_work__in=list_work_days)
@@ -2528,7 +2529,7 @@ def payroll_tedis(request,pk):
     # Get payroll HANOI data
     site_RO = Site.objects.get(site='RO')
     area_HANOI = Area.objects.get(area='HANOI')
-    list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+    list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI).exclude(full_name='SEVERINE EDGARD-ROSA')
     # Get total_working_days
     list_work_days = Daily_work.objects.filter(month=period_month,weekend=False,holiday=False)
     daily_work_info = Daily_work_for_employee.objects.filter(employee=list_employee_tedis_HANOI[0], daily_work__in=list_work_days)
@@ -2562,7 +2563,7 @@ def payroll_tedis(request,pk):
         
         site_RO = Site.objects.get(site='RO')
         area_HCM = Area.objects.get(area='HCMC')
-        list_employee_tedis_HCM = Employee.objects.filter(site=site_RO, area=area_HCM)
+        list_employee_tedis_HCM = Employee.objects.filter(site=site_RO, area=area_HCM).exclude(full_name='SEVERINE EDGARD-ROSA')
         for employee in list_employee_tedis_HCM:
             # Get Salary info
             list_contracts = Employee_contract.objects.filter(employee=employee).order_by('-created_at')
@@ -2749,7 +2750,7 @@ def payroll_tedis(request,pk):
         
         site_RO = Site.objects.get(site='RO')
         area_HANOI = Area.objects.get(area='HANOI')
-        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI).exclude(full_name='SEVERINE EDGARD-ROSA')
         for employee in list_employee_tedis_HANOI:
             # Get Salary info
             list_contracts = Employee_contract.objects.filter(employee=employee).order_by('-created_at')
@@ -5072,7 +5073,8 @@ def report_payroll_tedis(request, pk):
     # Get report data
     site_RO = Site.objects.get(site='RO')
     area_HCM = Area.objects.get(area='HCMC')
-    list_employee_tedis_HCM = Employee.objects.filter(site=site_RO, area=area_HCM)
+    list_employee_tedis_HCM = Employee.objects.filter(site=site_RO, area=area_HCM).exclude(full_name='SEVERINE EDGARD-ROSA')
+    
     # PIT
     report_pit_payroll = Report_PIT_Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
     if report_pit_payroll.count() > 0:
@@ -5155,7 +5157,7 @@ def report_payroll_tedis(request, pk):
         amount = 0
         site_RO = Site.objects.get(site='RO')
         area_HANOI = Area.objects.get(area='HANOI')
-        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI).exclude(full_name='SEVERINE EDGARD-ROSA')
         payroll_tedis_HANOI = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HANOI,month=period_month)
         for payroll in payroll_tedis_HANOI:
             amount += round(payroll.net_income, 0)
@@ -5192,7 +5194,7 @@ def report_payroll_tedis(request, pk):
         SHUI_Company_amount = 0
         site_RO = Site.objects.get(site='RO')
         area_HANOI = Area.objects.get(area='HANOI')
-        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI).exclude(full_name='SEVERINE EDGARD-ROSA')
         payroll_tedis_HANOI = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HANOI,month=period_month)
         for payroll in payroll_tedis_HANOI:
             SHUI_Company_amount += round(payroll.SHUI_21point5percent_company_pay)
@@ -5204,7 +5206,7 @@ def report_payroll_tedis(request, pk):
         SHUI_Employees_amount = 0
         site_RO = Site.objects.get(site='RO')
         area_HANOI = Area.objects.get(area='HANOI')
-        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI).exclude(full_name='SEVERINE EDGARD-ROSA')
         payroll_tedis_HANOI = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HANOI,month=period_month)
         for payroll in payroll_tedis_HANOI:
             SHUI_Employees_amount += round(payroll.SHUI_10point5percent_employee_pay)
@@ -5226,7 +5228,7 @@ def report_payroll_tedis(request, pk):
         PIT_HANOI_amount = 0
         site_RO = Site.objects.get(site='RO')
         area_HANOI = Area.objects.get(area='HANOI')
-        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI).exclude(full_name='SEVERINE EDGARD-ROSA')
         payroll_tedis_HANOI = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HANOI,month=period_month)
         for payroll in payroll_tedis_HANOI:
             PIT_HANOI_amount += round(payroll.PIT)
@@ -5263,7 +5265,7 @@ def report_payroll_tedis(request, pk):
         trade_union_fee_company_HANOI_amount = 0
         site_RO = Site.objects.get(site='RO')
         area_HANOI = Area.objects.get(area='HANOI')
-        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI)
+        list_employee_tedis_HANOI = Employee.objects.filter(site=site_RO, area=area_HANOI).exclude(full_name='SEVERINE EDGARD-ROSA')
         payroll_tedis_HANOI = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HANOI,month=period_month)
         for payroll in payroll_tedis_HANOI:
             trade_union_fee_company_HANOI_amount += round(payroll.trade_union_fee_company_pay_2percent)

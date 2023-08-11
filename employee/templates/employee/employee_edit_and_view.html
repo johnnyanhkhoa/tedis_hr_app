@@ -58,9 +58,10 @@
                                 {{ form.full_name }}
                             </div>
                             <div class="col">
-                                <label for="year_of_birth" class="form-label fw-bold text-dark">Year of
+                                <label class="fw-bold text-dark" for="year_of_birth">Year of
                                     birth</label>
-                                {{ form.year_of_birth }}
+                                <input type="number" class="form-control" name="year_of_birth" id="year_of_birth"
+                                placeholder="" value={{employee.year_of_birth}} disabled style="margin-top:7px">
                             </div>
                         </div>
                         <div class="row align-items-start" style="margin-top: 10px;">
