@@ -227,6 +227,22 @@
                                 value={{payroll_info.occupational_accident_and_disease}}>
                         </div>
                         <div class="col">
+                            <label class="fw-bold text-dark" for="taxable_overtime">Taxable Overtime</label>
+                            <input type="text" class="form-control"
+                                name="taxable_overtime"
+                                id="taxable_overtime"
+                                placeholder="Taxable Overtime"
+                                value={{payroll_info.taxable_overtime}}>
+                        </div>
+                        <div class="col">
+                            <label class="fw-bold text-dark" for="nontaxable_overtime">Nontaxable Overtime</label>
+                            <input type="text" class="form-control"
+                                name="nontaxable_overtime"
+                                id="nontaxable_overtime"
+                                placeholder="Nontaxable Overtime"
+                                value={{payroll_info.nontaxable_overtime}}>
+                        </div>
+                        <div class="col">
                             <label class="fw-bold text-dark" for="trade_union_fee_company_pay_2percent">Trade Union fee
                                 (Company pay 2%)</label>
                             <p style="border: 1px solid rgb(121, 121, 121);padding: 5px; color: black;">
@@ -239,9 +255,12 @@
                         <div class="col">
                             <label class="fw-bold text-dark" for="trade_union_fee_member">Trade Union fee
                                 (Member)</label>
-                            <p style="border: 1px solid rgb(121, 121, 121);padding: 5px; color: black;">
-                                {{payroll_info.trade_union_fee_member|floatformat:0|intcomma }}
-                            </p>
+                            <input type="text" class="form-control"
+                                name="trade_union_fee_member"
+                                id="trade_union_fee_member"
+                                placeholder="Trade Union fee
+                                (Member)"
+                                value={{payroll_info.trade_union_fee_member}}>
                         </div>
                         <div class="col">
                             <label class="fw-bold text-dark" for="family_deduction">Family deduction</label>

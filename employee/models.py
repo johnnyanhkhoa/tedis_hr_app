@@ -327,7 +327,7 @@ class Employee(models.Model):
     date_of_birth = models.DateField(max_length=30, blank=True, null=True) #PERSONAL
     place_of_birth = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
     ethic_group = models.ForeignKey(Ethic_group, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
-    id_card_no = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
+    id_card_no = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
     issued_date_of_id_card = models.DateField(max_length=30, blank=True, null=True) #PERSONAL
     issued_place_of_id_card = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
     permanent_address = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
@@ -335,17 +335,17 @@ class Employee(models.Model):
     send_documents_to_address = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
     cellphone_no = models.CharField(max_length=20, blank=True, null=True) #PERSONAL
     marital_status = models.ForeignKey(Marital_status, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
-    company_email = models.CharField(max_length=30, blank=True, null=True) #JOB
-    personal_email = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
+    company_email = models.CharField(max_length=50, blank=True, null=True) #JOB
+    personal_email = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
     account_no = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
     bank = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
-    bank_address = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
+    bank_address = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
     branch = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
     certificate_e = models.ForeignKey(Certificate_E, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
     certificate_v = models.ForeignKey(Certificate_V, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
     university = models.ForeignKey(University, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
-    major_e = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
-    major_v = models.CharField(max_length=30, blank=True, null=True) #PERSONAL
+    major_e = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
+    major_v = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
     social_insurrance_book = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
     hi_medical_place = models.ForeignKey(Hi_medical_place, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
     personal_income_tax = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
@@ -705,6 +705,8 @@ class Payroll_Tedis(models.Model):
     recuperation_of_SHU_Ins_10point5percent_staff_pay = models.FloatField(blank=True, null=True, default=0)
     SHUI_21point5percent_company_pay = models.FloatField(blank=True, null=True)
     recuperation_of_SHU_Ins_21point5percent_company_pay = models.FloatField(blank=True, null=True, default=0)
+    taxable_overtime = models.FloatField(blank=True, null=True, default=0)
+    nontaxable_overtime = models.FloatField(blank=True, null=True, default=0)
     occupational_accident_and_disease = models.FloatField(blank=True, null=True, default=0)
     trade_union_fee_company_pay_2percent = models.FloatField(blank=True, null=True)
     trade_union_fee_member = models.FloatField(blank=True, null=True)

@@ -113,7 +113,7 @@
                             </form>
                         </h3>
                         {% for month in month_in_period %}
-                        <div class="col-3">
+                        <div class="col-3" style="margin-top: 10px">
                             <a id="month" type="button" class="btn btn-outline-primary"
                                 href="{% url 'employee:list_time_sheets' month.id %}">{{month.month_name}}
                                 <table class="calendar">
