@@ -52,8 +52,8 @@
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">List timesheets</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Payroll Tedis</li>
+                            <li class="breadcrumb-item"><a href="{% url 'employee:employee_table' %}">Employee datatable</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Relatives</li>
                         </ol>
                     </nav>
                 </div>
@@ -63,7 +63,7 @@
             <div class="card">
                 <div class="card-header pull-right">
                     Relatives information
-                    {% comment %} <nav aria-label="breadcrumb">
+                    <nav aria-label="breadcrumb">
                         <ol class="breadcrumb breadcrumb-right" style="margin-right: 20px;">
                             <div class="dropdown dropdown-color-icon">
                                 <button class="btn btn-primary dropdown-toggle" type="button"
@@ -76,36 +76,15 @@
                                         </svg></span> Action
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonEmoji">
-                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal"><svg
-                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-                                            <path
-                                                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
-                                            <path
-                                                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
-                                        </svg>
-                                        &ensp;Export</a>
-                                    <hr style="margin-top: 0; margin-bottom:0">
-                                    <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#FilterModal"><svg
-                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
-                                            <path
-                                                d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
-                                        </svg>
-                                        &ensp;Filter</a>
-                                    <a class="dropdown-item" href="{% url 'employee:employee_table' %}"><svg
-                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
-                                            <path
-                                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                                            <path
-                                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                                        </svg>
-                                        &ensp;Reset filter</a>
+                                    <a class="btn btn-outline-success" style="width: 240px;text-align: left;" data-bs-toggle="modal" data-bs-target="#AddRelativesModal"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-add" viewBox="0 0 16 16">
+                                        <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0Zm-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                                        <path d="M2 13c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Z"/>
+                                      </svg>
+                                        &ensp;Add relative</a>
                                 </div>
                             </div>
                         </ol>
-                    </nav> {% endcomment %}
+                    </nav> 
                 </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1">
@@ -184,124 +163,35 @@
     let dataTable = new simpleDatatables.DataTable(table1);
 </script>
 <!-- Modal Filter -->
-<div class="modal fade" id="FilterModal" tabindex="-1" aria-labelledby="FilterModalLabel" aria-hidden="true">
+<div class="modal fade" id="AddRelativesModal" tabindex="-1" aria-labelledby="AddRelativesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="FilterModalLabel">Filter</h5>
+                <h5 class="modal-title" id="AddRelativesModalLabel">Add relative</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="GET" action=".">
+                <form method="post">
+                    {% csrf_token %}
                     <div class="row align-items-start" style="margin-top: 10px;">
                         <div class="col">
-                            <label for="site">Site</label>
-                            <select class="form-control" name="site">
-                                <option selected></option>
-                                {% for site in list_site %}
-                                <option value="{{ site.id }}">{{ site }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label for="division">Division</label>
-                            <select id="division" class="form-control" name="division">
-                                <option selected></option>
-                                {% for division in list_division %}
-                                <option value="{{ division.id }}">{{ division }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label for="department_e">Department</label>
-                            <select id="department_e" class="form-control" name="department_e">
-                                <option selected></option>
-                                {% for department_e in list_department_e %}
-                                <option value="{{ department_e.id }}">{{ department_e }}</option>
-                                {% endfor %}
-                            </select>
+                            <input type="hidden" name="employee_id" value="{{ employee.id }}" />
+                            <label class="fw-bold text-dark" for="basicInput">Children/Relatives name</label>
+                            <input type="text" class="form-control" name="children" id="basicInput"
+                                        placeholder="Full name">
                         </div>
                     </div>
                     <div class="row align-items-start" style="margin-top: 10px;">
                         <div class="col">
-                            <label for="area">Area</label>
-                            <select id="area" class="form-control" name="area">
-                                <option selected></option>
-                                {% for area in list_area %}
-                                <option value="{{ area.id }}">{{ area }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label for="gp">GP</label>
-                            <select id="gp" class="form-control" name="gp">
-                                <option selected></option>
-                                {% for gp in list_gp %}
-                                <option value="{{ gp.id }}">{{ gp }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label for="university">University</label>
-                            <select id="university" class="form-control" name="university">
-                                <option selected></option>
-                                {% for university in list_university %}
-                                <option value="{{ university.id }}">{{ university }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label for="contract_type">Contract type</label>
-                            <select id="contract_type" class="form-control" name="contract_type">
-                                <option selected></option>
-                                {% for contract_type in list_contract_type %}
-                                <option value="{{ contract_type.id }}">{{ contract_type }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row align-items-start" style="margin-top: 10px;">
-                        <div class="col">
-                            <label for="sexual">Sexual</label>
-                            <select class="form-control" name="sexual">
-                                <option selected></option>
-                                {% for sexual in list_sexual %}
-                                <option value="{{ sexual.id }}">{{ sexual }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label for="ethic_group">Ethic group</label>
-                            <select id="ethic_group" class="form-control" name="ethic_group">
-                                <option selected></option>
-                                {% for ethic_group in list_ethic_group %}
-                                <option value="{{ ethic_group.id }}">{{ ethic_group }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label for="marital_status">Marital status</label>
-                            <select id="marital_status" class="form-control" name="marital_status">
-                                <option selected></option>
-                                {% for marital_status in list_maritial_status %}
-                                <option value="{{ marital_status.id }}">{{ marital_status }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label for="certificate_e">Certificate</label>
-                            <select id="certificate_e" class="form-control" name="certificate_e">
-                                <option selected></option>
-                                {% for certificate_e in list_certificate_e %}
-                                <option value="{{ certificate_e.id }}">{{ certificate_e }}</option>
-                                {% endfor %}
-                            </select>
+                            <label class="fw-bold text-dark" for="basicInput">Date of birth</label>
+                                    <input type="date" class="form-control" name="birthday_of_children" id="basicInput">
                         </div>
                     </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" name="btnDangKy">Search</button>
+                <button type="submit" class="btn btn-primary" name="btn_addchildren"
+                                value="Children input">Add children/relatives</button>
             </div>
             </form>
         </div>

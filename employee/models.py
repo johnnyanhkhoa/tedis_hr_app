@@ -320,7 +320,7 @@ class Employee(models.Model):
     joining_date = models.DateField(max_length=50, null=True) #JOB
     joining_year = models.IntegerField(blank=True,null=True) #JOB
     out_date = models.DateField(max_length=50, null=True, blank=True) #JOB 
-    years_of_service = models.IntegerField(blank=True,null=True) #JOB
+    years_of_service = models.FloatField(null=True, blank=True) #JOB
     from_date = models.DateField(max_length=30, blank=True,null=True) #JOB
     to_date = models.DateField(max_length=30, blank=True, null=True) #JOB
     sexual = models.ForeignKey(Sexual, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL

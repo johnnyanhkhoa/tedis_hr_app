@@ -74,6 +74,7 @@ def employee_table(request):
         employees = Employee_manager.objects.filter(manager=s_user[2])
     else:
         employees = Employee.objects.order_by('site')
+
     
     # Lấy các thông tin cần filter từ template 
     site = request.GET.get('site')
@@ -238,10 +239,13 @@ def employee_edit(request, pk):
     # Edit employeeinstance
     form = CreateEmployeeForm(instance=employee)
     if request.method == 'POST':
+        print('post')
         form = CreateEmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
             return redirect('/employee/')
+        else:
+            print(form.errors.as_data())
     return render(request, 'employee/employee_edit_and_view.html', {
         'employee' : employee,
         'form' : form,
@@ -387,30 +391,6 @@ def staff_delete(request, pk):
     except Employee.DoesNotExist:
         return redirect('/add_staff_for_manager/')
     return redirect('/add_staff_for_manager/')
-        
-
-def add_children(request, pk):
-    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
-    if 's_user' not in request.session:
-        return redirect('hr:signin')
-    
-    # Get employee:
-    employee = Employee.objects.get(pk=pk)
-    
-    # Form
-    if request.POST.get('btn_addchildren'):
-        employee_name = request.POST.get('employee_id') # lấy từ <input type="hidden">
-        employee_id = Employee.objects.only('id').get(id=employee_name)
-        children = request.POST.get('children')  
-        birthday_of_children = request.POST.get('birthday_of_children')
-        children_info = Employee_children(employee=employee_id, children=children, birthday_of_children=birthday_of_children)
-        children_info.save()
-        messages.success(request, 'SUCCESS: Dependent registered')
-        return redirect('/employee/')
-    return render(request, 'employee/form_add_children.html', {
-        'employee' : employee,
-        
-    })
 
 
 def view_relatives(request, pk):
@@ -432,6 +412,17 @@ def view_relatives(request, pk):
     # Get relatives
     list_of_relatives = Employee_children.objects.filter(employee=employee)
     number_of_relatives = list_of_relatives.count()
+    
+    # Form
+    if request.POST.get('btn_addchildren'):
+        employee_name = request.POST.get('employee_id') # lấy từ <input type="hidden">
+        employee_id = Employee.objects.only('id').get(id=employee_name)
+        children = request.POST.get('children')  
+        birthday_of_children = request.POST.get('birthday_of_children')
+        children_info = Employee_children(employee=employee_id, children=children, birthday_of_children=birthday_of_children)
+        children_info.save()
+        messages.success(request, 'SUCCESS: Dependent registered')
+        return redirect('employee:view_relatives', pk=employee.id)
     
     
     return render(request, 'employee/view_relatives.html', {
@@ -2327,17 +2318,21 @@ def list_time_sheets(request,pk):
     # Get month
     period_month = Month_in_period.objects.get(pk=pk)
     
+    last_day = calendar.monthrange(int(period_month.period.period_year), int(period_month.month_number))
+    last_date_in_month_string = str(last_day[1]) + "/" + str(period_month.month_number) + "/" + str(period_month.period.period_year)
+    last_date_in_month = datetime.strptime(last_date_in_month_string, "%d/%m/%Y")
+    
     list_days_in_month = Daily_work.objects.filter(month=period_month)
     if role == 3:
-        list_employees = Employee.objects.filter(active=1)
+        list_employees = Employee.objects.filter(active=1).order_by('site').exclude(joining_date__gt=last_date_in_month)
     else:
         list_staff = Employee_manager.objects.filter(manager=s_user[2])
         list_employee_id = []
         for staff in list_staff:
             list_employee_id.append(staff.employee.id)
-        list_employees = Employee.objects.filter(id__in=list_employee_id)
+        list_employees = Employee.objects.filter(id__in=list_employee_id,active=1).order_by('site')
     list_data = []
-    for employee in list_employees:        
+    for employee in list_employees:     
         # Get total_salary_working_day 
         list_daily_work_info = Daily_work_for_employee.objects.filter(employee=employee,daily_work__in=list_days_in_month, work__gt=0)
         total_working_day = 0
@@ -2369,6 +2364,31 @@ def list_time_sheets(request,pk):
         }
         list_data.append(data)
     
+    
+    # Create working days for new employee
+    list_new_entry = []
+    for employee in list_employees: 
+        list_daily_work_info = Daily_work_for_employee.objects.filter(employee=employee,daily_work__in=list_days_in_month, work__gt=0)
+        if list_daily_work_info.count() == 0:
+            list_new_entry.append(employee)
+    new_employee_amount = len(list_new_entry)
+    
+            
+    if request.POST.get('btnCreateEntry'): 
+        list_daily_work = Daily_work.objects.filter(month=period_month)
+        for employee in list_employees: 
+            list_daily_work_info = Daily_work_for_employee.objects.filter(employee=employee,daily_work__in=list_days_in_month, work__gt=0)
+            if list_daily_work_info.count() == 0:
+                for daily_work in list_daily_work:
+                    if daily_work.date.weekday() < 5:
+                        daily_work_info_for_employee = Daily_work_for_employee(employee=employee,daily_work=daily_work,work=1)
+                        daily_work_info_for_employee.save()
+                    else:
+                        daily_work_info_for_employee = Daily_work_for_employee(employee=employee,daily_work=daily_work)
+                        daily_work_info_for_employee.save()
+        messages.success(request, 'SUCCESS: Timesheets created')
+        return redirect('employee:list_time_sheets',pk=period_month.id)
+                
         
         
     # Add month to current PERIOD
@@ -2475,6 +2495,8 @@ def list_time_sheets(request,pk):
         'list_data' : list_data,
         'employee_full_name' : employee_full_name,
         'list_employee_days' : list_employee_days,
+        'list_new_entry' : list_new_entry,
+        'new_employee_amount' : new_employee_amount,
     })
     
 
@@ -2919,7 +2941,7 @@ def payroll_tedis(request,pk):
 
     # Export payroll
     if request.POST.get('get_payroll'):   
-        file_name = str(period_month.month_name) + '_payroll-Tedis.xls'
+        file_name = str(period_month.month_number) + ' Salary ' + str(period_month.month_name) + ' Tedis.xls'
         response = HttpResponse(content_type='application/ms-excel')
         response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
         # Style
@@ -2928,6 +2950,8 @@ def payroll_tedis(request,pk):
                                 'font: bold 1,height 360, name Arial, colour black; align: horiz left, vert bottom' % 'white')
         style_head_small = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
                                 'font: bold 0,height 240, name Arial, colour black; align: horiz left, vert bottom' % 'white')
+        style_working_days = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                'font: bold 0,height 240, name Arial, colour 48; align: horiz left, vert bottom' % 'white')
         style_22pt_bold_horizleft_vertbottom = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
                                 'font: bold 1,height 440, name Arial, colour black; align: horiz left, vert bottom' % 'white')
         style_table_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
@@ -4049,7 +4073,7 @@ def payroll_tedis_vietha(request,pk):
 
     # Export payroll
     if request.POST.get('get_payroll'):   
-        file_name = str(period_month.month_name) + '_payroll-Tedis-VietHa.xls'
+        file_name = str(period_month.month_number) + ' Payroll ' + str(period_month.month_name) + ' Tedis-Vietha.xls'
         response = HttpResponse(content_type='application/ms-excel')
         response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
         # Style
@@ -4523,7 +4547,7 @@ def payroll_vietha(request,pk):
     
     # Get payroll data
     site_vietha = Site.objects.get(site='VH')
-    list_employee_vietha = Employee.objects.filter(site=site_vietha)
+    list_employee_vietha = Employee.objects.filter(site=site_vietha,active=1)
     # Get total_working_days
     list_work_days = Daily_work.objects.filter(month=period_month,weekend=False,holiday=False)
     total_working_day = period_month.total_work_days_bo
@@ -4549,7 +4573,7 @@ def payroll_vietha(request,pk):
         adjust_percent = float(request.POST.get('adjust_percent'))
         
         site_vietha = Site.objects.get(site='VH')
-        list_employee_vietha = Employee.objects.filter(site=site_vietha)
+        list_employee_vietha = Employee.objects.filter(site=site_vietha,active=1)
         for employee in list_employee_vietha:
             # Get Salary info
             list_contracts = Employee_contract.objects.filter(employee=employee).order_by('-created_at')
@@ -4598,8 +4622,8 @@ def payroll_vietha(request,pk):
                 if list_contracts[0].contract_category == contract_category_CT and working_days >= 11:
                     combo = newest_salary + responsibility/float(adjust_percent/100)
                     # 1st if
-                    if combo > 29800000:
-                        first_value = 29800000 * 0.095
+                    if combo > 36000000:
+                        first_value = 36000000 * 0.095
                     else:
                         first_value = combo * 0.095
                     # 2nd if
@@ -4618,8 +4642,8 @@ def payroll_vietha(request,pk):
                 if list_contracts[0].contract_category == contract_category_CT and working_days >= 11:
                     combo = newest_salary + responsibility/float(adjust_percent/100)
                     # 1st if
-                    if combo > 29800000:
-                        first_value = 29800000 * 0.205
+                    if combo > 36000000:
+                        first_value = 36000000 * 0.205
                     else:
                         first_value = combo * 0.205
                     # 2nd if
@@ -4637,8 +4661,8 @@ def payroll_vietha(request,pk):
             # Get trade_union_fee_company_pay
             combo = newest_salary + responsibility/float(adjust_percent/100)
             if SHUI_10point5percent_employee_pay > 0:
-                if combo > 29800000:
-                    salarytoBH = 29800000
+                if combo > 36000000:
+                    salarytoBH = 36000000
                 else:
                     salarytoBH = combo
             else:
@@ -4727,82 +4751,117 @@ def payroll_vietha(request,pk):
 
     # Export payroll
     if request.POST.get('get_payroll'):   
-        file_name = str(period_month.month_name) + '_payroll-VietHa.xls'
+        file_name = str(period_month.month_number) + ' Payroll ' + str(period_month.month_name) + ' Vietha.xls'
         response = HttpResponse(content_type='application/ms-excel')
         response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
         # Style
         # xlwt color url: https://docs.google.com/spreadsheets/d/1ihNaZcUh7961yU7db1-Db0lbws4NT24B7koY8v8GHNQ/pubhtml?gid=1072579560&single=true
         style_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold 1,height 640, colour black;' % 'white')
+                                'font: bold 1,height 360, name Arial, colour black; align: horiz left, vert bottom' % 'white')
         style_head_small = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold 1,height 300, colour black;' % 'white')
+                                'font: bold 0,height 240, name Arial, colour black; align: horiz left, vert bottom' % 'white')
+        style_working_days = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                'font: bold 0,height 240, name Arial, colour 48; align: horiz left, vert bottom' % 'white')
+        style_22pt_bold_horizleft_vertbottom = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                'font: bold 1,height 440, name Arial, colour black; align: horiz left, vert bottom' % 'white')
         style_table_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
                             'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold 1,height 220, colour black; align: horiz center, vert center' % '67')
+                                    'font: bold 1,height 200, colour black; align: horiz center, vert center' % '67')
         style_table_head.alignment.wrap = 1
+        style_table_head_adjust = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 200, colour black; align: horiz center, vert center' % '44')
+        style_table_head_adjust.alignment.wrap = 1
         style_normal = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
                             'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold off, colour black; align: horiz center, vert center' % 'white')
+                                    'font: bold 0,height 200, colour black; align: horiz center, vert center' % 'white')
         style_normal.alignment.wrap = 1
+        style_normal_adjust = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 0,height 200, colour black; align: horiz center, vert center' % '44')
+        style_normal_adjust.alignment.wrap = 1
 
         wb = xlwt.Workbook()
-        ws = wb.add_sheet('Payroll Viet Ha')
+        ws = wb.add_sheet('Payroll')
 
         # Table
         
         # Set col width
-        for col in range(0,42):
-            ws.col(col).width = 5000
+        for col in range(0,43):
+            if col == 0:
+                ws.col(col).width = 1600
+            elif col == 1:
+                ws.col(col).width = 3000
+            elif col == 2:
+                ws.col(col).width = 6000
+            elif col == 3:
+                ws.col(col).width = 3000
+            elif col == 8:
+                ws.col(col).width = 3000
+            else:
+                ws.col(col).width = 5000
+        
+        # Set row height
+        ws.row(0).height_mismatch = True
+        ws.row(0).height = 1020
+        ws.row(1).height_mismatch = True
+        ws.row(1).height = 600
+        ws.row(2).height_mismatch = True
+        ws.row(2).height = 900
+        ws.row(3).height_mismatch = True
+        ws.row(3).height = 700
         
         
         # Top
-        ws.write_merge(0, 0, 0, 6, 'PAYROLL IN ' + str(period_month.month_name), style_head)
-        ws.write_merge(0, 0, 9, 11, 'TEDIS - VIET HA',style_head)
+        ws.write(0, 5, 'VIET HA PHARMA JOINT STOCK COMPANY', style_head)
+        ws.write(1, 5, 'No. 4, Lot A Truong Son Street, District 10, HCMC', style_head_small)
+        ws.write(2, 5, 'PAYROLL IN ' + str(period_month.month_name).upper(),style_22pt_bold_horizleft_vertbottom)
+        ws.write(3, 7, 'Working days: ',style_working_days)
+        ws.write(3, 8, str(period_month.total_work_days_bo),style_working_days)
         
         # Body
         # Set row height
-        ws.row(2).set_style(xlwt.easyxf('font:height 500;'))
+        ws.row(5).height_mismatch = True
+        ws.row(5).height = 2080
         # Body head
-        ws.write(2, 0, 'No.', style_table_head)
-        ws.write(2, 1, 'Employee code', style_table_head)
-        ws.write(2, 2, 'Full name', style_table_head)
-        ws.write(2, 3, 'Joining Date', style_table_head)
-        ws.write(2, 4, 'Department/Area', style_table_head)
-        ws.write(2, 5, 'Job Title', style_table_head)
-        ws.write(2, 6, 'Salary', style_table_head)
-        ws.write(2, 7, 'Working days', style_table_head)
-        ws.write(2, 8, '% Adjust', style_table_head)
-        ws.write(2, 9, 'Gross Income', style_table_head)
-        ws.write(2, 10, 'Salary recuperation', style_table_head)
-        ws.write(2, 11, 'Overtime', style_table_head)
-        ws.write(2, 12, 'Transportation', style_table_head)
-        ws.write(2, 13, 'Phone', style_table_head)
-        ws.write(2, 14, 'Lunch', style_table_head)
-        ws.write(2, 15, 'Responsibility', style_table_head)
-        ws.write(2, 16, 'Outstanding annual leave', style_table_head)
-        ws.write(2, 17, 'Bonus open new pharmacy', style_table_head)
-        ws.write(2, 18, 'Others', style_table_head)
-        ws.write(2, 19, 'Incentive last quarter', style_table_head)
-        ws.write(2, 20, 'Incentive last month', style_table_head)
-        ws.write(2, 21, 'Yearly Incentive', style_table_head)
-        ws.write(2, 22, '13th salary (pro-rata)', style_table_head)
-        ws.write(2, 23, 'SHUI(10.5%)(Employee pay)', style_table_head)
-        ws.write(2, 24, 'SHUI(21.5%)(Company pay)', style_table_head)
-        ws.write(2, 25, 'Occupational accident and disease Ins.(0.5%)(Pay for staffs)', style_table_head)
-        ws.write(2, 26, 'Trade Union fee (Company pay)', style_table_head)
-        ws.write(2, 27, 'Trade Union fee (Staff pay)', style_table_head)
-        ws.write(2, 28, 'Family deduction', style_table_head)
-        ws.write(2, 29, 'Taxable Income', style_table_head)
-        ws.write(2, 30, 'Taxed Income', style_table_head)
-        ws.write(2, 31, 'PIT for 13th salary', style_table_head)
-        ws.write(2, 32, 'PIT ' + str(period_month.month_name), style_table_head)
-        ws.write(2, 33, 'PIT Finalization', style_table_head)
-        ws.write(2, 34, 'PIT balance', style_table_head)
-        ws.write(2, 35, 'Net Income', style_table_head)
-        ws.write(2, 36, 'Transfer Bank', style_table_head)
-        ws.write(2, 37, 'Total Cost', style_table_head)
+        ws.write(5, 0, 'No.', style_table_head)
+        ws.write(5, 1, 'Employee code', style_table_head)
+        ws.write(5, 2, 'Full name', style_table_head)
+        ws.write(5, 3, 'Joining Date', style_table_head)
+        ws.write(5, 4, 'Department/Area', style_table_head)
+        ws.write(5, 5, 'Job Title', style_table_head)
+        ws.write(5, 6, 'Salary', style_table_head)
+        ws.write(5, 7, 'Working days', style_table_head)
+        ws.write(5, 8, '% Adjust', style_table_head)
+        ws.write(5, 9, 'Gross Income', style_table_head)
+        ws.write(5, 10, 'Salary recuperation', style_table_head)
+        ws.write(5, 11, 'Overtime', style_table_head)
+        ws.write(5, 12, 'Transportation', style_table_head)
+        ws.write(5, 13, 'Phone', style_table_head)
+        ws.write(5, 14, 'Lunch', style_table_head)
+        ws.write(5, 15, 'Responsibility', style_table_head)
+        ws.write(5, 16, 'Outstanding annual leave', style_table_head)
+        ws.write(5, 17, 'Bonus open new pharmacy', style_table_head)
+        ws.write(5, 18, 'Others', style_table_head)
+        ws.write(5, 19, 'Incentive last quarter', style_table_head)
+        ws.write(5, 20, 'Incentive last month', style_table_head)
+        ws.write(5, 21, 'Yearly Incentive', style_table_head)
+        ws.write(5, 22, '13th salary (pro-rata)', style_table_head)
+        ws.write(5, 23, 'SHUI(10.5%)(Employee pay)', style_table_head)
+        ws.write(5, 24, 'SHUI(21.5%)(Company pay)', style_table_head)
+        ws.write(5, 25, 'Occupational accident and disease Ins.(0.5%)(Pay for staffs)', style_table_head)
+        ws.write(5, 26, 'Trade Union fee (Company pay)', style_table_head)
+        ws.write(5, 27, 'Trade Union fee (Staff pay)', style_table_head)
+        ws.write(5, 28, 'Family deduction', style_table_head)
+        ws.write(5, 29, 'Taxable Income', style_table_head)
+        ws.write(5, 30, 'Taxed Income', style_table_head)
+        ws.write(5, 31, 'PIT for 13th salary', style_table_head)
+        ws.write(5, 32, 'PIT ' + str(period_month.month_name), style_table_head)
+        ws.write(5, 33, 'PIT Finalization', style_table_head)
+        ws.write(5, 34, 'PIT balance', style_table_head)
+        ws.write(5, 35, 'Net Income', style_table_head)
+        ws.write(5, 36, 'Transfer Bank', style_table_head)
+        ws.write(5, 37, 'Total Cost', style_table_head)
         
         # Body
         # Create total var
@@ -4839,48 +4898,49 @@ def payroll_vietha(request,pk):
         
         for index, data in enumerate(list_payroll_info):
             # Set row height
-            ws.row(3+index).set_style(xlwt.easyxf('font:height 500;'))
+            ws.row(6+index).height_mismatch = True
+            ws.row(6+index).height = 930
             # Write data
-            ws.write(3+index, 0, str(index+1),style_normal)
-            ws.write(3+index, 1, str(data['payroll_info'].employee.employee_code),style_normal)
-            ws.write(3+index, 2, str(data['payroll_info'].employee.full_name),style_normal)
-            ws.write(3+index, 3, str(data['payroll_info'].employee.joining_date.strftime('%d/%m/%Y')),style_normal)
-            ws.write(3+index, 4, str(data['payroll_info'].employee.department_e),style_normal)
-            ws.write(3+index, 5, str(data['payroll_info'].employee.position_e),style_normal)
-            ws.write(3+index, 6, str("{:,}".format(round(data['payroll_info'].newest_salary))),style_normal)
-            ws.write(3+index, 7, str(data['payroll_info'].working_days),style_normal)
-            ws.write(3+index, 8, str(round(data['payroll_info'].adjust_percent)) + '%',style_normal)
-            ws.write(3+index, 9, str("{:,}".format(round(data['payroll_info'].gross_income))),style_normal)
-            ws.write(3+index, 10, str("{:,}".format(round(data['payroll_info'].salary_recuperation))),style_normal)
-            ws.write(3+index, 11, str("{:,}".format(round(data['payroll_info'].overtime))),style_normal)
-            ws.write(3+index, 12, str("{:,}".format(round(data['payroll_info'].transportation))),style_normal)
-            ws.write(3+index, 13, str("{:,}".format(round(data['payroll_info'].phone))),style_normal)
-            ws.write(3+index, 14, str("{:,}".format(round(data['payroll_info'].lunch))),style_normal)
-            ws.write(3+index, 15, str("{:,}".format(round(data['payroll_info'].responsibility))),style_normal)
-            ws.write(3+index, 16, str("{:,}".format(round(data['payroll_info'].outstanding_annual_leave))),style_normal)
-            ws.write(3+index, 17, str("{:,}".format(round(data['payroll_info'].bonus_open_new_pharmacy))),style_normal)
-            ws.write(3+index, 18, str("{:,}".format(round(data['payroll_info'].other))),style_normal)
-            ws.write(3+index, 19, str("{:,}".format(round(data['payroll_info'].incentive_last_quy_last_year))),style_normal)
-            ws.write(3+index, 20, str("{:,}".format(round(data['payroll_info'].incentive_last_month))),style_normal)
-            ws.write(3+index, 21, str("{:,}".format(round(data['payroll_info'].yearly_incentive_last_year))),style_normal)
-            ws.write(3+index, 22, str("{:,}".format(round(data['payroll_info'].month_13_salary_Pro_ata))),style_normal)
-            ws.write(3+index, 23, str("{:,}".format(round(data['payroll_info'].SHUI_10point5percent_employee_pay))),style_normal)
-            ws.write(3+index, 24, str("{:,}".format(round(data['payroll_info'].SHUI_21point5percent_company_pay))),style_normal)
-            ws.write(3+index, 25, str("{:,}".format(round(data['payroll_info'].occupational_accident_and_disease))),style_normal)
-            ws.write(3+index, 26, str("{:,}".format(round(data['payroll_info'].trade_union_fee_company_pay))),style_normal)
-            ws.write(3+index, 27, str("{:,}".format(round(data['payroll_info'].trade_union_fee_staff_pay))),style_normal)
-            ws.write(3+index, 28, str("{:,}".format(round(data['payroll_info'].family_deduction))),style_normal)
-            ws.write(3+index, 29, str("{:,}".format(round(data['payroll_info'].taxable_income))),style_normal)
-            ws.write(3+index, 30, str("{:,}".format(round(data['payroll_info'].taxed_income))),style_normal)
-            ws.write(3+index, 31, str("{:,}".format(round(data['payroll_info'].PIT_for_13th_salary))),style_normal)
-            ws.write(3+index, 32, str("{:,}".format(round(data['payroll_info'].PIT_this_month))),style_normal)
-            ws.write(3+index, 33, str("{:,}".format(round(data['payroll_info'].PIT_finalization))),style_normal)
-            ws.write(3+index, 34, str("{:,}".format(round(data['payroll_info'].PIT_balance))),style_normal)
-            ws.write(3+index, 35, str("{:,}".format(round(data['payroll_info'].net_income))),style_normal)
-            ws.write(3+index, 36, str("{:,}".format(round(data['payroll_info'].transfer_bank))),style_normal)
-            ws.write(3+index, 37, str("{:,}".format(round(data['payroll_info'].total_cost))),style_normal)
+            ws.write(6+index, 0, str(index+1),style_normal)
+            ws.write(6+index, 1, str(data['payroll_info'].employee.employee_code),style_normal)
+            ws.write(6+index, 2, str(data['payroll_info'].employee.full_name),style_normal)
+            ws.write(6+index, 3, str(data['payroll_info'].employee.joining_date.strftime('%d/%m/%Y')),style_normal)
+            ws.write(6+index, 4, str(data['payroll_info'].employee.department_e),style_normal)
+            ws.write(6+index, 5, str(data['payroll_info'].employee.position_e),style_normal)
+            ws.write(6+index, 6, str("{:,}".format(round(data['payroll_info'].newest_salary))),style_normal)
+            ws.write(6+index, 7, str(data['payroll_info'].working_days),style_normal)
+            ws.write(6+index, 8, str(round(data['payroll_info'].adjust_percent)) + '%',style_normal)
+            ws.write(6+index, 9, str("{:,}".format(round(data['payroll_info'].gross_income))),style_normal)
+            ws.write(6+index, 10, str("{:,}".format(round(data['payroll_info'].salary_recuperation))),style_normal)
+            ws.write(6+index, 11, str("{:,}".format(round(data['payroll_info'].overtime))),style_normal)
+            ws.write(6+index, 12, str("{:,}".format(round(data['payroll_info'].transportation))),style_normal)
+            ws.write(6+index, 13, str("{:,}".format(round(data['payroll_info'].phone))),style_normal)
+            ws.write(6+index, 14, str("{:,}".format(round(data['payroll_info'].lunch))),style_normal)
+            ws.write(6+index, 15, str("{:,}".format(round(data['payroll_info'].responsibility))),style_normal)
+            ws.write(6+index, 16, str("{:,}".format(round(data['payroll_info'].outstanding_annual_leave))),style_normal)
+            ws.write(6+index, 17, str("{:,}".format(round(data['payroll_info'].bonus_open_new_pharmacy))),style_normal)
+            ws.write(6+index, 18, str("{:,}".format(round(data['payroll_info'].other))),style_normal)
+            ws.write(6+index, 19, str("{:,}".format(round(data['payroll_info'].incentive_last_quy_last_year))),style_normal)
+            ws.write(6+index, 20, str("{:,}".format(round(data['payroll_info'].incentive_last_month))),style_normal)
+            ws.write(6+index, 21, str("{:,}".format(round(data['payroll_info'].yearly_incentive_last_year))),style_normal)
+            ws.write(6+index, 22, str("{:,}".format(round(data['payroll_info'].month_13_salary_Pro_ata))),style_normal)
+            ws.write(6+index, 23, str("{:,}".format(round(data['payroll_info'].SHUI_10point5percent_employee_pay))),style_normal)
+            ws.write(6+index, 24, str("{:,}".format(round(data['payroll_info'].SHUI_21point5percent_company_pay))),style_normal)
+            ws.write(6+index, 25, str("{:,}".format(round(data['payroll_info'].occupational_accident_and_disease))),style_normal)
+            ws.write(6+index, 26, str("{:,}".format(round(data['payroll_info'].trade_union_fee_company_pay))),style_normal)
+            ws.write(6+index, 27, str("{:,}".format(round(data['payroll_info'].trade_union_fee_staff_pay))),style_normal)
+            ws.write(6+index, 28, str("{:,}".format(round(data['payroll_info'].family_deduction))),style_normal)
+            ws.write(6+index, 29, str("{:,}".format(round(data['payroll_info'].taxable_income))),style_normal)
+            ws.write(6+index, 30, str("{:,}".format(round(data['payroll_info'].taxed_income))),style_normal)
+            ws.write(6+index, 31, str("{:,}".format(round(data['payroll_info'].PIT_for_13th_salary))),style_normal)
+            ws.write(6+index, 32, str("{:,}".format(round(data['payroll_info'].PIT_this_month))),style_normal)
+            ws.write(6+index, 33, str("{:,}".format(round(data['payroll_info'].PIT_finalization))),style_normal)
+            ws.write(6+index, 34, str("{:,}".format(round(data['payroll_info'].PIT_balance))),style_normal)
+            ws.write(6+index, 35, str("{:,}".format(round(data['payroll_info'].net_income))),style_normal)
+            ws.write(6+index, 36, str("{:,}".format(round(data['payroll_info'].transfer_bank))),style_normal)
+            ws.write(6+index, 37, str("{:,}".format(round(data['payroll_info'].total_cost))),style_normal)
             # Get total line data
-            last_row = 3+index+1
+            last_row = 6+index+1
             ttnewest_salary += data['payroll_info'].newest_salary
             ttgross_income += data['payroll_info'].gross_income
             ttsalary_recuperation += data['payroll_info'].salary_recuperation
@@ -4912,39 +4972,42 @@ def payroll_vietha(request,pk):
             tttransfer_bank += data['payroll_info'].transfer_bank
             tttotal_cost += data['payroll_info'].total_cost
         # Total line in bottom of table 
+        # Set row height
+        ws.row(last_row).height_mismatch = True
+        ws.row(last_row).height = 900
         ws.write_merge(last_row, last_row, 0, 5, 'TOTAL', style_table_head)
-        ws.write(last_row, 6, str("{:,}".format(ttnewest_salary)),style_table_head)
+        ws.write(last_row, 6, str("{:,}".format(round(ttnewest_salary))),style_table_head)
         ws.write(last_row, 7, '-',style_table_head)
         ws.write(last_row, 8, '-',style_table_head)
-        ws.write(last_row, 9, str("{:,}".format(ttgross_income)),style_table_head)
-        ws.write(last_row, 10, str("{:,}".format(ttsalary_recuperation)),style_table_head)
-        ws.write(last_row, 11, str("{:,}".format(ttovertime)),style_table_head)
-        ws.write(last_row, 12, str("{:,}".format(tttransportation)),style_table_head)
-        ws.write(last_row, 13, str("{:,}".format(ttphone)),style_table_head)
-        ws.write(last_row, 14, str("{:,}".format(ttlunch)),style_table_head)
-        ws.write(last_row, 15, str("{:,}".format(ttresponsibility)),style_table_head)
-        ws.write(last_row, 16, str("{:,}".format(ttoutstanding_annual_leave)),style_table_head)
-        ws.write(last_row, 17, str("{:,}".format(ttbonus_open_new_pharmacy)),style_table_head)
-        ws.write(last_row, 18, str("{:,}".format(ttother)),style_table_head)
-        ws.write(last_row, 19, str("{:,}".format(ttincentive_last_quy_last_year)),style_table_head)
-        ws.write(last_row, 20, str("{:,}".format(ttincentive_last_month)),style_table_head)
-        ws.write(last_row, 21, str("{:,}".format(ttyearly_incentive_last_year)),style_table_head)
-        ws.write(last_row, 22, str("{:,}".format(ttmonth_13_salary_Pro_ata)),style_table_head)
-        ws.write(last_row, 23, str("{:,}".format(ttSHUI_10point5percent_employee_pay)),style_table_head)
-        ws.write(last_row, 24, str("{:,}".format(ttSHUI_21point5percent_company_pay)),style_table_head)
-        ws.write(last_row, 25, str("{:,}".format(ttoccupational_accident_and_disease)),style_table_head)
-        ws.write(last_row, 26, str("{:,}".format(tttrade_union_fee_company_pay)),style_table_head)
-        ws.write(last_row, 27, str("{:,}".format(tttrade_union_fee_staff_pay)),style_table_head)
-        ws.write(last_row, 28, str("{:,}".format(ttfamily_deduction)),style_table_head)
-        ws.write(last_row, 29, str("{:,}".format(tttaxable_income)),style_table_head)
-        ws.write(last_row, 30, str("{:,}".format(tttaxed_income)),style_table_head)
-        ws.write(last_row, 31, str("{:,}".format(ttPIT_for_13th_salary)),style_table_head)
-        ws.write(last_row, 32, str("{:,}".format(ttPIT_this_month)),style_table_head)  
-        ws.write(last_row, 33, str("{:,}".format(ttPIT_finalization)),style_table_head)
-        ws.write(last_row, 34, str("{:,}".format(ttPIT_balance)),style_table_head)
-        ws.write(last_row, 35, str("{:,}".format(ttnet_income)),style_table_head)
-        ws.write(last_row, 36, str("{:,}".format(tttransfer_bank)),style_table_head)
-        ws.write(last_row, 37, str("{:,}".format(tttotal_cost)),style_table_head)
+        ws.write(last_row, 9, str("{:,}".format(round(ttgross_income))),style_table_head)
+        ws.write(last_row, 10, str("{:,}".format(round(ttsalary_recuperation))),style_table_head)
+        ws.write(last_row, 11, str("{:,}".format(round(ttovertime))),style_table_head)
+        ws.write(last_row, 12, str("{:,}".format(round(tttransportation))),style_table_head)
+        ws.write(last_row, 13, str("{:,}".format(round(ttphone))),style_table_head)
+        ws.write(last_row, 14, str("{:,}".format(round(ttlunch))),style_table_head)
+        ws.write(last_row, 15, str("{:,}".format(round(ttresponsibility))),style_table_head)
+        ws.write(last_row, 16, str("{:,}".format(round(ttoutstanding_annual_leave))),style_table_head)
+        ws.write(last_row, 17, str("{:,}".format(round(ttbonus_open_new_pharmacy))),style_table_head)
+        ws.write(last_row, 18, str("{:,}".format(round(ttother))),style_table_head)
+        ws.write(last_row, 19, str("{:,}".format(round(ttincentive_last_quy_last_year))),style_table_head)
+        ws.write(last_row, 20, str("{:,}".format(round(ttincentive_last_month))),style_table_head)
+        ws.write(last_row, 21, str("{:,}".format(round(ttyearly_incentive_last_year))),style_table_head)
+        ws.write(last_row, 22, str("{:,}".format(round(ttmonth_13_salary_Pro_ata))),style_table_head)
+        ws.write(last_row, 23, str("{:,}".format(round(ttSHUI_10point5percent_employee_pay))),style_table_head)
+        ws.write(last_row, 24, str("{:,}".format(round(ttSHUI_21point5percent_company_pay))),style_table_head)
+        ws.write(last_row, 25, str("{:,}".format(round(ttoccupational_accident_and_disease))),style_table_head)
+        ws.write(last_row, 26, str("{:,}".format(round(tttrade_union_fee_company_pay))),style_table_head)
+        ws.write(last_row, 27, str("{:,}".format(round(tttrade_union_fee_staff_pay))),style_table_head)
+        ws.write(last_row, 28, str("{:,}".format(round(ttfamily_deduction))),style_table_head)
+        ws.write(last_row, 29, str("{:,}".format(round(tttaxable_income))),style_table_head)
+        ws.write(last_row, 30, str("{:,}".format(round(tttaxed_income))),style_table_head)
+        ws.write(last_row, 31, str("{:,}".format(round(ttPIT_for_13th_salary))),style_table_head)
+        ws.write(last_row, 32, str("{:,}".format(round(ttPIT_this_month))),style_table_head)  
+        ws.write(last_row, 33, str("{:,}".format(round(ttPIT_finalization))),style_table_head)
+        ws.write(last_row, 34, str("{:,}".format(round(ttPIT_balance))),style_table_head)
+        ws.write(last_row, 35, str("{:,}".format(round(ttnet_income))),style_table_head)
+        ws.write(last_row, 36, str("{:,}".format(round(tttransfer_bank))),style_table_head)
+        ws.write(last_row, 37, str("{:,}".format(round(tttotal_cost))),style_table_head)
          
 
 
@@ -5015,8 +5078,8 @@ def payroll_vietha_edit(request, pk):
             if list_contracts[0].contract_category == contract_category_CT and working_days >= 11:
                 combo = newest_salary + float(responsibility)/float(adjust_percent/100)
                 # 1st if
-                if combo > 29800000:
-                    first_value = 29800000 * 0.095
+                if combo > 36000000:
+                    first_value = 36000000 * 0.095
                 else:
                     first_value = combo * 0.095
                 # 2nd if
@@ -5035,8 +5098,8 @@ def payroll_vietha_edit(request, pk):
             if list_contracts[0].contract_category == contract_category_CT and working_days >= 11:
                 combo = newest_salary + responsibility/float(adjust_percent/100)
                 # 1st if
-                if combo > 29800000:
-                    first_value = 29800000 * 0.205
+                if combo > 36000000:
+                    first_value = 36000000 * 0.205
                 else:
                     first_value = combo * 0.205
                 # 2nd if
@@ -5054,8 +5117,8 @@ def payroll_vietha_edit(request, pk):
         # Get trade_union_fee_company_pay
         combo = newest_salary + float(responsibility)/float(adjust_percent/100)
         if SHUI_10point5percent_employee_pay > 0:
-            if combo > 29800000:
-                salarytoBH = 29800000
+            if combo > 36000000:
+                salarytoBH = 36000000
             else:
                 salarytoBH = combo
         else:
@@ -9489,6 +9552,9 @@ def report_payroll_tedis_vietha(request, pk):
         style_10pt_bold_horizleft_vertcenter_allthin = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
                                'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
                                 'font: bold 1,height 200, name Arial, colour black; align: horiz left, vert center' % 'white')
+        style_10pt_bold_horizcenter_vertcenter_allthin = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                               'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                'font: bold 1,height 200, name Arial, colour black; align: horiz center, vert center' % 'white')
         style_headcount_staff = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
                                'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom DASHED;'
                                 'font: bold 1,height 140, name Arial, colour black; align: horiz center, vert center' % '44')
@@ -9956,8 +10022,69 @@ def report_payroll_tedis_vietha(request, pk):
             ws_reconcile.write(11+index, 0, str(data['remark']),style_explain_remark_employeename)
             ws_reconcile.write(11+index, 1, str(data['employee'].full_name),style_explain_remark_employeename)
             ws_reconcile.write(11+index, 2, str(data['head_count']),style_explain_data)
+            ws_reconcile.write(11+index, 3, str("{:,}".format(round(data['gross_income']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 4, str("{:,}".format(round(data['transportation']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 5, str("{:,}".format(round(data['phone']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 6, str("{:,}".format(round(data['lunch']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 7, str("{:,}".format(round(data['outstanding_annual_leave']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 8, str("{:,}".format(round(data['responsibility']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 9, str("{:,}".format(round(data['travel']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 10, str("{:,}".format(round(data['seniority_bonus']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 11, str("{:,}".format(round(data['other']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 12, str("{:,}".format(round(data['OTC_incentive']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 13, str("{:,}".format(round(data['KPI_achievement']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 14, str("{:,}".format(round(data['incentive_last_month']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 15, str("{:,}".format(round(data['month_13_salary_Pro_ata']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 16, str("{:,}".format(round(data['incentive_last_quy_last_year']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 17, str("{:,}".format(round(data['taxable_overtime']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 18, str("{:,}".format(round(data['nontaxable_overtime']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 19, str("{:,}".format(round(data['SHUI_10point5percent_employee_pay']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 20, str("{:,}".format(round(data['SHUI_21point5percent_company_pay']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 21, str("{:,}".format(round(data['occupational_accident_and_disease']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 22, str("{:,}".format(round(data['trade_union_fee_company_pay']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 23, str("{:,}".format(round(data['trade_union_fee_employee_pay']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 24, str("{:,}".format(round(data['family_deduction']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 25, str("{:,}".format(round(data['taxable_income']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 26, str("{:,}".format(round(data['taxed_income']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 27, str("{:,}".format(round(data['PIT']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 28, str("{:,}".format(round(data['net_income']),0)),style_explain_data)
+            ws_reconcile.write(11+index, 29, str("{:,}".format(round(data['total_cost']),0)),style_explain_data)
          
-        # last_row_new_staff = 6 + new_staff_reports.count()
+        last_row = 12 + index
+        # Total
+        # Set row height
+        ws_reconcile.row(last_row).height_mismatch = True
+        ws_reconcile.row(last_row).height = 390
+        
+        ws_reconcile.write_merge(last_row, last_row, 0, 1, 'TOTAL', style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 2, str(total_data['head_count']), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 3, str("{:,}".format(round(total_data['gross_income']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 4, str("{:,}".format(round(total_data['transportation']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 5, str("{:,}".format(round(total_data['phone']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 6, str("{:,}".format(round(total_data['lunch']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 7, str("{:,}".format(round(total_data['outstanding_annual_leave']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 8, str("{:,}".format(round(total_data['responsibility']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 9, str("{:,}".format(round(total_data['travel']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 10, str("{:,}".format(round(total_data['seniority_bonus']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 11, str("{:,}".format(round(total_data['other']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 12, str("{:,}".format(round(total_data['OTC_incentive']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 13, str("{:,}".format(round(total_data['KPI_achievement']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 14, str("{:,}".format(round(total_data['incentive_last_month']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 15, str("{:,}".format(round(total_data['month_13_salary_Pro_ata']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 16, str("{:,}".format(round(total_data['incentive_last_quy_last_year']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 17, str("{:,}".format(round(total_data['taxable_overtime']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 18, str("{:,}".format(round(total_data['nontaxable_overtime']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 19, str("{:,}".format(round(total_data['SHUI_10point5percent_employee_pay']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 20, str("{:,}".format(round(total_data['SHUI_21point5percent_company_pay']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 21, str("{:,}".format(round(total_data['occupational_accident_and_disease']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 22, str("{:,}".format(round(total_data['trade_union_fee_company_pay']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 23, str("{:,}".format(round(total_data['trade_union_fee_employee_pay']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 24, str("{:,}".format(round(total_data['family_deduction']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 25, str("{:,}".format(round(total_data['taxable_income']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 26, str("{:,}".format(round(total_data['taxed_income']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 27, str("{:,}".format(round(total_data['PIT']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 28, str("{:,}".format(round(total_data['net_income']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
+        ws_reconcile.write(last_row, 29, str("{:,}".format(round(total_data['total_cost']),0)), style_10pt_bold_horizcenter_vertcenter_allthin)
         # ws_reconcile.row(last_row_new_staff).height_mismatch = True
         # ws_reconcile.row(last_row_new_staff).height = 525
         

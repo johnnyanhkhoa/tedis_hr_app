@@ -47,7 +47,7 @@
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">List timesheets</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'employee:list_time_sheets' period_month.id %}">List timesheets</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Payroll Viet Ha</li>
                         </ol>
                     </nav>
@@ -137,7 +137,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for data in list_payroll_info %}
+                            {% for data in list_payroll_info %} 
                             <tr>
                                 <th></th>
                                 <td>{{ data.payroll_info.employee.employee_code }}</td>
@@ -174,7 +174,7 @@
                                 <td>{{ data.payroll_info.PIT_this_month|floatformat:0|intcomma }}</td>
                                 <td>{{ data.payroll_info.PIT_finalization|floatformat:0|intcomma }}</td>
                                 <td>{{ data.payroll_info.PIT_balance|floatformat:0|intcomma }}</td>
-                                <td>{{ data.payroll_info.net_income|floatformat:0|intcomma }}</td>
+                                <td class="fw-bold text-dark">{{ data.payroll_info.net_income|floatformat:0|intcomma }}</td>
                                 <td>{{ data.payroll_info.transfer_bank|floatformat:0|intcomma }}</td>
                                 <td>{{ data.payroll_info.total_cost|floatformat:0|intcomma }}</td>
                                 <td>

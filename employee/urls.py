@@ -10,7 +10,6 @@ urlpatterns = [
     path('add_staff_for_manager/<int:pk>/', views.add_staff_for_manager, name='add_staff_for_manager'),
     path('edit_manager/<int:pk>/', views.edit_manager, name='edit_manager'),
     path('staff_delete/<int:pk>/', views.staff_delete, name='staff_delete'),
-    path('add_children/<int:pk>/', views.add_children, name='add_children'),
     path('view_relatives/<int:pk>/', views.view_relatives, name='view_relatives'),
     path('edit_relatives/<int:pk>/', views.edit_relatives, name='edit_relatives'),
     path('relative_delete/<int:pk>/', views.relative_delete, name='relative_delete'),
