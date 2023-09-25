@@ -4544,28 +4544,46 @@ def payroll_vietha(request,pk):
     # Get month
     period_month = Month_in_period.objects.get(pk=pk)
     
+    last_day = calendar.monthrange(int(period_month.period.period_year), int(period_month.month_number))
+    last_date_in_month_string = str(last_day[1]) + "/" + str(period_month.month_number) + "/" + str(period_month.period.period_year)
+    last_date_in_month = datetime.strptime(last_date_in_month_string, "%d/%m/%Y")
     
     # Get payroll data
-    site_vietha = Site.objects.get(site='VH')
-    list_employee_vietha = Employee.objects.filter(site=site_vietha,active=1)
+    # site_vietha = Site.objects.get(site='VH')
+    # list_employee_vietha = Employee.objects.filter(site=site_vietha).exclude(joining_date__gt=last_date_in_month)
+    
     # Get total_working_days
-    list_work_days = Daily_work.objects.filter(month=period_month,weekend=False,holiday=False)
     total_working_day = period_month.total_work_days_bo
+    
     # Create payroll dict
+    # list_payroll_info = []
+    # for employee in list_employee_vietha:
+    #     try:
+    #         payroll_info = Payroll_Vietha.objects.get(employee=employee,month=period_month)
+    #         payrollExist = 1
+    #         # Make data 
+    #         data = {
+    #             'payroll_info': payroll_info,
+                
+                
+    #         }
+    #         list_payroll_info.append(data)
+    #     except Payroll_Vietha.DoesNotExist:
+    #         print(employee)
+    #         payrollExist = 0
+    
     list_payroll_info = []
-    for employee in list_employee_vietha:
-        try:
-            payroll_info = Payroll_Vietha.objects.get(employee=employee,month=period_month)
-            payrollExist = 1
+    list_payroll = Payroll_Vietha.objects.filter(month=period_month)
+    if list_payroll.count() == 0:
+        payrollExist = 0
+    else:
+        payrollExist = 1
+        for payroll in list_payroll:
             # Make data 
             data = {
-                'payroll_info': payroll_info,
-                
-                
+                'payroll_info': payroll, 
             }
             list_payroll_info.append(data)
-        except Payroll_Vietha.DoesNotExist:
-            payrollExist = 0
         
     # Create payroll data
     if request.POST.get('btn_adjust_percent'):
@@ -4573,7 +4591,7 @@ def payroll_vietha(request,pk):
         adjust_percent = float(request.POST.get('adjust_percent'))
         
         site_vietha = Site.objects.get(site='VH')
-        list_employee_vietha = Employee.objects.filter(site=site_vietha,active=1)
+        list_employee_vietha = Employee.objects.filter(site=site_vietha,active=1).exclude(joining_date__gt=last_date_in_month)
         for employee in list_employee_vietha:
             # Get Salary info
             list_contracts = Employee_contract.objects.filter(employee=employee).order_by('-created_at')
