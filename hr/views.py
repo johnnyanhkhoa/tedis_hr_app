@@ -37,11 +37,11 @@ def signin(request):
         user_name = request.POST.get('user_name')
         user_password = request.POST.get('user_password')
         hasher = Argon2PasswordHasher()
-        # encoded = hasher.encode(user_password, '12345678')
+        encoded = hasher.encode(user_password, 'tedisHR2023')
 
         # Đọc dữ liệu từ CSDL
-        # user = User.objects.filter(user_name=user_name, user_password=encoded)
-        user = User.objects.filter(user_name=user_name, user_password=user_password)
+        user = User.objects.filter(user_name=user_name, user_password=encoded)
+        # user = User.objects.filter(user_name=user_name, user_password=user_password)
         # print(user.count())
         if user.count() > 0:
             # Tạo session
@@ -84,13 +84,13 @@ def signup_changepassword(request):
         if frm_dang_ky.is_valid(): #and frm_dang_ky.cleaned_data['user_password'] == frm_dang_ky.cleaned_data['user_password']:
             # hasher = PBKDF2PasswordHasher() # salt: 1 byte
             ngayhienhanh = datetime.now()
-            hasher = Argon2PasswordHasher() # salt: 8 bytes # dùng để mã hóa password nhưng hiện tại chưa cần vì không ai vào cắp password
+            hasher = Argon2PasswordHasher() # salt: 8 bytes # dùng để mã hóa password
             request.POST.__mutable = True
             post = frm_dang_ky.save(commit=False)
             post.user_id = frm_dang_ky.cleaned_data['user_id']
             post.user_name = frm_dang_ky.cleaned_data['user_name']
-            # post.user_password = hasher.encode(frm_dang_ky.cleaned_data['user_password'], '12345678')
-            post.user_password = frm_dang_ky.cleaned_data['user_password']
+            post.user_password = hasher.encode(frm_dang_ky.cleaned_data['user_password'], 'tedisHR2023')
+            # post.user_password = frm_dang_ky.cleaned_data['user_password']
             post.user_full_name = frm_dang_ky.cleaned_data['user_full_name']
             post.user_title = frm_dang_ky.cleaned_data['user_title']
             post.user_mobile_1 = frm_dang_ky.cleaned_data['user_mobile_1']
