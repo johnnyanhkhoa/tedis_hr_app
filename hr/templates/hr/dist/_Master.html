@@ -248,11 +248,19 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="{% url 'employee:report_leave' %}" class='sidebar-link'>
+                        <li class="sidebar-item has-sub" style="width:250px">
+                            <a href="#" class='sidebar-link'>
                                 <i class="bi bi-bar-chart-line"></i>
                                 <span>Report</span>
                             </a>
+                            <ul class="submenu">
+                                <li class="submenu-item ">
+                                    <a href="{% url 'employee:report_leave' %}">Leave</a>
+                                </li>
+                                <li class="submenu-item ">
+                                    <a href="{% url 'employee:hr_budget_and_cashflow' 1 %}">Landing</a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="sidebar-item">
                             <a href="{% url 'employee:blank_period' %}" class='sidebar-link'>

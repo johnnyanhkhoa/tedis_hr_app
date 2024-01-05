@@ -59,8 +59,15 @@ urlpatterns = [
     path('other_changes_report_payroll_tedis_vietha_edit/<int:pk>/', views.other_changes_report_payroll_tedis_vietha_edit, name='other_changes_report_payroll_tedis_vietha_edit'),
     path('maternity_leave_report_payroll_tedis_vietha_edit/<int:pk>/', views.maternity_leave_report_payroll_tedis_vietha_edit, name='maternity_leave_report_payroll_tedis_vietha_edit'),
     path('reconcile_report_payroll_tedis_vietha_edit/<int:remark_id>/', views.reconcile_report_payroll_tedis_vietha_edit, name='reconcile_report_payroll_tedis_vietha_edit'),
-    # Report leave
+    # Report
     path('report_leave/', views.report_leave, name='report_leave'),
+    path('hr_budget_and_cashflow/<int:pk>/', views.hr_budget_and_cashflow, name='hr_budget_and_cashflow'),
+    path('hr_budget_and_cashflow_view/<int:pk>/', views.hr_budget_and_cashflow_view, name='hr_budget_and_cashflow_view'),
+    path('edit_incentive/<int:pk>/', views.edit_incentive, name='edit_incentive'),
+    path('edit_best_reward/<int:pk>/', views.edit_best_reward, name='edit_best_reward'),
+    path('edit_month_14_salary/<int:pk>/', views.edit_month_14_salary, name='edit_month_14_salary'),
+    path('edit_target_value/<int:pk>/', views.edit_target_value, name='edit_target_value'),
+    path('edit_achievement/<int:pk>/', views.edit_achievement, name='edit_achievement'),
     # path('dayoff/', views.dayoff, name='dayoff'),
     
     

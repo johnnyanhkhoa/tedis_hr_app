@@ -1,0 +1,267 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}HR | Report HR budget & Cash flow{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<style>
+    #month {
+        border: 1px solid black;
+        margin-top: 10px;
+        text-align: center;
+        height: 150px;
+        width: 210px;
+    }
+
+    table {
+        margin: auto;
+        font-size: 8pt;
+        color: black;
+    }
+</style>
+<div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>{{period.period_year}}</h3>
+                    <p class="text-subtitle text-muted">Landing</p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Report</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Landing</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <section class="section">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <h3 style="text-align: center;">
+                            <form method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-primary" name="btn_previousperiod" value="Previous period input"><i class="bi bi-caret-left"></i></button>
+                                {{present_period.period_year}}
+                                <button type="submit" class="btn btn-outline-primary" name="btn_nextperiod" value="Next period input"><i class="bi bi-caret-right"></i></button>
+                            </form>
+                        </h3>
+                        {% for month in months_in_period %}
+                        <div class="col-3" style="margin-top: 10px">
+                            <a id="month" type="button" class="btn btn-outline-primary"
+                                href="{% url 'employee:hr_budget_and_cashflow_view' month.id %}">{{month.month_name}}
+                                <table class="calendar">
+                                    <thead>
+                                        <tr>
+                                            <td>Mon</td>
+                                            <td>Tue</td>
+                                            <td>Wed</td>
+                                            <td>Thu</td>
+                                            <td>Fri</td>
+                                            <td>Sat</td>
+                                            <td>Sun</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="prev-month">dd</td>
+                                            <td class="prev-month">dd</td>
+                                            <td class="prev-month">dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td class="current-day">dd</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td>dd</td>
+                                            <td class="next-month">dd</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </a>
+                        </div>
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+</div>
+
+<!-- Modal create period -->
+<div class="modal fade" id="FilterModal" tabindex="-1" aria-labelledby="FilterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="FilterModalLabel">Start period</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label for="Year">Year</label>
+                            <input type="number" class="form-control" name="period_year" id="period_year"
+                                placeholder="Year" required>
+                        </div>
+                        <div class="col">
+                            <label for="total_months">Total months</label>
+                            <input type="text" class="form-control" name="total_months" id="total_months"
+                                placeholder="Months" required>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label for="start_period_date">Start date</label>
+                            <input type="date" class="form-control" name="start_period_date" id="start_period_date"
+                                placeholder="Start date" required>
+                        </div>
+                        <div class="col">
+                            <label for="end_period_date">End date</label>
+                            <input type="date" class="form-control" name="end_period_date" id="end_period_date"
+                                placeholder="End date" required>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" name="btnStartPeriod" value="Period input">Submit</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal create month -->
+<div class="modal fade" id="AddMonthModal" tabindex="-1" aria-labelledby="AddMonthModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AddMonthModalLabel">Add month to period {{period.period_year}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label for="month_name">Month name</label>
+                            <input type="text" class="form-control" name="month_name" id="month_name"
+                                placeholder="Input month in name" required>
+                        </div>
+                        <div class="col">
+                            <label for="month_number">Month number</label>
+                            <input type="number" class="form-control" name="month_number" id="month_number"
+                                placeholder="Input month in number" required>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label for="total_work_days_bo">Total work days of BO</label>
+                            <input type="number" class="form-control" name="total_work_days_bo" id="total_work_days_bo"
+                                placeholder="Input number of total work days in month" required>
+                        </div>
+                        <div class="col">
+                            <label for="total_work_days_wh">Total work days of WH</label>
+                            <input type="number" class="form-control" name="total_work_days_wh" id="total_work_days_wh"
+                                placeholder="Input number of total work days in month" required>
+                        </div>
+                    </div>
+                    <div class="row align-items-start" style="margin-top: 10px;">
+                        <div class="col">
+                            <label for="holidays">Holidays</label>
+                            <br />
+                            <textarea id="holidays" name="holidays" rows="4" cols="70"
+                                placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"></textarea>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <p style="color: rgb(224, 83, 83);">After submitting, please wait as this may take a few minutes...</p>
+                <button type="submit" class="btn btn-primary" name="btnAddMonth" value="Month input">Add month</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirm reset remaining dayoff -->
+<form method="post">
+    {% csrf_token %}
+    <div class="modal fade" id="ConfirmResetModal" tabindex="-1" aria-labelledby="ConfirmResetModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h5>Reset Remaining Dayoff</h5>
+                    <br>
+                    <p class="text-dark" style="text-align: center;">Are you sure you want to reset current period year
+                        remaining dayoff?
+                    </p>
+                </div>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger" name="btnReset" value="Reset input">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -91,6 +91,11 @@
                         </ol>
                     </nav>
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="payrollMarjorie-tab" data-bs-toggle="tab" data-bs-target="#payrollMarjorie"
+                                type="button" role="tab" aria-controls="payrollMarjorie" aria-selected="false">{{period_month.month_name}}-Marjorie
+                            </button>
+                        </li>
                         <li class="nav-item text-dark" role="presentation">
                             <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
                                 type="button" role="tab" aria-controls="home" aria-selected="true">PIT</button>
@@ -109,6 +114,142 @@
                 </div>
                 <div class="card-body">
                     <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade" id="payrollMarjorie" role="tabpanel" aria-labelledby="payrollMarjorie-tab">
+                            <div class="table-container">
+                                <p class="text-start">Working days: {{period_month.total_work_days_bo}}</p>
+                                <p class="text-start">Exchange rate (USD): {{ payroll_Marjorie.exchange_rate_usd|floatformat:0|intcomma }}</p>
+                                <table class="table table-striped table-bordered border-dark" id="table1">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Code staff</th>
+                                            <th>Full name</th>
+                                            <th>Joining Date</th>
+                                            <th>Department/Area</th>
+                                            <th>Job Title</th>
+                                            <th>Salary {{period_month.period.period_year}} (USD)</th>
+                                            <th>Salary {{period_month.period.period_year}} (VND)</th>
+                                            <th>Working days</th>
+                                            <th>% Adjust</th>
+                                            <th>Gross Income</th>
+                                            <th>Salary recuperation</th>
+                                            <th>Overtime</th>
+                                            <th>Transportation</th>
+                                            <th>Phone</th>
+                                            <th>Lunch</th>
+                                            <th>Training fee</th>
+                                            <th>Toxic Allowance</th>
+                                            <th>Travel</th>
+                                            <th>Responsibility</th>
+                                            <th>Seniority Bonus</th>
+                                            <th>Others</th>
+                                            <th>Total allowance recuperation</th>
+                                            <th>Benefits</th>
+                                            <th>Severance Allowance</th>
+                                            <th>Outstanding annual leave</th>
+                                            <th>13th salary(Pro-ata)</th>
+                                            <th>SHUI(10.5%)(Employee pay)</th>
+                                            <th>Recuperation of SHU Ins.(10.5%)(staff pay)</th>
+                                            <th>SHUI(21.5%)(Employer pay)</th>
+                                            <th>Recuperation of SHU Ins.(21.5%)(Company pay)</th>
+                                            <th>Occupational accident and disease Ins.(0.5%)(Pay for staffs)</th>
+                                            <th>Trade Union fee (Company pay 2%)</th>
+                                            <th>Trade Union fee (Member)</th>
+                                            <th>Family deduction</th>
+                                            <th>Taxable Income</th>
+                                            <th>Taxed Income</th>
+                                            <th>PIT</th>
+                                            <th>Deduct</th>
+                                            <th>Net Income (VND)</th>
+                                            <th>Net Income (USD)</th>
+                                            <th>Transfer Bank</th>
+                                            <th>Total Cost (VND)</th>
+                                            <th>Total Cost (USD)</th>
+                                            <th>Note</th>
+                                            {% comment %} <th>Action</th> {% endcomment %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th></th>
+                                            <td>{{ payroll_Marjorie.employee.employee_code }}</td>
+                                            <td>{{ payroll_Marjorie.employee.full_name }}</td>
+                                            <td>{{ payroll_Marjorie.employee.joining_date|date:"d/m/Y" }}</td>
+                                            <td>{{ payroll_Marjorie.employee.department_e }}</td>
+                                            <td>{{ payroll_Marjorie.employee.position_e }}</td>
+                                            <td>{{ payroll_Marjorie.salary_usd|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.salary_vnd|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.working_days }}</td>
+                                            <td>{{ payroll_Marjorie.adjust_percent }}</td>
+                                            <td>{{ payroll_Marjorie.gross_income|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.salary_recuperation|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.overtime|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.transportation|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.phone|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.lunch|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.training_fee|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.toxic_allowance|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.travel|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.responsibility|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.seniority_bonus|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.other|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.total_allowance_recuperation|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.benefits|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.severance_allowance|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.outstanding_annual_leave|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.month_13_salary_Pro_ata|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.SHUI_10point5percent_employee_pay|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.recuperation_of_SHU_Ins_10point5percent_staff_pay|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.SHUI_21point5percent_employer_pay|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.recuperation_of_SHU_Ins_21point5percent_company_pay|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.occupational_accident_and_disease|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.trade_union_fee_company_pay_2percent|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.trade_union_fee_member|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.family_deduction|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.taxable_income|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.taxed_income|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.PIT|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.deduct|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.net_income_vnd|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.net_income_usd|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.transfer_bank|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.total_cost_vnd|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.total_cost_usd|floatformat:0|intcomma }}</td>
+                                            <td>{{ payroll_Marjorie.note|floatformat:0|intcomma }}</td>
+                                            {% comment %} <td>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-dark dropdown-toggle" type="button"
+                                                        id="dropdownMenuButton7" data-bs-toggle="dropdown"
+                                                        aria-haspopup="true" aria-expanded="false">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z" />
+                                                            <path
+                                                                d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z" />
+                                                        </svg>
+                                                    </button>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
+                                                        <a class="dropdown-item"
+                                                            href="{% url 'employee:payroll_ser_edit' payroll_Marjorie.id %}"><svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                fill="currentColor" class="bi bi-info-circle"
+                                                                viewBox="0 0 16 16">
+                                                                <path
+                                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                                <path
+                                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                                            </svg>
+                                                            &ensp;Update</a>
+                                                    </div>
+                                                </div>
+                                            </td> {% endcomment %}
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                             <table class="table table-striped table-bordered border-dark" id="table1">
                                 <thead>
@@ -418,10 +559,8 @@
             </div>
             {% else %}
             <div class="container-fluid">
-                <form method="post">
-                    {% csrf_token %}
-                    <button class="btn btn-outline-success" name="btn_create_report" value="Report input">
-                        <span>Create report</span>
+                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#CreateReportModal">
+                    <span>Create report</span>
                         <span>
                             <svg width="66px" height="43px" viewBox="0 0 66 43" version="1.1"
                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -438,8 +577,7 @@
                                 </g>
                             </svg>
                         </span>
-                    </button>
-                </form>
+                  </button>
             </div>
 
             {%endif%}
@@ -541,6 +679,268 @@
         </div>
     </div>
 </div>
+
+<!-- Payroll Ser Modal -->
+<form method="post">
+    {% csrf_token %}
+<div class="modal fade" id="CreateReportModal" tabindex="-1" aria-labelledby="CreateReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="CreateReportModalLabel">Add information sheet: {{period_month.month_name}}-Marjorie</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p class="text-start">
+                <i class="bi bi-exclamation-circle" style="color: red;"></i> <b>Input currency without comma(,) or point(.)</b>
+            <br>
+            &nbsp;&emsp;<b>Input 0 if <u>NONE</u> for every field</b>
+            </p>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="exchange_rate_usd">Exchange rate (USD)</label>
+                        <input type="number" step="0.001" class="form-control" name="exchange_rate_usd" id="exchange_rate_usd"
+                            placeholder="$" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="salary_usd">Salary (USD)</label>
+                        <input type="number" class="form-control" name="salary_usd" id="salary_usd"
+                            placeholder="$" required>
+                    </div>
+                    <div class="col">
+                        <label for="salary_vnd">Salary (VNĐ)</label>
+                        <input type="number" class="form-control" name="salary_vnd" id="salary_vnd"
+                            placeholder="₫" disabled>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="working_days">Working days</label>
+                        <input type="number" class="form-control" name="working_days" id="working_days"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="adjust_percent">% Adjust</label>
+                        <input type="text" class="form-control" name="adjust_percent" id="adjust_percent"
+                            placeholder="Input number (e.g: 100% -> 100)" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="gross_income">Gross income</label>
+                        <input type="number" class="form-control" name="gross_income" id="gross_income"
+                            placeholder="" disabled>
+                    </div>
+                    <div class="col">
+                        <label for="salary_recuperation">Salary recuperation</label>
+                        <input type="number" class="form-control" name="salary_recuperation" id="salary_recuperation"
+                            placeholder="" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="overtime">Overtime</label>
+                        <input type="number" class="form-control" name="overtime" id="overtime"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="transportation">Transportation</label>
+                        <input type="number" class="form-control" name="transportation" id="transportation"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="phone">Phone</label>
+                        <input type="number" class="form-control" name="phone" id="phone"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="lunch">Lunch</label>
+                        <input type="number" class="form-control" name="lunch" id="lunch"
+                            placeholder="" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="training_fee">Training fee</label>
+                        <input type="number" class="form-control" name="training_fee" id="training_fee"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="toxic_allowance">Toxic allowance</label>
+                        <input type="number" class="form-control" name="toxic_allowance" id="toxic_allowance"
+                            placeholder="" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="travel">Travel</label>
+                        <input type="number" class="form-control" name="travel" id="travel"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="responsibility">Responsibility</label>
+                        <input type="number" class="form-control" name="responsibility" id="responsibility"
+                            placeholder="" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="seniority_bonus">Seniority bonus</label>
+                        <input type="number" class="form-control" name="seniority_bonus" id="seniority_bonus"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="other">Other</label>
+                        <input type="number" class="form-control" name="other" id="other"
+                            placeholder="" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="total_allowance_recuperation">Total allowance recuperation</label>
+                        <input type="number" class="form-control" name="total_allowance_recuperation" id="total_allowance_recuperation"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="benefits">Benefits</label>
+                        <input type="number" class="form-control" name="benefits" id="benefits"
+                            placeholder="" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="severance_allowance">Severance Allowance</label>
+                        <input type="number" class="form-control" name="severance_allowance" id="severance_allowance"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="outstanding_annual_leave">Outstanding annual leave</label>
+                        <input type="number" class="form-control" name="outstanding_annual_leave" id="outstanding_annual_leave"
+                            placeholder="" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="month_13_salary_Pro_ata">13th salary (Pro-ata)</label>
+                        <input type="number" class="form-control" name="month_13_salary_Pro_ata" id="month_13_salary_Pro_ata"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="SHUI_10point5percent_employee_pay">SHUI(10.5%)(Employee pay)</label>
+                        <input type="number" class="form-control" name="SHUI_10point5percent_employee_pay" id="SHUI_10point5percent_employee_pay"
+                            placeholder="" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="recuperation_of_SHU_Ins_10point5percent_staff_pay">Recuperation of SHU Ins.(10.5%)(staff pay)</label>
+                        <input type="number" class="form-control" name="recuperation_of_SHU_Ins_10point5percent_staff_pay" id="recuperation_of_SHU_Ins_10point5percent_staff_pay"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="SHUI_21point5percent_employer_pay">SHUI(21.5%)(Employer pay)</label>
+                        <input type="number" class="form-control" name="SHUI_21point5percent_employer_pay" id="SHUI_21point5percent_employer_pay"
+                            placeholder="" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="recuperation_of_SHU_Ins_21point5percent_company_pay">Recuperation of SHU Ins.(21.5%)(Company pay)</label>
+                        <input type="number" class="form-control" name="recuperation_of_SHU_Ins_21point5percent_company_pay" id="recuperation_of_SHU_Ins_21point5percent_company_pay"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="occupational_accident_and_disease">Occupational accident and disease Ins.(0.5%)(Pay for staffs)</label>
+                        <input type="number" class="form-control" name="occupational_accident_and_disease" id="occupational_accident_and_disease"
+                            placeholder="" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="trade_union_fee_company_pay_2percent">Trade Union fee (Company pay 2%)</label>
+                        <input type="number" class="form-control" name="trade_union_fee_company_pay_2percent" id="trade_union_fee_company_pay_2percent"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="trade_union_fee_member">Trade Union fee (Member)</label>
+                        <input type="number" class="form-control" name="trade_union_fee_member" id="trade_union_fee_member"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="family_deduction">Family deduction</label>
+                        <input type="number" class="form-control" name="family_deduction" id="family_deduction"
+                            placeholder="" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="taxable_income">Taxable income</label>
+                        <input type="number" class="form-control" name="taxable_income" id="taxable_income"
+                            placeholder="" disabled>
+                    </div>
+                    <div class="col">
+                        <label for="taxed_income">Taxed income</label>
+                        <input type="number" class="form-control" name="taxed_income" id="taxed_income"
+                            placeholder="" disabled>
+                    </div>
+                    <div class="col">
+                        <label for="PIT">PIT</label>
+                        <input type="number" class="form-control" name="PIT" id="PIT"
+                            placeholder="" disabled>
+                    </div>
+                    <div class="col">
+                        <label for="deduct">Deduct</label>
+                        <input type="number" class="form-control" name="deduct" id="deduct"
+                            placeholder="" required>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="net_income_vnd">Net Income (VNĐ)</label>
+                        <input type="number" class="form-control" name="net_income_vnd" id="net_income_vnd"
+                            placeholder="₫" disabled>
+                    </div>
+                    <div class="col">
+                        <label for="net_income_usd">Net Income (USD)</label>
+                        <input type="number" class="form-control" name="net_income_usd" id="net_income_usd"
+                            placeholder="$" disabled>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="transfer_bank">Transfer bank</label>
+                        <input type="number" class="form-control" name="transfer_bank" id="transfer_bank"
+                            placeholder="" required>
+                    </div>
+                    <div class="col">
+                        <label for="total_cost_vnd">Total Cost (VNĐ)</label>
+                        <input type="number" class="form-control" name="total_cost_vnd" id="total_cost_vnd"
+                            placeholder="₫" disabled>
+                    </div>
+                    <div class="col">
+                        <label for="total_cost_usd">Total Cost (USD)</label>
+                        <input type="number" class="form-control" name="total_cost_usd" id="total_cost_usd"
+                            placeholder="$" disabled>
+                    </div>
+                </div>
+                <div class="row align-items-start" style="margin-top: 10px;">
+                    <div class="col">
+                        <label for="note">Note</label>
+                        <input type="text" class="form-control" name="note" id="note"
+                            placeholder="">
+                    </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button class="btn btn-primary" name="btn_create_report" value="Report input">Save changes</button>
+        </div>
+      </div>
+    </div>
+</div>
+</form>
 
 
 {% endblock %}

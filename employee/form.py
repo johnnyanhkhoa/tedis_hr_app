@@ -53,11 +53,23 @@ class CreateEmployeeForm(forms.ModelForm):
     department_v = forms.ModelChoiceField(required=False, queryset=department_v_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Department V",
     }))
+    sub_department_1 = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+        "class": "form-control", "placeholder": "Sub-Department 1",
+    }))
+    sub_department_2 = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+        "class": "form-control", "placeholder": "Sub-Department 2",
+    }))
+    sub_department_3 = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+        "class": "form-control", "placeholder": "Sub-Department 3",
+    }))
     area = forms.ModelChoiceField(required=False, queryset=area_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Area",
     }))
     provinces = forms.ModelChoiceField(required=False, queryset=provinces_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Province",
+    }))
+    sub_province = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+        "class": "form-control", "placeholder": "Sub-Province",
     }))
     gp = forms.ModelChoiceField(required=False, queryset=gp_list ,widget=forms.Select(attrs={
         "class": "form-control bg-white", "placeholder": "Group",

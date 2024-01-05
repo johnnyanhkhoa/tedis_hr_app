@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.hashers import PBKDF2PasswordHasher, Argon2PasswordHasher, CryptPasswordHasher, BCryptPasswordHasher
-from django.db.models import Q, Case, When, Value
+from django.db.models import Q, Case, When, Value, F
 from employee.models import *
 from hr.models import User
 from employee.form import *
@@ -239,7 +239,6 @@ def employee_edit(request, pk):
     # Edit employeeinstance
     form = CreateEmployeeForm(instance=employee)
     if request.method == 'POST':
-        print('post')
         form = CreateEmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
@@ -3935,8 +3934,8 @@ def payroll_tedis_vietha(request,pk):
                 if list_contracts[0].contract_category == contract_category_CT and working_days >= 10:
                     combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
                     # 1st if
-                    if combo > 29800000:
-                        first_value = 29800000 * 0.095
+                    if combo > 36000000:
+                        first_value = 36000000 * 0.095
                     else:
                         first_value = combo * 0.095
                     # 2nd if
@@ -3958,8 +3957,8 @@ def payroll_tedis_vietha(request,pk):
                 if list_contracts[0].contract_category == contract_category_CT and working_days >= 10:
                     combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
                     # 1st if
-                    if combo > 29800000:
-                        first_value = 29800000 * 0.205
+                    if combo > 36000000:
+                        first_value = 36000000 * 0.205
                     else:
                         first_value = combo * 0.205
                     # 2nd if
@@ -3970,8 +3969,8 @@ def payroll_tedis_vietha(request,pk):
                     SHUI_21point5percent_company_pay = round(first_value + second_value)
                 elif list_contracts[0].contract_category == contract_category_CTminus and working_days >= 10:
                     combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
-                    if combo > 29800000:
-                        SHUI_21point5percent_company_pay = 29800000 * 0.005
+                    if combo > 36000000:
+                        SHUI_21point5percent_company_pay = 36000000 * 0.005
                     else:
                         SHUI_21point5percent_company_pay = combo * 0.005      
                 else:
@@ -3985,8 +3984,8 @@ def payroll_tedis_vietha(request,pk):
             # Get trade_union_fee_company_pay
             combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
             if SHUI_10point5percent_employee_pay > 0:
-                if combo > 29800000:
-                    salarytoBH = 29800000
+                if combo > 36000000:
+                    salarytoBH = 36000000
                 else:
                     salarytoBH = combo
             else:
@@ -4387,8 +4386,8 @@ def payroll_tedis_vietha_edit(request, pk):
             if list_contracts[0].contract_category == contract_category_CT and working_days >= 10:
                 combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
                 # 1st if
-                if combo > 29800000:
-                    first_value = 29800000 * 0.095
+                if combo > 36000000:
+                    first_value = 36000000 * 0.095
                 else:
                     first_value = combo * 0.095
                 # 2nd if
@@ -4410,8 +4409,8 @@ def payroll_tedis_vietha_edit(request, pk):
             if list_contracts[0].contract_category == contract_category_CT and working_days >= 10:
                 combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
                 # 1st if
-                if combo > 29800000:
-                    first_value = 29800000 * 0.205
+                if combo > 36000000:
+                    first_value = 36000000 * 0.205
                 else:
                     first_value = combo * 0.205
                 # 2nd if
@@ -4422,8 +4421,8 @@ def payroll_tedis_vietha_edit(request, pk):
                 SHUI_21point5percent_company_pay = round(first_value + second_value)
             elif list_contracts[0].contract_category == contract_category_CTminus and working_days >= 10:
                 combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
-                if combo > 29800000:
-                    SHUI_21point5percent_company_pay = 29800000 * 0.005
+                if combo > 36000000:
+                    SHUI_21point5percent_company_pay = 36000000 * 0.005
                 else:
                     SHUI_21point5percent_company_pay = combo * 0.005      
             else:
@@ -4436,8 +4435,8 @@ def payroll_tedis_vietha_edit(request, pk):
         # Get trade_union_fee_company_pay
         combo = newest_salary + responsibility/float(adjust_percent/100) + seniority_bonus/float(adjust_percent/100)
         if SHUI_10point5percent_employee_pay > 0:
-            if combo > 29800000:
-                salarytoBH = 29800000
+            if combo > 36000000:
+                salarytoBH = 36000000
             else:
                 salarytoBH = combo
         else:
@@ -5249,6 +5248,13 @@ def report_payroll_tedis(request, pk):
     area_HCM = Area.objects.get(area='HCMC')
     list_employee_tedis_HCM = Employee.objects.filter(site=site_RO, area=area_HCM).exclude(full_name='SEVERINE EDGARD-ROSA')
     
+    # Get payroll Marjorie
+    try:
+        payroll_Marjorie = Payroll_Marjorie.objects.get(month=period_month)
+        report_payrollExist = 1 
+    except Payroll_Marjorie.DoesNotExist:
+        payroll_Marjorie = ''
+        report_payrollExist = 0 
     # PIT
     report_pit_payroll = Report_PIT_Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
     if report_pit_payroll.count() > 0:
@@ -5276,6 +5282,70 @@ def report_payroll_tedis(request, pk):
         
     # Create report 
     if request.POST.get('btn_create_report'): 
+        # Create Payroll Marjorie
+        marjorie = Employee.objects.get(full_name='MARJORIE EDGARD - ROSA')
+        
+        exchange_rate_usd = request.POST.get('exchange_rate_usd')
+        
+        salary_usd = request.POST.get('salary_usd')
+        salary_vnd = round(float(salary_usd) * float(exchange_rate_usd),0)
+        working_days = request.POST.get('working_days')
+        adjust_percent = request.POST.get('adjust_percent')
+        gross_income = round(float(salary_vnd) / float(period_month.total_work_days_bo) * float(working_days),0)
+        salary_recuperation = request.POST.get('salary_recuperation')
+        overtime = request.POST.get('overtime')
+        transportation = request.POST.get('transportation')
+        phone = request.POST.get('phone')
+        lunch = request.POST.get('lunch')
+        training_fee = request.POST.get('training_fee')
+        toxic_allowance = request.POST.get('toxic_allowance')
+        travel = request.POST.get('travel')
+        responsibility = request.POST.get('responsibility')
+        seniority_bonus = request.POST.get('seniority_bonus')
+        other = request.POST.get('other')
+        total_allowance_recuperation = request.POST.get('total_allowance_recuperation')
+        benefits = request.POST.get('benefits')
+        severance_allowance = request.POST.get('severance_allowance')
+        outstanding_annual_leave = request.POST.get('outstanding_annual_leave')
+        month_13_salary_Pro_ata = request.POST.get('month_13_salary_Pro_ata')
+        SHUI_10point5percent_employee_pay = request.POST.get('SHUI_10point5percent_employee_pay')
+        recuperation_of_SHU_Ins_10point5percent_staff_pay = request.POST.get('recuperation_of_SHU_Ins_10point5percent_staff_pay')
+        SHUI_21point5percent_employer_pay = request.POST.get('SHUI_21point5percent_employer_pay')
+        recuperation_of_SHU_Ins_21point5percent_company_pay = request.POST.get('recuperation_of_SHU_Ins_21point5percent_company_pay')
+        occupational_accident_and_disease = request.POST.get('occupational_accident_and_disease')
+        trade_union_fee_company_pay_2percent = request.POST.get('trade_union_fee_company_pay_2percent')
+        trade_union_fee_member = request.POST.get('trade_union_fee_member')
+        family_deduction = request.POST.get('family_deduction')
+        taxable_income = float(gross_income) + float(salary_recuperation) + float(overtime) + float(transportation) + float(phone) + float(lunch) + float(training_fee) + float(toxic_allowance) + float(travel) + float(responsibility) + float(seniority_bonus) + float(other) + float(total_allowance_recuperation) + float(benefits) + float(severance_allowance) + float(outstanding_annual_leave) + float(month_13_salary_Pro_ata)
+        # taxed_income
+        combo = taxable_income - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(family_deduction)
+        if combo < 0:
+            taxed_income = 0
+        else:
+            taxed_income = combo
+        PIT = round(taxed_income * 20/100)
+        deduct = request.POST.get('deduct')
+        net_income_vnd = round(taxable_income + float(occupational_accident_and_disease) - float(SHUI_10point5percent_employee_pay) - float(recuperation_of_SHU_Ins_10point5percent_staff_pay) - float(PIT) - float(deduct),0)
+        net_income_usd = round(net_income_vnd / float(exchange_rate_usd),0)
+        transfer_bank = request.POST.get('transfer_bank')
+        total_cost_vnd = round(taxable_income + float(SHUI_21point5percent_employer_pay) + float(recuperation_of_SHU_Ins_21point5percent_company_pay) + float(occupational_accident_and_disease) + float(trade_union_fee_company_pay_2percent) + float(trade_union_fee_member) + float(transfer_bank) - float(deduct),0)
+        total_cost_usd = total_cost_vnd / float(exchange_rate_usd)
+        note = request.POST.get('note')
+        payroll_Marjorie_info = Payroll_Marjorie(month=period_month,employee=marjorie,
+                                       exchange_rate_usd=exchange_rate_usd,
+                                       salary_usd=salary_usd,salary_vnd=salary_vnd,
+                                       working_days=working_days,adjust_percent=adjust_percent,
+                                       gross_income=gross_income,salary_recuperation=salary_recuperation,
+                                       overtime=overtime,transportation=transportation,phone=phone,lunch=lunch,training_fee=training_fee,toxic_allowance=toxic_allowance,travel=travel,
+                                       responsibility=responsibility,seniority_bonus=seniority_bonus,other=other,total_allowance_recuperation=total_allowance_recuperation,benefits=benefits,
+                                       severance_allowance=severance_allowance,outstanding_annual_leave=outstanding_annual_leave,month_13_salary_Pro_ata=month_13_salary_Pro_ata,SHUI_10point5percent_employee_pay=SHUI_10point5percent_employee_pay,recuperation_of_SHU_Ins_10point5percent_staff_pay=recuperation_of_SHU_Ins_10point5percent_staff_pay,
+                                       SHUI_21point5percent_employer_pay=SHUI_21point5percent_employer_pay,recuperation_of_SHU_Ins_21point5percent_company_pay=recuperation_of_SHU_Ins_21point5percent_company_pay,occupational_accident_and_disease=occupational_accident_and_disease,trade_union_fee_company_pay_2percent=trade_union_fee_company_pay_2percent,trade_union_fee_member=trade_union_fee_member,
+                                       family_deduction=family_deduction,taxable_income=taxable_income,taxed_income=taxed_income,PIT=PIT,deduct=deduct,
+                                       net_income_vnd=net_income_vnd,net_income_usd=net_income_usd,transfer_bank=transfer_bank,total_cost_vnd=total_cost_vnd,total_cost_usd=total_cost_usd,
+                                       note=note)  
+        payroll_Marjorie_info.save()
+        
+        
         # Create PIT
         payroll_tedis = Payroll_Tedis.objects.filter(employee__in=list_employee_tedis_HCM,month=period_month)
         for payroll in payroll_tedis: 
@@ -5342,7 +5412,7 @@ def report_payroll_tedis(request, pk):
         payment_salary_employee_HANOI_info.save()
         # Salary MARJORIE HCM
         payment_salary_MARJORIE_HCM_info = Report_Payment_Payroll_Tedis(month=period_month,
-                                                                        item='SALARY',description='MARJORIE',area='HCM',amount=0,
+                                                                        item='SALARY',description='MARJORIE',area='HCM',amount=net_income_vnd,
                                                                         paidby='Cash',paidto='Marjorie',account_no='')
         payment_salary_MARJORIE_HCM_info.save()
         '''SHUI'''
@@ -5413,7 +5483,7 @@ def report_payroll_tedis(request, pk):
         # PIT MARJORIE
         month_string = str(period_month.month_number) + '/' + str(period_month.period.period_year)
         payment_PIT_MARJORIE_info = Report_Payment_Payroll_Tedis(month=period_month,
-                                                                item='PIT',description='PIT Ms. MARJORIE',area='HCM',amount=0,
+                                                                item='PIT',description='PIT Ms. MARJORIE',area='HCM',amount=PIT,
                                                                 paidby='Transfer',paidto='Tax HCM ',account_no='Cục thuế TP.HCM - 7111.1056137 - KBNN TP.HCM  MST 0310648270  tháng ' + month_string)
         payment_PIT_MARJORIE_info.save()
         '''TRADE UNION'''
@@ -5447,6 +5517,9 @@ def report_payroll_tedis(request, pk):
                                                             item='TRADE UNION',description='Trade Union fee HA NOI',area='HANOI',amount=trade_union_fee_company_HANOI_amount,
                                                             paidby='Transfer',paidto='Trade Union',account_no='Liên đoàn lao động Quận Ba Đình - 111000000272 - NH Vietinbank - CN Ba Đình - Hà Nội  Nội dung: MST 0102666127 VPĐD CÔNG TY TEDIS TẠI TP. HÀ NỘI nộp KPCĐ 2% tháng 03/2023')
         payment_trade_union_fee_company_HANOI_info.save()
+        
+        
+        
         
         
         
@@ -5568,7 +5641,7 @@ def report_payroll_tedis(request, pk):
         for index, pit_data in enumerate(report_pit_payroll):
             # Set row height
             ws_PIT.row(3+index).height_mismatch = True
-            ws_PIT.row(3+index).height = 400
+            ws_PIT.row(3+index).height = 600
             # Write data
             ws_PIT.write(3+index, 0, str(index+1),style_normal)
             ws_PIT.write(3+index, 1, str(pit_data.employee.employee_code),style_normal)
@@ -6004,6 +6077,243 @@ def report_payroll_tedis(request, pk):
         ws_PaymentHCM.write(last_row_trade_union + 5, 7, 'Vu Chau Kim Anh', style_footer)
         ws_PaymentHCM.write_merge(last_row_trade_union + 6, last_row_trade_union + 6 , 1, 2, datetime.now().strftime('%d/%m/%Y'), style_date)  
         ws_PaymentHCM.write(last_row_trade_union + 6, 7, datetime.now().strftime('%d/%m/%Y'), style_date)      
+        
+        
+        
+        '''Sheet Payroll Marjorie'''
+        # Style
+        # xlwt color url: https://docs.google.com/spreadsheets/d/1ihNaZcUh7961yU7db1-Db0lbws4NT24B7koY8v8GHNQ/pubhtml?gid=1072579560&single=true
+        style_head_11pt_vertbot = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: vert bottom' % 'white')
+        style_head_12pt_vertcen_horizleft = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 240, name Arial, colour black; align: horiz left,vert center' % 'white')
+        style_head_16pt_bold = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 320, name Arial, colour black; align: horiz left, vert bottom' % 'white')
+        style_head_22pt_bold_vertbot = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 440, name Arial, colour black; align: vert bottom' % 'white')
+        style_11pt_horizright = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: horiz right, vert center' % 'white')
+        style_11pt_horizleft = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: horiz left, vert center' % 'white')
+        style_tablehead_grey25 = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top medium, bottom medium;'
+                                    'font: bold 1,height 200, name Arial, colour black; align: horiz center, vert center' % '67')
+        style_tablehead_grey25.alignment.wrap = 1
+        style_tablefooterdata_grey25 = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 200, name Arial, colour black; align: horiz right, vert center' % '67')
+        style_tablefooterdata_grey25.alignment.wrap = 1
+        style_tablebody = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: horiz center, vert center' % 'white')
+        style_tablebody.alignment.wrap = 1
+        style_tablebody_onlyvertcenter = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                     'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 0,height 220, name Arial, colour black; align: vert center' % 'white')
+        style_tablebody_onlyvertcenter.alignment.wrap = 1
+        style_footer_bold_10pt_vertcen_horizleft = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 200, name Arial, colour black; align: horiz left,vert center' % 'white')
+        style_footer_10pt_bold_vertcen_horizleft = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 1,height 200, name Arial, colour black; align: horiz left,vert center' % 'white')
+        style_footer_10pt_bold_vertcen_horizleft.alignment.wrap = 1
+        style_footer_date = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                    'font: bold 0,height 200, name Arial, colour black; align: horiz left,vert center' % 'white')
+        
+        # Create sheet
+        ws_PayrollMarjorie = wb.add_sheet(str(period_month.month_name)+ ' Ser')
+        # Set col width
+        ws_PayrollMarjorie.col(0).width = 1652
+        ws_PayrollMarjorie.col(1).width = 2535
+        ws_PayrollMarjorie.col(2).width = 5423
+        ws_PayrollMarjorie.col(3).width = 2973
+        ws_PayrollMarjorie.col(4).width = 4840
+        ws_PayrollMarjorie.col(5).width = 4363
+        for i in range(6,44):
+            if i == 8:
+                ws_PayrollMarjorie.col(i).width = 2170
+            else:
+                ws_PayrollMarjorie.col(i).width = 3263
+        
+        # Set row height
+        ws_PayrollMarjorie.row(0).height_mismatch = True
+        ws_PayrollMarjorie.row(0).height = 1035
+        ws_PayrollMarjorie.row(1).height_mismatch = True
+        ws_PayrollMarjorie.row(1).height = 585
+        ws_PayrollMarjorie.row(2).height_mismatch = True
+        ws_PayrollMarjorie.row(2).height = 300
+        ws_PayrollMarjorie.row(3).height_mismatch = True
+        ws_PayrollMarjorie.row(3).height = 900
+        ws_PayrollMarjorie.row(4).height_mismatch = True
+        ws_PayrollMarjorie.row(4).height = 650
+        ws_PayrollMarjorie.row(5).height_mismatch = True
+        ws_PayrollMarjorie.row(5).height = 650
+        ws_PayrollMarjorie.row(6).height_mismatch = True
+        ws_PayrollMarjorie.row(6).height = 2080
+        ws_PayrollMarjorie.row(7).height_mismatch = True
+        ws_PayrollMarjorie.row(7).height = 930
+        ws_PayrollMarjorie.row(8).height_mismatch = True
+        ws_PayrollMarjorie.row(8).height = 900
+        ws_PayrollMarjorie.row(9).height_mismatch = True
+        ws_PayrollMarjorie.row(9).height = 660
+        ws_PayrollMarjorie.row(10).height_mismatch = True
+        ws_PayrollMarjorie.row(10).height = 660
+        ws_PayrollMarjorie.row(11).height_mismatch = True
+        ws_PayrollMarjorie.row(11).height = 255
+        ws_PayrollMarjorie.row(12).height_mismatch = True
+        ws_PayrollMarjorie.row(12).height = 2220
+        
+        # Head
+        ws_PayrollMarjorie.write(0, 3, 'TEDIS REP. OFFICE IN HO CHI MINH', style_head_16pt_bold)
+        ws_PayrollMarjorie.write(1, 3, ' Room 2B, Floor 2 & 4 - 150 Nguyen Luong Bang, Tan Phu Ward, District 7', style_head_11pt_vertbot)
+        ws_PayrollMarjorie.write(3, 3, 'PAYROLL IN  ' + str(period_month.month_name), style_head_22pt_bold_vertbot)
+        
+        ws_PayrollMarjorie.write(4, 0, 'Working days:', style_head_12pt_vertcen_horizleft)
+        ws_PayrollMarjorie.write(4, 3, str(period_month.total_work_days_bo), style_head_12pt_vertcen_horizleft)
+        ws_PayrollMarjorie.write(5, 0, 'Exchange rate (USD)', style_head_12pt_vertcen_horizleft)
+        ws_PayrollMarjorie.write(5, 3, str("{:,.0f}".format(payroll_Marjorie.exchange_rate_usd)), style_head_12pt_vertcen_horizleft)
+        
+        
+        # Table
+        # Table-head
+        ws_PayrollMarjorie.write(6, 0, 'No', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 1, 'Code staff', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 2, 'Full name', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 3, 'Joining Date', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 4, 'Department/Area', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 5, 'Job Title', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 6, 'Salary (USD)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 7, 'Salary (VND)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 8, 'Working days', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 9, '% Adjust', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 10, 'Gross Income', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 11, 'Salary recuperation', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 12, 'Overtime', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 13, 'Transportation', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 14, 'Phone', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 15, 'Lunch', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 16, 'Training fee', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 17, 'Toxic Allowance', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 18, 'Travel', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 19, 'Responsibility', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 20, 'Seniority Bonus', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 21, 'Others', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 22, 'Total allowance recuperation', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 23, 'Benefits', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 24, 'Severance Allowance', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 25, 'Outstanding annual leave', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 26, '13th salary(Pro-ata)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 27, 'SHUI(10.5%)(Employee pay)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 28, 'Recuperation of SHU Ins.(10.5%)(staff pay)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 29, 'SHUI(21.5%)(Employer pay)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 30, 'Recuperation of SHU Ins.(21.5%)(Company pay)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 31, 'Occupational accident and disease Ins.(0.5%)(Pay for staffs)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 32, 'Trade Union fee (Company pay 2%)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 33, 'Trade Union fee (Member)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 34, 'Family deduction', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 35, 'Taxable Income', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 36, 'Taxed Income', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 37, 'PIT', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 38, 'Deduct', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 39, 'Net Income (VND)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 40, 'Net Income (EURO)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 41, 'Transfer Bank', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 42, 'Total Cost (VND)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 43, 'Total Cost (USD)', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(6, 44, 'Note', style_tablehead_grey25)
+        # Table-Body
+        ws_PayrollMarjorie.write(7, 0, '1',style_normal)
+        ws_PayrollMarjorie.write(7, 1, str(payroll_Marjorie.employee.employee_code),style_normal)
+        ws_PayrollMarjorie.write(7, 2, str(payroll_Marjorie.employee.full_name),style_normal)
+        ws_PayrollMarjorie.write(7, 3, str(payroll_Marjorie.employee.joining_date.strftime('%d/%m/%Y')),style_normal)
+        ws_PayrollMarjorie.write(7, 4, str(payroll_Marjorie.employee.department_e),style_normal)
+        ws_PayrollMarjorie.write(7, 5, str(payroll_Marjorie.employee.position_e),style_normal)
+        ws_PayrollMarjorie.write(7, 6, str("{:,.0f}".format(payroll_Marjorie.salary_usd)),style_normal)
+        ws_PayrollMarjorie.write(7, 7, str("{:,.0f}".format(payroll_Marjorie.salary_vnd)),style_normal)
+        ws_PayrollMarjorie.write(7, 8, str(payroll_Marjorie.working_days),style_normal)
+        ws_PayrollMarjorie.write(7, 9, str(payroll_Marjorie.adjust_percent) + '%',style_normal)
+        ws_PayrollMarjorie.write(7, 10, str("{:,.0f}".format(payroll_Marjorie.gross_income)),style_normal)
+        ws_PayrollMarjorie.write(7, 11, str("{:,.0f}".format(payroll_Marjorie.salary_recuperation)),style_normal)
+        ws_PayrollMarjorie.write(7, 12, str("{:,}".format(payroll_Marjorie.overtime)),style_normal)
+        ws_PayrollMarjorie.write(7, 13, str("{:,.0f}".format(payroll_Marjorie.transportation)),style_normal)
+        ws_PayrollMarjorie.write(7, 14, str("{:,.0f}".format(payroll_Marjorie.phone)),style_normal)
+        ws_PayrollMarjorie.write(7, 15, str("{:,.0f}".format(payroll_Marjorie.lunch)),style_normal)
+        ws_PayrollMarjorie.write(7, 16, str("{:,.0f}".format(payroll_Marjorie.training_fee)),style_normal)
+        ws_PayrollMarjorie.write(7, 17, str("{:,.0f}".format(payroll_Marjorie.toxic_allowance)),style_normal)
+        ws_PayrollMarjorie.write(7, 18, str("{:,.0f}".format(payroll_Marjorie.travel)),style_normal)
+        ws_PayrollMarjorie.write(7, 19, str("{:,.0f}".format(payroll_Marjorie.responsibility)),style_normal)
+        ws_PayrollMarjorie.write(7, 20, str("{:,.0f}".format(payroll_Marjorie.seniority_bonus)),style_normal)
+        ws_PayrollMarjorie.write(7, 21, str("{:,.0f}".format(payroll_Marjorie.other)),style_normal)
+        ws_PayrollMarjorie.write(7, 22, str("{:,.0f}".format(payroll_Marjorie.total_allowance_recuperation)),style_normal)
+        ws_PayrollMarjorie.write(7, 23, str("{:,.0f}".format(payroll_Marjorie.benefits)),style_normal)
+        ws_PayrollMarjorie.write(7, 24, str("{:,.0f}".format(payroll_Marjorie.severance_allowance)),style_normal)
+        ws_PayrollMarjorie.write(7, 25, str("{:,.0f}".format(payroll_Marjorie.outstanding_annual_leave)),style_normal)
+        ws_PayrollMarjorie.write(7, 26, str("{:,.0f}".format(payroll_Marjorie.month_13_salary_Pro_ata)),style_normal)
+        ws_PayrollMarjorie.write(7, 27, str("{:,.0f}".format(payroll_Marjorie.SHUI_10point5percent_employee_pay)),style_normal)
+        ws_PayrollMarjorie.write(7, 28, str("{:,.0f}".format(payroll_Marjorie.recuperation_of_SHU_Ins_10point5percent_staff_pay)),style_normal)
+        ws_PayrollMarjorie.write(7, 29, str("{:,.0f}".format(payroll_Marjorie.SHUI_21point5percent_employer_pay)),style_normal)
+        ws_PayrollMarjorie.write(7, 30, str("{:,.0f}".format(payroll_Marjorie.recuperation_of_SHU_Ins_21point5percent_company_pay)),style_normal)
+        ws_PayrollMarjorie.write(7, 31, str("{:,.0f}".format(payroll_Marjorie.occupational_accident_and_disease)),style_normal)
+        ws_PayrollMarjorie.write(7, 32, str("{:,.0f}".format(payroll_Marjorie.trade_union_fee_company_pay_2percent)),style_normal)
+        ws_PayrollMarjorie.write(7, 33, str("{:,.0f}".format(payroll_Marjorie.trade_union_fee_member)),style_normal)
+        ws_PayrollMarjorie.write(7, 34, str("{:,.0f}".format(payroll_Marjorie.family_deduction)),style_normal)
+        ws_PayrollMarjorie.write(7, 35, str("{:,.0f}".format(payroll_Marjorie.taxable_income)),style_normal)
+        ws_PayrollMarjorie.write(7, 36, str("{:,.0f}".format(payroll_Marjorie.taxed_income)),style_normal)
+        ws_PayrollMarjorie.write(7, 37, str("{:,.0f}".format(payroll_Marjorie.PIT)),style_normal)
+        ws_PayrollMarjorie.write(7, 38, str("{:,.0f}".format(payroll_Marjorie.deduct)),style_normal)
+        ws_PayrollMarjorie.write(7, 39, str("{:,.0f}".format(payroll_Marjorie.net_income_vnd)),style_normal)
+        ws_PayrollMarjorie.write(7, 40, str("{:,.0f}".format(payroll_Marjorie.net_income_usd)),style_normal)
+        ws_PayrollMarjorie.write(7, 41, str("{:,.0f}".format(payroll_Marjorie.transfer_bank)),style_normal)
+        ws_PayrollMarjorie.write(7, 42, str("{:,.0f}".format(payroll_Marjorie.total_cost_vnd)),style_normal)
+        ws_PayrollMarjorie.write(7, 43, str("{:,.0f}".format(payroll_Marjorie.total_cost_usd)),style_normal)
+        ws_PayrollMarjorie.write(7, 44, str(payroll_Marjorie.note),style_normal)    
+        # Table-footer
+        ws_PayrollMarjorie.write_merge(8, 8, 0, 5, 'TOTAL', style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 6, str("{:,.0f}".format(payroll_Marjorie.salary_usd)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 7, str("{:,.0f}".format(payroll_Marjorie.salary_vnd)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 8, str(payroll_Marjorie.working_days),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 9, str(payroll_Marjorie.adjust_percent) + '%',style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 10, str("{:,.0f}".format(payroll_Marjorie.gross_income)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 11, str("{:,.0f}".format(payroll_Marjorie.salary_recuperation)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 12, str("{:,}".format(payroll_Marjorie.overtime)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 13, str("{:,.0f}".format(payroll_Marjorie.transportation)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 14, str("{:,.0f}".format(payroll_Marjorie.phone)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 15, str("{:,.0f}".format(payroll_Marjorie.lunch)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 16, str("{:,.0f}".format(payroll_Marjorie.training_fee)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 17, str("{:,.0f}".format(payroll_Marjorie.toxic_allowance)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 18, str("{:,.0f}".format(payroll_Marjorie.travel)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 19, str("{:,.0f}".format(payroll_Marjorie.responsibility)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 20, str("{:,.0f}".format(payroll_Marjorie.seniority_bonus)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 21, str("{:,.0f}".format(payroll_Marjorie.other)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 22, str("{:,.0f}".format(payroll_Marjorie.total_allowance_recuperation)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 23, str("{:,.0f}".format(payroll_Marjorie.benefits)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 24, str("{:,.0f}".format(payroll_Marjorie.severance_allowance)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 25, str("{:,.0f}".format(payroll_Marjorie.outstanding_annual_leave)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 26, str("{:,.0f}".format(payroll_Marjorie.month_13_salary_Pro_ata)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 27, str("{:,.0f}".format(payroll_Marjorie.SHUI_10point5percent_employee_pay)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 28, str("{:,.0f}".format(payroll_Marjorie.recuperation_of_SHU_Ins_10point5percent_staff_pay)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 29, str("{:,.0f}".format(payroll_Marjorie.SHUI_21point5percent_employer_pay)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 30, str("{:,.0f}".format(payroll_Marjorie.recuperation_of_SHU_Ins_21point5percent_company_pay)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 31, str("{:,.0f}".format(payroll_Marjorie.occupational_accident_and_disease)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 32, str("{:,.0f}".format(payroll_Marjorie.trade_union_fee_company_pay_2percent)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 33, str("{:,.0f}".format(payroll_Marjorie.trade_union_fee_member)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 34, str("{:,.0f}".format(payroll_Marjorie.family_deduction)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 35, str("{:,.0f}".format(payroll_Marjorie.taxable_income)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 36, str("{:,.0f}".format(payroll_Marjorie.taxed_income)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 37, str("{:,.0f}".format(payroll_Marjorie.PIT)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 38, str("{:,.0f}".format(payroll_Marjorie.deduct)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 39, str("{:,.0f}".format(payroll_Marjorie.net_income_vnd)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 40, str("{:,.0f}".format(payroll_Marjorie.net_income_usd)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 41, str("{:,.0f}".format(payroll_Marjorie.transfer_bank)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 42, str("{:,.0f}".format(payroll_Marjorie.total_cost_vnd)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 43, str("{:,.0f}".format(payroll_Marjorie.total_cost_usd)),style_tablehead_grey25)
+        ws_PayrollMarjorie.write(8, 44, str(payroll_Marjorie.note),style_tablehead_grey25)    
+        # Footer
+        ws_PayrollMarjorie.write(11, 2, 'Reviewed by', style_footer_bold_10pt_vertcen_horizleft)
+        ws_PayrollMarjorie.write(11, 39, 'Approved by', style_footer_bold_10pt_vertcen_horizleft)
+        ws_PayrollMarjorie.write(13, 2, 'Le Thi Thanh Tuyen', style_footer_bold_10pt_vertcen_horizleft)
+        ws_PayrollMarjorie.write(13, 39, 'Vu Chau Kim Anh', style_footer_bold_10pt_vertcen_horizleft)
+        ws_PayrollMarjorie.write(14, 2, datetime.now().strftime('%d/%m/%Y'), style_footer_date)
+        ws_PayrollMarjorie.write(14, 39, datetime.now().strftime('%d/%m/%Y'), style_footer_date)
             
 
         wb.save(response)
@@ -6015,6 +6325,7 @@ def report_payroll_tedis(request, pk):
     return render(request, 'employee/view_report_payroll_tedis.html', {
         'period_month' : period_month,
         'report_payrollExist' : report_payrollExist,
+        'payroll_Marjorie' : payroll_Marjorie,
         'report_pit_payroll' : report_pit_payroll,
         'report_transfer_payroll' : report_transfer_payroll,
         'report_payment_payroll' : report_payment_payroll,
@@ -10945,8 +11256,7 @@ def pdf_time_sheets(request,pk):
     return HttpResponse(html_string)
     
     
-    
-    
+'''Report'''
 def report_leave(request):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
@@ -11110,10 +11420,3247 @@ def report_leave(request):
         'default_period' : default_period,
         'list_data' : list_data,
     })
+    
 
 
+def hr_budget_and_cashflow(request,pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3: # HR Access only
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
+    # Get and redirect to present period year
+    present_year = datetime.now().year
+    present_period = Period.objects.get(period_year=present_year)
+    if present_period.id == pk:
+        pass
+    else:
+        return redirect('employee:hr_budget_and_cashflow',pk=present_period.id)
+    
+    # Previous and next period button
+    if request.POST.get('btn_previousperiod'):
+        try:
+            previous_period = Period.objects.get(period_year=present_period.period_year-1)
+            return redirect('employee:period',pk=previous_period.id)
+        except Period.DoesNotExist:
+            messages.error(request, 'Period does not exist.')
+    
+    if request.POST.get('btn_nextperiod'):
+        try:
+            previous_period = Period.objects.get(period_year=present_period.period_year+1)
+            return redirect('employee:period',pk=previous_period.id)
+        except Period.DoesNotExist:
+            messages.error(request, 'Period does not exist.')
+            
+    # Get months in period
+    months_in_period = Month_in_period.objects.filter(period=present_period)
+        
+    
+    return render(request, 'employee/report_hr_budget_and_cashflow.html', {
+        'present_period' : present_period, 
+        'months_in_period' : months_in_period,
+    })
 
 
+def hr_budget_and_cashflow_view(request,pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3: # HR Access only
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
+    # Get period month
+    period_month = Month_in_period.objects.get(pk=pk)
+    str_current_year = str(period_month.period.period_year)
+    current_year_months = Month_in_period.objects.filter(period__period_year=period_month.period.period_year)
+    
+    # Get employees có active=1 và active=0 nhưng out_date trong năm
+    employees_active = Employee.objects.filter(active=1)
+    employees_out_date_in_year = Employee.objects.filter(active=0,out_date__year=period_month.period.period_year)
+    list_employees = employees_active | employees_out_date_in_year
+    
+    # Get last year
+    last_year = int(period_month.period.period_year) - 1
+    last_year_months = Month_in_period.objects.filter(period__period_year=last_year) ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###
+    
+    # Tạo list data
+    list_data = []
+    for employee in list_employees:
+        # Get payroll last year
+        site_RO = Site.objects.get(site='RO')
+        site_JV = Site.objects.get(site='JV')
+        site_VH = Site.objects.get(site='VH')
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                list_payroll_last_year = Payroll_Ser.objects.filter(month__in=last_year_months)
+                # Get salary for data
+                if list_payroll_last_year.count() == 0:
+                    basic_salary_last_year = ''
+                else:
+                    basic_salary_last_year = list_payroll_last_year[::-1][0].salary_vnd
+                    
+                basic_salary_full_last_year = 0
+                overtime_full_last_year = 0
+                transportation_full_last_year = 0
+                phone_salary_full_last_year = 0 
+                lunch_salary_full_last_year = 0
+                housing_salary_full_last_year = 0
+                KPI_achievement_salary_full_last_year = 0
+                others_salary_full_last_year = 0
+                travel_salary_full_last_year = 0
+                seniority_bonus_salary_full_last_year = 0
+                responsibility_allowance_salary_full_last_year = 0
+                total_allowance_salary_full_last_year = 0
+                gross_income_salary_full_last_year = 0
+                SHUI_21point5percent_company_pay_salary_full_last_year = 0
+                trade_union_fee_company_pay_2percent_salary_full_last_year = 0
+                trade_union_fee_member_salary_full_last_year = 0
+                transfer_bank_salary_full_last_year = 0
+                month_13_salary_Pro_ata_full_last_year = 0
+                for payroll in list_payroll_last_year:
+                    basic_salary_full_last_year += payroll.gross_income
+                    phone_salary_full_last_year += payroll.phone
+                    lunch_salary_full_last_year += payroll.lunch
+                    housing_salary_full_last_year += payroll.housing_vnd
+                    others_salary_full_last_year += payroll.other
+                    travel_salary_full_last_year += payroll.travel
+                    seniority_bonus_salary_full_last_year += payroll.seniority_bonus
+                    responsibility_allowance_salary_full_last_year += payroll.responsibility
+                    # total_allowance_salary_full_last_year
+                    total_allowance_salary_full_last_year += payroll.phone
+                    total_allowance_salary_full_last_year += payroll.lunch
+                    total_allowance_salary_full_last_year += payroll.housing_vnd
+                    total_allowance_salary_full_last_year += payroll.other
+                    total_allowance_salary_full_last_year += payroll.travel
+                    total_allowance_salary_full_last_year += payroll.seniority_bonus
+                    total_allowance_salary_full_last_year += payroll.responsibility
+                    # gross_income_salary_full_last_year
+                    gross_income_salary_full_last_year += payroll.gross_income
+                    # SHUI_21point5percent_company_pay_salary_full_last_year
+                    SHUI_21point5percent_company_pay_salary_full_last_year += payroll.SHUI_9point5percent_employee_pay
+                    SHUI_21point5percent_company_pay_salary_full_last_year += payroll.SHUI_20point5percent_employer_pay
+                    # trade_union_fee_company_pay_2percent_salary_full_last_year
+                    trade_union_fee_company_pay_2percent_salary_full_last_year += payroll.trade_union_fee_company_pay
+                    # trade_union_fee_member_salary_full_last_year
+                    trade_union_fee_member_salary_full_last_year += payroll.trade_union_fee_member
+                    # month_13_salary_Pro_ata_full_last_year 
+                    month_13_salary_Pro_ata_full_last_year += payroll.month_13_salary_Pro_ata
+                    
+                    
+                gross_income_salary_full_last_year += total_allowance_salary_full_last_year
+                    
+                    
+                    
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                list_payroll_last_year = Payroll_Marjorie.objects.filter(month__in=last_year_months)
+                # Get salary for data
+                if list_payroll_last_year.count() == 0:
+                    basic_salary_last_year = ''
+                else:
+                    basic_salary_last_year = list_payroll_last_year[::-1][0].salary_vnd
+                    
+                basic_salary_full_last_year = 0
+                overtime_full_last_year = 0
+                transportation_full_last_year = 0
+                phone_salary_full_last_year = 0
+                lunch_salary_full_last_year = 0
+                housing_salary_full_last_year = 0
+                KPI_achievement_salary_full_last_year = 0
+                others_salary_full_last_year = 0
+                travel_salary_full_last_year = 0
+                seniority_bonus_salary_full_last_year = 0
+                responsibility_allowance_salary_full_last_year = 0
+                total_allowance_salary_full_last_year = 0
+                gross_income_salary_full_last_year = 0
+                SHUI_21point5percent_company_pay_salary_full_last_year = 0
+                trade_union_fee_company_pay_2percent_salary_full_last_year = 0
+                trade_union_fee_member_salary_full_last_year = 0
+                transfer_bank_salary_full_last_year = 0
+                month_13_salary_Pro_ata_full_last_year = 0
+                for payroll in list_payroll_last_year:
+                    basic_salary_full_last_year += payroll.gross_income
+                    overtime_full_last_year += payroll.overtime
+                    transportation_full_last_year += payroll.transportation
+                    phone_salary_full_last_year += payroll.phone
+                    lunch_salary_full_last_year += payroll.lunch
+                    others_salary_full_last_year += payroll.other
+                    travel_salary_full_last_year += payroll.travel
+                    seniority_bonus_salary_full_last_year += payroll.seniority_bonus
+                    responsibility_allowance_salary_full_last_year += payroll.responsibility
+                    # total_allowance_salary_full_last_year
+                    total_allowance_salary_full_last_year += payroll.overtime
+                    total_allowance_salary_full_last_year += payroll.transportation
+                    total_allowance_salary_full_last_year += payroll.phone
+                    total_allowance_salary_full_last_year += payroll.lunch
+                    total_allowance_salary_full_last_year += payroll.other
+                    total_allowance_salary_full_last_year += payroll.travel
+                    total_allowance_salary_full_last_year += payroll.seniority_bonus
+                    total_allowance_salary_full_last_year += payroll.responsibility
+                    # gross_income_salary_full_last_year
+                    gross_income_salary_full_last_year += payroll.gross_income
+                    # trade_union_fee_company_pay_2percent_salary_full_last_year
+                    trade_union_fee_company_pay_2percent_salary_full_last_year += payroll.trade_union_fee_company_pay_2percent
+                    # trade_union_fee_member_salary_full_last_year
+                    trade_union_fee_member_salary_full_last_year += payroll.trade_union_fee_member
+                    # transfer_bank_salary_full_last_year
+                    transfer_bank_salary_full_last_year += payroll.transfer_bank
+                    # month_13_salary_Pro_ata_full_last_year
+                    month_13_salary_Pro_ata_full_last_year += payroll.month_13_salary_Pro_ata
+                    
+                gross_income_salary_full_last_year += total_allowance_salary_full_last_year
+                    
+                    
+                    
+            else:
+                list_payroll_last_year = Payroll_Tedis.objects.filter(employee=employee,month__in=last_year_months)
+                # Get salary for data
+                if list_payroll_last_year.count() == 0:
+                    basic_salary_last_year = ''
+                else:
+                    basic_salary_last_year = list_payroll_last_year[::-1][0].newest_salary
+                    
+                basic_salary_full_last_year = 0
+                overtime_full_last_year = 0
+                transportation_full_last_year = 0 
+                phone_salary_full_last_year = 0
+                lunch_salary_full_last_year = 0
+                housing_salary_full_last_year = 0
+                KPI_achievement_salary_full_last_year = 0
+                others_salary_full_last_year = 0
+                travel_salary_full_last_year = 0
+                seniority_bonus_salary_full_last_year = 0
+                responsibility_allowance_salary_full_last_year = 0
+                total_allowance_salary_full_last_year = 0
+                gross_income_salary_full_last_year = 0
+                SHUI_21point5percent_company_pay_salary_full_last_year = 0
+                trade_union_fee_company_pay_2percent_salary_full_last_year = 0
+                trade_union_fee_member_salary_full_last_year = 0
+                transfer_bank_salary_full_last_year = 0
+                month_13_salary_Pro_ata_full_last_year = 0
+                for payroll in list_payroll_last_year:
+                    basic_salary_full_last_year += payroll.gross_income
+                    overtime_full_last_year += payroll.overtime
+                    transportation_full_last_year += payroll.transportation
+                    phone_salary_full_last_year += payroll.phone
+                    lunch_salary_full_last_year += payroll.lunch
+                    others_salary_full_last_year += payroll.other
+                    travel_salary_full_last_year += payroll.travel
+                    seniority_bonus_salary_full_last_year += payroll.seniority_bonus
+                    responsibility_allowance_salary_full_last_year += payroll.responsibility
+                    # total_allowance_salary_full_last_year
+                    total_allowance_salary_full_last_year += payroll.overtime
+                    total_allowance_salary_full_last_year += payroll.transportation
+                    total_allowance_salary_full_last_year += payroll.phone
+                    total_allowance_salary_full_last_year += payroll.lunch
+                    total_allowance_salary_full_last_year += payroll.other
+                    total_allowance_salary_full_last_year += payroll.travel
+                    total_allowance_salary_full_last_year += payroll.seniority_bonus
+                    total_allowance_salary_full_last_year += payroll.responsibility
+                    # gross_income_salary_full_last_year
+                    gross_income_salary_full_last_year += payroll.gross_income
+                    # SHUI_21point5percent_company_pay_salary_full_last_year
+                    SHUI_21point5percent_company_pay_salary_full_last_year += payroll.SHUI_21point5percent_company_pay
+                    # trade_union_fee_company_pay_2percent_salary_full_last_year
+                    trade_union_fee_company_pay_2percent_salary_full_last_year += payroll.trade_union_fee_company_pay_2percent
+                    # trade_union_fee_member_salary_full_last_year
+                    trade_union_fee_member_salary_full_last_year += payroll.trade_union_fee_member
+                    # transfer_bank_salary_full_last_year
+                    transfer_bank_salary_full_last_year += payroll.transfer_bank
+                    # month_13_salary_Pro_ata_full_last_year
+                    month_13_salary_Pro_ata_full_last_year += payroll.month_13_salary_Pro_ata
+                    
+                gross_income_salary_full_last_year += total_allowance_salary_full_last_year
+                    
+                    
+        elif employee.site == site_JV:
+            list_payroll_last_year = Payroll_Tedis_Vietha.objects.filter(employee=employee,month__in=last_year_months)
+            # Get salary for data
+            if list_payroll_last_year.count() == 0:
+                basic_salary_last_year = ''
+            else:
+                basic_salary_last_year = list_payroll_last_year[::-1][0].newest_salary
+                
+            basic_salary_full_last_year = 0
+            overtime_full_last_year = 0
+            transportation_full_last_year = 0
+            phone_salary_full_last_year = 0
+            lunch_salary_full_last_year = 0
+            housing_salary_full_last_year = 0
+            KPI_achievement_salary_full_last_year = 0
+            others_salary_full_last_year = 0
+            travel_salary_full_last_year = 0
+            seniority_bonus_salary_full_last_year = 0
+            responsibility_allowance_salary_full_last_year = 0
+            total_allowance_salary_full_last_year = 0
+            gross_income_salary_full_last_year = 0
+            SHUI_21point5percent_company_pay_salary_full_last_year = 0
+            trade_union_fee_company_pay_2percent_salary_full_last_year = 0
+            trade_union_fee_member_salary_full_last_year = 0
+            transfer_bank_salary_full_last_year = 0
+            month_13_salary_Pro_ata_full_last_year = 0
+            for payroll in list_payroll_last_year:
+                basic_salary_full_last_year += payroll.gross_income
+                overtime_full_last_year += payroll.overtime
+                transportation_full_last_year += payroll.transportation
+                phone_salary_full_last_year += payroll.phone
+                lunch_salary_full_last_year += payroll.lunch
+                KPI_achievement_salary_full_last_year += payroll.KPI_achievement
+                others_salary_full_last_year += payroll.other
+                travel_salary_full_last_year += payroll.travel
+                seniority_bonus_salary_full_last_year += payroll.seniority_bonus
+                responsibility_allowance_salary_full_last_year += payroll.responsibility
+                # total_allowance_salary_full_last_year
+                total_allowance_salary_full_last_year += payroll.overtime
+                total_allowance_salary_full_last_year += payroll.transportation
+                total_allowance_salary_full_last_year += payroll.phone
+                total_allowance_salary_full_last_year += payroll.lunch
+                total_allowance_salary_full_last_year += payroll.KPI_achievement
+                total_allowance_salary_full_last_year += payroll.other
+                total_allowance_salary_full_last_year += payroll.travel
+                total_allowance_salary_full_last_year += payroll.seniority_bonus
+                total_allowance_salary_full_last_year += payroll.responsibility
+                # gross_income_salary_full_last_year
+                gross_income_salary_full_last_year += payroll.gross_income
+                # SHUI_21point5percent_company_pay_salary_full_last_year
+                SHUI_21point5percent_company_pay_salary_full_last_year += payroll.SHUI_21point5percent_company_pay
+                # trade_union_fee_company_pay_2percent_salary_full_last_year
+                trade_union_fee_company_pay_2percent_salary_full_last_year += payroll.trade_union_fee_company_pay
+                # trade_union_fee_member_salary_full_last_year
+                trade_union_fee_member_salary_full_last_year += payroll.trade_union_fee_employee_pay
+                # transfer_bank_salary_full_last_year
+                transfer_bank_salary_full_last_year += payroll.transfer_bank
+                # month_13_salary_Pro_ata_full_last_year
+                month_13_salary_Pro_ata_full_last_year += payroll.month_13_salary_Pro_ata
+                
+                
+            gross_income_salary_full_last_year += total_allowance_salary_full_last_year
+                
+                
+        elif employee.site == site_VH:
+            list_payroll_last_year = Payroll_Vietha.objects.filter(employee=employee,month__in=last_year_months)
+            # Get salary for data
+            if list_payroll_last_year.count() == 0:
+                    basic_salary_last_year = ''
+            else:
+                basic_salary_last_year = list_payroll_last_year[::-1][0].newest_salary
+                
+            basic_salary_full_last_year = 0
+            overtime_full_last_year = 0
+            transportation_full_last_year = 0
+            phone_salary_full_last_year = 0
+            lunch_salary_full_last_year = 0
+            housing_salary_full_last_year = 0
+            KPI_achievement_salary_full_last_year = 0
+            others_salary_full_last_year = 0
+            travel_salary_full_last_year = 0
+            seniority_bonus_salary_full_last_year = 0
+            responsibility_allowance_salary_full_last_year = 0
+            total_allowance_salary_full_last_year = 0
+            gross_income_salary_full_last_year = 0
+            SHUI_21point5percent_company_pay_salary_full_last_year = 0
+            trade_union_fee_company_pay_2percent_salary_full_last_year = 0
+            trade_union_fee_member_salary_full_last_year = 0
+            transfer_bank_salary_full_last_year = 0
+            month_13_salary_Pro_ata_full_last_year = 0
+            for payroll in list_payroll_last_year:
+                basic_salary_full_last_year += payroll.gross_income
+                overtime_full_last_year += payroll.overtime
+                transportation_full_last_year += payroll.transportation
+                phone_salary_full_last_year += payroll.phone
+                lunch_salary_full_last_year += payroll.lunch
+                others_salary_full_last_year += payroll.other
+                responsibility_allowance_salary_full_last_year += payroll.responsibility
+                # total_allowance_salary_full_last_year
+                total_allowance_salary_full_last_year += payroll.overtime
+                total_allowance_salary_full_last_year += payroll.transportation
+                total_allowance_salary_full_last_year += payroll.phone
+                total_allowance_salary_full_last_year += payroll.lunch
+                total_allowance_salary_full_last_year += payroll.other
+                total_allowance_salary_full_last_year += payroll.responsibility
+                # gross_income_salary_full_last_year
+                gross_income_salary_full_last_year += payroll.gross_income
+                # SHUI_21point5percent_company_pay_salary_full_last_year
+                SHUI_21point5percent_company_pay_salary_full_last_year += payroll.SHUI_21point5percent_company_pay
+                # trade_union_fee_company_pay_2percent_salary_full_last_year
+                trade_union_fee_company_pay_2percent_salary_full_last_year += payroll.trade_union_fee_company_pay
+                # trade_union_fee_member_salary_full_last_year
+                trade_union_fee_member_salary_full_last_year += payroll.trade_union_fee_staff_pay
+                # transfer_bank_salary_full_last_year
+                transfer_bank_salary_full_last_year += payroll.transfer_bank
+                # month_13_salary_Pro_ata_full_last_year
+                month_13_salary_Pro_ata_full_last_year += payroll.month_13_salary_Pro_ata
+                
+            gross_income_salary_full_last_year += total_allowance_salary_full_last_year
+        
+        '''Get total_remuneration_full_last_year'''
+        total_remuneration_full_last_year = gross_income_salary_full_last_year + SHUI_21point5percent_company_pay_salary_full_last_year + trade_union_fee_company_pay_2percent_salary_full_last_year + trade_union_fee_member_salary_full_last_year + transfer_bank_salary_full_last_year + month_13_salary_Pro_ata_full_last_year
+        
+        '''Get incentive last year'''
+        # incentive_quarter_1_last_year
+        try:
+            incentive_quarter_1_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Quarter 1') ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###  
+            total_remuneration_full_last_year += incentive_quarter_1_last_year.incentive
+        except Report_landing_incentive.DoesNotExist:   
+            incentive_quarter_1_last_year = 'x'
+
+        # incentive_quarter_2_last_year
+        try: 
+            incentive_quarter_2_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Quarter 2') ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###  
+            total_remuneration_full_last_year += incentive_quarter_2_last_year.incentive
+        except Report_landing_incentive.DoesNotExist:   
+            incentive_quarter_2_last_year = 'x'
+            
+        # incentive_quarter_3_last_year
+        try:
+            incentive_quarter_3_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Quarter 3') ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ### 
+            total_remuneration_full_last_year += incentive_quarter_3_last_year.incentive
+        except Report_landing_incentive.DoesNotExist:   
+            incentive_quarter_3_last_year = 'x'
+            
+        # incentive_quarter_4_last_year
+        try:
+            incentive_quarter_4_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Quarter 4') ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ### 
+            total_remuneration_full_last_year += incentive_quarter_4_last_year.incentive
+        except Report_landing_incentive.DoesNotExist:   
+            incentive_quarter_4_last_year = 'x'
+            
+        # incentive_yearly_last_year
+        try:
+            incentive_yearly_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Yearly') ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###   
+            total_remuneration_full_last_year += incentive_yearly_last_year.incentive
+        except Report_landing_incentive.DoesNotExist:   
+            incentive_yearly_last_year = 'x' 
+             
+        '''Get best reward'''
+        try:
+            best_reward_last_year = Report_landing_Best_reward.objects.get(period__period_year=last_year,employee=employee) ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###   
+            total_remuneration_full_last_year += best_reward_last_year.best_reward
+        except Report_landing_Best_reward.DoesNotExist:   
+            best_reward_last_year = 'x' 
+            
+        '''Get month_14_salary_Pro_ata_full_last_year'''
+        try:
+            month_14_salary_Pro_ata_full_last_year = Report_landing_month_14_salary.objects.get(period__period_year=last_year,employee=employee) ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###   
+            total_remuneration_full_last_year += month_14_salary_Pro_ata_full_last_year.month_14_salary
+        except Report_landing_month_14_salary.DoesNotExist:   
+            month_14_salary_Pro_ata_full_last_year = 'x' 
+            
+        '''Get target_value_full_last_year'''
+        target_value_full_last_year = 0 
+        list_target_value_last_year = Report_landing_target_value.objects.filter(month__period__period_year=last_year, employee=employee) ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###
+        for target_value_month in list_target_value_last_year:
+            target_value_full_last_year += target_value_month.target_value
+            
+        '''Get achievement_full_last_year'''
+        achievement_full_last_year = 0 
+        list_achievement_last_year = Report_landing_achievement.objects.filter(month__period__period_year=last_year, employee=employee) ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###
+        for achievement_month in list_achievement_last_year:
+            achievement_full_last_year += achievement_month.achievement
+            
+        '''Get achievement_vs_target_last_year'''  
+        if target_value_full_last_year == 0 or achievement_full_last_year == 0:
+            achievement_vs_target_last_year = ''
+        else: 
+            achievement_vs_target_last_year = round((achievement_full_last_year / target_value_full_last_year) * 100, 1)
+            
+        '''Get total_cost_vs_achievement_last_year'''  
+        if total_remuneration_full_last_year == 0 or achievement_full_last_year == 0:
+            total_cost_vs_achievement_last_year = ''
+        else: 
+            total_cost_vs_achievement_last_year = round((total_remuneration_full_last_year / achievement_full_last_year) * 100, 1)
+            
+        '''Get total_cost_vs_target_last_year'''  
+        if total_remuneration_full_last_year == 0 or target_value_full_last_year == 0:
+            total_cost_vs_target_last_year = ''
+        else: 
+            total_cost_vs_target_last_year = round((total_remuneration_full_last_year / target_value_full_last_year) * 100, 1)    
+
+        
+        # Get payroll current year
+        site_RO = Site.objects.get(site='RO')
+        site_JV = Site.objects.get(site='JV')
+        site_VH = Site.objects.get(site='VH')
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                payrolls_current_year = Payroll_Ser.objects.filter(month__in=current_year_months)
+                # Get forecast payroll for months dont have payroll YET
+                forecast_payroll = Payroll_Ser.objects.filter(month__in=current_year_months,working_days=F('month__total_work_days_bo')).last()
+
+                # Get salary for data
+                list_payroll_current_year = list(payrolls_current_year)
+                list_payroll_current_year += [forecast_payroll] * (12 - payrolls_current_year.count()) 
+                    
+                basic_salary_full_current_year = 0
+                overtime_full_current_year = 0
+                transportation_full_current_year = 0
+                phone_salary_full_current_year = 0 
+                lunch_salary_full_current_year = 0
+                housing_salary_full_current_year = 0
+                KPI_achievement_salary_full_current_year = 0
+                others_salary_full_current_year = 0
+                travel_salary_full_current_year = 0
+                seniority_bonus_salary_full_current_year = 0
+                responsibility_allowance_salary_full_current_year = 0
+                total_allowance_salary_full_current_year = 0
+                gross_income_salary_full_current_year = 0
+                SHUI_21point5percent_company_pay_salary_full_current_year = 0
+                trade_union_fee_company_pay_2percent_salary_full_current_year = 0
+                trade_union_fee_member_salary_full_current_year = 0
+                transfer_bank_salary_full_current_year = 0
+                month_13_salary_Pro_ata_full_current_year = 0
+                for payroll in list_payroll_current_year:
+                    basic_salary_full_current_year += payroll.gross_income
+                    phone_salary_full_current_year += payroll.phone
+                    lunch_salary_full_current_year += payroll.lunch
+                    housing_salary_full_current_year += payroll.housing_vnd
+                    others_salary_full_current_year += payroll.other
+                    travel_salary_full_current_year += payroll.travel
+                    seniority_bonus_salary_full_current_year += payroll.seniority_bonus
+                    responsibility_allowance_salary_full_current_year += payroll.responsibility
+                    # total_allowance_salary_full_current_year
+                    total_allowance_salary_full_current_year += payroll.phone
+                    total_allowance_salary_full_current_year += payroll.lunch
+                    total_allowance_salary_full_current_year += payroll.housing_vnd
+                    total_allowance_salary_full_current_year += payroll.other
+                    total_allowance_salary_full_current_year += payroll.travel
+                    total_allowance_salary_full_current_year += payroll.seniority_bonus
+                    total_allowance_salary_full_current_year += payroll.responsibility
+                    # gross_income_salary_full_current_year
+                    gross_income_salary_full_current_year += payroll.gross_income
+                    # SHUI_21point5percent_company_pay_salary_full_current_year
+                    SHUI_21point5percent_company_pay_salary_full_current_year += payroll.SHUI_9point5percent_employee_pay
+                    SHUI_21point5percent_company_pay_salary_full_current_year += payroll.SHUI_20point5percent_employer_pay
+                    # trade_union_fee_company_pay_2percent_salary_full_current_year
+                    trade_union_fee_company_pay_2percent_salary_full_current_year += payroll.trade_union_fee_company_pay
+                    # trade_union_fee_member_salary_full_current_year
+                    trade_union_fee_member_salary_full_current_year += payroll.trade_union_fee_member
+                    # month_13_salary_Pro_ata_full_current_year 
+                    month_13_salary_Pro_ata_full_current_year += payroll.month_13_salary_Pro_ata
+                    
+                    
+                gross_income_salary_full_current_year += total_allowance_salary_full_current_year
+        
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                payrolls_current_year = Payroll_Marjorie.objects.filter(month__in=current_year_months)
+                # Get forecast payroll for months dont have payroll YET
+                forecast_payroll = Payroll_Marjorie.objects.filter(month__in=current_year_months,working_days=F('month__total_work_days_bo')).last()
+                # Get salary for data
+                list_payroll_current_year = list(payrolls_current_year)
+                list_payroll_current_year += [forecast_payroll] * (12 - payrolls_current_year.count())  
+
+                basic_salary_full_current_year = 0
+                overtime_full_current_year = 0
+                transportation_full_current_year = 0
+                phone_salary_full_current_year = 0
+                lunch_salary_full_current_year = 0
+                housing_salary_full_current_year = 0
+                KPI_achievement_salary_full_current_year = 0
+                others_salary_full_current_year = 0
+                travel_salary_full_current_year = 0
+                seniority_bonus_salary_full_current_year = 0
+                responsibility_allowance_salary_full_current_year = 0
+                total_allowance_salary_full_current_year = 0
+                gross_income_salary_full_current_year = 0
+                SHUI_21point5percent_company_pay_salary_full_current_year = 0
+                trade_union_fee_company_pay_2percent_salary_full_current_year = 0
+                trade_union_fee_member_salary_full_current_year = 0
+                transfer_bank_salary_full_current_year = 0
+                month_13_salary_Pro_ata_full_current_year = 0
+                for payroll in list_payroll_current_year:
+                    basic_salary_full_current_year += payroll.gross_income
+                    overtime_full_current_year += payroll.overtime
+                    transportation_full_current_year += payroll.transportation
+                    phone_salary_full_current_year += payroll.phone
+                    lunch_salary_full_current_year += payroll.lunch
+                    others_salary_full_current_year += payroll.other
+                    travel_salary_full_current_year += payroll.travel
+                    seniority_bonus_salary_full_current_year += payroll.seniority_bonus
+                    responsibility_allowance_salary_full_current_year += payroll.responsibility
+                    # total_allowance_salary_full_current_year
+                    total_allowance_salary_full_current_year += payroll.overtime
+                    total_allowance_salary_full_current_year += payroll.transportation
+                    total_allowance_salary_full_current_year += payroll.phone
+                    total_allowance_salary_full_current_year += payroll.lunch
+                    total_allowance_salary_full_current_year += payroll.other
+                    total_allowance_salary_full_current_year += payroll.travel
+                    total_allowance_salary_full_current_year += payroll.seniority_bonus
+                    total_allowance_salary_full_current_year += payroll.responsibility
+                    # gross_income_salary_full_current_year
+                    gross_income_salary_full_current_year += payroll.gross_income
+                    # trade_union_fee_company_pay_2percent_salary_full_current_year
+                    trade_union_fee_company_pay_2percent_salary_full_current_year += payroll.trade_union_fee_company_pay_2percent
+                    # trade_union_fee_member_salary_full_current_year
+                    trade_union_fee_member_salary_full_current_year += payroll.trade_union_fee_member
+                    # transfer_bank_salary_full_current_year
+                    transfer_bank_salary_full_current_year += payroll.transfer_bank
+                    # month_13_salary_Pro_ata_full_current_year
+                    month_13_salary_Pro_ata_full_current_year += payroll.month_13_salary_Pro_ata
+                    
+                gross_income_salary_full_current_year += total_allowance_salary_full_current_year   
+
+            else:
+                # Nếu joining_date after current month
+                if employee.joining_date.year >= period_month.period.period_year and employee.joining_date.month > period_month.month_number:
+                    basic_salary_full_current_year = 0
+                    overtime_full_current_year = 0
+                    transportation_full_current_year = 0 
+                    phone_salary_full_current_year = 0
+                    lunch_salary_full_current_year = 0
+                    housing_salary_full_current_year = 0
+                    KPI_achievement_salary_full_current_year = 0
+                    others_salary_full_current_year = 0
+                    travel_salary_full_current_year = 0
+                    seniority_bonus_salary_full_current_year = 0
+                    responsibility_allowance_salary_full_current_year = 0
+                    total_allowance_salary_full_current_year = 0
+                    gross_income_salary_full_current_year = 0
+                    SHUI_21point5percent_company_pay_salary_full_current_year = 0
+                    trade_union_fee_company_pay_2percent_salary_full_current_year = 0
+                    trade_union_fee_member_salary_full_current_year = 0
+                    transfer_bank_salary_full_current_year = 0
+                    month_13_salary_Pro_ata_full_current_year = 0
+                else:
+                    payrolls_current_year = Payroll_Tedis.objects.filter(employee=employee,month__in=current_year_months)
+                    # Compare current month with employee.out_date_month
+                    if employee.out_date == None or employee.out_date.month > period_month.month_number: # Out_date == None or after current month -> Lấy payroll forecast tới cuối năm
+                        # Get forecast payroll for months dont have payroll YET
+                        forecast_payroll = Payroll_Tedis.objects.filter(employee=employee,month__in=current_year_months,working_days=F('month__total_work_days_bo')).last()
+                        if forecast_payroll == None: # Nếu không có tháng nào đi làm đủ ngày trong các tháng đã đi làm
+                            forecast_payroll = Payroll_Tedis.objects.filter(employee=employee,month__in=current_year_months).last()
+                            list_payroll_current_year = list(payrolls_current_year)
+                            list_payroll_current_year += [forecast_payroll] * (12 - payrolls_current_year.count())
+                        else:
+                            if (12 - payrolls_current_year.count()) != 0:
+                                list_payroll_current_year = list(payrolls_current_year)
+                                list_payroll_current_year += [forecast_payroll] * (12 - payrolls_current_year.count())
+                            else:
+                                list_payroll_current_year = list(payrolls_current_year)  
+                    elif employee.out_date.month == period_month.month_number or employee.out_date.month < period_month.month_number: # Out_date in & before current month-> Chỉ lấy payroll tới current month
+                        list_payroll_current_year = list(payrolls_current_year)
+                    
+                    basic_salary_full_current_year = 0
+                    overtime_full_current_year = 0
+                    transportation_full_current_year = 0 
+                    phone_salary_full_current_year = 0
+                    lunch_salary_full_current_year = 0
+                    housing_salary_full_current_year = 0
+                    KPI_achievement_salary_full_current_year = 0
+                    others_salary_full_current_year = 0
+                    travel_salary_full_current_year = 0
+                    seniority_bonus_salary_full_current_year = 0
+                    responsibility_allowance_salary_full_current_year = 0
+                    total_allowance_salary_full_current_year = 0
+                    gross_income_salary_full_current_year = 0
+                    SHUI_21point5percent_company_pay_salary_full_current_year = 0
+                    trade_union_fee_company_pay_2percent_salary_full_current_year = 0
+                    trade_union_fee_member_salary_full_current_year = 0
+                    transfer_bank_salary_full_current_year = 0
+                    month_13_salary_Pro_ata_full_current_year = 0
+                    for payroll in list_payroll_current_year:
+                        basic_salary_full_current_year += payroll.gross_income
+                        overtime_full_current_year += payroll.overtime
+                        transportation_full_current_year += payroll.transportation
+                        phone_salary_full_current_year += payroll.phone
+                        lunch_salary_full_current_year += payroll.lunch
+                        others_salary_full_current_year += payroll.other
+                        travel_salary_full_current_year += payroll.travel
+                        seniority_bonus_salary_full_current_year += payroll.seniority_bonus
+                        responsibility_allowance_salary_full_current_year += payroll.responsibility
+                        # total_allowance_salary_full_current_year
+                        total_allowance_salary_full_current_year += payroll.overtime
+                        total_allowance_salary_full_current_year += payroll.transportation
+                        total_allowance_salary_full_current_year += payroll.phone
+                        total_allowance_salary_full_current_year += payroll.lunch
+                        total_allowance_salary_full_current_year += payroll.other
+                        total_allowance_salary_full_current_year += payroll.travel
+                        total_allowance_salary_full_current_year += payroll.seniority_bonus
+                        total_allowance_salary_full_current_year += payroll.responsibility
+                        # gross_income_salary_full_current_year
+                        gross_income_salary_full_current_year += payroll.gross_income
+                        # SHUI_21point5percent_company_pay_salary_full_current_year
+                        SHUI_21point5percent_company_pay_salary_full_current_year += payroll.SHUI_21point5percent_company_pay
+                        # trade_union_fee_company_pay_2percent_salary_full_current_year
+                        trade_union_fee_company_pay_2percent_salary_full_current_year += payroll.trade_union_fee_company_pay_2percent
+                        # trade_union_fee_member_salary_full_current_year
+                        trade_union_fee_member_salary_full_current_year += payroll.trade_union_fee_member
+                        # transfer_bank_salary_full_current_year
+                        transfer_bank_salary_full_current_year += payroll.transfer_bank
+                        # month_13_salary_Pro_ata_full_current_year
+                        month_13_salary_Pro_ata_full_current_year += payroll.month_13_salary_Pro_ata
+                        
+                    gross_income_salary_full_current_year += total_allowance_salary_full_current_year
+                    
+        elif employee.site == site_JV:
+            # Nếu joining_date after current month
+            if employee.joining_date.year >= period_month.period.period_year and employee.joining_date.month > period_month.month_number:
+                basic_salary_full_current_year = 0
+                overtime_full_current_year = 0
+                transportation_full_current_year = 0 
+                phone_salary_full_current_year = 0
+                lunch_salary_full_current_year = 0
+                housing_salary_full_current_year = 0
+                KPI_achievement_salary_full_current_year = 0
+                others_salary_full_current_year = 0
+                travel_salary_full_current_year = 0
+                seniority_bonus_salary_full_current_year = 0
+                responsibility_allowance_salary_full_current_year = 0
+                total_allowance_salary_full_current_year = 0
+                gross_income_salary_full_current_year = 0
+                SHUI_21point5percent_company_pay_salary_full_current_year = 0
+                trade_union_fee_company_pay_2percent_salary_full_current_year = 0
+                trade_union_fee_member_salary_full_current_year = 0
+                transfer_bank_salary_full_current_year = 0
+                month_13_salary_Pro_ata_full_current_year = 0
+            else:
+                payrolls_current_year = Payroll_Tedis_Vietha.objects.filter(employee=employee,month__in=current_year_months)
+                # Compare current month with employee.out_date_month
+                if employee.out_date == None or employee.out_date.month > period_month.month_number: # Out_date == None or after current month -> Lấy payroll forecast tới cuối năm
+                    # Get forecast payroll for months dont have payroll YET
+                    forecast_payroll = Payroll_Tedis_Vietha.objects.filter(employee=employee,month__in=current_year_months,working_days=F('month__total_work_days_bo')).last()
+                    if forecast_payroll == None: # Nếu không có tháng nào đi làm đủ ngày trong các tháng đã đi làm
+                        forecast_payroll = Payroll_Tedis_Vietha.objects.filter(employee=employee,month__in=current_year_months).last()
+                        list_payroll_current_year = list(payrolls_current_year)
+                        list_payroll_current_year += [forecast_payroll] * (12 - payrolls_current_year.count())
+                    else:
+                        if (12 - payrolls_current_year.count()) != 0:
+                            list_payroll_current_year = list(payrolls_current_year)
+                            list_payroll_current_year += [forecast_payroll] * (12 - payrolls_current_year.count())
+                        else:
+                            list_payroll_current_year = list(payrolls_current_year)  
+                elif employee.out_date.month == period_month.month_number or employee.out_date.month < period_month.month_number: # Out_date in & before current month-> Chỉ lấy payroll tới current month
+                    list_payroll_current_year = list(payrolls_current_year)
+                
+                basic_salary_full_current_year = 0
+                overtime_full_current_year = 0
+                transportation_full_current_year = 0 
+                phone_salary_full_current_year = 0
+                lunch_salary_full_current_year = 0
+                housing_salary_full_current_year = 0
+                KPI_achievement_salary_full_current_year = 0
+                others_salary_full_current_year = 0
+                travel_salary_full_current_year = 0
+                seniority_bonus_salary_full_current_year = 0
+                responsibility_allowance_salary_full_current_year = 0
+                total_allowance_salary_full_current_year = 0
+                gross_income_salary_full_current_year = 0
+                SHUI_21point5percent_company_pay_salary_full_current_year = 0
+                trade_union_fee_company_pay_2percent_salary_full_current_year = 0
+                trade_union_fee_member_salary_full_current_year = 0
+                transfer_bank_salary_full_current_year = 0
+                month_13_salary_Pro_ata_full_current_year = 0
+                for payroll in list_payroll_current_year:
+                    basic_salary_full_current_year += payroll.gross_income
+                    overtime_full_current_year += payroll.overtime
+                    transportation_full_current_year += payroll.transportation
+                    phone_salary_full_current_year += payroll.phone
+                    lunch_salary_full_current_year += payroll.lunch
+                    KPI_achievement_salary_full_current_year += payroll.KPI_achievement
+                    others_salary_full_current_year += payroll.other
+                    travel_salary_full_current_year += payroll.travel
+                    seniority_bonus_salary_full_current_year += payroll.seniority_bonus
+                    responsibility_allowance_salary_full_current_year += payroll.responsibility
+                    # total_allowance_salary_full_current_year
+                    total_allowance_salary_full_current_year += payroll.overtime
+                    total_allowance_salary_full_current_year += payroll.transportation
+                    total_allowance_salary_full_current_year += payroll.phone
+                    total_allowance_salary_full_current_year += payroll.lunch
+                    total_allowance_salary_full_current_year += payroll.KPI_achievement
+                    total_allowance_salary_full_current_year += payroll.other
+                    total_allowance_salary_full_current_year += payroll.travel
+                    total_allowance_salary_full_current_year += payroll.seniority_bonus
+                    total_allowance_salary_full_current_year += payroll.responsibility
+                    # gross_income_salary_full_current_year
+                    gross_income_salary_full_current_year += payroll.gross_income
+                    # SHUI_21point5percent_company_pay_salary_full_current_year
+                    SHUI_21point5percent_company_pay_salary_full_current_year += payroll.SHUI_21point5percent_company_pay
+                    # trade_union_fee_company_pay_2percent_salary_full_current_year
+                    trade_union_fee_company_pay_2percent_salary_full_current_year += payroll.trade_union_fee_company_pay
+                    # trade_union_fee_member_salary_full_current_year
+                    trade_union_fee_member_salary_full_current_year += payroll.trade_union_fee_employee_pay
+                    # transfer_bank_salary_full_current_year
+                    transfer_bank_salary_full_current_year += payroll.transfer_bank
+                    # month_13_salary_Pro_ata_full_current_year
+                    month_13_salary_Pro_ata_full_current_year += payroll.month_13_salary_Pro_ata
+                    
+                gross_income_salary_full_current_year += total_allowance_salary_full_current_year
+        
+        
+        elif employee.site == site_VH:
+            # Nếu joining_date after current month
+            if employee.joining_date.year >= period_month.period.period_year and employee.joining_date.month > period_month.month_number:
+                basic_salary_full_current_year = 0
+                overtime_full_current_year = 0
+                transportation_full_current_year = 0 
+                phone_salary_full_current_year = 0
+                lunch_salary_full_current_year = 0
+                housing_salary_full_current_year = 0
+                KPI_achievement_salary_full_current_year = 0
+                others_salary_full_current_year = 0
+                travel_salary_full_current_year = 0
+                seniority_bonus_salary_full_current_year = 0
+                responsibility_allowance_salary_full_current_year = 0
+                total_allowance_salary_full_current_year = 0
+                gross_income_salary_full_current_year = 0
+                SHUI_21point5percent_company_pay_salary_full_current_year = 0
+                trade_union_fee_company_pay_2percent_salary_full_current_year = 0
+                trade_union_fee_member_salary_full_current_year = 0
+                transfer_bank_salary_full_current_year = 0
+                month_13_salary_Pro_ata_full_current_year = 0
+            else:
+                payrolls_current_year = Payroll_Vietha.objects.filter(employee=employee,month__in=current_year_months)
+                # Compare current month with employee.out_date_month
+                if employee.out_date == None or employee.out_date.month > period_month.month_number: # Out_date == None or after current month -> Lấy payroll forecast tới cuối năm
+                    # Get forecast payroll for months dont have payroll YET
+                    forecast_payroll = Payroll_Vietha.objects.filter(employee=employee,month__in=current_year_months,working_days=F('month__total_work_days_bo')).last()
+                    if forecast_payroll == None: # Nếu không có tháng nào đi làm đủ ngày trong các tháng đã đi làm
+                        forecast_payroll = Payroll_Vietha.objects.filter(employee=employee,month__in=current_year_months).last()
+                        list_payroll_current_year = list(payrolls_current_year)
+                        list_payroll_current_year += [forecast_payroll] * (12 - payrolls_current_year.count())
+                    else:
+                        if (12 - payrolls_current_year.count()) != 0:
+                            list_payroll_current_year = list(payrolls_current_year)
+                            list_payroll_current_year += [forecast_payroll] * (12 - payrolls_current_year.count())
+                        else:
+                            list_payroll_current_year = list(payrolls_current_year)  
+                elif employee.out_date.month == period_month.month_number or employee.out_date.month < period_month.month_number: # Out_date in & before current month-> Chỉ lấy payroll tới current month
+                    list_payroll_current_year = list(payrolls_current_year)
+                
+                basic_salary_full_current_year = 0
+                overtime_full_current_year = 0
+                transportation_full_current_year = 0 
+                phone_salary_full_current_year = 0
+                lunch_salary_full_current_year = 0
+                housing_salary_full_current_year = 0
+                KPI_achievement_salary_full_current_year = 0
+                others_salary_full_current_year = 0
+                travel_salary_full_current_year = 0
+                seniority_bonus_salary_full_current_year = 0
+                responsibility_allowance_salary_full_current_year = 0
+                total_allowance_salary_full_current_year = 0
+                gross_income_salary_full_current_year = 0
+                SHUI_21point5percent_company_pay_salary_full_current_year = 0
+                trade_union_fee_company_pay_2percent_salary_full_current_year = 0
+                trade_union_fee_member_salary_full_current_year = 0
+                transfer_bank_salary_full_current_year = 0
+                month_13_salary_Pro_ata_full_current_year = 0
+                for payroll in list_payroll_current_year:
+                    basic_salary_full_current_year += payroll.gross_income
+                    overtime_full_current_year += payroll.overtime
+                    transportation_full_current_year += payroll.transportation
+                    phone_salary_full_current_year += payroll.phone
+                    lunch_salary_full_current_year += payroll.lunch
+                    others_salary_full_current_year += payroll.other
+                    responsibility_allowance_salary_full_current_year += payroll.responsibility
+                    # total_allowance_salary_full_current_year
+                    total_allowance_salary_full_current_year += payroll.overtime
+                    total_allowance_salary_full_current_year += payroll.transportation
+                    total_allowance_salary_full_current_year += payroll.phone
+                    total_allowance_salary_full_current_year += payroll.lunch
+                    total_allowance_salary_full_current_year += payroll.other
+                    total_allowance_salary_full_current_year += payroll.responsibility
+                    # gross_income_salary_full_current_year
+                    gross_income_salary_full_current_year += payroll.gross_income
+                    # SHUI_21point5percent_company_pay_salary_full_current_year
+                    SHUI_21point5percent_company_pay_salary_full_current_year += payroll.SHUI_21point5percent_company_pay
+                    # trade_union_fee_company_pay_2percent_salary_full_current_year
+                    trade_union_fee_company_pay_2percent_salary_full_current_year += payroll.trade_union_fee_company_pay
+                    # trade_union_fee_member_salary_full_current_year
+                    trade_union_fee_member_salary_full_current_year += payroll.trade_union_fee_staff_pay
+                    # transfer_bank_salary_full_current_year
+                    transfer_bank_salary_full_current_year += payroll.transfer_bank
+                    # month_13_salary_Pro_ata_full_current_year
+                    month_13_salary_Pro_ata_full_current_year += payroll.month_13_salary_Pro_ata
+                    
+                gross_income_salary_full_current_year += total_allowance_salary_full_current_year    
+        
+        '''Get total_remuneration_full_current_year'''
+        total_remuneration_full_current_year = gross_income_salary_full_current_year + SHUI_21point5percent_company_pay_salary_full_current_year + trade_union_fee_company_pay_2percent_salary_full_current_year + trade_union_fee_member_salary_full_current_year + transfer_bank_salary_full_current_year + month_13_salary_Pro_ata_full_current_year
+        
+        '''Get incentive this year''' 
+        # incentive_quarter_1_current_year
+        try:
+            incentive_quarter_1_current_year = Report_landing_incentive.objects.get(period__period_year=period_month.period.period_year,employee=employee,remark='Quarter 1')
+            total_remuneration_full_current_year += incentive_quarter_1_current_year.incentive
+        except Report_landing_incentive.DoesNotExist:   
+            incentive_quarter_1_current_year = 'x'
+        # incentive_quarter_2_current_year
+        try:
+            incentive_quarter_2_current_year = Report_landing_incentive.objects.get(period__period_year=period_month.period.period_year,employee=employee,remark='Quarter 2')
+            total_remuneration_full_current_year += incentive_quarter_2_current_year.incentive
+        except Report_landing_incentive.DoesNotExist:   
+            incentive_quarter_2_current_year = 'x'
+        # incentive_quarter_3_current_year
+        try:
+            incentive_quarter_3_current_year = Report_landing_incentive.objects.get(period__period_year=period_month.period.period_year,employee=employee,remark='Quarter 3')
+            total_remuneration_full_current_year += incentive_quarter_3_current_year.incentive
+        except Report_landing_incentive.DoesNotExist:   
+            incentive_quarter_3_current_year = 'x'
+        # incentive_quarter_4_current_year
+        try:
+            incentive_quarter_4_current_year = Report_landing_incentive.objects.get(period__period_year=period_month.period.period_year,employee=employee,remark='Quarter 4')
+            total_remuneration_full_current_year += incentive_quarter_4_current_year.incentive
+        except Report_landing_incentive.DoesNotExist:   
+            incentive_quarter_4_current_year = 'x'
+        # incentive_yearly_current_year
+        try:
+            incentive_yearly_current_year = Report_landing_incentive.objects.get(period__period_year=period_month.period.period_year,employee=employee,remark='Yearly')
+            total_remuneration_full_current_year += incentive_yearly_current_year.incentive
+        except Report_landing_incentive.DoesNotExist:   
+            incentive_yearly_current_year = 'x'
+        
+        '''Get best reward'''
+        try:
+            best_reward_current_year = Report_landing_Best_reward.objects.get(period__period_year=period_month.period.period_year,employee=employee)   
+            total_remuneration_full_current_year += best_reward_current_year.best_reward
+        except Report_landing_Best_reward.DoesNotExist:   
+            best_reward_current_year = 'x'
+            
+        '''Get month_14_salary_Pro_ata_full_current_year'''
+        try:
+            month_14_salary_Pro_ata_full_current_year = Report_landing_month_14_salary.objects.get(period__period_year=period_month.period.period_year,employee=employee)
+            total_remuneration_full_current_year += month_14_salary_Pro_ata_full_current_year.month_14_salary
+        except Report_landing_month_14_salary.DoesNotExist:   
+            month_14_salary_Pro_ata_full_current_year = 'x' 
+
+        '''Get target_value_full_current_year'''
+        target_value_full_current_year = 0 
+        list_target_value_current_year = Report_landing_target_value.objects.filter(month__period__period_year=period_month.period.period_year, employee=employee)
+        for target_value_month in list_target_value_current_year:
+            target_value_full_current_year += target_value_month.target_value
+            
+        '''Get achievement_full_current_year'''
+        achievement_full_current_year = 0 
+        list_achievement_current_year = Report_landing_achievement.objects.filter(month__period__period_year=period_month.period.period_year, employee=employee)
+        for achievement_month in list_achievement_current_year:
+            achievement_full_current_year += achievement_month.achievement
+            
+        '''Get achievement_vs_target_current_year'''  
+        if target_value_full_current_year == 0 or achievement_full_current_year == 0:
+            achievement_vs_target_current_year = ''
+        else: 
+            achievement_vs_target_current_year = round((achievement_full_current_year / target_value_full_current_year) * 100, 1)
+            
+        '''Get total_cost_vs_achievement_current_year'''  
+        if total_remuneration_full_current_year == 0 or achievement_full_current_year == 0:
+            total_cost_vs_achievement_current_year = ''
+        else: 
+            total_cost_vs_achievement_current_year = round((total_remuneration_full_current_year / achievement_full_current_year) * 100, 1)
+            
+        '''Get total_cost_vs_target_current_year'''  
+        if total_remuneration_full_current_year == 0 or target_value_full_current_year == 0:
+            total_cost_vs_target_current_year = ''
+        else: 
+            total_cost_vs_target_current_year = round((total_remuneration_full_current_year / target_value_full_current_year) * 100, 1)
+            
+            
+        # Get payroll each month
+        site_RO = Site.objects.get(site='RO')
+        site_JV = Site.objects.get(site='JV')
+        site_VH = Site.objects.get(site='VH')
+        # Get month
+        try:
+            jan_current_year = Month_in_period.objects.get(period__period_year=period_month.period.period_year, month_number=1)
+        except Month_in_period.DoesNotExist:  
+            jan_current_year = None
+            
+        try:
+            feb_current_year = Month_in_period.objects.get(period__period_year=period_month.period.period_year, month_number=2)
+        except Month_in_period.DoesNotExist:  
+            feb_current_year = None
+            
+        try:
+            mar_current_year = Month_in_period.objects.get(period__period_year=period_month.period.period_year, month_number=3)
+        except Month_in_period.DoesNotExist:  
+            mar_current_year = None
+            
+        try:
+            apr_current_year = Month_in_period.objects.get(period__period_year=period_month.period.period_year, month_number=4)
+        except Month_in_period.DoesNotExist:  
+            apr_current_year = None
+        
+        try:
+            may_current_year = Month_in_period.objects.get(period__period_year=period_month.period.period_year, month_number=5)
+        except Month_in_period.DoesNotExist:  
+            may_current_year = None
+            
+        try:
+            jun_current_year = Month_in_period.objects.get(period__period_year=period_month.period.period_year, month_number=6)
+        except Month_in_period.DoesNotExist:  
+            jun_current_year = None
+            
+        try:
+            jul_current_year = Month_in_period.objects.get(period__period_year=period_month.period.period_year, month_number=7)
+        except Month_in_period.DoesNotExist:  
+            jul_current_year = None
+            
+        try:
+            aug_current_year = Month_in_period.objects.get(period__period_year=period_month.period.period_year, month_number=8)
+        except Month_in_period.DoesNotExist:  
+            aug_current_year = None
+            
+        try:
+            sep_current_year = Month_in_period.objects.get(period__period_year=period_month.period.period_year, month_number=9)
+        except Month_in_period.DoesNotExist:  
+            sep_current_year = None
+        
+        try:
+            oct_current_year = Month_in_period.objects.get(period__period_year=period_month.period.period_year, month_number=10)
+        except Month_in_period.DoesNotExist:  
+            oct_current_year = None
+            
+        try:
+            nov_current_year = Month_in_period.objects.get(period__period_year=period_month.period.period_year, month_number=11)
+        except Month_in_period.DoesNotExist:  
+            nov_current_year = None
+        
+        try:
+            dec_current_year = Month_in_period.objects.get(period__period_year=period_month.period.period_year, month_number=12)
+        except Month_in_period.DoesNotExist:  
+            dec_current_year = None
+            
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                payroll_data = []
+                # Get forecast payroll for months dont have payroll YET
+                forecast_payroll = Payroll_Ser.objects.filter(month__in=current_year_months,working_days=F('month__total_work_days_bo')).last()
+                if forecast_payroll == None: # Nếu không có tháng nào đi làm đủ ngày trong các tháng đã đi làm
+                    forecast_payroll = Payroll_Ser.objects.filter(employee=employee,month__in=current_year_months).last()
+
+                # jan
+                try:
+                    payroll_jan = Payroll_Ser.objects.get(month=jan_current_year)
+                except Payroll_Ser.DoesNotExist:  
+                    payroll_jan = ''
+                payroll_data.append(payroll_jan)
+
+                # feb
+                try:
+                    payroll_feb = Payroll_Ser.objects.get(month=feb_current_year)
+                except Payroll_Ser.DoesNotExist:  
+                    payroll_feb = forecast_payroll
+                payroll_data.append(payroll_feb)
+
+                # mar
+                try:
+                    payroll_mar = Payroll_Ser.objects.get(month=mar_current_year)
+                except Payroll_Ser.DoesNotExist:  
+                    payroll_mar = forecast_payroll
+                payroll_data.append(payroll_mar)
+                    
+                # apr
+                try:
+                    payroll_apr = Payroll_Ser.objects.get(month=apr_current_year)
+                except Payroll_Ser.DoesNotExist:  
+                    payroll_apr = forecast_payroll
+                payroll_data.append(payroll_apr)
+
+                # may
+                try:
+                    payroll_may = Payroll_Ser.objects.get(month=may_current_year)
+                except Payroll_Ser.DoesNotExist:  
+                    payroll_may = forecast_payroll
+                payroll_data.append(payroll_may)
+
+                # jun
+                try:
+                    payroll_jun = Payroll_Ser.objects.get(month=jun_current_year)
+                except Payroll_Ser.DoesNotExist:  
+                    payroll_jun = forecast_payroll
+                payroll_data.append(payroll_jun)
+                    
+                # jul
+                try:
+                    payroll_jul = Payroll_Ser.objects.get(month=jul_current_year)
+                except Payroll_Ser.DoesNotExist:  
+                    payroll_jul = forecast_payroll
+                payroll_data.append(payroll_jul)
+
+                # aug
+                try:
+                    payroll_aug = Payroll_Ser.objects.get(month=aug_current_year)
+                except Payroll_Ser.DoesNotExist:  
+                    payroll_aug = forecast_payroll
+                payroll_data.append(payroll_aug)
+
+                # sep
+                try:
+                    payroll_sep = Payroll_Ser.objects.get(month=sep_current_year)
+                except Payroll_Ser.DoesNotExist:  
+                    payroll_sep = forecast_payroll
+                payroll_data.append(payroll_sep)
+                    
+                # oct
+                try:
+                    payroll_oct = Payroll_Ser.objects.get(month=oct_current_year)
+                except Payroll_Ser.DoesNotExist:  
+                    payroll_oct = forecast_payroll
+                payroll_data.append(payroll_oct)
+
+                # nov
+                try:
+                    payroll_nov = Payroll_Ser.objects.get(month=nov_current_year)
+                except Payroll_Ser.DoesNotExist:  
+                    payroll_nov = forecast_payroll
+                payroll_data.append(payroll_nov)
+
+                # dec
+                try:
+                    payroll_dec = Payroll_Ser.objects.get(month=dec_current_year)
+                except Payroll_Ser.DoesNotExist:  
+                    payroll_dec = forecast_payroll
+                payroll_data.append(payroll_dec)
+                    
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                payroll_data = []
+                # Get forecast payroll for months dont have payroll YET
+                forecast_payroll = Payroll_Marjorie.objects.filter(month__in=current_year_months,working_days=F('month__total_work_days_bo')).last()
+                if forecast_payroll == None: # Nếu không có tháng nào đi làm đủ ngày trong các tháng đã đi làm
+                    forecast_payroll = Payroll_Marjorie.objects.filter(employee=employee,month__in=current_year_months).last()
+
+                # jan
+                try:
+                    payroll_jan = Payroll_Marjorie.objects.get(month=jan_current_year)
+                except Payroll_Marjorie.DoesNotExist:  
+                    payroll_jan = ''
+                payroll_data.append(payroll_jan)
+
+                # feb
+                try:
+                    payroll_feb = Payroll_Marjorie.objects.get(month=feb_current_year)
+                except Payroll_Marjorie.DoesNotExist:  
+                    payroll_feb = forecast_payroll
+                payroll_data.append(payroll_feb)
+
+                # mar
+                try:
+                    payroll_mar = Payroll_Marjorie.objects.get(month=mar_current_year)
+                except Payroll_Marjorie.DoesNotExist:  
+                    payroll_mar = forecast_payroll
+                payroll_data.append(payroll_mar)
+                    
+                # apr
+                try:
+                    payroll_apr = Payroll_Marjorie.objects.get(month=apr_current_year)
+                except Payroll_Marjorie.DoesNotExist:  
+                    payroll_apr = forecast_payroll
+                payroll_data.append(payroll_apr)
+
+                # may
+                try:
+                    payroll_may = Payroll_Marjorie.objects.get(month=may_current_year)
+                except Payroll_Marjorie.DoesNotExist:  
+                    payroll_may = forecast_payroll
+                payroll_data.append(payroll_may)
+
+                # jun
+                try:
+                    payroll_jun = Payroll_Marjorie.objects.get(month=jun_current_year)
+                except Payroll_Marjorie.DoesNotExist:  
+                    payroll_jun = forecast_payroll
+                payroll_data.append(payroll_jun)
+                    
+                # jul
+                try:
+                    payroll_jul = Payroll_Marjorie.objects.get(month=jul_current_year)
+                except Payroll_Marjorie.DoesNotExist:  
+                    payroll_jul = forecast_payroll
+                payroll_data.append(payroll_jul)
+
+                # aug
+                try:
+                    payroll_aug = Payroll_Marjorie.objects.get(month=aug_current_year)
+                except Payroll_Marjorie.DoesNotExist:  
+                    payroll_aug = forecast_payroll
+                payroll_data.append(payroll_aug)
+
+                # sep
+                try:
+                    payroll_sep = Payroll_Marjorie.objects.get(month=sep_current_year)
+                except Payroll_Marjorie.DoesNotExist:  
+                    payroll_sep = forecast_payroll
+                payroll_data.append(payroll_sep)
+                    
+                # oct
+                try:
+                    payroll_oct = Payroll_Marjorie.objects.get(month=oct_current_year)
+                except Payroll_Marjorie.DoesNotExist:  
+                    payroll_oct = forecast_payroll
+                payroll_data.append(payroll_oct)
+
+                # nov
+                try:
+                    payroll_nov = Payroll_Marjorie.objects.get(month=nov_current_year)
+                except Payroll_Marjorie.DoesNotExist:  
+                    payroll_nov = forecast_payroll
+                payroll_data.append(payroll_nov)
+
+                # dec
+                try:
+                    payroll_dec = Payroll_Marjorie.objects.get(month=dec_current_year)
+                except Payroll_Marjorie.DoesNotExist:  
+                    payroll_dec = forecast_payroll
+                payroll_data.append(payroll_dec)
+                
+            else:
+                if employee.joining_date.year > period_month.period.period_year: # Nếu joining_date ở năm sau 
+                    pass # Không lấy payroll cũng không cần quan tâm out_date
+                elif employee.joining_date.year == period_month.period.period_year and employee.joining_date.month > period_month.month_number: # Nếu joining_date trong năm nay nhưng > current_month -> không quan tâm out_date
+                    # Get forecast payroll for months dont have payroll YET
+                    forecast_payroll = Payroll_Tedis.objects.filter(employee=employee,month__in=current_year_months,working_days=F('month__total_work_days_bo')).last()
+                    if forecast_payroll == None: # Nếu không có tháng nào đi làm đủ ngày trong các tháng đã đi làm
+                        forecast_payroll = Payroll_Tedis.objects.filter(employee=employee,month__in=current_year_months).last()
+                    month_objects = {
+                                        1: jan_current_year,
+                                        2: feb_current_year,
+                                        3: mar_current_year,
+                                        4: apr_current_year,
+                                        5: may_current_year,
+                                        6: jun_current_year,
+                                        7: jul_current_year,
+                                        8: aug_current_year,
+                                        9: sep_current_year,
+                                        10: oct_current_year,
+                                        11: nov_current_year,
+                                        12: dec_current_year,
+                                    }
+                    payroll_data = []
+                    for month_number, month_object in month_objects.items():
+                        if month_number < int(employee.joining_date.month):
+                            payroll = ''
+                        elif month_number == int(employee.joining_date.month):
+                            if int(employee.joining_date.day) > 20:
+                                payroll = ''
+                            else:
+                                try:
+                                    payroll = Payroll_Tedis.objects.get(employee=employee,month=month_object)
+                                except Payroll_Tedis.DoesNotExist:  
+                                    payroll = forecast_payroll
+                        elif month_number > int(employee.joining_date.month): # So sánh để lấy payroll các tháng còn lại
+                            try:
+                                payroll = Payroll_Tedis.objects.get(employee=employee,month=month_object)
+                            except Payroll_Tedis.DoesNotExist:  
+                                payroll = forecast_payroll
+                        payroll_data.append(payroll)
+                else: # joining_date <= current_month
+                    if employee.out_date == None:
+                        payrolls_current_year = Payroll_Tedis.objects.filter(employee=employee,month__in=current_year_months)
+                        payroll_data = list(payrolls_current_year)
+                        payroll_data += [forecast_payroll] * (12 - payrolls_current_year.count())
+                    elif (employee.out_date.month > period_month.month_number and employee.out_date.year == period_month.period.period_year) or (employee.out_date.month <= period_month.month_number and employee.out_date.year == period_month.period.period_year):
+                        payrolls_current_year = Payroll_Tedis.objects.filter(employee=employee,month__in=current_year_months)
+                        payroll_data = list(payrolls_current_year)
+                        empty_payroll = ''
+                        payroll_data += [empty_payroll] * (12 - payrolls_current_year.count())
+
+        elif employee.site == site_JV:
+            if employee.joining_date.year > period_month.period.period_year: # Nếu joining_date ở năm sau 
+                pass # Không lấy payroll cũng không cần quan tâm out_date
+            elif employee.joining_date.year == period_month.period.period_year and employee.joining_date.month > period_month.month_number: # Nếu joining_date trong năm nay nhưng > current_month -> không quan tâm out_date
+                # Get forecast payroll for months dont have payroll YET
+                forecast_payroll = Payroll_Tedis_Vietha.objects.filter(employee=employee,month__in=current_year_months,working_days=F('month__total_work_days_bo')).last()
+                if forecast_payroll == None: # Nếu không có tháng nào đi làm đủ ngày trong các tháng đã đi làm
+                    forecast_payroll = Payroll_Tedis_Vietha.objects.filter(employee=employee,month__in=current_year_months).last()
+                month_objects = {
+                                    1: jan_current_year,
+                                    2: feb_current_year,
+                                    3: mar_current_year,
+                                    4: apr_current_year,
+                                    5: may_current_year,
+                                    6: jun_current_year,
+                                    7: jul_current_year,
+                                    8: aug_current_year,
+                                    9: sep_current_year,
+                                    10: oct_current_year,
+                                    11: nov_current_year,
+                                    12: dec_current_year,
+                                }
+                payroll_data = []
+                for month_number, month_object in month_objects.items():
+                    if month_number < int(employee.joining_date.month):
+                        payroll = ''
+                    elif month_number == int(employee.joining_date.month):
+                            if int(employee.joining_date.day) > 20:
+                                payroll = ''
+                            else:
+                                try:
+                                    payroll = Payroll_Tedis.objects.get(employee=employee,month=month_object)
+                                except Payroll_Tedis.DoesNotExist:  
+                                    payroll = forecast_payroll
+                    elif month_number > int(employee.joining_date.month): # So sánh để lấy payroll các tháng còn lại
+                        try:
+                            payroll = Payroll_Tedis_Vietha.objects.get(employee=employee,month=month_object)
+                        except Payroll_Tedis_Vietha.DoesNotExist:  
+                            payroll = forecast_payroll
+                    payroll_data.append(payroll)
+            else: # joining_date <= current_month
+                if employee.out_date == None:
+                    payrolls_current_year = Payroll_Tedis_Vietha.objects.filter(employee=employee,month__in=current_year_months)
+                    payroll_data = list(payrolls_current_year)
+                    payroll_data += [forecast_payroll] * (12 - payrolls_current_year.count())
+                elif (employee.out_date.month > period_month.month_number and employee.out_date.year == period_month.period.period_year) or (employee.out_date.month <= period_month.month_number and employee.out_date.year == period_month.period.period_year):
+                    payrolls_current_year = Payroll_Tedis_Vietha.objects.filter(employee=employee,month__in=current_year_months)
+                    payroll_data = list(payrolls_current_year)
+                    empty_payroll = ''
+                    payroll_data += [empty_payroll] * (12 - payrolls_current_year.count())      
+                    
+        elif employee.site == site_VH:
+            if employee.joining_date.year > period_month.period.period_year: # Nếu joining_date ở năm sau 
+                pass # Không lấy payroll cũng không cần quan tâm out_date
+            elif employee.joining_date.year == period_month.period.period_year and employee.joining_date.month > period_month.month_number: # Nếu joining_date trong năm nay nhưng > current_month -> không quan tâm out_date
+                # Get forecast payroll for months dont have payroll YET
+                forecast_payroll = Payroll_Vietha.objects.filter(employee=employee,month__in=current_year_months,working_days=F('month__total_work_days_bo')).last()
+                if forecast_payroll == None: # Nếu không có tháng nào đi làm đủ ngày trong các tháng đã đi làm
+                    forecast_payroll = Payroll_Vietha.objects.filter(employee=employee,month__in=current_year_months).last()
+                month_objects = {
+                                    1: jan_current_year,
+                                    2: feb_current_year,
+                                    3: mar_current_year,
+                                    4: apr_current_year,
+                                    5: may_current_year,
+                                    6: jun_current_year,
+                                    7: jul_current_year,
+                                    8: aug_current_year,
+                                    9: sep_current_year,
+                                    10: oct_current_year,
+                                    11: nov_current_year,
+                                    12: dec_current_year,
+                                }
+                payroll_data = []
+                for month_number, month_object in month_objects.items():
+                    if month_number < int(employee.joining_date.month):
+                        payroll = ''
+                    elif month_number == int(employee.joining_date.month):
+                            if int(employee.joining_date.day) > 20:
+                                payroll = ''
+                            else:
+                                try:
+                                    payroll = Payroll_Tedis.objects.get(employee=employee,month=month_object)
+                                except Payroll_Tedis.DoesNotExist:  
+                                    payroll = forecast_payroll
+                    elif month_number > int(employee.joining_date.month): # So sánh để lấy payroll các tháng còn lại
+                        try:
+                            payroll = Payroll_Vietha.objects.get(employee=employee,month=month_object)
+                        except Payroll_Vietha.DoesNotExist:  
+                            payroll = forecast_payroll
+                    payroll_data.append(payroll)
+            else: # joining_date <= current_month
+                if employee.out_date == None:
+                    payrolls_current_year = Payroll_Vietha.objects.filter(employee=employee,month__in=current_year_months)
+                    payroll_data = list(payrolls_current_year)
+                    payroll_data += [forecast_payroll] * (12 - payrolls_current_year.count())
+                elif (employee.out_date.month > period_month.month_number and employee.out_date.year == period_month.period.period_year) or (employee.out_date.month <= period_month.month_number and employee.out_date.year == period_month.period.period_year):
+                    payrolls_current_year = Payroll_Vietha.objects.filter(employee=employee,month__in=current_year_months)
+                    payroll_data = list(payrolls_current_year)   
+                    empty_payroll = ''
+                    payroll_data += [empty_payroll] * (12 - payrolls_current_year.count())    
+        
+        '''Get target_value jan'''
+        try:
+            target_value_jan = Report_landing_target_value.objects.get(month__month_number=1,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_target_value.DoesNotExist:
+            target_value_jan = 'x'
+        
+        '''Get achievement jan'''
+        try:
+            achievement_jan = Report_landing_achievement.objects.get(month__month_number=1,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_achievement.DoesNotExist:
+            achievement_jan = 'x'
+            
+        '''Get achievement_vs_target_jan'''  
+        if target_value_jan == 'x' or achievement_jan == 'x':
+            achievement_vs_target_jan = ''
+        else: 
+            achievement_vs_target_jan = round((achievement_jan.achievement / target_value_jan.target_value) * 100, 1)
+        
+        '''Get total_cost_jan'''
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                # Get total_allowance_jan
+                total_allowance_jan = 0
+                total_allowance_jan += payroll_data[0].phone
+                total_allowance_jan += payroll_data[0].lunch
+                total_allowance_jan += payroll_data[0].housing_vnd
+                total_allowance_jan += payroll_data[0].other
+                total_allowance_jan += payroll_data[0].travel
+                total_allowance_jan += payroll_data[0].seniority_bonus
+                total_allowance_jan += payroll_data[0].responsibility
+                # Get gross_income_jan
+                gross_income_jan = 0
+                gross_income_jan += payroll_data[0].gross_income
+                gross_income_jan += total_allowance_jan
+                # Get total_cost_jan
+                total_cost_jan = gross_income_jan + payroll_data[0].SHUI_9point5percent_employee_pay + payroll_data[0].SHUI_20point5percent_employer_pay + payroll_data[0].trade_union_fee_company_pay + payroll_data[0].trade_union_fee_member
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                # Get total_allowance_jan
+                total_allowance_jan = 0
+                total_allowance_jan += payroll_data[0].overtime
+                total_allowance_jan += payroll_data[0].transportation
+                total_allowance_jan += payroll_data[0].phone
+                total_allowance_jan += payroll_data[0].lunch
+                total_allowance_jan += payroll_data[0].other
+                total_allowance_jan += payroll_data[0].travel
+                total_allowance_jan += payroll_data[0].seniority_bonus
+                total_allowance_jan += payroll_data[0].responsibility
+                # Get gross_income_jan
+                gross_income_jan = 0
+                gross_income_jan += payroll_data[0].gross_income
+                gross_income_jan += total_allowance_jan
+                # Get total_cost_jan
+                total_cost_jan = gross_income_jan + payroll_data[0].trade_union_fee_company_pay_2percent + payroll_data[0].trade_union_fee_member + payroll_data[0].transfer_bank
+            else:
+                # Get total_allowance_jan
+                total_allowance_jan = 0
+                if payroll_data[0] == '':
+                    total_allowance_jan = 0
+                else:
+                    total_allowance_jan += payroll_data[0].overtime
+                    total_allowance_jan += payroll_data[0].transportation
+                    total_allowance_jan += payroll_data[0].phone
+                    total_allowance_jan += payroll_data[0].lunch
+                    total_allowance_jan += payroll_data[0].other
+                    total_allowance_jan += payroll_data[0].travel
+                    total_allowance_jan += payroll_data[0].seniority_bonus
+                    total_allowance_jan += payroll_data[0].responsibility
+                # Get gross_income_jan
+                gross_income_jan = 0
+                if payroll_data[0] == '':
+                    gross_income_jan = 0
+                else:
+                    gross_income_jan += payroll_data[0].gross_income
+                    gross_income_jan += total_allowance_jan
+                # Get total_cost_jan
+                if payroll_data[0] == '':
+                    total_cost_jan = 0
+                else:
+                    total_cost_jan = gross_income_jan + payroll_data[0].SHUI_21point5percent_company_pay + payroll_data[0].trade_union_fee_company_pay_2percent + payroll_data[0].trade_union_fee_member + payroll_data[0].transfer_bank
+        
+        elif employee.site == site_JV:
+            # Get total_allowance_jan
+                total_allowance_jan = 0
+                if payroll_data[0] == '':
+                    total_allowance_jan = 0
+                else:
+                    total_allowance_jan += payroll_data[0].overtime
+                    total_allowance_jan += payroll_data[0].transportation
+                    total_allowance_jan += payroll_data[0].phone
+                    total_allowance_jan += payroll_data[0].lunch
+                    total_allowance_jan += payroll_data[0].KPI_achievement
+                    total_allowance_jan += payroll_data[0].other
+                    total_allowance_jan += payroll_data[0].travel
+                    total_allowance_jan += payroll_data[0].seniority_bonus
+                    total_allowance_jan += payroll_data[0].responsibility
+                # Get gross_income_jan
+                gross_income_jan = 0
+                if payroll_data[0] == '':
+                    gross_income_jan = 0
+                else:
+                    gross_income_jan += payroll_data[0].gross_income
+                    gross_income_jan += total_allowance_jan
+                # Get total_cost_jan
+                if payroll_data[0] == '':
+                    total_cost_jan = 0
+                else:
+                    total_cost_jan = gross_income_jan + payroll_data[0].SHUI_21point5percent_company_pay + payroll_data[0].trade_union_fee_company_pay + payroll_data[0].trade_union_fee_employee_pay + payroll_data[0].transfer_bank
+        
+        elif employee.site == site_VH:
+            # Get total_allowance_jan
+                total_allowance_jan = 0
+                if payroll_data[0] == '':
+                    total_allowance_jan = 0
+                else:
+                    total_allowance_jan += payroll_data[0].overtime
+                    total_allowance_jan += payroll_data[0].transportation
+                    total_allowance_jan += payroll_data[0].phone
+                    total_allowance_jan += payroll_data[0].lunch
+                    total_allowance_jan += payroll_data[0].other
+                    total_allowance_jan += payroll_data[0].responsibility
+                # Get gross_income_jan
+                gross_income_jan = 0
+                if payroll_data[0] == '':
+                    gross_income_jan = 0
+                else:
+                    gross_income_jan += payroll_data[0].gross_income
+                    gross_income_jan += total_allowance_jan
+                # Get total_cost_jan
+                if payroll_data[0] == '':
+                    total_cost_jan = 0
+                else:
+                    total_cost_jan = gross_income_jan + payroll_data[0].SHUI_21point5percent_company_pay + payroll_data[0].trade_union_fee_company_pay + payroll_data[0].trade_union_fee_staff_pay + payroll_data[0].transfer_bank
+                                
+        '''Get total_cost_vs_achievement_jan''' 
+        if total_cost_jan == 0 or achievement_jan == 'x':
+            total_cost_vs_achievement_jan = ''
+        else: 
+            total_cost_vs_achievement_jan = round((total_cost_jan / achievement_jan.achievement) * 100, 1)
+        
+        
+        
+        '''Get target_value feb'''
+        try:
+            target_value_feb = Report_landing_target_value.objects.get(month__month_number=2,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_target_value.DoesNotExist:
+            target_value_feb = 'x'
+            
+        '''Get achievement feb'''
+        try:
+            achievement_feb = Report_landing_achievement.objects.get(month__month_number=2,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_achievement.DoesNotExist:
+            achievement_feb = 'x'
+            
+        '''Get achievement_vs_target_feb'''  
+        if target_value_feb == 'x' or achievement_feb == 'x':
+            achievement_vs_target_feb = ''
+        else: 
+            achievement_vs_target_feb = round((achievement_feb.achievement / target_value_feb.target_value) * 100, 1)
+            
+        '''Get total_cost_feb'''
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                # Get total_allowance_feb
+                total_allowance_feb = 0
+                total_allowance_feb += payroll_data[1].phone
+                total_allowance_feb += payroll_data[1].lunch
+                total_allowance_feb += payroll_data[1].housing_vnd
+                total_allowance_feb += payroll_data[1].other
+                total_allowance_feb += payroll_data[1].travel
+                total_allowance_feb += payroll_data[1].seniority_bonus
+                total_allowance_feb += payroll_data[1].responsibility
+                # Get gross_income_feb
+                gross_income_feb = 0
+                gross_income_feb += payroll_data[1].gross_income
+                gross_income_feb += total_allowance_feb
+                # Get total_cost_feb
+                total_cost_feb = gross_income_feb + payroll_data[1].SHUI_9point5percent_employee_pay + payroll_data[1].SHUI_20point5percent_employer_pay + payroll_data[1].trade_union_fee_company_pay + payroll_data[1].trade_union_fee_member
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                # Get total_allowance_feb
+                total_allowance_feb = 0
+                total_allowance_feb += payroll_data[1].overtime
+                total_allowance_feb += payroll_data[1].transportation
+                total_allowance_feb += payroll_data[1].phone
+                total_allowance_feb += payroll_data[1].lunch
+                total_allowance_feb += payroll_data[1].other
+                total_allowance_feb += payroll_data[1].travel
+                total_allowance_feb += payroll_data[1].seniority_bonus
+                total_allowance_feb += payroll_data[1].responsibility
+                # Get gross_income_feb
+                gross_income_feb = 0
+                gross_income_feb += payroll_data[1].gross_income
+                gross_income_feb += total_allowance_feb
+                # Get total_cost_feb
+                total_cost_feb = gross_income_feb + payroll_data[1].trade_union_fee_company_pay_2percent + payroll_data[1].trade_union_fee_member + payroll_data[1].transfer_bank
+            else:
+                # Get total_allowance_feb
+                total_allowance_feb = 0
+                if payroll_data[1] == '':
+                    total_allowance_feb = 0
+                else:
+                    total_allowance_feb += payroll_data[1].overtime
+                    total_allowance_feb += payroll_data[1].transportation
+                    total_allowance_feb += payroll_data[1].phone
+                    total_allowance_feb += payroll_data[1].lunch
+                    total_allowance_feb += payroll_data[1].other
+                    total_allowance_feb += payroll_data[1].travel
+                    total_allowance_feb += payroll_data[1].seniority_bonus
+                    total_allowance_feb += payroll_data[1].responsibility
+                # Get gross_income_feb
+                gross_income_feb = 0
+                if payroll_data[1] == '':
+                    gross_income_feb = 0
+                else:
+                    gross_income_feb += payroll_data[1].gross_income
+                    gross_income_feb += total_allowance_feb
+                # Get total_cost_feb
+                if payroll_data[1] == '':
+                    total_cost_feb = 0
+                else:
+                    total_cost_feb = gross_income_feb + payroll_data[1].SHUI_21point5percent_company_pay + payroll_data[1].trade_union_fee_company_pay_2percent + payroll_data[1].trade_union_fee_member + payroll_data[1].transfer_bank
+        
+        elif employee.site == site_JV:
+            # Get total_allowance_feb
+                total_allowance_feb = 0
+                if payroll_data[1] == '':
+                    total_allowance_feb = 0
+                else:
+                    total_allowance_feb += payroll_data[1].overtime
+                    total_allowance_feb += payroll_data[1].transportation
+                    total_allowance_feb += payroll_data[1].phone
+                    total_allowance_feb += payroll_data[1].lunch
+                    total_allowance_feb += payroll_data[1].KPI_achievement
+                    total_allowance_feb += payroll_data[1].other
+                    total_allowance_feb += payroll_data[1].travel
+                    total_allowance_feb += payroll_data[1].seniority_bonus
+                    total_allowance_feb += payroll_data[1].responsibility
+                # Get gross_income_feb
+                gross_income_feb = 0
+                if payroll_data[1] == '':
+                    gross_income_feb = 0
+                else:
+                    gross_income_feb += payroll_data[1].gross_income
+                    gross_income_feb += total_allowance_feb
+                # Get total_cost_feb
+                if payroll_data[1] == '':
+                    total_cost_feb = 0
+                else:
+                    total_cost_feb = gross_income_feb + payroll_data[1].SHUI_21point5percent_company_pay + payroll_data[1].trade_union_fee_company_pay + payroll_data[1].trade_union_fee_employee_pay + payroll_data[1].transfer_bank
+        
+        elif employee.site == site_VH:
+            # Get total_allowance_feb
+                total_allowance_feb = 0
+                if payroll_data[1] == '':
+                    total_allowance_feb = 0
+                else:
+                    total_allowance_feb += payroll_data[1].overtime
+                    total_allowance_feb += payroll_data[1].transportation
+                    total_allowance_feb += payroll_data[1].phone
+                    total_allowance_feb += payroll_data[1].lunch
+                    total_allowance_feb += payroll_data[1].other
+                    total_allowance_feb += payroll_data[1].responsibility
+                # Get gross_income_feb
+                gross_income_feb = 0
+                if payroll_data[1] == '':
+                    gross_income_feb = 0
+                else:
+                    gross_income_feb += payroll_data[1].gross_income
+                    gross_income_feb += total_allowance_feb
+                # Get total_cost_feb
+                if payroll_data[1] == '':
+                    total_cost_feb = 0
+                else:
+                    total_cost_feb = gross_income_feb + payroll_data[1].SHUI_21point5percent_company_pay + payroll_data[1].trade_union_fee_company_pay + payroll_data[1].trade_union_fee_staff_pay + payroll_data[1].transfer_bank
+                                
+        '''Get total_cost_vs_achievement_feb''' 
+        if total_cost_feb == 0 or achievement_feb == 'x':
+            total_cost_vs_achievement_feb = ''
+        else: 
+            total_cost_vs_achievement_feb = round((total_cost_feb / achievement_feb.achievement) * 100, 1)
+        
+        
+        
+        
+        '''Get target_value mar'''
+        try:
+            target_value_mar = Report_landing_target_value.objects.get(month__month_number=3,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_target_value.DoesNotExist:
+            target_value_mar = 'x'
+            
+        '''Get achievement mar'''
+        try:
+            achievement_mar = Report_landing_achievement.objects.get(month__month_number=3,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_achievement.DoesNotExist:
+            achievement_mar = 'x'
+            
+        '''Get achievement_vs_target_mar'''  
+        if target_value_mar == 'x' or achievement_mar == 'x':
+            achievement_vs_target_mar = ''
+        else: 
+            achievement_vs_target_mar = round((achievement_mar.achievement / target_value_mar.target_value) * 100, 1)
+            
+        '''Get total_cost_mar'''
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                # Get total_allowance_mar
+                total_allowance_mar = 0
+                total_allowance_mar += payroll_data[2].phone
+                total_allowance_mar += payroll_data[2].lunch
+                total_allowance_mar += payroll_data[2].housing_vnd
+                total_allowance_mar += payroll_data[2].other
+                total_allowance_mar += payroll_data[2].travel
+                total_allowance_mar += payroll_data[2].seniority_bonus
+                total_allowance_mar += payroll_data[2].responsibility
+                # Get gross_income_mar
+                gross_income_mar = 0
+                gross_income_mar += payroll_data[2].gross_income
+                gross_income_mar += total_allowance_mar
+                # Get total_cost_mar
+                total_cost_mar = gross_income_mar + payroll_data[2].SHUI_9point5percent_employee_pay + payroll_data[2].SHUI_20point5percent_employer_pay + payroll_data[2].trade_union_fee_company_pay + payroll_data[2].trade_union_fee_member
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                # Get total_allowance_mar
+                total_allowance_mar = 0
+                total_allowance_mar += payroll_data[2].overtime
+                total_allowance_mar += payroll_data[2].transportation
+                total_allowance_mar += payroll_data[2].phone
+                total_allowance_mar += payroll_data[2].lunch
+                total_allowance_mar += payroll_data[2].other
+                total_allowance_mar += payroll_data[2].travel
+                total_allowance_mar += payroll_data[2].seniority_bonus
+                total_allowance_mar += payroll_data[2].responsibility
+                # Get gross_income_mar
+                gross_income_mar = 0
+                gross_income_mar += payroll_data[2].gross_income
+                gross_income_mar += total_allowance_mar
+                # Get total_cost_mar
+                total_cost_mar = gross_income_mar + payroll_data[2].trade_union_fee_company_pay_2percent + payroll_data[2].trade_union_fee_member + payroll_data[2].transfer_bank
+            else:
+                # Get total_allowance_mar
+                total_allowance_mar = 0
+                if payroll_data[2] == '':
+                    total_allowance_mar = 0
+                else:
+                    total_allowance_mar += payroll_data[2].overtime
+                    total_allowance_mar += payroll_data[2].transportation
+                    total_allowance_mar += payroll_data[2].phone
+                    total_allowance_mar += payroll_data[2].lunch
+                    total_allowance_mar += payroll_data[2].other
+                    total_allowance_mar += payroll_data[2].travel
+                    total_allowance_mar += payroll_data[2].seniority_bonus
+                    total_allowance_mar += payroll_data[2].responsibility
+                # Get gross_income_mar
+                gross_income_mar = 0
+                if payroll_data[2] == '':
+                    gross_income_mar = 0
+                else:
+                    gross_income_mar += payroll_data[2].gross_income
+                    gross_income_mar += total_allowance_mar
+                # Get total_cost_mar
+                if payroll_data[2] == '':
+                    total_cost_mar = 0
+                else:
+                    total_cost_mar = gross_income_mar + payroll_data[2].SHUI_21point5percent_company_pay + payroll_data[2].trade_union_fee_company_pay_2percent + payroll_data[2].trade_union_fee_member + payroll_data[2].transfer_bank
+        
+        elif employee.site == site_JV:
+            # Get total_allowance_mar
+                total_allowance_mar = 0
+                if payroll_data[2] == '':
+                    total_allowance_mar = 0
+                else:
+                    total_allowance_mar += payroll_data[2].overtime
+                    total_allowance_mar += payroll_data[2].transportation
+                    total_allowance_mar += payroll_data[2].phone
+                    total_allowance_mar += payroll_data[2].lunch
+                    total_allowance_mar += payroll_data[2].KPI_achievement
+                    total_allowance_mar += payroll_data[2].other
+                    total_allowance_mar += payroll_data[2].travel
+                    total_allowance_mar += payroll_data[2].seniority_bonus
+                    total_allowance_mar += payroll_data[2].responsibility
+                # Get gross_income_mar
+                gross_income_mar = 0
+                if payroll_data[2] == '':
+                    gross_income_mar = 0
+                else:
+                    gross_income_mar += payroll_data[2].gross_income
+                    gross_income_mar += total_allowance_mar
+                # Get total_cost_mar
+                if payroll_data[2] == '':
+                    total_cost_mar = 0
+                else:
+                    total_cost_mar = gross_income_mar + payroll_data[2].SHUI_21point5percent_company_pay + payroll_data[2].trade_union_fee_company_pay + payroll_data[2].trade_union_fee_employee_pay + payroll_data[2].transfer_bank
+        
+        elif employee.site == site_VH:
+            # Get total_allowance_mar
+                total_allowance_mar = 0
+                if payroll_data[2] == '':
+                    total_allowance_mar = 0
+                else:
+                    total_allowance_mar += payroll_data[2].overtime
+                    total_allowance_mar += payroll_data[2].transportation
+                    total_allowance_mar += payroll_data[2].phone
+                    total_allowance_mar += payroll_data[2].lunch
+                    total_allowance_mar += payroll_data[2].other
+                    total_allowance_mar += payroll_data[2].responsibility
+                # Get gross_income_mar
+                gross_income_mar = 0
+                if payroll_data[2] == '':
+                    gross_income_mar = 0
+                else:
+                    gross_income_mar += payroll_data[2].gross_income
+                    gross_income_mar += total_allowance_mar
+                # Get total_cost_mar
+                if payroll_data[2] == '':
+                    total_cost_mar = 0
+                else:
+                    total_cost_mar = gross_income_mar + payroll_data[2].SHUI_21point5percent_company_pay + payroll_data[2].trade_union_fee_company_pay + payroll_data[2].trade_union_fee_staff_pay + payroll_data[2].transfer_bank
+                                
+        '''Get total_cost_vs_achievement_mar''' 
+        if total_cost_mar == 0 or achievement_mar == 'x':
+            total_cost_vs_achievement_mar = ''
+        else: 
+            total_cost_vs_achievement_mar = round((total_cost_mar / achievement_mar.achievement) * 100, 1)
+        
+        
+        '''% Achievement vs Target Q.1'''
+        # achievement_q1
+        if achievement_jan == 'x':
+            x = 0
+        else:
+            x = achievement_jan.achievement
+            
+        if achievement_feb == 'x':
+            y = 0
+        else:
+            y = achievement_feb.achievement
+            
+        if achievement_mar == 'x':
+            z = 0
+        else:
+            z = achievement_mar.achievement
+        
+        achievement_q1 = x + y + z
+        
+        # target_value_q1
+        if target_value_jan == 'x':
+            x = 0
+        else:
+            x = target_value_jan.target_value
+        if target_value_feb == 'x':
+            y = 0
+        else:
+            y = target_value_feb.target_value
+        if target_value_mar == 'x':
+            z = 0
+        else:
+            z = target_value_mar.target_value
+        
+        target_value_q1 = x + y + z
+
+        
+        if target_value_q1 == 0 or achievement_q1 == 0:
+            achievement_vs_target_q1 = ''
+        else: 
+            achievement_vs_target_q1 = round((achievement_q1 / target_value_q1) * 100, 1)
+            
+        
+        '''% Total Cost vs Achievement Q.1'''
+        total_cost_q1 = total_cost_jan + total_cost_feb + total_cost_mar
+        
+        if total_cost_q1 == 0 or achievement_q1 == 0:
+            total_cost_vs_achievement_q1 = ''
+        else: 
+            total_cost_vs_achievement_q1 = round((total_cost_q1 / achievement_q1) * 100, 1)
+            
+        
+        '''% Total Cost vs Target Q.1'''
+        if total_cost_q1 == 0 or target_value_q1 == 0:
+            total_cost_vs_target_value_q1 = ''
+        else: 
+            total_cost_vs_target_value_q1 = round((total_cost_q1 / target_value_q1) * 100, 1)
+        
+        
+        
+        '''Get target_value apr'''
+        try:
+            target_value_apr = Report_landing_target_value.objects.get(month__month_number=4,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_target_value.DoesNotExist:
+            target_value_apr = 'x'
+            
+        '''Get achievement apr'''
+        try:
+            achievement_apr = Report_landing_achievement.objects.get(month__month_number=4,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_achievement.DoesNotExist:
+            achievement_apr = 'x'
+        
+        '''Get achievement_vs_target_apr'''  
+        if target_value_apr == 'x' or achievement_apr == 'x':
+            achievement_vs_target_apr = ''
+        else: 
+            achievement_vs_target_apr = round((achievement_apr.achievement / target_value_apr.target_value) * 100, 1)
+            
+        '''Get total_cost_apr'''
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                # Get total_allowance_apr
+                total_allowance_apr = 0
+                total_allowance_apr += payroll_data[3].phone
+                total_allowance_apr += payroll_data[3].lunch
+                total_allowance_apr += payroll_data[3].housing_vnd
+                total_allowance_apr += payroll_data[3].other
+                total_allowance_apr += payroll_data[3].travel
+                total_allowance_apr += payroll_data[3].seniority_bonus
+                total_allowance_apr += payroll_data[3].responsibility
+                # Get gross_income_apr
+                gross_income_apr = 0
+                gross_income_apr += payroll_data[3].gross_income
+                gross_income_apr += total_allowance_apr
+                # Get total_cost_apr
+                total_cost_apr = gross_income_apr + payroll_data[3].SHUI_9point5percent_employee_pay + payroll_data[3].SHUI_20point5percent_employer_pay + payroll_data[3].trade_union_fee_company_pay + payroll_data[3].trade_union_fee_member
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                # Get total_allowance_apr
+                total_allowance_apr = 0
+                total_allowance_apr += payroll_data[3].overtime
+                total_allowance_apr += payroll_data[3].transportation
+                total_allowance_apr += payroll_data[3].phone
+                total_allowance_apr += payroll_data[3].lunch
+                total_allowance_apr += payroll_data[3].other
+                total_allowance_apr += payroll_data[3].travel
+                total_allowance_apr += payroll_data[3].seniority_bonus
+                total_allowance_apr += payroll_data[3].responsibility
+                # Get gross_income_apr
+                gross_income_apr = 0
+                gross_income_apr += payroll_data[3].gross_income
+                gross_income_apr += total_allowance_apr
+                # Get total_cost_apr
+                total_cost_apr = gross_income_apr + payroll_data[3].trade_union_fee_company_pay_2percent + payroll_data[3].trade_union_fee_member + payroll_data[3].transfer_bank
+            else:
+                # Get total_allowance_apr
+                total_allowance_apr = 0
+                if payroll_data[3] == '':
+                    total_allowance_apr = 0
+                else:
+                    total_allowance_apr += payroll_data[3].overtime
+                    total_allowance_apr += payroll_data[3].transportation
+                    total_allowance_apr += payroll_data[3].phone
+                    total_allowance_apr += payroll_data[3].lunch
+                    total_allowance_apr += payroll_data[3].other
+                    total_allowance_apr += payroll_data[3].travel
+                    total_allowance_apr += payroll_data[3].seniority_bonus
+                    total_allowance_apr += payroll_data[3].responsibility
+                # Get gross_income_apr
+                gross_income_apr = 0
+                if payroll_data[3] == '':
+                    gross_income_apr = 0
+                else:
+                    gross_income_apr += payroll_data[3].gross_income
+                    gross_income_apr += total_allowance_apr
+                # Get total_cost_apr
+                if payroll_data[3] == '':
+                    total_cost_apr = 0
+                else:
+                    total_cost_apr = gross_income_apr + payroll_data[3].SHUI_21point5percent_company_pay + payroll_data[3].trade_union_fee_company_pay_2percent + payroll_data[3].trade_union_fee_member + payroll_data[3].transfer_bank
+        
+        elif employee.site == site_JV:
+            # Get total_allowance_apr
+                total_allowance_apr = 0
+                if payroll_data[3] == '':
+                    total_allowance_apr = 0
+                else:
+                    total_allowance_apr += payroll_data[3].overtime
+                    total_allowance_apr += payroll_data[3].transportation
+                    total_allowance_apr += payroll_data[3].phone
+                    total_allowance_apr += payroll_data[3].lunch
+                    total_allowance_apr += payroll_data[3].KPI_achievement
+                    total_allowance_apr += payroll_data[3].other
+                    total_allowance_apr += payroll_data[3].travel
+                    total_allowance_apr += payroll_data[3].seniority_bonus
+                    total_allowance_apr += payroll_data[3].responsibility
+                # Get gross_income_apr
+                gross_income_apr = 0
+                if payroll_data[3] == '':
+                    gross_income_apr = 0
+                else:
+                    gross_income_apr += payroll_data[3].gross_income
+                    gross_income_apr += total_allowance_apr
+                # Get total_cost_apr
+                if payroll_data[3] == '':
+                    total_cost_apr = 0
+                else:
+                    total_cost_apr = gross_income_apr + payroll_data[3].SHUI_21point5percent_company_pay + payroll_data[3].trade_union_fee_company_pay + payroll_data[3].trade_union_fee_employee_pay + payroll_data[3].transfer_bank
+        
+        elif employee.site == site_VH:
+            # Get total_allowance_apr
+                total_allowance_apr = 0
+                if payroll_data[3] == '':
+                    total_allowance_apr = 0
+                else:
+                    total_allowance_apr += payroll_data[3].overtime
+                    total_allowance_apr += payroll_data[3].transportation
+                    total_allowance_apr += payroll_data[3].phone
+                    total_allowance_apr += payroll_data[3].lunch
+                    total_allowance_apr += payroll_data[3].other
+                    total_allowance_apr += payroll_data[3].responsibility
+                # Get gross_income_apr
+                gross_income_apr = 0
+                if payroll_data[3] == '':
+                    gross_income_apr = 0
+                else:
+                    gross_income_apr += payroll_data[3].gross_income
+                    gross_income_apr += total_allowance_apr
+                # Get total_cost_apr
+                if payroll_data[3] == '':
+                    total_cost_apr = 0
+                else:
+                    total_cost_apr = gross_income_apr + payroll_data[3].SHUI_21point5percent_company_pay + payroll_data[3].trade_union_fee_company_pay + payroll_data[3].trade_union_fee_staff_pay + payroll_data[3].transfer_bank
+                                
+        '''Get total_cost_vs_achievement_apr''' 
+        if total_cost_apr == 0 or achievement_apr == 'x':
+            total_cost_vs_achievement_apr = ''
+        else: 
+            total_cost_vs_achievement_apr = round((total_cost_apr / achievement_apr.achievement) * 100, 1)
+            
+        
+        '''Get target_value may'''
+        try:
+            target_value_may = Report_landing_target_value.objects.get(month__month_number=5,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_target_value.DoesNotExist:
+            target_value_may = 'x'
+            
+        '''Get achievement may'''
+        try:
+            achievement_may = Report_landing_achievement.objects.get(month__month_number=5,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_achievement.DoesNotExist:
+            achievement_may = 'x'
+        
+        '''Get achievement_vs_target_may'''  
+        if target_value_may == 'x' or achievement_may == 'x':
+            achievement_vs_target_may = ''
+        else: 
+            achievement_vs_target_may = round((achievement_may.achievement / target_value_may.target_value) * 100, 1)
+            
+        '''Get total_cost_may'''
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                # Get total_allowance_may
+                total_allowance_may = 0
+                total_allowance_may += payroll_data[4].phone
+                total_allowance_may += payroll_data[4].lunch
+                total_allowance_may += payroll_data[4].housing_vnd
+                total_allowance_may += payroll_data[4].other
+                total_allowance_may += payroll_data[4].travel
+                total_allowance_may += payroll_data[4].seniority_bonus
+                total_allowance_may += payroll_data[4].responsibility
+                # Get gross_income_may
+                gross_income_may = 0
+                gross_income_may += payroll_data[4].gross_income
+                gross_income_may += total_allowance_may
+                # Get total_cost_may
+                total_cost_may = gross_income_may + payroll_data[4].SHUI_9point5percent_employee_pay + payroll_data[4].SHUI_20point5percent_employer_pay + payroll_data[4].trade_union_fee_company_pay + payroll_data[4].trade_union_fee_member
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                # Get total_allowance_may
+                total_allowance_may = 0
+                total_allowance_may += payroll_data[4].overtime
+                total_allowance_may += payroll_data[4].transportation
+                total_allowance_may += payroll_data[4].phone
+                total_allowance_may += payroll_data[4].lunch
+                total_allowance_may += payroll_data[4].other
+                total_allowance_may += payroll_data[4].travel
+                total_allowance_may += payroll_data[4].seniority_bonus
+                total_allowance_may += payroll_data[4].responsibility
+                # Get gross_income_may
+                gross_income_may = 0
+                gross_income_may += payroll_data[4].gross_income
+                gross_income_may += total_allowance_may
+                # Get total_cost_may
+                total_cost_may = gross_income_may + payroll_data[4].trade_union_fee_company_pay_2percent + payroll_data[4].trade_union_fee_member + payroll_data[4].transfer_bank
+            else:
+                # Get total_allowance_may
+                total_allowance_may = 0
+                if payroll_data[4] == '':
+                    total_allowance_may = 0
+                else:
+                    total_allowance_may += payroll_data[4].overtime
+                    total_allowance_may += payroll_data[4].transportation
+                    total_allowance_may += payroll_data[4].phone
+                    total_allowance_may += payroll_data[4].lunch
+                    total_allowance_may += payroll_data[4].other
+                    total_allowance_may += payroll_data[4].travel
+                    total_allowance_may += payroll_data[4].seniority_bonus
+                    total_allowance_may += payroll_data[4].responsibility
+                # Get gross_income_may
+                gross_income_may = 0
+                if payroll_data[4] == '':
+                    gross_income_may = 0
+                else:
+                    gross_income_may += payroll_data[4].gross_income
+                    gross_income_may += total_allowance_may
+                # Get total_cost_may
+                if payroll_data[4] == '':
+                    total_cost_may = 0
+                else:
+                    total_cost_may = gross_income_may + payroll_data[4].SHUI_21point5percent_company_pay + payroll_data[4].trade_union_fee_company_pay_2percent + payroll_data[4].trade_union_fee_member + payroll_data[4].transfer_bank
+        
+        elif employee.site == site_JV:
+            # Get total_allowance_may
+                total_allowance_may = 0
+                if payroll_data[4] == '':
+                    total_allowance_may = 0
+                else:
+                    total_allowance_may += payroll_data[4].overtime
+                    total_allowance_may += payroll_data[4].transportation
+                    total_allowance_may += payroll_data[4].phone
+                    total_allowance_may += payroll_data[4].lunch
+                    total_allowance_may += payroll_data[4].KPI_achievement
+                    total_allowance_may += payroll_data[4].other
+                    total_allowance_may += payroll_data[4].travel
+                    total_allowance_may += payroll_data[4].seniority_bonus
+                    total_allowance_may += payroll_data[4].responsibility
+                # Get gross_income_may
+                gross_income_may = 0
+                if payroll_data[4] == '':
+                    gross_income_may = 0
+                else:
+                    gross_income_may += payroll_data[4].gross_income
+                    gross_income_may += total_allowance_may
+                # Get total_cost_may
+                if payroll_data[4] == '':
+                    total_cost_may = 0
+                else:
+                    total_cost_may = gross_income_may + payroll_data[4].SHUI_21point5percent_company_pay + payroll_data[4].trade_union_fee_company_pay + payroll_data[4].trade_union_fee_employee_pay + payroll_data[4].transfer_bank
+        
+        elif employee.site == site_VH:
+            # Get total_allowance_may
+                total_allowance_may = 0
+                if payroll_data[4] == '':
+                    total_allowance_may = 0
+                else:
+                    total_allowance_may += payroll_data[4].overtime
+                    total_allowance_may += payroll_data[4].transportation
+                    total_allowance_may += payroll_data[4].phone
+                    total_allowance_may += payroll_data[4].lunch
+                    total_allowance_may += payroll_data[4].other
+                    total_allowance_may += payroll_data[4].responsibility
+                # Get gross_income_may
+                gross_income_may = 0
+                if payroll_data[4] == '':
+                    gross_income_may = 0
+                else:
+                    gross_income_may += payroll_data[4].gross_income
+                    gross_income_may += total_allowance_may
+                # Get total_cost_may
+                if payroll_data[4] == '':
+                    total_cost_may = 0
+                else:
+                    total_cost_may = gross_income_may + payroll_data[4].SHUI_21point5percent_company_pay + payroll_data[4].trade_union_fee_company_pay + payroll_data[4].trade_union_fee_staff_pay + payroll_data[4].transfer_bank
+                                
+        '''Get total_cost_vs_achievement_may''' 
+        if total_cost_may == 0 or achievement_may == 'x':
+            total_cost_vs_achievement_may = ''
+        else: 
+            total_cost_vs_achievement_may = round((total_cost_may / achievement_may.achievement) * 100, 1)
+        
+        
+        '''Get target_value jun'''
+        try:
+            target_value_jun = Report_landing_target_value.objects.get(month__month_number=6,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_target_value.DoesNotExist:
+            target_value_jun = 'x'
+            
+        '''Get achievement jun'''
+        try:
+            achievement_jun = Report_landing_achievement.objects.get(month__month_number=6,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_achievement.DoesNotExist:
+            achievement_jun = 'x'
+        
+        '''Get achievement_vs_target_jun'''  
+        if target_value_jun == 'x' or achievement_jun == 'x':
+            achievement_vs_target_jun = ''
+        else: 
+            achievement_vs_target_jun = round((achievement_jun.achievement / target_value_jun.target_value) * 100, 1)
+            
+        '''Get total_cost_jun'''
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                # Get total_allowance_jun
+                total_allowance_jun = 0
+                total_allowance_jun += payroll_data[5].phone
+                total_allowance_jun += payroll_data[5].lunch
+                total_allowance_jun += payroll_data[5].housing_vnd
+                total_allowance_jun += payroll_data[5].other
+                total_allowance_jun += payroll_data[5].travel
+                total_allowance_jun += payroll_data[5].seniority_bonus
+                total_allowance_jun += payroll_data[5].responsibility
+                # Get gross_income_jun
+                gross_income_jun = 0
+                gross_income_jun += payroll_data[5].gross_income
+                gross_income_jun += total_allowance_jun
+                # Get total_cost_jun
+                total_cost_jun = gross_income_jun + payroll_data[5].SHUI_9point5percent_employee_pay + payroll_data[5].SHUI_20point5percent_employer_pay + payroll_data[5].trade_union_fee_company_pay + payroll_data[5].trade_union_fee_member
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                # Get total_allowance_jun
+                total_allowance_jun = 0
+                total_allowance_jun += payroll_data[5].overtime
+                total_allowance_jun += payroll_data[5].transportation
+                total_allowance_jun += payroll_data[5].phone
+                total_allowance_jun += payroll_data[5].lunch
+                total_allowance_jun += payroll_data[5].other
+                total_allowance_jun += payroll_data[5].travel
+                total_allowance_jun += payroll_data[5].seniority_bonus
+                total_allowance_jun += payroll_data[5].responsibility
+                # Get gross_income_jun
+                gross_income_jun = 0
+                gross_income_jun += payroll_data[5].gross_income
+                gross_income_jun += total_allowance_jun
+                # Get total_cost_jun
+                total_cost_jun = gross_income_jun + payroll_data[5].trade_union_fee_company_pay_2percent + payroll_data[5].trade_union_fee_member + payroll_data[5].transfer_bank
+            else:
+                # Get total_allowance_jun
+                total_allowance_jun = 0
+                if payroll_data[5] == '':
+                    total_allowance_jun = 0
+                else:
+                    total_allowance_jun += payroll_data[5].overtime
+                    total_allowance_jun += payroll_data[5].transportation
+                    total_allowance_jun += payroll_data[5].phone
+                    total_allowance_jun += payroll_data[5].lunch
+                    total_allowance_jun += payroll_data[5].other
+                    total_allowance_jun += payroll_data[5].travel
+                    total_allowance_jun += payroll_data[5].seniority_bonus
+                    total_allowance_jun += payroll_data[5].responsibility
+                # Get gross_income_jun
+                gross_income_jun = 0
+                if payroll_data[5] == '':
+                    gross_income_jun = 0
+                else:
+                    gross_income_jun += payroll_data[5].gross_income
+                    gross_income_jun += total_allowance_jun
+                # Get total_cost_jun
+                if payroll_data[5] == '':
+                    total_cost_jun = 0
+                else:
+                    total_cost_jun = gross_income_jun + payroll_data[5].SHUI_21point5percent_company_pay + payroll_data[5].trade_union_fee_company_pay_2percent + payroll_data[5].trade_union_fee_member + payroll_data[5].transfer_bank
+        
+        elif employee.site == site_JV:
+            # Get total_allowance_jun
+                total_allowance_jun = 0
+                if payroll_data[5] == '':
+                    total_allowance_jun = 0
+                else:
+                    total_allowance_jun += payroll_data[5].overtime
+                    total_allowance_jun += payroll_data[5].transportation
+                    total_allowance_jun += payroll_data[5].phone
+                    total_allowance_jun += payroll_data[5].lunch
+                    total_allowance_jun += payroll_data[5].KPI_achievement
+                    total_allowance_jun += payroll_data[5].other
+                    total_allowance_jun += payroll_data[5].travel
+                    total_allowance_jun += payroll_data[5].seniority_bonus
+                    total_allowance_jun += payroll_data[5].responsibility
+                # Get gross_income_jun
+                gross_income_jun = 0
+                if payroll_data[5] == '':
+                    gross_income_jun = 0
+                else:
+                    gross_income_jun += payroll_data[5].gross_income
+                    gross_income_jun += total_allowance_jun
+                # Get total_cost_jun
+                if payroll_data[5] == '':
+                    total_cost_jun = 0
+                else:
+                    total_cost_jun = gross_income_jun + payroll_data[5].SHUI_21point5percent_company_pay + payroll_data[5].trade_union_fee_company_pay + payroll_data[5].trade_union_fee_employee_pay + payroll_data[5].transfer_bank
+        
+        elif employee.site == site_VH:
+            # Get total_allowance_jun
+                total_allowance_jun = 0
+                if payroll_data[5] == '':
+                    total_allowance_jun = 0
+                else:
+                    total_allowance_jun += payroll_data[5].overtime
+                    total_allowance_jun += payroll_data[5].transportation
+                    total_allowance_jun += payroll_data[5].phone
+                    total_allowance_jun += payroll_data[5].lunch
+                    total_allowance_jun += payroll_data[5].other
+                    total_allowance_jun += payroll_data[5].responsibility
+                # Get gross_income_jun
+                gross_income_jun = 0
+                if payroll_data[5] == '':
+                    gross_income_jun = 0
+                else:
+                    gross_income_jun += payroll_data[5].gross_income
+                    gross_income_jun += total_allowance_jun
+                # Get total_cost_jun
+                if payroll_data[5] == '':
+                    total_cost_jun = 0
+                else:
+                    total_cost_jun = gross_income_jun + payroll_data[5].SHUI_21point5percent_company_pay + payroll_data[5].trade_union_fee_company_pay + payroll_data[5].trade_union_fee_staff_pay + payroll_data[5].transfer_bank
+                                
+        '''Get total_cost_vs_achievement_jun''' 
+        if total_cost_jun == 0 or achievement_jun == 'x':
+            total_cost_vs_achievement_jun = ''
+        else: 
+            total_cost_vs_achievement_jun = round((total_cost_jun / achievement_jun.achievement) * 100, 1)
+            
+        '''% Achievement vs Target Q.2'''
+        # achievement_q2
+        if achievement_apr == 'x':
+            x = 0
+        else:
+            x = achievement_apr.achievement
+            
+        if achievement_may == 'x':
+            y = 0
+        else:
+            y = achievement_may.achievement
+            
+        if achievement_jun == 'x':
+            z = 0
+        else:
+            z = achievement_jun.achievement
+        
+        achievement_q2 = x + y + z
+        
+        # target_value_q2
+        if target_value_apr == 'x':
+            x = 0
+        else:
+            x = target_value_apr.target_value
+        if target_value_may == 'x':
+            y = 0
+        else:
+            y = target_value_may.target_value
+        if target_value_jun == 'x':
+            z = 0
+        else:
+            z = target_value_jun.target_value
+        
+        target_value_q2 = x + y + z
+
+        if target_value_q2 == 0 or achievement_q2 == 0:
+            achievement_vs_target_q2 = ''
+        else: 
+            achievement_vs_target_q2 = round((achievement_q2 / target_value_q2) * 100, 1)
+            
+        '''% Total Cost vs Achievement Q.2'''
+        total_cost_q2 = total_cost_apr + total_cost_may + total_cost_jun
+        
+        if total_cost_q2 == 0 or achievement_q2 == 0:
+            total_cost_vs_achievement_q2 = ''
+        else: 
+            total_cost_vs_achievement_q2 = round((total_cost_q2 / achievement_q2) * 100, 1)
+            
+        '''% Total Cost vs Target Q.2'''
+        if total_cost_q2 == 0 or target_value_q2 == 0:
+            total_cost_vs_target_value_q2 = ''
+        else: 
+            total_cost_vs_target_value_q2 = round((total_cost_q2 / target_value_q2) * 100, 1)
+            
+        '''Get target_value jul'''
+        try:
+            target_value_jul = Report_landing_target_value.objects.get(month__month_number=7,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_target_value.DoesNotExist:
+            target_value_jul = 'x'
+            
+        '''Get achievement jul'''
+        try:
+            achievement_jul = Report_landing_achievement.objects.get(month__month_number=7,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_achievement.DoesNotExist:
+            achievement_jul = 'x'
+        
+        '''Get achievement_vs_target_jul'''  
+        if target_value_jul == 'x' or achievement_jul == 'x':
+            achievement_vs_target_jul = ''
+        else: 
+            achievement_vs_target_jul = round((achievement_jul.achievement / target_value_jul.target_value) * 100, 1)
+            
+        '''Get total_cost_jul'''
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                # Get total_allowance_jul
+                total_allowance_jul = 0
+                total_allowance_jul += payroll_data[6].phone
+                total_allowance_jul += payroll_data[6].lunch
+                total_allowance_jul += payroll_data[6].housing_vnd
+                total_allowance_jul += payroll_data[6].other
+                total_allowance_jul += payroll_data[6].travel
+                total_allowance_jul += payroll_data[6].seniority_bonus
+                total_allowance_jul += payroll_data[6].responsibility
+                # Get gross_income_jul
+                gross_income_jul = 0
+                gross_income_jul += payroll_data[6].gross_income
+                gross_income_jul += total_allowance_jul
+                # Get total_cost_jul
+                total_cost_jul = gross_income_jul + payroll_data[6].SHUI_9point5percent_employee_pay + payroll_data[6].SHUI_20point5percent_employer_pay + payroll_data[6].trade_union_fee_company_pay + payroll_data[6].trade_union_fee_member
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                # Get total_allowance_jul
+                total_allowance_jul = 0
+                total_allowance_jul += payroll_data[6].overtime
+                total_allowance_jul += payroll_data[6].transportation
+                total_allowance_jul += payroll_data[6].phone
+                total_allowance_jul += payroll_data[6].lunch
+                total_allowance_jul += payroll_data[6].other
+                total_allowance_jul += payroll_data[6].travel
+                total_allowance_jul += payroll_data[6].seniority_bonus
+                total_allowance_jul += payroll_data[6].responsibility
+                # Get gross_income_jul
+                gross_income_jul = 0
+                gross_income_jul += payroll_data[6].gross_income
+                gross_income_jul += total_allowance_jul
+                # Get total_cost_jul
+                total_cost_jul = gross_income_jul + payroll_data[6].trade_union_fee_company_pay_2percent + payroll_data[6].trade_union_fee_member + payroll_data[6].transfer_bank
+            else:
+                # Get total_allowance_jul
+                total_allowance_jul = 0
+                if payroll_data[6] == '':
+                    total_allowance_jul = 0
+                else:
+                    total_allowance_jul += payroll_data[6].overtime
+                    total_allowance_jul += payroll_data[6].transportation
+                    total_allowance_jul += payroll_data[6].phone
+                    total_allowance_jul += payroll_data[6].lunch
+                    total_allowance_jul += payroll_data[6].other
+                    total_allowance_jul += payroll_data[6].travel
+                    total_allowance_jul += payroll_data[6].seniority_bonus
+                    total_allowance_jul += payroll_data[6].responsibility
+                # Get gross_income_jul
+                gross_income_jul = 0
+                if payroll_data[6] == '':
+                    gross_income_jul = 0
+                else:
+                    gross_income_jul += payroll_data[6].gross_income
+                    gross_income_jul += total_allowance_jul
+                # Get total_cost_jul
+                if payroll_data[6] == '':
+                    total_cost_jul = 0
+                else:
+                    total_cost_jul = gross_income_jul + payroll_data[6].SHUI_21point5percent_company_pay + payroll_data[6].trade_union_fee_company_pay_2percent + payroll_data[6].trade_union_fee_member + payroll_data[6].transfer_bank
+        
+        elif employee.site == site_JV:
+            # Get total_allowance_jul
+                total_allowance_jul = 0
+                if payroll_data[6] == '':
+                    total_allowance_jul = 0
+                else:
+                    total_allowance_jul += payroll_data[6].overtime
+                    total_allowance_jul += payroll_data[6].transportation
+                    total_allowance_jul += payroll_data[6].phone
+                    total_allowance_jul += payroll_data[6].lunch
+                    total_allowance_jul += payroll_data[6].KPI_achievement
+                    total_allowance_jul += payroll_data[6].other
+                    total_allowance_jul += payroll_data[6].travel
+                    total_allowance_jul += payroll_data[6].seniority_bonus
+                    total_allowance_jul += payroll_data[6].responsibility
+                # Get gross_income_jul
+                gross_income_jul = 0
+                if payroll_data[6] == '':
+                    gross_income_jul = 0
+                else:
+                    gross_income_jul += payroll_data[6].gross_income
+                    gross_income_jul += total_allowance_jul
+                # Get total_cost_jul
+                if payroll_data[6] == '':
+                    total_cost_jul = 0
+                else:
+                    total_cost_jul = gross_income_jul + payroll_data[6].SHUI_21point5percent_company_pay + payroll_data[6].trade_union_fee_company_pay + payroll_data[6].trade_union_fee_employee_pay + payroll_data[6].transfer_bank
+        
+        elif employee.site == site_VH:
+            # Get total_allowance_jul
+                total_allowance_jul = 0
+                if payroll_data[6] == '':
+                    total_allowance_jul = 0
+                else:
+                    total_allowance_jul += payroll_data[6].overtime
+                    total_allowance_jul += payroll_data[6].transportation
+                    total_allowance_jul += payroll_data[6].phone
+                    total_allowance_jul += payroll_data[6].lunch
+                    total_allowance_jul += payroll_data[6].other
+                    total_allowance_jul += payroll_data[6].responsibility
+                # Get gross_income_jul
+                gross_income_jul = 0
+                if payroll_data[6] == '':
+                    gross_income_jul = 0
+                else:
+                    gross_income_jul += payroll_data[6].gross_income
+                    gross_income_jul += total_allowance_jul
+                # Get total_cost_jul
+                if payroll_data[6] == '':
+                    total_cost_jul = 0
+                else:
+                    total_cost_jul = gross_income_jul + payroll_data[6].SHUI_21point5percent_company_pay + payroll_data[6].trade_union_fee_company_pay + payroll_data[6].trade_union_fee_staff_pay + payroll_data[6].transfer_bank
+                                
+        '''Get total_cost_vs_achievement_jul''' 
+        if total_cost_jul == 0 or achievement_jul == 'x':
+            total_cost_vs_achievement_jul = ''
+        else: 
+            total_cost_vs_achievement_jul = round((total_cost_jul / achievement_jul.achievement) * 100, 1)
+            
+        '''Get target_value aug'''
+        try:
+            target_value_aug = Report_landing_target_value.objects.get(month__month_number=8,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_target_value.DoesNotExist:
+            target_value_aug = 'x'
+            
+        '''Get achievement aug'''
+        try:
+            achievement_aug = Report_landing_achievement.objects.get(month__month_number=8,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_achievement.DoesNotExist:
+            achievement_aug = 'x'
+        
+        '''Get achievement_vs_target_aug'''  
+        if target_value_aug == 'x' or achievement_aug == 'x':
+            achievement_vs_target_aug = ''
+        else: 
+            achievement_vs_target_aug = round((achievement_aug.achievement / target_value_aug.target_value) * 100, 1)
+            
+        '''Get total_cost_aug'''
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                # Get total_allowance_aug
+                total_allowance_aug = 0
+                total_allowance_aug += payroll_data[7].phone
+                total_allowance_aug += payroll_data[7].lunch
+                total_allowance_aug += payroll_data[7].housing_vnd
+                total_allowance_aug += payroll_data[7].other
+                total_allowance_aug += payroll_data[7].travel
+                total_allowance_aug += payroll_data[7].seniority_bonus
+                total_allowance_aug += payroll_data[7].responsibility
+                # Get gross_income_aug
+                gross_income_aug = 0
+                gross_income_aug += payroll_data[7].gross_income
+                gross_income_aug += total_allowance_aug
+                # Get total_cost_aug
+                total_cost_aug = gross_income_aug + payroll_data[7].SHUI_9point5percent_employee_pay + payroll_data[7].SHUI_20point5percent_employer_pay + payroll_data[7].trade_union_fee_company_pay + payroll_data[7].trade_union_fee_member
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                # Get total_allowance_aug
+                total_allowance_aug = 0
+                total_allowance_aug += payroll_data[7].overtime
+                total_allowance_aug += payroll_data[7].transportation
+                total_allowance_aug += payroll_data[7].phone
+                total_allowance_aug += payroll_data[7].lunch
+                total_allowance_aug += payroll_data[7].other
+                total_allowance_aug += payroll_data[7].travel
+                total_allowance_aug += payroll_data[7].seniority_bonus
+                total_allowance_aug += payroll_data[7].responsibility
+                # Get gross_income_aug
+                gross_income_aug = 0
+                gross_income_aug += payroll_data[7].gross_income
+                gross_income_aug += total_allowance_aug
+                # Get total_cost_aug
+                total_cost_aug = gross_income_aug + payroll_data[7].trade_union_fee_company_pay_2percent + payroll_data[7].trade_union_fee_member + payroll_data[7].transfer_bank
+            else:
+                # Get total_allowance_aug
+                total_allowance_aug = 0
+                if payroll_data[7] == '':
+                    total_allowance_aug = 0
+                else:
+                    total_allowance_aug += payroll_data[7].overtime
+                    total_allowance_aug += payroll_data[7].transportation
+                    total_allowance_aug += payroll_data[7].phone
+                    total_allowance_aug += payroll_data[7].lunch
+                    total_allowance_aug += payroll_data[7].other
+                    total_allowance_aug += payroll_data[7].travel
+                    total_allowance_aug += payroll_data[7].seniority_bonus
+                    total_allowance_aug += payroll_data[7].responsibility
+                # Get gross_income_aug
+                gross_income_aug = 0
+                if payroll_data[7] == '':
+                    gross_income_aug = 0
+                else:
+                    gross_income_aug += payroll_data[7].gross_income
+                    gross_income_aug += total_allowance_aug
+                # Get total_cost_aug
+                if payroll_data[7] == '':
+                    total_cost_aug = 0
+                else:
+                    total_cost_aug = gross_income_aug + payroll_data[7].SHUI_21point5percent_company_pay + payroll_data[7].trade_union_fee_company_pay_2percent + payroll_data[7].trade_union_fee_member + payroll_data[7].transfer_bank
+        
+        elif employee.site == site_JV:
+            # Get total_allowance_aug
+                total_allowance_aug = 0
+                if payroll_data[7] == '':
+                    total_allowance_aug = 0
+                else:
+                    total_allowance_aug += payroll_data[7].overtime
+                    total_allowance_aug += payroll_data[7].transportation
+                    total_allowance_aug += payroll_data[7].phone
+                    total_allowance_aug += payroll_data[7].lunch
+                    total_allowance_aug += payroll_data[7].KPI_achievement
+                    total_allowance_aug += payroll_data[7].other
+                    total_allowance_aug += payroll_data[7].travel
+                    total_allowance_aug += payroll_data[7].seniority_bonus
+                    total_allowance_aug += payroll_data[7].responsibility
+                # Get gross_income_aug
+                gross_income_aug = 0
+                if payroll_data[7] == '':
+                    gross_income_aug = 0
+                else:
+                    gross_income_aug += payroll_data[7].gross_income
+                    gross_income_aug += total_allowance_aug
+                # Get total_cost_aug
+                if payroll_data[7] == '':
+                    total_cost_aug = 0
+                else:
+                    total_cost_aug = gross_income_aug + payroll_data[7].SHUI_21point5percent_company_pay + payroll_data[7].trade_union_fee_company_pay + payroll_data[7].trade_union_fee_employee_pay + payroll_data[7].transfer_bank
+        
+        elif employee.site == site_VH:
+            # Get total_allowance_aug
+                total_allowance_aug = 0
+                if payroll_data[7] == '':
+                    total_allowance_aug = 0
+                else:
+                    total_allowance_aug += payroll_data[7].overtime
+                    total_allowance_aug += payroll_data[7].transportation
+                    total_allowance_aug += payroll_data[7].phone
+                    total_allowance_aug += payroll_data[7].lunch
+                    total_allowance_aug += payroll_data[7].other
+                    total_allowance_aug += payroll_data[7].responsibility
+                # Get gross_income_aug
+                gross_income_aug = 0
+                if payroll_data[7] == '':
+                    gross_income_aug = 0
+                else:
+                    gross_income_aug += payroll_data[7].gross_income
+                    gross_income_aug += total_allowance_aug
+                # Get total_cost_aug
+                if payroll_data[7] == '':
+                    total_cost_aug = 0
+                else:
+                    total_cost_aug = gross_income_aug + payroll_data[7].SHUI_21point5percent_company_pay + payroll_data[7].trade_union_fee_company_pay + payroll_data[7].trade_union_fee_staff_pay + payroll_data[7].transfer_bank
+                                
+        '''Get total_cost_vs_achievement_aug''' 
+        if total_cost_aug == 0 or achievement_aug == 'x':
+            total_cost_vs_achievement_aug = ''
+        else: 
+            total_cost_vs_achievement_aug = round((total_cost_aug / achievement_aug.achievement) * 100, 1)
+            
+        '''Get target_value sep'''
+        try:
+            target_value_sep = Report_landing_target_value.objects.get(month__month_number=9,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_target_value.DoesNotExist:
+            target_value_sep = 'x'
+            
+        '''Get achievement sep'''
+        try:
+            achievement_sep = Report_landing_achievement.objects.get(month__month_number=9,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_achievement.DoesNotExist:
+            achievement_sep = 'x'
+        
+        '''Get achievement_vs_target_sep'''  
+        if target_value_sep == 'x' or achievement_sep == 'x':
+            achievement_vs_target_sep = ''
+        else: 
+            achievement_vs_target_sep = round((achievement_sep.achievement / target_value_sep.target_value) * 100, 1)
+            
+        '''Get total_cost_sep'''
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                # Get total_allowance_sep
+                total_allowance_sep = 0
+                total_allowance_sep += payroll_data[8].phone
+                total_allowance_sep += payroll_data[8].lunch
+                total_allowance_sep += payroll_data[8].housing_vnd
+                total_allowance_sep += payroll_data[8].other
+                total_allowance_sep += payroll_data[8].travel
+                total_allowance_sep += payroll_data[8].seniority_bonus
+                total_allowance_sep += payroll_data[8].responsibility
+                # Get gross_income_sep
+                gross_income_sep = 0
+                gross_income_sep += payroll_data[8].gross_income
+                gross_income_sep += total_allowance_sep
+                # Get total_cost_sep
+                total_cost_sep = gross_income_sep + payroll_data[8].SHUI_9point5percent_employee_pay + payroll_data[8].SHUI_20point5percent_employer_pay + payroll_data[8].trade_union_fee_company_pay + payroll_data[8].trade_union_fee_member
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                # Get total_allowance_sep
+                total_allowance_sep = 0
+                total_allowance_sep += payroll_data[8].overtime
+                total_allowance_sep += payroll_data[8].transportation
+                total_allowance_sep += payroll_data[8].phone
+                total_allowance_sep += payroll_data[8].lunch
+                total_allowance_sep += payroll_data[8].other
+                total_allowance_sep += payroll_data[8].travel
+                total_allowance_sep += payroll_data[8].seniority_bonus
+                total_allowance_sep += payroll_data[8].responsibility
+                # Get gross_income_sep
+                gross_income_sep = 0
+                gross_income_sep += payroll_data[8].gross_income
+                gross_income_sep += total_allowance_sep
+                # Get total_cost_sep
+                total_cost_sep = gross_income_sep + payroll_data[8].trade_union_fee_company_pay_2percent + payroll_data[8].trade_union_fee_member + payroll_data[8].transfer_bank
+            else:
+                # Get total_allowance_sep
+                total_allowance_sep = 0
+                if payroll_data[8] == '':
+                    total_allowance_sep = 0
+                else:
+                    total_allowance_sep += payroll_data[8].overtime
+                    total_allowance_sep += payroll_data[8].transportation
+                    total_allowance_sep += payroll_data[8].phone
+                    total_allowance_sep += payroll_data[8].lunch
+                    total_allowance_sep += payroll_data[8].other
+                    total_allowance_sep += payroll_data[8].travel
+                    total_allowance_sep += payroll_data[8].seniority_bonus
+                    total_allowance_sep += payroll_data[8].responsibility
+                # Get gross_income_sep
+                gross_income_sep = 0
+                if payroll_data[8] == '':
+                    gross_income_sep = 0
+                else:
+                    gross_income_sep += payroll_data[8].gross_income
+                    gross_income_sep += total_allowance_sep
+                # Get total_cost_sep
+                if payroll_data[8] == '':
+                    total_cost_sep = 0
+                else:
+                    total_cost_sep = gross_income_sep + payroll_data[8].SHUI_21point5percent_company_pay + payroll_data[8].trade_union_fee_company_pay_2percent + payroll_data[8].trade_union_fee_member + payroll_data[8].transfer_bank
+        
+        elif employee.site == site_JV:
+            # Get total_allowance_sep
+                total_allowance_sep = 0
+                if payroll_data[8] == '':
+                    total_allowance_sep = 0
+                else:
+                    total_allowance_sep += payroll_data[8].overtime
+                    total_allowance_sep += payroll_data[8].transportation
+                    total_allowance_sep += payroll_data[8].phone
+                    total_allowance_sep += payroll_data[8].lunch
+                    total_allowance_sep += payroll_data[8].KPI_achievement
+                    total_allowance_sep += payroll_data[8].other
+                    total_allowance_sep += payroll_data[8].travel
+                    total_allowance_sep += payroll_data[8].seniority_bonus
+                    total_allowance_sep += payroll_data[8].responsibility
+                # Get gross_income_sep
+                gross_income_sep = 0
+                if payroll_data[8] == '':
+                    gross_income_sep = 0
+                else:
+                    gross_income_sep += payroll_data[8].gross_income
+                    gross_income_sep += total_allowance_sep
+                # Get total_cost_sep
+                if payroll_data[8] == '':
+                    total_cost_sep = 0
+                else:
+                    total_cost_sep = gross_income_sep + payroll_data[8].SHUI_21point5percent_company_pay + payroll_data[8].trade_union_fee_company_pay + payroll_data[8].trade_union_fee_employee_pay + payroll_data[8].transfer_bank
+        
+        elif employee.site == site_VH:
+            # Get total_allowance_sep
+                total_allowance_sep = 0
+                if payroll_data[8] == '':
+                    total_allowance_sep = 0
+                else:
+                    total_allowance_sep += payroll_data[8].overtime
+                    total_allowance_sep += payroll_data[8].transportation
+                    total_allowance_sep += payroll_data[8].phone
+                    total_allowance_sep += payroll_data[8].lunch
+                    total_allowance_sep += payroll_data[8].other
+                    total_allowance_sep += payroll_data[8].responsibility
+                # Get gross_income_sep
+                gross_income_sep = 0
+                if payroll_data[8] == '':
+                    gross_income_sep = 0
+                else:
+                    gross_income_sep += payroll_data[8].gross_income
+                    gross_income_sep += total_allowance_sep
+                # Get total_cost_sep
+                if payroll_data[8] == '':
+                    total_cost_sep = 0
+                else:
+                    total_cost_sep = gross_income_sep + payroll_data[8].SHUI_21point5percent_company_pay + payroll_data[8].trade_union_fee_company_pay + payroll_data[8].trade_union_fee_staff_pay + payroll_data[8].transfer_bank
+                                
+        '''Get total_cost_vs_achievement_sep''' 
+        if total_cost_sep == 0 or achievement_sep == 'x':
+            total_cost_vs_achievement_sep = ''
+        else: 
+            total_cost_vs_achievement_sep = round((total_cost_sep / achievement_sep.achievement) * 100, 1)
+        
+        
+        '''% Achievement vs Target Q.3'''
+        # achievement_q3
+        if achievement_jul == 'x':
+            x = 0
+        else:
+            x = achievement_jul.achievement
+            
+        if achievement_aug == 'x':
+            y = 0
+        else:
+            y = achievement_aug.achievement
+            
+        if achievement_sep == 'x':
+            z = 0
+        else:
+            z = achievement_sep.achievement
+        
+        achievement_q3 = x + y + z
+        
+        # target_value_q3
+        if target_value_jul == 'x':
+            x = 0
+        else:
+            x = target_value_jul.target_value
+        if target_value_aug == 'x':
+            y = 0
+        else:
+            y = target_value_aug.target_value
+        if target_value_sep == 'x':
+            z = 0
+        else:
+            z = target_value_sep.target_value
+        
+        target_value_q3 = x + y + z
+
+        if target_value_q3 == 0 or achievement_q3 == 0:
+            achievement_vs_target_q3 = ''
+        else: 
+            achievement_vs_target_q3 = round((achievement_q3 / target_value_q3) * 100, 1)
+            
+        '''% Total Cost vs Achievement Q.3'''
+        total_cost_q3 = total_cost_jul + total_cost_aug + total_cost_sep
+        
+        if total_cost_q3 == 0 or achievement_q3 == 0:
+            total_cost_vs_achievement_q3 = ''
+        else: 
+            total_cost_vs_achievement_q3 = round((total_cost_q3 / achievement_q3) * 100, 1)
+            
+        '''% Total Cost vs Target Q.3'''
+        if total_cost_q3 == 0 or target_value_q3 == 0:
+            total_cost_vs_target_value_q3 = ''
+        else: 
+            total_cost_vs_target_value_q3 = round((total_cost_q3 / target_value_q3) * 100, 1)
+        # if employee.site.site == 'VH':
+        #     print(employee, employee.id)
+        #     print(payroll_data)
+        #     print()
+        # Make data
+        data = {
+            'employee': employee,
+            # Head count last year
+            'head_count_jan': 'x',
+            'head_count_feb': 'x',
+            'head_count_mar': 'x',
+            'head_count_apr': 'x',
+            'head_count_may': 'x',
+            'head_count_jun': 'x',
+            'head_count_jul': 'x',
+            'head_count_aug': 'x',
+            'head_count_sep': 'x',
+            'head_count_oct': 'x',
+            'head_count_nov': 'x',
+            'head_count_dec': 'x',
+            # Basic salary last year
+            'basic_salary_last_year': basic_salary_last_year,
+            
+            # Last year payroll
+            'basic_salary_full_last_year': basic_salary_full_last_year,
+            'overtime_full_last_year': overtime_full_last_year,
+            'transportation_full_last_year': transportation_full_last_year,
+            'phone_salary_full_last_year': phone_salary_full_last_year,
+            'lunch_salary_full_last_year': lunch_salary_full_last_year,
+            'housing_salary_full_last_year': housing_salary_full_last_year,
+            'KPI_achievement_salary_full_last_year': KPI_achievement_salary_full_last_year,
+            'others_salary_full_last_year': others_salary_full_last_year,
+            'travel_salary_full_last_year': travel_salary_full_last_year,
+            'seniority_bonus_salary_full_last_year': seniority_bonus_salary_full_last_year,
+            'responsibility_allowance_salary_full_last_year': responsibility_allowance_salary_full_last_year,
+            'total_allowance_salary_full_last_year': total_allowance_salary_full_last_year,
+            'gross_income_salary_full_last_year': gross_income_salary_full_last_year,
+            'SHUI_21point5percent_company_pay_salary_full_last_year': SHUI_21point5percent_company_pay_salary_full_last_year,
+            'trade_union_fee_company_pay_2percent_salary_full_last_year': trade_union_fee_company_pay_2percent_salary_full_last_year,
+            'trade_union_fee_member_salary_full_last_year': trade_union_fee_member_salary_full_last_year,
+            'transfer_bank_salary_full_last_year': transfer_bank_salary_full_last_year,
+            
+            'incentive_quarter_1_last_year' : incentive_quarter_1_last_year,
+            'incentive_quarter_2_last_year' : incentive_quarter_2_last_year,
+            'incentive_quarter_3_last_year' : incentive_quarter_3_last_year,
+            'incentive_quarter_4_last_year' : incentive_quarter_4_last_year,
+            'incentive_yearly_last_year' : incentive_yearly_last_year,
+            
+            'best_reward_last_year' : best_reward_last_year,
+            
+            'month_13_salary_Pro_ata_full_last_year' : month_13_salary_Pro_ata_full_last_year,
+            
+            'month_14_salary_Pro_ata_full_last_year' : month_14_salary_Pro_ata_full_last_year,
+            
+            'total_remuneration_full_last_year' : total_remuneration_full_last_year,
+            
+            'target_value_full_last_year' : target_value_full_last_year,
+            
+            'achievement_full_last_year' : achievement_full_last_year,
+            
+            'achievement_vs_target_last_year' : achievement_vs_target_last_year,
+            'total_cost_vs_achievement_last_year' : total_cost_vs_achievement_last_year,
+            'total_cost_vs_target_last_year' : total_cost_vs_target_last_year,
+            
+            # Current year payroll
+            'basic_salary_full_current_year': basic_salary_full_current_year,
+            'overtime_full_current_year': overtime_full_current_year,
+            'transportation_full_current_year': transportation_full_current_year,
+            'phone_salary_full_current_year': phone_salary_full_current_year,
+            'lunch_salary_full_current_year': lunch_salary_full_current_year,
+            'housing_salary_full_current_year': housing_salary_full_current_year,
+            'KPI_achievement_salary_full_current_year': KPI_achievement_salary_full_current_year,
+            'others_salary_full_current_year': others_salary_full_current_year,
+            'travel_salary_full_current_year': travel_salary_full_current_year,
+            'seniority_bonus_salary_full_current_year': seniority_bonus_salary_full_current_year,
+            'responsibility_allowance_salary_full_current_year': responsibility_allowance_salary_full_current_year,
+            'total_allowance_salary_full_current_year': total_allowance_salary_full_current_year,
+            'gross_income_salary_full_current_year': gross_income_salary_full_current_year,
+            'SHUI_21point5percent_company_pay_salary_full_current_year': SHUI_21point5percent_company_pay_salary_full_current_year,
+            'trade_union_fee_company_pay_2percent_salary_full_current_year': trade_union_fee_company_pay_2percent_salary_full_current_year,
+            'trade_union_fee_member_salary_full_current_year': trade_union_fee_member_salary_full_current_year,
+            'transfer_bank_salary_full_current_year': transfer_bank_salary_full_current_year,
+            
+            'incentive_quarter_1_current_year' : incentive_quarter_1_current_year,
+            'incentive_quarter_2_current_year' : incentive_quarter_2_current_year,
+            'incentive_quarter_3_current_year' : incentive_quarter_3_current_year,
+            'incentive_quarter_4_current_year' : incentive_quarter_4_current_year,
+            'incentive_yearly_current_year' : incentive_yearly_current_year,
+            
+            'best_reward_current_year' : best_reward_current_year,
+            
+            'month_13_salary_Pro_ata_full_current_year' : 'x',
+            
+            'month_14_salary_Pro_ata_full_current_year' : month_14_salary_Pro_ata_full_current_year,
+            
+            'total_remuneration_full_current_year' : total_remuneration_full_current_year,
+            
+            'target_value_full_current_year' : target_value_full_current_year,
+            
+            'achievement_full_current_year' : achievement_full_current_year,
+            
+            'achievement_vs_target_current_year' : achievement_vs_target_current_year,
+            'total_cost_vs_achievement_current_year' : total_cost_vs_achievement_current_year,
+            'total_cost_vs_target_current_year' : total_cost_vs_target_current_year,
+            
+            # Payroll jan
+            'payroll_data_jan': payroll_data[0],
+            'target_value_jan' : target_value_jan,
+            'achievement_jan' : achievement_jan,
+            'total_cost_jan' : total_cost_jan,
+            'achievement_vs_target_jan' : achievement_vs_target_jan,
+            'total_cost_vs_achievement_jan' : total_cost_vs_achievement_jan,
+            
+            # Payroll feb
+            'payroll_data_feb': payroll_data[1],
+            'target_value_feb' : target_value_feb,
+            'achievement_feb' : achievement_feb,
+            'total_cost_feb' : total_cost_feb,
+            'achievement_vs_target_feb' : achievement_vs_target_feb,
+            'total_cost_vs_achievement_feb' : total_cost_vs_achievement_feb,
+            
+            # Payroll mar
+            'payroll_data_mar': payroll_data[2],
+            'target_value_mar' : target_value_mar,
+            'achievement_mar' : achievement_mar,
+            'total_cost_mar' : total_cost_mar,
+            'achievement_vs_target_mar' : achievement_vs_target_mar,
+            'total_cost_vs_achievement_mar' : total_cost_vs_achievement_mar,
+            
+            # Q1
+            'achievement_vs_target_q1' : achievement_vs_target_q1,
+            'total_cost_vs_achievement_q1' : total_cost_vs_achievement_q1,
+            'total_cost_vs_target_value_q1' : total_cost_vs_target_value_q1,
+            
+            # Payroll apr
+            'payroll_data_apr': payroll_data[3],
+            'target_value_apr' : target_value_apr,
+            'achievement_apr' : achievement_apr,
+            'total_cost_apr' : total_cost_apr,
+            'achievement_vs_target_apr' : achievement_vs_target_apr,
+            'total_cost_vs_achievement_apr' : total_cost_vs_achievement_apr,
+            
+            # Payroll may
+            'payroll_data_may': payroll_data[4],
+            'target_value_may' : target_value_may,
+            'achievement_may' : achievement_may,
+            'total_cost_may' : total_cost_may,
+            'achievement_vs_target_may' : achievement_vs_target_may,
+            'total_cost_vs_achievement_may' : total_cost_vs_achievement_may,
+            
+            # Payroll jun
+            'payroll_data_jun': payroll_data[5],
+            'target_value_jun' : target_value_jun,
+            'achievement_jun' : achievement_jun,
+            'total_cost_jun' : total_cost_jun,
+            'achievement_vs_target_jun' : achievement_vs_target_jun,
+            'total_cost_vs_achievement_jun' : total_cost_vs_achievement_jun,
+            
+            # Q2
+            'achievement_vs_target_q2' : achievement_vs_target_q2,
+            'total_cost_vs_achievement_q2' : total_cost_vs_achievement_q2,
+            'total_cost_vs_target_value_q2' : total_cost_vs_target_value_q2,
+            
+            # Payroll jul
+            'payroll_data_jul': payroll_data[6],
+            'target_value_jul' : target_value_jul,
+            'achievement_jul' : achievement_jul,
+            'total_cost_jul' : total_cost_jul,
+            'achievement_vs_target_jul' : achievement_vs_target_jul,
+            'total_cost_vs_achievement_jul' : total_cost_vs_achievement_jul,
+            
+            # Payroll aug
+            'payroll_data_aug': payroll_data[7],
+            'target_value_aug' : target_value_aug,
+            'achievement_aug' : achievement_aug,
+            'total_cost_aug' : total_cost_aug,
+            'achievement_vs_target_aug' : achievement_vs_target_aug,
+            'total_cost_vs_achievement_aug' : total_cost_vs_achievement_aug,
+            
+            # Payroll sep
+            'payroll_data_sep': payroll_data[8],
+            'target_value_sep' : target_value_sep,
+            'achievement_sep' : achievement_sep,
+            'total_cost_sep' : total_cost_sep,
+            'achievement_vs_target_sep' : achievement_vs_target_sep,
+            'total_cost_vs_achievement_sep' : total_cost_vs_achievement_sep,
+            
+            # Q3
+            'achievement_vs_target_q3' : achievement_vs_target_q3,
+            'total_cost_vs_achievement_q3' : total_cost_vs_achievement_q3,
+            'total_cost_vs_target_value_q3' : total_cost_vs_target_value_q3,
+            
+            # Payroll oct
+            'payroll_data_oct': payroll_data[9],
+            # 'target_value_oct' : target_value_oct,
+            # 'achievement_oct' : achievement_oct,
+            # 'total_cost_oct' : total_cost_oct,
+            # 'achievement_vs_target_oct' : achievement_vs_target_oct,
+            # 'total_cost_vs_achievement_oct' : total_cost_vs_achievement_oct,
+            
+            
+
+             
+        }
+        list_data.append(data)
+        
+    # Create new Incentive
+    if request.POST.get('btnAddIncentive'):
+        employee_id = request.POST.get('employee_id_modalIncentive')
+        employee = Employee.objects.get(id=employee_id)
+        
+        period_year = request.POST.get('period_year')
+        period = Period.objects.get(period_year=period_year)
+        
+        add_incentive_info = Report_landing_incentive(period=period,
+                                                      employee=employee,
+                                                      incentive=request.POST.get('incentive'),
+                                                      remark=request.POST.get('remark'))
+        add_incentive_info.save()
+        messages.success(request, 'SUCCESS: Incentive added for ' + str(employee.full_name) + '!')
+        return redirect('employee:hr_budget_and_cashflow_view',pk=period_month.id)
+    
+    # Create new Best Reward
+    if request.POST.get('btnAddBestReward'):
+        employee_id = request.POST.get('employee_id_modalBestReward')
+        employee = Employee.objects.get(id=employee_id)
+        
+        period_year = request.POST.get('period_year')
+        period = Period.objects.get(period_year=period_year)
+        
+        add_best_reward_info = Report_landing_Best_reward(period=period,
+                                                      employee=employee,
+                                                      best_reward=request.POST.get('best_reward'))
+        add_best_reward_info.save()
+        messages.success(request, 'SUCCESS: Best reward added for ' + str(employee.full_name) + '!')
+        return redirect('employee:hr_budget_and_cashflow_view',pk=period_month.id)
+
+    # Create new Month14Salary
+    if request.POST.get('btnAddMonth14Salary'):
+        employee_id = request.POST.get('employee_id_modalMonth14Salary')
+        employee = Employee.objects.get(id=employee_id)
+        
+        period_year = request.POST.get('period_year')
+        period = Period.objects.get(period_year=period_year)
+        
+        add_month_14_salary_info = Report_landing_month_14_salary(period=period,
+                                                      employee=employee,
+                                                      month_14_salary=request.POST.get('month_14_salary'))
+        add_month_14_salary_info.save()
+        messages.success(request, 'SUCCESS: Month 14 salary added for ' + str(employee.full_name) + '!')
+        return redirect('employee:hr_budget_and_cashflow_view',pk=period_month.id)
+    
+    # Create new TargetValue
+    if request.POST.get('btnAddTargetValue'):
+        employee_id = request.POST.get('employee_id_modalTargetValue')
+        employee = Employee.objects.get(id=employee_id)
+        
+        month_id = request.POST.get('month_id')
+        month = Month_in_period.objects.get(id=month_id)
+        
+        add_target_value_info = Report_landing_target_value(month=month,
+                                                      employee=employee,
+                                                      target_value=request.POST.get('target_value'))
+        add_target_value_info.save()
+        messages.success(request, 'SUCCESS: Target value added for ' + str(employee.full_name) + '!')
+        return redirect('employee:hr_budget_and_cashflow_view',pk=period_month.id)
+    
+    # Create new Achievement
+    if request.POST.get('btnAddAchievement'):
+        employee_id = request.POST.get('employee_id_modalAchievement')
+        employee = Employee.objects.get(id=employee_id)
+        
+        month_id = request.POST.get('month_id')
+        month = Month_in_period.objects.get(id=month_id)
+        
+        add_achievement_info = Report_landing_achievement(month=month,
+                                                      employee=employee,
+                                                      achievement=request.POST.get('achievement'))
+        add_achievement_info.save()
+        messages.success(request, 'SUCCESS: Achievement added for ' + str(employee.full_name) + '!')
+        return redirect('employee:hr_budget_and_cashflow_view',pk=period_month.id)
+        
+    
+    return render(request, 'employee/report_hr_budget_and_cashflow_view.html', {
+        'period_month' : period_month,
+        'str_current_year' : str_current_year, 
+        'current_year_months' : current_year_months,
+        'last_year' : last_year,
+        'list_data' : list_data,
+    })
+
+
+def edit_incentive(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3: # HR Access only
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
+    # Get incentive:
+    incentive = Report_landing_incentive.objects.get(pk=pk)
+    
+    # Form
+    if request.POST.get('btnUpdateIncentive'):
+        employee = incentive.employee
+        
+        period_year = request.POST.get('period_year')
+        period = Period.objects.get(period_year=period_year) 
+ 
+        edit_incentive_info = Report_landing_incentive(id=incentive.id,
+                                                       period=period,
+                                                       employee=employee,
+                                                       incentive=request.POST.get('incentive'),
+                                                       remark=request.POST.get('remark'),
+                                                       created_at=incentive.created_at,updated_by=s_user[2],updated_at=now())
+        edit_incentive_info.save()
+        messages.success(request, 'SUCCESS: Incentive updated')
+        return redirect('employee:edit_incentive',pk=incentive.id)
+    
+    return render(request, 'employee/edit_incentive.html', {
+        'incentive' : incentive,
+        
+    })
+
+
+def edit_best_reward(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3: # HR Access only
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
+    # Get best reward:
+    best_reward = Report_landing_Best_reward.objects.get(pk=pk)
+    
+    # Form
+    if request.POST.get('btnUpdateBestReward'):
+        period_year = request.POST.get('period_year')
+        period = Period.objects.get(period_year=period_year) 
+ 
+        edit_best_reward_info = Report_landing_Best_reward(id=best_reward.id,
+                                                            period=period,
+                                                            employee=best_reward.employee,
+                                                            best_reward=request.POST.get('best_reward'),
+                                                            created_at=best_reward.created_at,updated_by=s_user[2],updated_at=now())
+        edit_best_reward_info.save()
+        messages.success(request, 'SUCCESS: Best reward updated')
+        return redirect('employee:edit_best_reward',pk=best_reward.id)
+    
+    return render(request, 'employee/edit_best_reward.html', {
+        'best_reward' : best_reward,
+        
+    })
+    
+    
+def edit_month_14_salary(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3: # HR Access only
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
+    # Get Month 14 salary:
+    month_14_salary = Report_landing_month_14_salary.objects.get(pk=pk)
+    
+    # Form
+    if request.POST.get('btnUpdateMonth14Salary'):
+        period_year = request.POST.get('period_year')
+        period = Period.objects.get(period_year=period_year) 
+ 
+        edit_month_14_salary_info = Report_landing_month_14_salary(id=month_14_salary.id,
+                                                            period=period,
+                                                            employee=month_14_salary.employee,
+                                                            month_14_salary=request.POST.get('month_14_salary'),
+                                                            created_at=month_14_salary.created_at,updated_by=s_user[2],updated_at=now())
+        edit_month_14_salary_info.save()
+        messages.success(request, 'SUCCESS: Month 14 salary updated')
+        return redirect('employee:edit_month_14_salary',pk=month_14_salary.id)
+    
+    return render(request, 'employee/edit_month_14_salary.html', {
+        'month_14_salary' : month_14_salary,
+        
+    })   
+    
+
+def edit_target_value(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3: # HR Access only
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
+    # Get Target value:
+    target_value = Report_landing_target_value.objects.get(pk=pk)
+    
+    # Form
+    if request.POST.get('btnUpdateTargetValue'):
+        edit_target_value_info = Report_landing_target_value(id=target_value.id,
+                                                            month=target_value.month,
+                                                            employee=target_value.employee,
+                                                            target_value=request.POST.get('target_value'),
+                                                            created_at=target_value.created_at,updated_by=s_user[2],updated_at=now())
+        edit_target_value_info.save()
+        messages.success(request, 'SUCCESS: Target value updated')
+        return redirect('employee:edit_target_value',pk=target_value.id)
+    
+    return render(request, 'employee/edit_target_value.html', {
+        'target_value' : target_value,
+        
+    }) 
+    
+    
+def edit_achievement(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3: # HR Access only
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
+    # Get Achievement:
+    achievement = Report_landing_achievement.objects.get(pk=pk)
+    
+    # Form
+    if request.POST.get('btnUpdateAchievement'):
+ 
+        edit_achievement_info = Report_landing_achievement(id=achievement.id,
+                                                            month=achievement.month,
+                                                            employee=achievement.employee,
+                                                            achievement=request.POST.get('achievement'),
+                                                            created_at=achievement.created_at,updated_by=s_user[2],updated_at=now())
+        edit_achievement_info.save()
+        messages.success(request, 'SUCCESS: Achievement updated')
+        return redirect('employee:edit_achievement',pk=achievement.id)
+    
+    return render(request, 'employee/edit_achievement.html', {
+        'achievement' : achievement,
+        
+    })        
 #TEST
 
 
