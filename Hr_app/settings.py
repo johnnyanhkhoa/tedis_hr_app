@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'Hr_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db_demo.sqlite3',
+        'NAME': BASE_DIR / 'db_for_auntie.sqlite3',
     }
 }
 
