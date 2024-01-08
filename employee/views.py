@@ -2008,7 +2008,8 @@ def blank_period(request):
     
     # Get period
     try:
-        period = Period.objects.get(period_year=today.year)
+        # period = Period.objects.get(period_year=today.year)
+        period = Period.objects.get(period_year=2023) # Đang để 2023 để test
         return redirect('employee:period', pk=period.pk)
     except Period.DoesNotExist:
         pass
@@ -3767,7 +3768,7 @@ def payroll_tedis_edit(request, pk):
                 SalarytoBH = 0
             trade_union_fee_company_pay_2percent = round(SalarytoBH * 2/100)
             # Get trade_union_fee_member
-            trade_union_fee_member = payroll_info.trade_union_fee_member
+            trade_union_fee_member = request.POST.get('trade_union_fee_member')
             # Get family_deduction
             family_deduction = payroll_info.family_deduction
             # Get taxable_income
@@ -4444,7 +4445,7 @@ def payroll_tedis_vietha_edit(request, pk):
         trade_union_fee_company_pay = round(salarytoBH* 2/100)
         # Get trade_union_fee_employee_pay
         if trade_union_fee_company_pay > 0:
-            trade_union_fee_employee_pay = 4160000 * 1/100
+            trade_union_fee_employee_pay = 4680000 * 1/100
         else:
             trade_union_fee_employee_pay = 0
         # Get family_deduction
@@ -11437,7 +11438,7 @@ def hr_budget_and_cashflow(request,pk):
         return redirect('hr:index')
     
     # Get and redirect to present period year
-    present_year = datetime.now().year
+    present_year = 2023 # datetime.now().year -> Đang để 2023 để test
     present_period = Period.objects.get(period_year=present_year)
     if present_period.id == pk:
         pass
@@ -14193,6 +14194,146 @@ def hr_budget_and_cashflow_view(request,pk):
             total_cost_vs_target_value_q3 = ''
         else: 
             total_cost_vs_target_value_q3 = round((total_cost_q3 / target_value_q3) * 100, 1)
+
+        
+        '''Get target_value oct'''
+        try:
+            target_value_oct = Report_landing_target_value.objects.get(month__month_number=10,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_target_value.DoesNotExist:
+            target_value_oct = 'x'
+            
+        '''Get achievement oct'''
+        try:
+            achievement_oct = Report_landing_achievement.objects.get(month__month_number=10,month__period__period_year=period_month.period.period_year, employee=employee)
+        except Report_landing_achievement.DoesNotExist:
+            achievement_oct = 'x'
+        
+        '''Get achievement_vs_target_oct'''  
+        if target_value_oct == 'x' or achievement_oct == 'x':
+            achievement_vs_target_oct = ''
+        else: 
+            achievement_vs_target_oct = round((achievement_oct.achievement / target_value_oct.target_value) * 100, 1)
+            
+        '''Get total_cost_oct'''
+        if employee.site == site_RO:
+            if employee.full_name == 'SEVERINE EDGARD-ROSA':
+                # Get total_allowance_oct
+                total_allowance_oct = 0
+                total_allowance_oct += payroll_data[9].phone
+                total_allowance_oct += payroll_data[9].lunch
+                total_allowance_oct += payroll_data[9].housing_vnd
+                total_allowance_oct += payroll_data[9].other
+                total_allowance_oct += payroll_data[9].travel
+                total_allowance_oct += payroll_data[9].seniority_bonus
+                total_allowance_oct += payroll_data[9].responsibility
+                # Get gross_income_oct
+                gross_income_oct = 0
+                gross_income_oct += payroll_data[9].gross_income
+                gross_income_oct += total_allowance_oct
+                # Get total_cost_oct
+                total_cost_oct = gross_income_oct + payroll_data[9].SHUI_9point5percent_employee_pay + payroll_data[9].SHUI_20point5percent_employer_pay + payroll_data[9].trade_union_fee_company_pay + payroll_data[9].trade_union_fee_member
+            elif employee.full_name == 'MARJORIE EDGARD - ROSA':
+                # Get total_allowance_oct
+                total_allowance_oct = 0
+                total_allowance_oct += payroll_data[9].overtime
+                total_allowance_oct += payroll_data[9].transportation
+                total_allowance_oct += payroll_data[9].phone
+                total_allowance_oct += payroll_data[9].lunch
+                total_allowance_oct += payroll_data[9].other
+                total_allowance_oct += payroll_data[9].travel
+                total_allowance_oct += payroll_data[9].seniority_bonus
+                total_allowance_oct += payroll_data[9].responsibility
+                # Get gross_income_oct
+                gross_income_oct = 0
+                gross_income_oct += payroll_data[9].gross_income
+                gross_income_oct += total_allowance_oct
+                # Get total_cost_oct
+                total_cost_oct = gross_income_oct + payroll_data[9].trade_union_fee_company_pay_2percent + payroll_data[9].trade_union_fee_member + payroll_data[9].transfer_bank
+            else:
+                # Get total_allowance_oct
+                total_allowance_oct = 0
+                if payroll_data[9] == '':
+                    total_allowance_oct = 0
+                else:
+                    total_allowance_oct += payroll_data[9].overtime
+                    total_allowance_oct += payroll_data[9].transportation
+                    total_allowance_oct += payroll_data[9].phone
+                    total_allowance_oct += payroll_data[9].lunch
+                    total_allowance_oct += payroll_data[9].other
+                    total_allowance_oct += payroll_data[9].travel
+                    total_allowance_oct += payroll_data[9].seniority_bonus
+                    total_allowance_oct += payroll_data[9].responsibility
+                # Get gross_income_oct
+                gross_income_oct = 0
+                if payroll_data[9] == '':
+                    gross_income_oct = 0
+                else:
+                    gross_income_oct += payroll_data[9].gross_income
+                    gross_income_oct += total_allowance_oct
+                # Get total_cost_oct
+                if payroll_data[9] == '':
+                    total_cost_oct = 0
+                else:
+                    total_cost_oct = gross_income_oct + payroll_data[9].SHUI_21point5percent_company_pay + payroll_data[9].trade_union_fee_company_pay_2percent + payroll_data[9].trade_union_fee_member + payroll_data[9].transfer_bank
+        
+        elif employee.site == site_JV:
+            # Get total_allowance_oct
+                total_allowance_oct = 0
+                if payroll_data[9] == '':
+                    total_allowance_oct = 0
+                else:
+                    total_allowance_oct += payroll_data[9].overtime
+                    total_allowance_oct += payroll_data[9].transportation
+                    total_allowance_oct += payroll_data[9].phone
+                    total_allowance_oct += payroll_data[9].lunch
+                    total_allowance_oct += payroll_data[9].KPI_achievement
+                    total_allowance_oct += payroll_data[9].other
+                    total_allowance_oct += payroll_data[9].travel
+                    total_allowance_oct += payroll_data[9].seniority_bonus
+                    total_allowance_oct += payroll_data[9].responsibility
+                # Get gross_income_oct
+                gross_income_oct = 0
+                if payroll_data[9] == '':
+                    gross_income_oct = 0
+                else:
+                    gross_income_oct += payroll_data[9].gross_income
+                    gross_income_oct += total_allowance_oct
+                # Get total_cost_oct
+                if payroll_data[9] == '':
+                    total_cost_oct = 0
+                else:
+                    total_cost_oct = gross_income_oct + payroll_data[9].SHUI_21point5percent_company_pay + payroll_data[9].trade_union_fee_company_pay + payroll_data[9].trade_union_fee_employee_pay + payroll_data[9].transfer_bank
+        
+        elif employee.site == site_VH:
+            # Get total_allowance_oct
+                total_allowance_oct = 0
+                if payroll_data[9] == '':
+                    total_allowance_oct = 0
+                else:
+                    total_allowance_oct += payroll_data[9].overtime
+                    total_allowance_oct += payroll_data[9].transportation
+                    total_allowance_oct += payroll_data[9].phone
+                    total_allowance_oct += payroll_data[9].lunch
+                    total_allowance_oct += payroll_data[9].other
+                    total_allowance_oct += payroll_data[9].responsibility
+                # Get gross_income_oct
+                gross_income_oct = 0
+                if payroll_data[9] == '':
+                    gross_income_oct = 0
+                else:
+                    gross_income_oct += payroll_data[9].gross_income
+                    gross_income_oct += total_allowance_oct
+                # Get total_cost_oct
+                if payroll_data[9] == '':
+                    total_cost_oct = 0
+                else:
+                    total_cost_oct = gross_income_oct + payroll_data[9].SHUI_21point5percent_company_pay + payroll_data[9].trade_union_fee_company_pay + payroll_data[9].trade_union_fee_staff_pay + payroll_data[9].transfer_bank
+                                
+        '''Get total_cost_vs_achievement_oct''' 
+        if total_cost_oct == 0 or achievement_oct == 'x':
+            total_cost_vs_achievement_oct = ''
+        else: 
+            total_cost_vs_achievement_oct = round((total_cost_oct / achievement_oct.achievement) * 100, 1)
         # if employee.site.site == 'VH':
         #     print(employee, employee.id)
         #     print(payroll_data)
@@ -14387,11 +14528,11 @@ def hr_budget_and_cashflow_view(request,pk):
             
             # Payroll oct
             'payroll_data_oct': payroll_data[9],
-            # 'target_value_oct' : target_value_oct,
-            # 'achievement_oct' : achievement_oct,
-            # 'total_cost_oct' : total_cost_oct,
-            # 'achievement_vs_target_oct' : achievement_vs_target_oct,
-            # 'total_cost_vs_achievement_oct' : total_cost_vs_achievement_oct,
+            'target_value_oct' : target_value_oct,
+            'achievement_oct' : achievement_oct,
+            'total_cost_oct' : total_cost_oct,
+            'achievement_vs_target_oct' : achievement_vs_target_oct,
+            'total_cost_vs_achievement_oct' : total_cost_vs_achievement_oct,
             
             
 

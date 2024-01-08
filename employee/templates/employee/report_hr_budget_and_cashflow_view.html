@@ -2981,6 +2981,34 @@
                                             </td>
                                             {% endif %}
 
+                                            {% comment %}  Target Value {% endcomment %}
+                                            {% if data.target_value_oct == 'x' %}
+                                                <td><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#AddTargetValue_Modal" onclick="OpenModaAddTargetValue('{{ data.employee.id }}')">{{ data.target_value_oct }}</a></td>
+                                            {% else %}
+                                                <td><a class="dropdown-item" href="{% url 'employee:edit_target_value' data.target_value_oct.id %}">{{ data.target_value_oct.target_value|floatformat:0|intcomma }}</a></td>
+                                            {% endif %}
+
+                                            {% comment %}  Achievement {% endcomment %}
+                                            {% if data.achievement_oct == 'x' %}
+                                                <td><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#AddAchievement_Modal" onclick="OpenModaAddAchievement('{{ data.employee.id }}')">{{ data.achievement_oct }}</a></td>
+                                            {% else %}
+                                                <td><a class="dropdown-item" href="{% url 'employee:edit_achievement' data.achievement_oct.id %}">{{ data.achievement_oct.achievement|floatformat:0|intcomma }}</a></td>
+                                            {% endif %}
+
+                                            {% comment %}  % Achievement vs Target {% endcomment %}
+                                            {% if data.achievement_vs_target_oct == '' %}
+                                                <td></td>
+                                            {% else %}
+                                                <td>{{ data.achievement_vs_target_oct }}%</td>
+                                            {% endif %}
+
+                                            {% comment %}  % Total Cost vs Achievement {% endcomment %}
+                                            {% if data.total_cost_vs_achievement_oct == '' %}
+                                                <td></td>
+                                            {% else %}
+                                                <td>{{ data.total_cost_vs_achievement_oct }}%</td>
+                                            {% endif %}
+
                                             <td></td>
                                             {% endif %}
                                             
@@ -5115,6 +5143,34 @@
                                                     {{ a|add:b|add:c|add:d|add:e|add:f|add:g|add:h|add:i|add:j|add:k|add:l|add:m|add:n|add:o|floatformat:0|intcomma }}
                                                 {% endwith %}
                                             </td>
+                                            {% endif %}
+
+                                            {% comment %}  Target Value {% endcomment %}
+                                            {% if data.target_value_oct == 'x' %}
+                                                <td><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#AddTargetValue_Modal" onclick="OpenModaAddTargetValue('{{ data.employee.id }}')">{{ data.target_value_oct }}</a></td>
+                                            {% else %}
+                                                <td><a class="dropdown-item" href="{% url 'employee:edit_target_value' data.target_value_oct.id %}">{{ data.target_value_oct.target_value|floatformat:0|intcomma }}</a></td>
+                                            {% endif %}
+
+                                            {% comment %}  Achievement {% endcomment %}
+                                            {% if data.achievement_oct == 'x' %}
+                                                <td><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#AddAchievement_Modal" onclick="OpenModaAddAchievement('{{ data.employee.id }}')">{{ data.achievement_oct }}</a></td>
+                                            {% else %}
+                                                <td><a class="dropdown-item" href="{% url 'employee:edit_achievement' data.achievement_oct.id %}">{{ data.achievement_oct.achievement|floatformat:0|intcomma }}</a></td>
+                                            {% endif %}
+
+                                            {% comment %}  % Achievement vs Target {% endcomment %}
+                                            {% if data.achievement_vs_target_oct == '' %}
+                                                <td></td>
+                                            {% else %}
+                                                <td>{{ data.achievement_vs_target_oct }}%</td>
+                                            {% endif %}
+
+                                            {% comment %}  % Total Cost vs Achievement {% endcomment %}
+                                            {% if data.total_cost_vs_achievement_oct == '' %}
+                                                <td></td>
+                                            {% else %}
+                                                <td>{{ data.total_cost_vs_achievement_oct }}%</td>
                                             {% endif %}
 
                                             <td></td>
