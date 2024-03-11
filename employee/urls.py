@@ -68,6 +68,10 @@ urlpatterns = [
     path('edit_month_14_salary/<int:pk>/', views.edit_month_14_salary, name='edit_month_14_salary'),
     path('edit_target_value/<int:pk>/', views.edit_target_value, name='edit_target_value'),
     path('edit_achievement/<int:pk>/', views.edit_achievement, name='edit_achievement'),
+    path('edit_company_celebration/<int:pk>/', views.edit_company_celebration, name='edit_company_celebration'),
+    path('edit_health_check_up/<int:pk>/', views.edit_health_check_up, name='edit_health_check_up'),
+    path('edit_healthcare_insurance/<int:pk>/', views.edit_healthcare_insurance, name='edit_healthcare_insurance'),
+    path('edit_saving_from_vacant/<int:pk>/', views.edit_saving_from_vacant, name='edit_saving_from_vacant'),
     # path('dayoff/', views.dayoff, name='dayoff'),
     
     

@@ -1,0 +1,71 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}HR | Edit health check up{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Health check up fee</h3>
+                    <p class="text-subtitle text-muted">Edit</p>
+                </div>
+            </div>
+        </div>
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">{{ health_check_up.employee }}</h4>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row align-items-start" style="margin-top: 10px;">
+                                    <div class="col">
+                                        <label for="Year">Year</label>
+                                        <input type="text" class="form-control" name="period_year" id="period_year"
+                                            placeholder="Year" value="{{health_check_up.period.period_year}}" disabled>
+                                    </div>
+                                    <div class="col">
+                                        <label for="health_check_up_fee">Health check up fee</label>
+                                        <input type="number" class="form-control" name="health_check_up_fee" id="health_check_up_fee"
+                                            placeholder="" value="{{health_check_up.health_check_up_fee}}">
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end"
+                            style="margin-bottom: 20px; margin-top: 20px;">
+                            {% comment %} <a type="button" class="btn btn-secondary"
+                                href="{% url 'employee:view_relatives' relative.employee.id%}">Close</a> {% endcomment %}
+                            <button type="submit" class="btn btn-primary" name="btnUpdateHealthCheckup"
+                                value="HealthCheckup input">Update</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

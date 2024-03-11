@@ -595,8 +595,8 @@ class Month_in_period(models.Model):
     month_number = models.IntegerField(null=True, blank=True)
     total_days = models.IntegerField(null=True, blank=True)
     holidays = models.CharField(max_length=500, blank=True, null=True)
-    total_work_days_bo = models.IntegerField(null=True, blank=True)
-    total_work_days_wh = models.IntegerField(null=True, blank=True)
+    total_work_days_bo = models.FloatField(null=True, blank=True)
+    total_work_days_wh = models.FloatField(null=True, blank=True)
     created_by = models.IntegerField(null=True, blank=True)
     created_at = models.DateTimeField(null=True, default=now)
     updated_by = models.IntegerField(null=True, blank=True)
@@ -746,8 +746,10 @@ class Payroll_Vietha(models.Model):
     phone = models.FloatField(blank=True, null=True)
     lunch = models.FloatField(blank=True, null=True)
     responsibility = models.FloatField(blank=True, null=True)
+    seniority_bonus = models.FloatField(blank=True, null=True, default=0)
     outstanding_annual_leave = models.FloatField(blank=True, null=True, default=0)
     bonus_open_new_pharmacy = models.FloatField(blank=True, null=True, default=0)
+    travel = models.FloatField(blank=True, null=True, default=0)
     other = models.FloatField(blank=True, null=True, default=0)
     incentive_last_quy_last_year = models.FloatField(blank=True, null=True, default=0)
     incentive_last_month = models.FloatField(blank=True, null=True, default=0)
@@ -1283,7 +1285,7 @@ class Report_landing_target_value(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __int__(self):
-        return self.period
+        return self.employee
     
 
 class Report_landing_achievement(models.Model):
@@ -1300,6 +1302,72 @@ class Report_landing_achievement(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     def __int__(self):
-        return self.period
+        return self.employee
+    
+
+class Report_company_celebration_rate(models.Model):
+    period = models.ForeignKey(Period, on_delete=models.PROTECT, null=True)
+    # fields
+    celebration = models.FloatField(blank=True, null=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.year
+    
+
+class Report_health_check_up(models.Model):
+    period = models.ForeignKey(Period, on_delete=models.PROTECT, null=True)
+    # fields
+    health_check_up_fee = models.FloatField(blank=True, null=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.year
+    
+
+class Report_healthcare_insurance(models.Model):
+    period = models.ForeignKey(Period, on_delete=models.PROTECT, null=True)
+    # fields
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    insurance_fee = models.FloatField(blank=True, null=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.employee
+    
+
+class Report_saving_from_vacant(models.Model):
+    period = models.ForeignKey(Period, on_delete=models.PROTECT, null=True)
+    # fields
+    employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
+    saving_from_vacant = models.FloatField(blank=True, null=True)
+    # Properties
+    created_by = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, default=now)
+    updated_by = models.IntegerField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.IntegerField(null=True, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __int__(self):
+        return self.employee
     
 
