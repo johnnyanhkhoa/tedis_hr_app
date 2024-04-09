@@ -89,24 +89,25 @@ WSGI_APPLICATION = 'Hr_app.wsgi.application'
 #     }
 # }
 
-# Databases for test web
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db_demo.sqlite3',
-    }
-}
-
+# # Databases for test web
 # DATABASES = {
-# 'default': {
-#     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#     'NAME': 'myproject',
-#     'USER': 'myprojectuser',
-#     'PASSWORD': 'password',
-#     'HOST': 'localhost',
-#     'PORT': '',
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db_demo.sqlite3',
+#     }
 # }
-# }
+
+# Databases for production
+DATABASES = {
+'default': {
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': 'humanresources',
+    'USER': 'dev',
+    'PASSWORD': 'admin',
+    'HOST': 'localhost',
+    'PORT': '',
+}
+}
 
 
 # Password validation
