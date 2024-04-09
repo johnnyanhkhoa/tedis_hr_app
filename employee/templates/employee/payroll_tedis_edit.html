@@ -34,7 +34,7 @@
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Payroll Tedis</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'employee:payroll_tedis' payroll_info.month.id %}">Payroll Tedis</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Update</li>
                         </ol>
                     </nav>
@@ -55,9 +55,8 @@
                         </div>
                         <div class="col">
                             <label class="fw-bold text-dark" for="working_days">Working days</label>
-                            <p style="border: 1px solid rgb(121, 121, 121);padding: 5px; color: black;">
-                                {{payroll_info.working_days }}
-                            </p>
+                            <input type="text" class="form-control" name="working_days" id="working_days"
+                                placeholder="Working days" value={{payroll_info.working_days}}>
                         </div>
                         <div class="col">
                             <label class="fw-bold text-dark" for="adjust_percent">Adjust percent(%)</label>

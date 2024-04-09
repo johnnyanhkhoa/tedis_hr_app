@@ -13,6 +13,7 @@ urlpatterns = [
     path('view_relatives/<int:pk>/', views.view_relatives, name='view_relatives'),
     path('edit_relatives/<int:pk>/', views.edit_relatives, name='edit_relatives'),
     path('relative_delete/<int:pk>/', views.relative_delete, name='relative_delete'),
+    path('view_document/<int:pk>/', views.view_document, name='view_document'),
     path('add_contract/<int:pk>/', views.add_contract, name='add_contract'),
     path('add_promotion/<int:pk>/', views.add_promotion, name='add_promotion'),
     path('probationary_period_form/<int:pk>/', views.probationary_period_form, name='probationary_period_form'),

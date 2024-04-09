@@ -13,15 +13,29 @@ def index(request):
     
     user_info = User.objects.all()
     s_user = request.session.get('s_user')
+    role = s_user[1]
     employee_pk = s_user[2]
     try:
         employee = Employee.objects.get(pk=employee_pk)
     except Employee.DoesNotExist:
         employee = 'admin'
+
+    default_period = Period.objects.get(period_year=2023) # Đang để 2023 để test, đúng là period_year=today.year
+
+    # Lấy Dayoff
+    dayoff_info = Dayoff.objects.get(employee=employee,period=default_period)
+    # Lấy Leave application
+    list_leave_application = Leave_application.objects.filter(employee=employee)
+    # Lấy Overtime_application
+    list_overtime_application = Overtime_application.objects.filter(employee=employee)
         
     return render(request, 'hr/dist/index.html' , {
         'user_info' : user_info,
+        'role' : role,
         'employee' : employee,
+        'dayoff_info' : dayoff_info,
+        'list_leave_application' : list_leave_application,
+        'list_overtime_application' : list_overtime_application,
     })
 
     
@@ -127,4 +141,33 @@ def signup_changepassword(request):
         'frm_dang_ky': frm_dang_ky,
         'chuoi_kq_dang_ky': chuoi_kq_dang_ky,
         'form': form,
+    })
+
+# User Guide
+def guide(request):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    user_info = User.objects.all()
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    employee_pk = s_user[2]
+    
+    return render(request, 'hr/dist/guide.html' , {
+        
+    })
+
+def guide_leave_and_overtime(request):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    user_info = User.objects.all()
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    employee_pk = s_user[2]
+    
+    return render(request, 'hr/dist/guide_leave_and_overtime.html' , {
+        
     })

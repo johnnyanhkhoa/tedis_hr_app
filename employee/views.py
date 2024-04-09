@@ -213,6 +213,14 @@ def employee_edit(request, pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
         return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 1 or s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
     
     # Get employee
     employee = Employee.objects.get(pk=pk)
@@ -258,6 +266,14 @@ def employee_resign(request, pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
         return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 1 or s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
     
     # Get employee
     employee = Employee.objects.get(pk=pk)
@@ -383,6 +399,18 @@ def edit_manager(request,pk):
     
 
 def staff_delete(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
     try:
         staff_info = Employee_manager.objects.get(employee = pk)
         staff_info.delete()
@@ -436,6 +464,14 @@ def edit_relatives(request, pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
         return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
     
     # Get relatives:
     relative = Employee_children.objects.get(pk=pk)
@@ -459,6 +495,18 @@ def edit_relatives(request, pk):
 
 
 def relative_delete(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
     try:
         relative_info = Employee_children.objects.get(pk = pk)
         employee = relative_info.employee
@@ -468,11 +516,52 @@ def relative_delete(request, pk):
         return redirect('employee:view_relatives',pk=employee.id)
     return redirect('employee:view_relatives',pk=employee.id)
 
+def view_document(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
+    # Get employee:
+    employee = Employee.objects.get(pk=pk)
+    
+    # Get labour contract
+    list_labour_contract = Employee_contract.objects.filter(employee=employee)
+
+    # Get promotion
+    list_promotion = Employee_promotion.objects.filter(employee=employee)
+
+    # Get probationary period
+    list_probationary_period = Probationary_period.objects.filter(employee=employee)
+    
+    return render(request, 'employee/view_document.html', {
+        'employee' : employee,
+        'list_labour_contract' : list_labour_contract,
+        'list_promotion' : list_promotion,
+        'list_probationary_period' : list_probationary_period,
+        
+        
+    })
 
 def add_contract(request, pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
         return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
     
     # Get employee & list of contract type:
     employee = Employee.objects.get(pk=pk)
@@ -541,6 +630,14 @@ def add_promotion(request, pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
         return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
     
     # Get employee:
     employee = Employee.objects.get(pk=pk)
@@ -552,7 +649,7 @@ def add_promotion(request, pk):
         promotion_decision_number = request.POST.get('promotion_decision_number')
         promotion_info = Employee_promotion(employee=employee_id, promotion_effective_date=promotion_effective_date, promotion_decision_number=promotion_decision_number)                 
         promotion_info.save()
-        return redirect('/employee/')
+        return redirect('employee:view_document', pk=employee.pk)
         
     return render(request, 'employee/form_add_promotion.html', {
         'employee' : employee,
@@ -564,6 +661,14 @@ def probationary_period_form(request, pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
         return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
     
     # Get employee:
     employee = Employee.objects.get(pk=pk)
@@ -597,6 +702,18 @@ def probationary_period_form(request, pk):
     
     
 def TD_job_offer_PDF(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
     today = datetime.now().strftime('%d-%m-%Y')
 
     employee = Employee.objects.get(pk=pk)
@@ -651,15 +768,30 @@ def TD_job_offer_PDF(request, pk):
         
     })
 
-    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-    filename = 'TD_job_offer_' + datetime.now().strftime('%Y%m%d___%H%M%S') + '.pdf'
-    pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Documents', filename), configuration=config)
-    # pdfkit.from_string(html_string, "C:\\" + filename, configuration=config)
+    try:
+        config = pdfkit.configuration(wkhtmltopdf='hr/pdfkit/wkhtmltopdf')
+        filename = 'RO_joboffer_' + datetime.now().strftime('%Y%m%d___%H%M%S') + '.pdf'
+        pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Downloads', filename), configuration=config)
+        print('good')
+    except OSError:
+        print('path error')
 
     return HttpResponse(html_string)
 
 
 def JV_job_offer_PDF(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
     today = datetime.now().strftime('%d-%m-%Y')
 
     employee = Employee.objects.get(pk=pk)
@@ -710,15 +842,29 @@ def JV_job_offer_PDF(request, pk):
         
     })
 
-    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-    filename = 'JV_job_offer_' + datetime.now().strftime('%Y%m%d___%H%M%S') + '.pdf'
-    pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Documents', filename), configuration=config)
-    # pdfkit.from_string(html_string, "C:\\" + filename, configuration=config)
+    try:
+        config = pdfkit.configuration(wkhtmltopdf='hr/pdfkit/wkhtmltopdf')
+        filename = 'JV_joboffer_' + datetime.now().strftime('%Y%m%d___%H%M%S') + '.pdf'
+        pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Downloads', filename), configuration=config)
+    except OSError:
+        print('path error')
 
     return HttpResponse(html_string)
 
 
 def VH_job_offer_PDF(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
     today = datetime.now().strftime('%d-%m-%Y')
 
     employee = Employee.objects.get(pk=pk)
@@ -769,15 +915,29 @@ def VH_job_offer_PDF(request, pk):
         
     })
 
-    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-    filename = 'VH_job_offer_' + datetime.now().strftime('%Y%m%d___%H%M%S') + '.pdf'
-    pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Documents', filename), configuration=config)
-    # pdfkit.from_string(html_string, "C:\\" + filename, configuration=config)
+    try:
+        config = pdfkit.configuration(wkhtmltopdf='hr/pdfkit/wkhtmltopdf')
+        filename = 'VH_joboffer_' + datetime.now().strftime('%Y%m%d___%H%M%S') + '.pdf'
+        pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Downloads', filename), configuration=config)
+    except OSError:
+        print('path error')
 
     return HttpResponse(html_string)
 
 
 def JV_HDLD_PDF(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
     today = datetime.now().strftime('%d-%m-%Y')
 
     employee = Employee.objects.get(pk=pk)
@@ -822,42 +982,59 @@ def JV_HDLD_PDF(request, pk):
         'to_date_year' : to_date_year,
     })
 
-    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-    filename = 'JV_HDLD_' + datetime.now().strftime('%Y%m%d___%H%M%S') + '.pdf'
-    pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Documents', filename), configuration=config)
-    # pdfkit.from_string(html_string, "C:\\" + filename, configuration=config)
+    try:
+        config = pdfkit.configuration(wkhtmltopdf='hr/pdfkit/wkhtmltopdf')
+        filename = 'JV_HDLD_' + datetime.now().strftime('%Y%m%d___%H%M%S') + '.pdf'
+        pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Downloads', filename), configuration=config)
+    except OSError:
+        print('path error')
 
     return HttpResponse(html_string)
 
 
 def RO_HDLD_PDF(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
     today = datetime.now().strftime('%d-%m-%Y')
 
-    employee = Employee.objects.get(pk=pk)
     # Get Contract
-    contract_list = list(Employee_contract.objects.filter(employee=pk).order_by('-id'))    
-    latest_contract = contract_list[0]
+    contract = Employee_contract.objects.get(pk=pk)
     # Get signed_contract_date day-month-year
-    signed_contract_date_day = latest_contract.signed_contract_date.strftime("%d")
-    signed_contract_date_month = latest_contract.signed_contract_date.strftime("%m")
-    signed_contract_date_month_name = latest_contract.signed_contract_date.strftime("%B")
-    signed_contract_date_year = latest_contract.signed_contract_date.strftime("%Y")
+    signed_contract_date_day = contract.signed_contract_date.strftime("%d")
+    signed_contract_date_month = contract.signed_contract_date.strftime("%m")
+    signed_contract_date_month_name = contract.signed_contract_date.strftime("%B")
+    signed_contract_date_year = contract.signed_contract_date.strftime("%Y")
     # Get from_date day-month-year
-    from_date_day = latest_contract.from_date.strftime("%d")
-    from_date_month = latest_contract.from_date.strftime("%m")
-    from_date_month_name = latest_contract.from_date.strftime("%B")
-    from_date_year = latest_contract.from_date.strftime("%Y")
+    from_date_day = contract.from_date.strftime("%d")
+    from_date_month = contract.from_date.strftime("%m")
+    from_date_month_name = contract.from_date.strftime("%B")
+    from_date_year = contract.from_date.strftime("%Y")
     # Get to_date day-month-year
-    to_date_day = latest_contract.to_date.strftime("%d")
-    to_date_month = latest_contract.to_date.strftime("%m")
-    to_date_month_name = latest_contract.to_date.strftime("%B")
-    to_date_year = latest_contract.to_date.strftime("%Y")
+    if contract.to_date == None:
+        to_date_day = ""
+        to_date_month = ""
+        to_date_month_name = ""
+        to_date_year = ""
+    else:
+        to_date_day = contract.to_date.strftime("%d")
+        to_date_month = contract.to_date.strftime("%m")
+        to_date_month_name = contract.to_date.strftime("%B")
+        to_date_year = contract.to_date.strftime("%Y")
     
 
     html_string = render_to_string('employee/RO_HDLD.html', {
         'today': today,
-        'employee': employee,
-        'latest_contract' : latest_contract,
+        'contract' : contract,
         # signed_contract_date
         'signed_contract_date_day' : signed_contract_date_day,
         'signed_contract_date_month' : signed_contract_date_month,
@@ -874,16 +1051,29 @@ def RO_HDLD_PDF(request, pk):
         'to_date_month_name' : to_date_month_name,
         'to_date_year' : to_date_year,
     })
-
-    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-    filename = 'RO_HDLD_' + datetime.now().strftime('%Y%m%d___%H%M%S') + '.pdf'
-    pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Documents', filename), configuration=config)
-    # pdfkit.from_string(html_string, "C:\\" + filename, configuration=config)
+    try:
+        config = pdfkit.configuration(wkhtmltopdf='hr/pdfkit/wkhtmltopdf')
+        filename = 'RO_HDLD_' + datetime.now().strftime('%Y%m%d___%H%M%S') + '.pdf'
+        pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Downloads', filename), configuration=config)
+    except OSError:
+        print('path error')
 
     return HttpResponse(html_string)
 
 
 def VH_HDLD_PDF(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
     today = datetime.now().strftime('%d-%m-%Y')
 
     employee = Employee.objects.get(pk=pk)
@@ -953,10 +1143,12 @@ def VH_HDLD_PDF(request, pk):
         'probation_to_date_year' : probation_to_date_year,
     })
 
-    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-    filename = 'VH_HDLD_' + datetime.now().strftime('%Y%m%d___%H%M%S') + '.pdf'
-    pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Documents', filename), configuration=config)
-    # pdfkit.from_string(html_string, "C:\\" + filename, configuration=config)
+    try:
+        config = pdfkit.configuration(wkhtmltopdf='hr/pdfkit/wkhtmltopdf')
+        filename = 'VH_HDLD_' + datetime.now().strftime('%Y%m%d___%H%M%S') + '.pdf'
+        pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Downloads', filename), configuration=config)
+    except OSError:
+        print('path error')
 
     return HttpResponse(html_string)
 
@@ -1162,6 +1354,12 @@ def leave_approve(request,pk):
     s_user = request.session.get('s_user')
     employee_pk = s_user[2]
     role = s_user[1]
+
+    if role == 2:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    else:
+        pass
     
     # Get employee:
     employee = Employee.objects.get(pk=employee_pk)
@@ -1200,6 +1398,13 @@ def HR_leave_approve(request,pk):
     # Kiểm tra session xem khách hàng đã đăng nhập chưa?
     if 's_user' not in request.session:
         return redirect('hr:signin')
+    
+    s_user = request.session.get('s_user')
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
     
     # Lấy Employee_id
     s_user = request.session.get('s_user')
@@ -1798,7 +2003,7 @@ def HR_leave_approve(request,pk):
         leave_application.hr_status = status
         leave_application.hr_approved_date = approved_date
         leave_application.save()
-        # return redirect('/leave_verification/')
+        return redirect('/leave_verification/')
     if request.POST.get('btn_reject'):
         status = Status.objects.get(id=3)
         leave_application.hr_status = status
@@ -1926,6 +2131,13 @@ def ot_approve(request,pk):
     s_user = request.session.get('s_user')
     employee_pk = s_user[2]
     role = s_user[1]
+
+    s_user = request.session.get('s_user')
+    if role == 2:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    else:
+        pass
     
     # Get employee:
     employee = Employee.objects.get(pk=employee_pk)
@@ -2249,24 +2461,24 @@ def period(request,pk):
         messages.success(request, 'SUCCESS: Month created')
         # Create daily work
         for number_day in range(1,int(total_days)+1):
-                month = Month_in_period.objects.get(month_name=month_name)
-                day_str = str(number_day)
-                month_str = str(month.month_number)
-                year_str = str(month.period.period_year)
-                date_str = day_str + '/' + month_str + '/' + year_str
-                date_before_format = datetime.strptime(date_str, '%d/%m/%Y')
-                date = date_before_format.strftime("%d/%m/%Y")
-                if date_before_format.weekday() < 5:
-                    weekend = False
-                else:
-                    weekend = True
-                find_result = holidays.find(date)    
-                if find_result >= 0:
-                    holiday = True
-                else:
-                    holiday = False
-                daily_work_info = Daily_work(month=month,date=date_before_format,weekend=weekend,holiday=holiday)
-                daily_work_info.save()
+            month = Month_in_period.objects.get(month_name=month_name)
+            day_str = str(number_day)
+            month_str = str(month.month_number)
+            year_str = str(month.period.period_year)
+            date_str = day_str + '/' + month_str + '/' + year_str
+            date_before_format = datetime.strptime(date_str, '%d/%m/%Y')
+            date = date_before_format.strftime("%d/%m/%Y")
+            if date_before_format.weekday() < 5:
+                weekend = False
+            else:
+                weekend = True
+            find_result = holidays.find(date)    
+            if find_result >= 0:
+                holiday = True
+            else:
+                holiday = False
+            daily_work_info = Daily_work(month=month,date=date_before_format,weekend=weekend,holiday=holiday)
+            daily_work_info.save()
         
         # Create each employee a daily_work        
         list_employee = Employee.objects.filter(active=1)
@@ -3535,7 +3747,7 @@ def payroll_tedis_edit(request, pk):
             month = payroll_info.month
             employee = payroll_info.employee
             newest_salary = payroll_info.newest_salary
-            working_days = payroll_info.working_days
+            working_days = float(request.POST.get('working_days'))
             adjust_percent = payroll_info.adjust_percent
             # Get gross_income
             gross_income = round(float(newest_salary) * float(adjust_percent)/100 * float(working_days)/float(month_total_working_days) )
@@ -3696,7 +3908,7 @@ def payroll_tedis_edit(request, pk):
             month = payroll_info.month
             employee = payroll_info.employee
             newest_salary = payroll_info.newest_salary
-            working_days = payroll_info.working_days
+            working_days = float(request.POST.get('working_days'))
             adjust_percent = payroll_info.adjust_percent
             # Get gross_income
             gross_income = round(float(newest_salary) * float(adjust_percent)/100 * float(working_days)/float(month_total_working_days) )
@@ -4079,19 +4291,29 @@ def payroll_tedis_vietha(request,pk):
         # Style
         # xlwt color url: https://docs.google.com/spreadsheets/d/1ihNaZcUh7961yU7db1-Db0lbws4NT24B7koY8v8GHNQ/pubhtml?gid=1072579560&single=true
         style_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold 1,height 640, colour black;' % 'white')
+                                'font: bold 1,height 360, name Arial, colour black; align: horiz left, vert bottom' % 'white')
         style_head_small = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold 1,height 300, colour black;' % 'white')
+                                'font: bold 0,height 240, name Arial, colour black; align: horiz left, vert bottom' % 'white')
+        style_working_days = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                'font: bold 0,height 240, name Arial, colour black; align: horiz left, vert bottom' % 'white')
+        style_22pt_bold_horizleft_vertbottom = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                                'font: bold 1,height 440, name Arial, colour black; align: horiz left, vert bottom' % 'white')
         style_table_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
                             'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold 1,height 220, colour black; align: horiz center, vert center' % '67')
+                                    'font: bold 1,height 200, colour black; align: horiz center, vert center' % '67')
         style_table_head.alignment.wrap = 1
+        style_table_head_adjust = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 1,height 200, colour black; align: horiz center, vert center' % '44')
+        style_table_head_adjust.alignment.wrap = 1
         style_normal = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
                             'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-                                    'font: bold off, colour black; align: horiz center, vert center' % 'white')
+                                    'font: bold 0,height 200, colour black; align: horiz center, vert center' % 'white')
         style_normal.alignment.wrap = 1
+        style_normal_adjust = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
+                            'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
+                                    'font: bold 0,height 200, colour black; align: horiz center, vert center' % '44')
+        style_normal_adjust.alignment.wrap = 1
 
         wb = xlwt.Workbook()
         ws = wb.add_sheet('Payroll Tedis Viet Ha')
@@ -4099,60 +4321,86 @@ def payroll_tedis_vietha(request,pk):
         # Table
         
         # Set col width
-        for col in range(0,42):
-            ws.col(col).width = 5000
+        for col in range(0,43):
+            if col == 0:
+                ws.col(col).width = 1600
+            elif col == 1:
+                ws.col(col).width = 3000
+            elif col == 2:
+                ws.col(col).width = 6000
+            elif col == 3:
+                ws.col(col).width = 3000
+            elif col == 8:
+                ws.col(col).width = 3000
+            else:
+                ws.col(col).width = 5000
+        
+        # Set row height
+        ws.row(0).height_mismatch = True
+        ws.row(0).height = 1020
+        ws.row(1).height_mismatch = True
+        ws.row(1).height = 600
+        ws.row(2).height_mismatch = True
+        ws.row(2).height = 900
+        ws.row(3).height_mismatch = True
+        ws.row(3).height = 700
         
         
         # Top
-        ws.write_merge(0, 0, 0, 6, 'PAYROLL IN ' + str(period_month.month_name), style_head)
-        ws.write_merge(0, 0, 9, 11, 'TEDIS - VIET HA',style_head)
+        # Top
+        ws.write(0, 5, 'TEDIS - VIET HA PHARMA JOINT STOCK COMPANY', style_head)
+        ws.write(1, 5, 'Lot F.2B Street No.2, Long Hau IZ, Long Hau Ward, Can Giuoc District, Long An Province', style_head_small)
+        ws.write(2, 5, 'PAYROLL IN ' + str(period_month.month_name).upper(),style_22pt_bold_horizleft_vertbottom)
+        ws.write(3, 7, 'Working days: ',style_working_days)
+        ws.write(3, 8, str(period_month.total_work_days_bo),style_working_days)
         
         # Body
         # Set row height
-        ws.row(2).set_style(xlwt.easyxf('font:height 500;'))
+        ws.row(5).height_mismatch = True
+        ws.row(5).height = 2080
         # Body head
-        ws.write(2, 0, 'No.', style_table_head)
-        ws.write(2, 1, 'Employee code', style_table_head)
-        ws.write(2, 2, 'Full name', style_table_head)
-        ws.write(2, 3, 'Joining Date', style_table_head)
-        ws.write(2, 4, 'Department', style_table_head)
-        ws.write(2, 5, 'Title', style_table_head)
-        ws.write(2, 6, 'Salary ' + str(period_month.period.period_year) + ' (VND)', style_table_head)
-        ws.write(2, 7, 'Working days', style_table_head)
-        ws.write(2, 8, '% Adjust', style_table_head)
-        ws.write(2, 9, 'Gross Income', style_table_head)
-        ws.write(2, 10, 'Transportation', style_table_head)
-        ws.write(2, 11, 'Phone', style_table_head)
-        ws.write(2, 12, 'Lunch', style_table_head)
-        ws.write(2, 13, 'Travel', style_table_head)
-        ws.write(2, 14, 'Responsibility', style_table_head)
-        ws.write(2, 15, 'Seniority Bonus', style_table_head)
-        ws.write(2, 16, 'Others', style_table_head)
-        ws.write(2, 17, 'Outstanding annual leave', style_table_head)
-        ws.write(2, 18, 'OTC Incentive', style_table_head)
-        ws.write(2, 19, 'KPI Achievement', style_table_head)
-        ws.write(2, 20, '13th salary (pro-rata)', style_table_head)
-        ws.write(2, 21, 'Incentive last month', style_table_head)
-        ws.write(2, 22, 'Incentive last quarter', style_table_head)
-        ws.write(2, 23, 'Taxable Overtime', style_table_head)
-        ws.write(2, 24, 'Non Taxable Overtime', style_table_head)
-        ws.write(2, 25, 'SHUI(10.5%)(Employee pay)', style_table_head)
-        ws.write(2, 26, 'Recuperation of SHU Ins.(10.5%)(staff pay)', style_table_head)
-        ws.write(2, 27, 'SHUI(21.5%)(Company pay)', style_table_head)
-        ws.write(2, 28, 'Recuperation of SHU Ins.(21.5%)(Company pay)', style_table_head)
-        ws.write(2, 29, 'Occupational accident and disease Ins.(0.5%)(Pay for staffs)', style_table_head)
-        ws.write(2, 30, 'Trade Union fee (Company pay)', style_table_head)
-        ws.write(2, 31, 'Trade Union fee (Employee pay)', style_table_head)
-        ws.write(2, 32, 'Family deduction', style_table_head)
-        ws.write(2, 33, 'Taxable Income', style_table_head)
-        ws.write(2, 34, 'Taxed Income', style_table_head)
-        ws.write(2, 35, 'PIT 13th salary', style_table_head)
-        ws.write(2, 36, 'PIT', style_table_head)
-        ws.write(2, 37, 'PIT balance', style_table_head)
-        ws.write(2, 38, '1st payment', style_table_head)
-        ws.write(2, 39, 'Net Income', style_table_head)
-        ws.write(2, 40, 'Transfer Bank', style_table_head)
-        ws.write(2, 41, 'Total Cost', style_table_head)
+        ws.write(5, 0, 'No.', style_table_head)
+        ws.write(5, 1, 'Employee code', style_table_head)
+        ws.write(5, 2, 'Full name', style_table_head)
+        ws.write(5, 3, 'Joining Date', style_table_head)
+        ws.write(5, 4, 'Department', style_table_head)
+        ws.write(5, 5, 'Title', style_table_head)
+        ws.write(5, 6, 'Salary ' + str(period_month.period.period_year) + ' (VND)', style_table_head)
+        ws.write(5, 7, 'Working days', style_table_head)
+        ws.write(5, 8, '% Adjust', style_table_head)
+        ws.write(5, 9, 'Gross Income', style_table_head)
+        ws.write(5, 10, 'Transportation', style_table_head)
+        ws.write(5, 11, 'Phone', style_table_head)
+        ws.write(5, 12, 'Lunch', style_table_head)
+        ws.write(5, 13, 'Travel', style_table_head)
+        ws.write(5, 14, 'Responsibility', style_table_head)
+        ws.write(5, 15, 'Seniority Bonus', style_table_head)
+        ws.write(5, 16, 'Others', style_table_head)
+        ws.write(5, 17, 'Outstanding annual leave', style_table_head)
+        ws.write(5, 18, 'OTC Incentive', style_table_head)
+        ws.write(5, 19, 'KPI Achievement', style_table_head)
+        ws.write(5, 20, '13th salary (pro-rata)', style_table_head)
+        ws.write(5, 21, 'Incentive last month', style_table_head)
+        ws.write(5, 22, 'Incentive last quarter', style_table_head)
+        ws.write(5, 23, 'Taxable Overtime', style_table_head)
+        ws.write(5, 24, 'Non Taxable Overtime', style_table_head)
+        ws.write(5, 25, 'SHUI(10.5%)(Employee pay)', style_table_head)
+        ws.write(5, 26, 'Recuperation of SHU Ins.(10.5%)(staff pay)', style_table_head)
+        ws.write(5, 27, 'SHUI(21.5%)(Company pay)', style_table_head)
+        ws.write(5, 28, 'Recuperation of SHU Ins.(21.5%)(Company pay)', style_table_head)
+        ws.write(5, 29, 'Occupational accident and disease Ins.(0.5%)(Pay for staffs)', style_table_head)
+        ws.write(5, 30, 'Trade Union fee (Company pay)', style_table_head)
+        ws.write(5, 31, 'Trade Union fee (Employee pay)', style_table_head)
+        ws.write(5, 32, 'Family deduction', style_table_head)
+        ws.write(5, 33, 'Taxable Income', style_table_head)
+        ws.write(5, 34, 'Taxed Income', style_table_head)
+        ws.write(5, 35, 'PIT 13th salary', style_table_head)
+        ws.write(5, 36, 'PIT', style_table_head)
+        ws.write(5, 37, 'PIT balance', style_table_head)
+        ws.write(5, 38, '1st payment', style_table_head)
+        ws.write(5, 39, 'Net Income', style_table_head)
+        ws.write(5, 40, 'Transfer Bank', style_table_head)
+        ws.write(5, 41, 'Total Cost', style_table_head)
         
         # Body
         # Create total var
@@ -4193,52 +4441,53 @@ def payroll_tedis_vietha(request,pk):
         
         for index, data in enumerate(list_payroll_info):
             # Set row height
-            ws.row(3+index).set_style(xlwt.easyxf('font:height 500;'))
+            ws.row(6+index).height_mismatch = True
+            ws.row(6+index).height = 930
             # Write data
-            ws.write(3+index, 0, str(index+1),style_normal)
-            ws.write(3+index, 1, str(data['payroll_info'].employee.employee_code),style_normal)
-            ws.write(3+index, 2, str(data['payroll_info'].employee.full_name),style_normal)
-            ws.write(3+index, 3, str(data['payroll_info'].employee.joining_date.strftime('%d/%m/%Y')),style_normal)
-            ws.write(3+index, 4, str(data['payroll_info'].employee.department_e),style_normal)
-            ws.write(3+index, 5, str(data['payroll_info'].employee.position_e),style_normal)
-            ws.write(3+index, 6, str("{:,}".format(round(data['payroll_info'].newest_salary))),style_normal)
-            ws.write(3+index, 7, str(data['payroll_info'].working_days),style_normal)
-            ws.write(3+index, 8, str(round(data['payroll_info'].adjust_percent)) + '%',style_normal)
-            ws.write(3+index, 9, str("{:,}".format(round(data['payroll_info'].gross_income))),style_normal)
-            ws.write(3+index, 10, str("{:,}".format(round(data['payroll_info'].transportation))),style_normal)
-            ws.write(3+index, 11, str("{:,}".format(round(data['payroll_info'].phone))),style_normal)
-            ws.write(3+index, 12, str("{:,}".format(round(data['payroll_info'].lunch))),style_normal)
-            ws.write(3+index, 13, str("{:,}".format(round(data['payroll_info'].travel))),style_normal)
-            ws.write(3+index, 14, str("{:,}".format(round(data['payroll_info'].responsibility))),style_normal)
-            ws.write(3+index, 15, str("{:,}".format(round(data['payroll_info'].seniority_bonus))),style_normal)
-            ws.write(3+index, 16, str("{:,}".format(round(data['payroll_info'].other))),style_normal)
-            ws.write(3+index, 17, str("{:,}".format(round(data['payroll_info'].outstanding_annual_leave))),style_normal)
-            ws.write(3+index, 18, str("{:,}".format(round(data['payroll_info'].OTC_incentive))),style_normal)
-            ws.write(3+index, 19, str("{:,}".format(round(data['payroll_info'].KPI_achievement))),style_normal)
-            ws.write(3+index, 20, str("{:,}".format(round(data['payroll_info'].month_13_salary_Pro_ata))),style_normal)
-            ws.write(3+index, 21, str("{:,}".format(round(data['payroll_info'].incentive_last_month))),style_normal)
-            ws.write(3+index, 22, str("{:,}".format(round(data['payroll_info'].incentive_last_quy_last_year))),style_normal)
-            ws.write(3+index, 23, str("{:,}".format(round(data['payroll_info'].taxable_overtime))),style_normal)
-            ws.write(3+index, 24, str("{:,}".format(round(data['payroll_info'].nontaxable_overtime))),style_normal)
-            ws.write(3+index, 25, str("{:,}".format(round(data['payroll_info'].SHUI_10point5percent_employee_pay))),style_normal)
-            ws.write(3+index, 26, str("{:,}".format(round(data['payroll_info'].recuperation_of_SHU_Ins_10point5percent_staff_pay))),style_normal)
-            ws.write(3+index, 27, str("{:,}".format(round(data['payroll_info'].SHUI_21point5percent_company_pay))),style_normal)
-            ws.write(3+index, 28, str("{:,}".format(round(data['payroll_info'].recuperation_of_SHU_Ins_21point5percent_company_pay))),style_normal)
-            ws.write(3+index, 29, str("{:,}".format(round(data['payroll_info'].occupational_accident_and_disease))),style_normal)
-            ws.write(3+index, 30, str("{:,}".format(round(data['payroll_info'].trade_union_fee_company_pay))),style_normal)
-            ws.write(3+index, 31, str("{:,}".format(round(data['payroll_info'].trade_union_fee_employee_pay))),style_normal)
-            ws.write(3+index, 32, str("{:,}".format(round(data['payroll_info'].family_deduction))),style_normal)
-            ws.write(3+index, 33, str("{:,}".format(round(data['payroll_info'].taxable_income))),style_normal)
-            ws.write(3+index, 34, str("{:,}".format(round(data['payroll_info'].taxed_income))),style_normal)
-            ws.write(3+index, 35, str("{:,}".format(round(data['payroll_info'].PIT_13th_salary))),style_normal)
-            ws.write(3+index, 36, str("{:,}".format(round(data['payroll_info'].PIT))),style_normal)
-            ws.write(3+index, 37, str("{:,}".format(round(data['payroll_info'].PIT_balance))),style_normal)
-            ws.write(3+index, 38, str("{:,}".format(round(data['payroll_info'].first_payment))),style_normal)
-            ws.write(3+index, 39, str("{:,}".format(round(data['payroll_info'].net_income))),style_normal)
-            ws.write(3+index, 40, str("{:,}".format(round(data['payroll_info'].transfer_bank))),style_normal)
-            ws.write(3+index, 41, str("{:,}".format(round(data['payroll_info'].total_cost))),style_normal)
+            ws.write(6+index, 0, str(index+1),style_normal)
+            ws.write(6+index, 1, str(data['payroll_info'].employee.employee_code),style_normal)
+            ws.write(6+index, 2, str(data['payroll_info'].employee.full_name),style_normal)
+            ws.write(6+index, 3, str(data['payroll_info'].employee.joining_date.strftime('%d/%m/%Y')),style_normal)
+            ws.write(6+index, 4, str(data['payroll_info'].employee.department_e),style_normal)
+            ws.write(6+index, 5, str(data['payroll_info'].employee.position_e),style_normal)
+            ws.write(6+index, 6, str("{:,}".format(round(data['payroll_info'].newest_salary))),style_normal)
+            ws.write(6+index, 7, str(data['payroll_info'].working_days),style_normal)
+            ws.write(6+index, 8, str(round(data['payroll_info'].adjust_percent)) + '%',style_normal)
+            ws.write(6+index, 9, str("{:,}".format(round(data['payroll_info'].gross_income))),style_normal)
+            ws.write(6+index, 10, str("{:,}".format(round(data['payroll_info'].transportation))),style_normal)
+            ws.write(6+index, 11, str("{:,}".format(round(data['payroll_info'].phone))),style_normal)
+            ws.write(6+index, 12, str("{:,}".format(round(data['payroll_info'].lunch))),style_normal)
+            ws.write(6+index, 13, str("{:,}".format(round(data['payroll_info'].travel))),style_normal)
+            ws.write(6+index, 14, str("{:,}".format(round(data['payroll_info'].responsibility))),style_normal)
+            ws.write(6+index, 15, str("{:,}".format(round(data['payroll_info'].seniority_bonus))),style_normal)
+            ws.write(6+index, 16, str("{:,}".format(round(data['payroll_info'].other))),style_normal)
+            ws.write(6+index, 17, str("{:,}".format(round(data['payroll_info'].outstanding_annual_leave))),style_normal)
+            ws.write(6+index, 18, str("{:,}".format(round(data['payroll_info'].OTC_incentive))),style_normal)
+            ws.write(6+index, 19, str("{:,}".format(round(data['payroll_info'].KPI_achievement))),style_normal)
+            ws.write(6+index, 20, str("{:,}".format(round(data['payroll_info'].month_13_salary_Pro_ata))),style_normal)
+            ws.write(6+index, 21, str("{:,}".format(round(data['payroll_info'].incentive_last_month))),style_normal)
+            ws.write(6+index, 22, str("{:,}".format(round(data['payroll_info'].incentive_last_quy_last_year))),style_normal)
+            ws.write(6+index, 23, str("{:,}".format(round(data['payroll_info'].taxable_overtime))),style_normal)
+            ws.write(6+index, 24, str("{:,}".format(round(data['payroll_info'].nontaxable_overtime))),style_normal)
+            ws.write(6+index, 25, str("{:,}".format(round(data['payroll_info'].SHUI_10point5percent_employee_pay))),style_normal)
+            ws.write(6+index, 26, str("{:,}".format(round(data['payroll_info'].recuperation_of_SHU_Ins_10point5percent_staff_pay))),style_normal)
+            ws.write(6+index, 27, str("{:,}".format(round(data['payroll_info'].SHUI_21point5percent_company_pay))),style_normal)
+            ws.write(6+index, 28, str("{:,}".format(round(data['payroll_info'].recuperation_of_SHU_Ins_21point5percent_company_pay))),style_normal)
+            ws.write(6+index, 29, str("{:,}".format(round(data['payroll_info'].occupational_accident_and_disease))),style_normal)
+            ws.write(6+index, 30, str("{:,}".format(round(data['payroll_info'].trade_union_fee_company_pay))),style_normal)
+            ws.write(6+index, 31, str("{:,}".format(round(data['payroll_info'].trade_union_fee_employee_pay))),style_normal)
+            ws.write(6+index, 32, str("{:,}".format(round(data['payroll_info'].family_deduction))),style_normal)
+            ws.write(6+index, 33, str("{:,}".format(round(data['payroll_info'].taxable_income))),style_normal)
+            ws.write(6+index, 34, str("{:,}".format(round(data['payroll_info'].taxed_income))),style_normal)
+            ws.write(6+index, 35, str("{:,}".format(round(data['payroll_info'].PIT_13th_salary))),style_normal)
+            ws.write(6+index, 36, str("{:,}".format(round(data['payroll_info'].PIT))),style_normal)
+            ws.write(6+index, 37, str("{:,}".format(round(data['payroll_info'].PIT_balance))),style_normal)
+            ws.write(6+index, 38, str("{:,}".format(round(data['payroll_info'].first_payment))),style_normal)
+            ws.write(6+index, 39, str("{:,}".format(round(data['payroll_info'].net_income))),style_normal)
+            ws.write(6+index, 40, str("{:,}".format(round(data['payroll_info'].transfer_bank))),style_normal)
+            ws.write(6+index, 41, str("{:,}".format(round(data['payroll_info'].total_cost))),style_normal)
             # Get total line data
-            last_row = 3+index+1
+            last_row = 6+index+1
             ttnewest_salary += data['payroll_info'].newest_salary
             ttgross_income += data['payroll_info'].gross_income
             tttransportation += data['payroll_info'].transportation
@@ -4274,6 +4523,9 @@ def payroll_tedis_vietha(request,pk):
             tttransfer_bank += data['payroll_info'].transfer_bank
             tttotal_cost += data['payroll_info'].total_cost
         # Total line in bottom of table 
+        # Set row height
+        ws.row(last_row).height_mismatch = True
+        ws.row(last_row).height = 900
         ws.write_merge(last_row, last_row, 0, 5, 'TOTAL', style_table_head)
         ws.write(last_row, 6, str("{:,}".format(round(ttnewest_salary))),style_table_head)
         ws.write(last_row, 7, '-',style_table_head)
@@ -4779,7 +5031,7 @@ def payroll_vietha(request,pk):
         style_head_small = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
                                 'font: bold 0,height 240, name Arial, colour black; align: horiz left, vert bottom' % 'white')
         style_working_days = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-                                'font: bold 0,height 240, name Arial, colour 48; align: horiz left, vert bottom' % 'white')
+                                'font: bold 0,height 240, name Arial, colour black; align: horiz left, vert bottom' % 'white')
         style_22pt_bold_horizleft_vertbottom = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
                                 'font: bold 1,height 440, name Arial, colour black; align: horiz left, vert bottom' % 'white')
         style_table_head = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
@@ -5068,10 +5320,10 @@ def payroll_vietha_edit(request, pk):
         month = payroll_info.month
         employee = payroll_info.employee
         newest_salary = payroll_info.newest_salary
-        working_days = payroll_info.working_days
+        working_days = float(request.POST.get('working_days'))
         adjust_percent = payroll_info.adjust_percent
         # Get gross income
-        gross_income = payroll_info.gross_income
+        gross_income = round(float(newest_salary) * float(adjust_percent)/100 * float(working_days)/float(month_total_working_days) )
         # Get salary_recuperation
         salary_recuperation = request.POST.get('salary_recuperation')
         # Get overtime
@@ -6448,6 +6700,18 @@ def payment_report_payroll_tedis_edit(request, pk):
     })
 
 def payment_report_payroll_tedis_delete(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    if s_user[1] == 3:
+        pass
+    else:
+        messages.error(request, 'Access Denied')
+        return redirect('hr:index')
+    
     try:
         payment_info = Report_Payment_Payroll_Tedis.objects.get(id = pk)
         payment_info.delete()
@@ -6540,18 +6804,25 @@ def report_payroll_tedis_vietha(request, pk):
     # Get payroll
     list_payroll_staff_info = []
     for data in list_staff:
-        payroll_info = Payroll_Tedis_Vietha.objects.get(employee=data['employee'].id,month=period_month)
-        payroll_data = {
-                'payroll_info': payroll_info,
-            }
-        list_payroll_staff_info.append(payroll_data)
+        try:
+            payroll_info = Payroll_Tedis_Vietha.objects.get(employee=data['employee'].id,month=period_month)
+            payroll_data = {
+                    'payroll_info': payroll_info,
+                }
+            list_payroll_staff_info.append(payroll_data)
+        except Payroll_Tedis_Vietha.DoesNotExist:
+            pass
+        
     list_payroll_coll_info = []
     for data in list_coll:
-        payroll_info = Payroll_Tedis_Vietha.objects.get(employee=data['employee'].id,month=period_month)
-        payroll_data = {
-                'payroll_info': payroll_info,
-            }
-        list_payroll_coll_info.append(payroll_data)
+        try:
+            payroll_info = Payroll_Tedis_Vietha.objects.get(employee=data['employee'].id,month=period_month)
+            payroll_data = {
+                    'payroll_info': payroll_info,
+                }
+            list_payroll_coll_info.append(payroll_data)
+        except Payroll_Tedis_Vietha.DoesNotExist:
+            pass
     # Get payroll SER
     try:
         payroll_ser = Payroll_Ser.objects.get(month=period_month)
@@ -11247,11 +11518,12 @@ def pdf_time_sheets(request,pk):
     'encoding': "UTF-8",
     'orientation': 'landscape',
 }
-
-    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-    filename = 'timesheets_' + datetime.now().strftime('%Y%m%d_%H%M%S') + '.pdf'
-    pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Documents', filename), configuration=config, options=options)
-    # pdfkit.from_string(html_string, "C:\\" + filename, configuration=config)
+    try:
+        config = pdfkit.configuration(wkhtmltopdf='hr/pdfkit/wkhtmltopdf')
+        filename = 'timesheets_' + datetime.now().strftime('%Y%m%d_%H%M%S') + '.pdf'
+        pdfkit.from_string(html_string, os.path.join(os.path.expanduser('~'), 'Downloads', filename), configuration=config, options=options)
+    except OSError:
+        print('path error')
 
 
     return HttpResponse(html_string)
@@ -11644,6 +11916,28 @@ def hr_budget_and_cashflow_view(request,pk):
     total_target_value_q1 = 0
     total_achievement_q1 = 0
     total_total_cost_q1 = 0
+
+    # Payroll apr
+    total_basic_salary_apr = 0
+    total_overtime_salary_apr = 0
+    total_transportation_salary_apr = 0
+    total_phone_salary_apr = 0
+    total_lunch_salary_apr = 0
+    total_housing_vnd_salary_apr = 0
+    total_KPI_achievement_salary_apr = 0
+    total_other_salary_apr = 0
+    total_travel_salary_apr = 0
+    total_seniority_bonus_salary_apr = 0
+    total_responsibility_salary_apr = 0
+    total_total_allowance_salary_apr = 0
+    total_gross_income_salary_apr = 0
+    total_SHUI_21point5percent_company_pay_apr = 0
+    total_trade_union_fee_company_pay_2percent_salary_apr = 0
+    total_trade_union_fee_member_salary_apr = 0
+    total_transfer_bank_salary_apr = 0
+    total_total_cost_apr = 0
+    total_target_value_apr = 0
+    total_achievement_apr = 0
 
 
     for employee in list_employees:
@@ -15400,6 +15694,113 @@ def hr_budget_and_cashflow_view(request,pk):
         total_target_value_q1 += jan_target_value + feb_target_value + mar_target_value
         total_achievement_q1 += jan_achievement + feb_achievement + mar_achievement
         # total_total_cost_mar nằm ở dưới (Ngoài loop)
+
+        # Payroll apr
+        if payroll_data[3] == '': # Nếu employee đó không có payroll tháng này
+            pass
+        else: 
+            # Khai báo biến
+            apr_basic_salary = payroll_data[3].gross_income
+
+            if payroll_data[3].employee.full_name == "SEVERINE EDGARD-ROSA":
+                apr_overtime = 0
+            else:
+                apr_overtime = payroll_data[3].overtime
+
+            if payroll_data[3].employee.full_name == "SEVERINE EDGARD-ROSA":
+                apr_transportation = 0
+            else:
+                apr_transportation = payroll_data[3].transportation
+
+            apr_phone = payroll_data[3].phone
+
+            apr_lunch = payroll_data[3].lunch
+
+            if payroll_data[3].employee.full_name == "SEVERINE EDGARD-ROSA":
+                apr_housing_vnd = payroll_data[3].housing_vnd
+            else:
+                apr_housing_vnd = 0
+
+            if payroll_data[3].employee.site.site == "JV":
+                apr_KPI_achievement = payroll_data[3].KPI_achievement
+            else:
+                apr_KPI_achievement = 0
+
+            apr_other = payroll_data[3].other
+
+            apr_travel = payroll_data[3].travel
+
+            apr_seniority_bonus = payroll_data[3].seniority_bonus
+
+            apr_responsibility = payroll_data[3].responsibility
+
+            if payroll_data[3].employee.full_name == "SEVERINE EDGARD-ROSA":
+                apr_SHUI = payroll_data[3].SHUI_9point5percent_employee_pay + payroll_data[3].SHUI_20point5percent_employer_pay
+            elif payroll_data[3].employee.full_name == "MARJORIE EDGARD - ROSA":
+                apr_SHUI = payroll_data[3].SHUI_21point5percent_employer_pay
+            else:
+                apr_SHUI = payroll_data[3].SHUI_21point5percent_company_pay
+
+            if payroll_data[3].employee.full_name == "SEVERINE EDGARD-ROSA":
+                apr_trade_union_fee_company_pay = payroll_data[3].trade_union_fee_company_pay
+            elif payroll_data[3].employee.full_name == "MARJORIE EDGARD - ROSA":
+                apr_trade_union_fee_company_pay = payroll_data[3].trade_union_fee_company_pay_2percent
+            elif payroll_data[3].employee.site.site == "RO":
+                apr_trade_union_fee_company_pay = payroll_data[3].trade_union_fee_company_pay_2percent
+            elif payroll_data[3].employee.site.site == "JV":
+                apr_trade_union_fee_company_pay = payroll_data[3].trade_union_fee_company_pay
+            elif payroll_data[3].employee.site.site == "VH":
+                apr_trade_union_fee_company_pay = payroll_data[3].trade_union_fee_company_pay
+
+            if payroll_data[3].employee.full_name == "SEVERINE EDGARD-ROSA":
+                apr_trade_union_fee_member = payroll_data[3].trade_union_fee_member
+            elif payroll_data[3].employee.full_name == "MARJORIE EDGARD - ROSA":
+                apr_trade_union_fee_member = payroll_data[3].trade_union_fee_member
+            elif payroll_data[3].employee.site.site == "RO":
+                apr_trade_union_fee_member = payroll_data[3].trade_union_fee_member
+            elif payroll_data[3].employee.site.site == "JV":
+                apr_trade_union_fee_member = payroll_data[3].trade_union_fee_employee_pay
+            elif payroll_data[3].employee.site.site == "VH":
+                apr_trade_union_fee_member = payroll_data[3].trade_union_fee_staff_pay
+
+            if payroll_data[3].employee.full_name == "SEVERINE EDGARD-ROSA":
+                apr_transfer_bank = 0
+            else:
+                apr_transfer_bank = payroll_data[3].transfer_bank
+
+            try:
+                apr_target_value = Report_landing_target_value.objects.get(month__month_number=4,month__period__period_year=period_month.period.period_year, employee=employee).target_value
+            except Report_landing_target_value.DoesNotExist:
+                apr_target_value = 0
+
+            try:
+                apr_achievement = Report_landing_achievement.objects.get(month__month_number=4,month__period__period_year=period_month.period.period_year, employee=employee).achievement
+            except Report_landing_achievement.DoesNotExist:
+                apr_achievement = 0
+        
+
+
+            # Tính total
+            total_basic_salary_apr += apr_basic_salary
+            total_overtime_salary_apr += apr_overtime
+            total_transportation_salary_apr += apr_transportation
+            total_phone_salary_apr += apr_phone
+            total_lunch_salary_apr += apr_lunch
+            total_housing_vnd_salary_apr += apr_housing_vnd
+            total_KPI_achievement_salary_apr += apr_KPI_achievement
+            total_other_salary_apr += apr_other
+            total_travel_salary_apr += apr_travel
+            total_seniority_bonus_salary_apr += apr_seniority_bonus
+            total_responsibility_salary_apr += apr_responsibility
+            total_total_allowance_salary_apr += apr_overtime + apr_transportation + apr_phone + apr_lunch + apr_housing_vnd + apr_KPI_achievement + apr_other + apr_travel + apr_seniority_bonus + apr_responsibility
+            total_gross_income_salary_apr += apr_basic_salary + apr_overtime + apr_transportation + apr_phone + apr_lunch + apr_housing_vnd + apr_KPI_achievement + apr_other + apr_travel + apr_seniority_bonus + apr_responsibility
+            total_SHUI_21point5percent_company_pay_apr += apr_SHUI
+            total_trade_union_fee_company_pay_2percent_salary_apr += apr_trade_union_fee_company_pay
+            total_trade_union_fee_member_salary_apr += apr_trade_union_fee_member
+            total_transfer_bank_salary_apr += apr_transfer_bank
+            total_total_cost_apr += apr_basic_salary + (apr_overtime + apr_transportation + apr_phone + apr_lunch + apr_housing_vnd + apr_KPI_achievement + apr_other + apr_travel + apr_seniority_bonus + apr_responsibility) + apr_SHUI + apr_trade_union_fee_company_pay + apr_trade_union_fee_member + apr_transfer_bank
+            total_target_value_apr += apr_target_value
+            total_achievement_apr += apr_achievement
         
         # print(payroll_data[0].gross_income)
         # print()
@@ -15817,6 +16218,28 @@ def hr_budget_and_cashflow_view(request,pk):
             'total_target_value_q1' : total_target_value_q1,
             'total_achievement_q1' : total_achievement_q1,
             'total_total_cost_q1' : total_total_cost_q1,
+
+            # Payroll apr
+            'total_basic_salary_apr' : total_basic_salary_apr,
+            'total_overtime_salary_apr' : total_overtime_salary_apr,
+            'total_transportation_salary_apr' : total_transportation_salary_apr,
+            'total_phone_salary_apr' : total_phone_salary_apr,
+            'total_lunch_salary_apr' : total_lunch_salary_apr,
+            'total_housing_vnd_salary_apr' : total_housing_vnd_salary_apr,
+            'total_KPI_achievement_salary_apr' : total_KPI_achievement_salary_apr,
+            'total_other_salary_apr' : total_other_salary_apr,
+            'total_travel_salary_apr' : total_travel_salary_apr,
+            'total_seniority_bonus_salary_apr' : total_seniority_bonus_salary_apr,
+            'total_responsibility_salary_apr' : total_responsibility_salary_apr,
+            'total_total_allowance_salary_apr' : total_total_allowance_salary_apr,
+            'total_gross_income_salary_apr' : total_gross_income_salary_apr,
+            'total_SHUI_21point5percent_company_pay_apr' : total_SHUI_21point5percent_company_pay_apr,
+            'total_trade_union_fee_company_pay_2percent_salary_apr' : total_trade_union_fee_company_pay_2percent_salary_apr,
+            'total_trade_union_fee_member_salary_apr' : total_trade_union_fee_member_salary_apr,
+            'total_transfer_bank_salary_apr' : total_transfer_bank_salary_apr,
+            'total_total_cost_apr' : total_total_cost_apr,
+            'total_target_value_apr' : total_target_value_apr,
+            'total_achievement_apr' : total_achievement_apr,
     }
         
     # Create new Incentive
