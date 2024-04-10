@@ -23,7 +23,10 @@ def index(request):
     default_period = Period.objects.get(period_year=2023) # Đang để 2023 để test, đúng là period_year=today.year
 
     # Lấy Dayoff
-    dayoff_info = Dayoff.objects.get(employee=employee,period=default_period)
+    try:
+        dayoff_info = Dayoff.objects.get(employee=employee,period=default_period)
+    except Dayoff.DoesNotExist:
+        dayoff_info = ''
     # Lấy Leave application
     list_leave_application = Leave_application.objects.filter(employee=employee)
     # Lấy Overtime_application
