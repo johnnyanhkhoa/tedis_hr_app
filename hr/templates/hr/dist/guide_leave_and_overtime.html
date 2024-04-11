@@ -1,0 +1,125 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}HR | Homepage{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+    <div class="page-content text-dark">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item text-dark" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                    type="button" role="tab" aria-controls="home" aria-selected="true">Create Leave and Overtime</button>
+            </li>
+            <li class="nav-item text-dark" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
+                    type="button" role="tab" aria-controls="profile" aria-selected="false">Verify Leave and Overtime</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card"> 
+                            <div class="card-body"> 
+                                <p class="card-text" style="font-size: 30px; text-align: center;"><b>Create Leave and Overtime</b></p>
+                                <p class="card-text" style="font-size: 25px; text-align: left;"><b>Tạo leave application</b></p>
+                                <img src="{% static 'hr/images/logo/guide_leave_and_overtime1.png' %}" alt="guide_leave_and_overtime1" style="width: 100%;">
+                                <ul>
+                                    <li><u>Họ tên nhân viên</u> và <u>Bộ phận làm việc</u>: Sẽ được điền thông tin sẵn dựa trên thông tin nhân viên đã được nhập.</li>
+                                    <li><u>Số liên lạc khẩn</u>: Điền số liên lạc của người liên lạc khẩn cấp(người thân/bạn bè)</li>
+                                    <li><u>Người liên lạc</u>: Điền tên của người liên lạc khẩn cấp(người thân/bạn bè)</li>
+                                    <li><u>Quan hệ</u>: Điền mối quan hệ với người liên lạc khẩn cấp(người thân/bạn bè)</li>
+                                </ul>
+                                <br>
+                                <img src="{% static 'hr/images/logo/guide_leave_and_overtime2.png' %}" alt="guide_leave_and_overtime2" style="width: 100%;">
+                                <ul>
+                                    <li>Lựa chọn loại ngày nghỉ(Phép hằng năm, Nghỉ không lương, Lễ cưới,...) và chỉ điền thông tin ngày nghỉ (Từ ngày, Đến ngày, Số ngày nghỉ và Ghi chú nếu có)</li>
+                                    <li><u>Nghỉ 1 ngày</u>: Ví dụ như cả 1 ngày 01/01/2024 thì sẽ điền vào <u>Từ</u>: 01/01/2024, <u>Đến</u>: 01/01/2024 và <u>Số ngày</u>: 1</li>
+                                    <li><u>Nghỉ nửa(1/2) ngày</u>: Ví dụ như nửa(1/2) ngày 01/01/2024 thì sẽ điền vào <u>Từ</u>: 01/01/2024, <u>Đến</u>: 01/01/2024 và <u>Số ngày</u>: 0.5</li>
+                                    <li><u>Nghỉ nhiều ngày không lẻ</u>: Ví dụ như từ ngày 01/01/2024 đến 03/01/2024 thì sẽ điền vào <u>Từ</u>: 01/01/2024, <u>Đến</u>: 03/01/2024 và <u>Số ngày</u>: 3</li>
+                                    <li><u>Nghỉ nhiều ngày có lẻ</u>: Ngày nào nghỉ nửa ngày thì ghi vào ghi chú, giữa các ngày có khoảng trắng. Ví dụ như từ ngày 01/01/2024 đến 03/01/2024, ngày 02/01/2024 và 03/01/2024 nghỉ nửa ngày thì sẽ điền vào <u>Từ</u>: 01/01/2024, <u>Đến</u>: 03/01/2024 và <u>Số ngày</u>: 2 <u>Ghi chú</u>: 02/01/2024 03/01/2024</li>
+                                </ul>
+                                <br>
+                                <img src="{% static 'hr/images/logo/guide_leave_and_overtime3.png' %}" alt="guide_leave_and_overtime3" style="width: 100%;">
+                                <ul>
+                                    <li><u>Nhân viên</u>: Sẽ được điền thông tin sẵn dựa trên thông tin nhân viên đã được nhập.</li>
+                                    <li><u>Xét duyệt bởi</u>: Sẽ được điền thông tin sẵn dựa trên thông tin nhân viên đã được nhập.</li>
+                                    <li><u>Ngày</u>: Sẽ được điền thông tin sẵn theo ngày hiện tại</li>
+                                    <li>Bấm <u>Submit</u> để tạo application</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+                <hr>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card"> 
+                            <div class="card-body"> 
+                                <p class="card-text" style="font-size: 25px; text-align: left;"><b>Tạo Overtime record</b></p>
+                                <img src="{% static 'hr/images/logo/guide_leave_and_overtime4.png' %}" alt="guide_leave_and_overtime1" style="width: 100%;">
+                                <ul>
+                                    <li><u>Ngày</u>: Điền thông tin ngày có phát sinh thời gian làm bù.</li>
+                                    <li><u>Thời gian từ</u>: Điền thông tin thời gian bắt đầu làm bù.</li>
+                                    <li><u>Thời gian đến</u>: Điền thông tin thời gian kết thúc làm bù.</li>
+                                    <li><u>Tổng cộng(Giờ)</u>: Điền tổng thời gian làm bù. Ví dụ như 2 tiếng 15p thì điền 2.25</li>
+                                    <li><u>Lý do</u>: Điền lý do phát sinh thời gian làm bù.</li>
+                                </ul>
+                                <br>
+                                <ul>
+                                    <li><u>Nhân viên</u>: Sẽ được điền thông tin sẵn dựa trên thông tin nhân viên đã được nhập.</li>
+                                    <li><u>Xét duyệt bởi</u>: Sẽ được điền thông tin sẵn dựa trên thông tin nhân viên đã được nhập.</li>
+                                    <li><u>Ngày</u>: Sẽ được điền thông tin sẵn theo ngày hiện tại</li>
+                                    <li>Bấm <u>Submit</u> để tạo application</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+            </div>
+            <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card"> 
+                            <div class="card-body"> 
+                                <p class="card-text" style="font-size: 30px; text-align: center;"><b>Verify Leave and Overtime</b></p>
+                                <p class="card-text" style="font-size: 25px; text-align: left;"><b>Theo dõi leave application</b></p>
+                                <img src="{% static 'hr/images/logo/guide_leave_and_overtime5.png' %}" alt="guide_leave_and_overtime1" style="width: 100%;">
+                                <ul>
+                                    <li><u>Request application</u> Là list các Leave applications đã tạo.</li>
+                                    <li>Theo dõi trạng thái của Leave application tại phần <u>Manager approve</u> và <u>HR approve</u></li>
+                                    <li>Bấm vào phần <u>View</u> để xem lại Leave applications đã tạo.</li>
+                                </ul>
+                                <br>
+                                <p class="card-text" style="font-size: 25px; text-align: left;"><b>*Dành cho Manager và HR</b></p>
+                                <img src="{% static 'hr/images/logo/guide_leave_and_overtime6.png' %}" alt="guide_leave_and_overtime2" style="width: 100%;">
+                                <ul>
+                                    <li><u>Staff request application</u> Là list các Leave applications của nhân viên(cấp dưới).</li>
+                                    <li>Bấm vào phần <u>Ạpprove</u> để xem/chỉnh sửa và thay đổi trạng thái(Approve/Reject) của Leave applications của nhân viên.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
