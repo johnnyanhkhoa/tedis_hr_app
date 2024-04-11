@@ -78,6 +78,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Hr_app.wsgi.application'
 
+CSRF_TRUSTED_ORIGINS=['https://tdvn-humanresources.com', 'https://www.tdvn-humanresources.com']
+
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
