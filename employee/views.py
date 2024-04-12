@@ -2220,8 +2220,8 @@ def blank_period(request):
     
     # Get period
     try:
-        # period = Period.objects.get(period_year=today.year)
-        period = Period.objects.get(period_year=2023) # Đang để 2023 để test
+        period = Period.objects.get(period_year=today.year)
+        # period = Period.objects.get(period_year=2023) # Đang để 2023 để test
         return redirect('employee:period', pk=period.pk)
     except Period.DoesNotExist:
         pass
@@ -11549,7 +11549,8 @@ def report_leave(request):
     role = s_user[1]
     
     # Redirect to present period
-    default_period = Period.objects.get(period_year=2023) # Đang để 2023 để test, đúng là period_year=today.year
+    default_period = Period.objects.get(period_year=today.year)
+    # default_period = Period.objects.get(period_year=2023) # Đang để 2023 để test, đúng là period_year=today.year
 
     
     # Previous and next period button
@@ -11710,8 +11711,8 @@ def hr_budget_and_cashflow(request,pk):
         return redirect('hr:index')
     
     # Get and redirect to present period year
-    present_year = 2023 # datetime.now().year -> Đang để 2023 để test
-    present_period = Period.objects.get(period_year=present_year)
+    present_period = Period.objects.get(period_year=today.year)
+    # present_period = Period.objects.get(period_year=2023) # Đang để 2023 để test
     if present_period.id == pk:
         pass
     else:
@@ -11767,7 +11768,7 @@ def hr_budget_and_cashflow_view(request,pk):
     
     # Get last year
     last_year = int(period_month.period.period_year) - 1
-    last_year_months = Month_in_period.objects.filter(period__period_year=last_year) ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###
+    last_year_months = Month_in_period.objects.filter(period__period_year=last_year) 
     
     # Tạo list data
     list_data = []
@@ -12253,62 +12254,62 @@ def hr_budget_and_cashflow_view(request,pk):
         '''Get incentive last year'''
         # incentive_quarter_1_last_year
         try:
-            incentive_quarter_1_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Quarter 1') ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###  
+            incentive_quarter_1_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Quarter 1')   
             total_remuneration_full_last_year += incentive_quarter_1_last_year.incentive
         except Report_landing_incentive.DoesNotExist:   
             incentive_quarter_1_last_year = 'x'
 
         # incentive_quarter_2_last_year
         try: 
-            incentive_quarter_2_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Quarter 2') ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###  
+            incentive_quarter_2_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Quarter 2')   
             total_remuneration_full_last_year += incentive_quarter_2_last_year.incentive
         except Report_landing_incentive.DoesNotExist:   
             incentive_quarter_2_last_year = 'x'
             
         # incentive_quarter_3_last_year
         try:
-            incentive_quarter_3_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Quarter 3') ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ### 
+            incentive_quarter_3_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Quarter 3')  
             total_remuneration_full_last_year += incentive_quarter_3_last_year.incentive
         except Report_landing_incentive.DoesNotExist:   
             incentive_quarter_3_last_year = 'x'
             
         # incentive_quarter_4_last_year
         try:
-            incentive_quarter_4_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Quarter 4') ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ### 
+            incentive_quarter_4_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Quarter 4')  
             total_remuneration_full_last_year += incentive_quarter_4_last_year.incentive
         except Report_landing_incentive.DoesNotExist:   
             incentive_quarter_4_last_year = 'x'
             
         # incentive_yearly_last_year
         try:
-            incentive_yearly_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Yearly') ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###   
+            incentive_yearly_last_year = Report_landing_incentive.objects.get(period__period_year=last_year,employee=employee,remark='Yearly')    
             total_remuneration_full_last_year += incentive_yearly_last_year.incentive
         except Report_landing_incentive.DoesNotExist:   
             incentive_yearly_last_year = 'x' 
              
         '''Get best reward'''
         try:
-            best_reward_last_year = Report_landing_Best_reward.objects.get(period__period_year=last_year,employee=employee) ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###   
+            best_reward_last_year = Report_landing_Best_reward.objects.get(period__period_year=last_year,employee=employee)    
             total_remuneration_full_last_year += best_reward_last_year.best_reward
         except Report_landing_Best_reward.DoesNotExist:   
             best_reward_last_year = 'x' 
             
         '''Get month_14_salary_Pro_ata_full_last_year'''
         try:
-            month_14_salary_Pro_ata_full_last_year = Report_landing_month_14_salary.objects.get(period__period_year=last_year,employee=employee) ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###   
+            month_14_salary_Pro_ata_full_last_year = Report_landing_month_14_salary.objects.get(period__period_year=last_year,employee=employee)    
             total_remuneration_full_last_year += month_14_salary_Pro_ata_full_last_year.month_14_salary
         except Report_landing_month_14_salary.DoesNotExist:   
             month_14_salary_Pro_ata_full_last_year = 'x'
             
         '''Get target_value_full_last_year'''
         target_value_full_last_year = 0 
-        list_target_value_last_year = Report_landing_target_value.objects.filter(month__period__period_year=last_year, employee=employee) ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###
+        list_target_value_last_year = Report_landing_target_value.objects.filter(month__period__period_year=last_year, employee=employee) 
         for target_value_month in list_target_value_last_year:
             target_value_full_last_year += target_value_month.target_value
             
         '''Get achievement_full_last_year'''
         achievement_full_last_year = 0 
-        list_achievement_last_year = Report_landing_achievement.objects.filter(month__period__period_year=last_year, employee=employee) ### Last year chứ không để năm hiện tại. Đang để 2023 để test coi đúng số không ###
+        list_achievement_last_year = Report_landing_achievement.objects.filter(month__period__period_year=last_year, employee=employee) 
         for achievement_month in list_achievement_last_year:
             achievement_full_last_year += achievement_month.achievement
             
