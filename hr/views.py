@@ -174,3 +174,17 @@ def guide_leave_and_overtime(request):
     return render(request, 'hr/dist/guide_leave_and_overtime.html' , {
         
     })
+
+def guide_employee_information(request):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+    
+    user_info = User.objects.all()
+    s_user = request.session.get('s_user')
+    role = s_user[1]
+    employee_pk = s_user[2]
+    
+    return render(request, 'hr/dist/guide_employee_information.html' , {
+        
+    })
