@@ -15,20 +15,20 @@ def index(request):
     s_user = request.session.get('s_user')
     role = s_user[1]
     employee_pk = s_user[2]
-    # Lấy thông tin employee và Dayoff
+    # Lấy thông tin employee, Dayoff, Leave application và Overtime application
     try:
         employee = Employee.objects.get(pk=employee_pk)
         dayoff_info = Dayoff.objects.get(employee=employee,period=default_period)
+        list_leave_application = Leave_application.objects.filter(employee=employee)
+        list_overtime_application = Overtime_application.objects.filter(employee=employee)
     except Employee.DoesNotExist:
         employee = 'admin'
         dayoff_info = ''
+        list_leave_application = ''
+        list_overtime_application = ''
+
 
     default_period = Period.objects.get(period_year=2023) # Đang để 2023 để test, đúng là period_year=today.year
-        
-    # Lấy Leave application
-    list_leave_application = Leave_application.objects.filter(employee=employee)
-    # Lấy Overtime_application
-    list_overtime_application = Overtime_application.objects.filter(employee=employee)
         
     return render(request, 'hr/dist/index.html' , {
         'user_info' : user_info,
