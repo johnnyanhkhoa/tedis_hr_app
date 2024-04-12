@@ -1,0 +1,115 @@
+{% extends 'hr/dist/_Master.html' %}
+{% block title_tab %}HR | Homepage{% endblock %}
+{% load static %}
+{% load humanize %}
+
+{% block main_content %}
+<div id="main">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+    <div class="alert alert-success" role="alert">{{message}}</div>
+    {% endif %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger" role="alert">{{message}}</div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+    <div class="page-content text-dark">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item text-dark" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home"
+                    type="button" role="tab" aria-controls="home" aria-selected="true">Create new employee</button>
+            </li>
+            <li class="nav-item text-dark" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile"
+                    type="button" role="tab" aria-controls="profile" aria-selected="false">General view</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card"> 
+                            <div class="card-body"> 
+                                <p class="card-text" style="font-size: 25px; text-align: left;"><b>*Dành cho HR</b></p>
+                                <p class="card-text" style="font-size: 30px; text-align: center;"><b>Create new employee</b></p>
+                                <p class="card-text" style="font-size: 25px; text-align: left;"><b>Tạo nhân viên mới</b></p>
+                                <ul>
+                                    <li style="color: red;"><u>Lưu ý</u>: Tạo cấp trên trước rồi tạo cấp dưới sau.</li>
+                                    <li><i>Ví dụ: A là sếp của B và B là sếp của X, Y , Z.</i></li>
+                                    <i>-> Tạo A trước rồi tới B. Sau đó tạo X, Y , Z</i>
+                                </ul>
+                                <img src="{% static 'hr/images/logo/guide_employee_information1.png' %}" alt="guide_employee_information1" style="width: 100%;">
+                                <ul>
+                                    <li><u>Full Name</u>: Nhập đầy đủ họ và tên nhân viên IN HOA(CAPS LOCK).</li>
+                                </ul>
+                                <br>
+                                <img src="{% static 'hr/images/logo/guide_employee_information2.png' %}" alt="guide_employee_information2" style="width: 100%;">
+                                <ul>
+                                    <li><u>Leaving date</u>: Để trống nếu không có</li>
+                                </ul>
+                                <br>
+                                <img src="{% static 'hr/images/logo/guide_employee_information3.png' %}" alt="guide_employee_information3" style="width: 100%;">
+                                <ul>
+                                    <li>Click nút "Create" sau khi đã nhập xong thông tin nhân viên.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+                <hr>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card"> 
+                            <div class="card-body"> 
+                                <p class="card-text" style="font-size: 25px; text-align: left;"><b>Tạo Manager record</b></p>
+                                <img src="{% static 'hr/images/logo/guide_employee_information4.png' %}" alt="guide_employee_information4" style="width: 100%;">
+                                <ul>
+                                    <li>Sau khi create nhân viên, sẽ được redirect tới trang Add manager.</li>
+                                    <li><u>Manager</u>: Chọn manager cho nhân viên vừa mới tạo.</li>
+                                    <li style="color: red;"><u>Lưu ý</u>: Tạo cấp trên trước rồi tạo cấp dưới sau.</li>
+                                </ul>
+                                <br>
+                                <ul>
+                                    <li><u>Nhân viên</u>: Sẽ được điền thông tin sẵn dựa trên thông tin nhân viên đã được nhập.</li>
+                                    <li><u>Xét duyệt bởi</u>: Sẽ được điền thông tin sẵn dựa trên thông tin nhân viên đã được nhập.</li>
+                                    <li><u>Ngày</u>: Sẽ được điền thông tin sẵn theo ngày hiện tại</li>
+                                    <li>Bấm <u>Submit</u> để tạo application</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+            </div>
+            <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card"> 
+                            <div class="card-body"> 
+                                <p class="card-text" style="font-size: 25px; text-align: left;"><b>*Dành cho HR</b></p>
+                                <p class="card-text" style="font-size: 30px; text-align: center;"><b>General view</b></p>
+                                <p class="card-text" style="font-size: 25px; text-align: left;"><b>View & Update thông tin nhân viên</b></p>
+                                <img src="{% static 'hr/images/logo/guide_employee_information5.png' %}" alt="guide_employee_information5" style="width: 100%;">
+                                <ul>
+                                    <li><u>View/Update</u>: Xem và chỉnh sửa thông tin nhân viên.</li>
+                                    <li><u>View/Update relatives</u>: Tạo mới, xem và chỉnh sửa thông tin người phụ thuộc.</li>
+                                    <li><u>Update manager</u>: Chỉnh sửa thông tin manager.</li>
+                                    <li><u>Resign employee</u>: Resign nhân viên khi nhân viên nghỉ việc.</li>
+                                    <li><u>Document</u>: Tạo mới, xem và chỉnh sửa thông tin Labour contract, Promotion và Probationary period.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
