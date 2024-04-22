@@ -207,80 +207,80 @@ def create_new_employee(request):
             employee = Employee.objects.get(full_name=full_name) 
 
             # Tạo dayoff cho nhân viên mới
-        try:
-            employee_dayoff = Dayoff.objects.get(employee=employee, period=present_period)
-        except Dayoff.DoesNotExist:
-            # Lấy thông tin employee để update years_of_service
-            present_year = today.year
-            if employee.joining_year == present_year:
-                employee.years_of_service = 1
-            else:
-                employee.years_of_service = present_year - employee.joining_year
-            employee.save() 
-            # Tạo dayoff cho tất cả nhân viên
-            if employee.years_of_service == 1:
-                if employee.joining_date.month == 1:
-                    total_dayoff = 12
-                elif employee.joining_date.month == 2:
-                    total_dayoff = 11
-                elif employee.joining_date.month == 3:
-                    total_dayoff = 10
-                elif employee.joining_date.month == 4:
-                    total_dayoff = 9
-                elif employee.joining_date.month == 5:
-                    total_dayoff = 8
-                elif employee.joining_date.month == 6:
-                    total_dayoff = 7
-                elif employee.joining_date.month == 7:
-                    total_dayoff = 6
-                elif employee.joining_date.month == 8:
-                    total_dayoff = 5
-                elif employee.joining_date.month == 9:
-                    total_dayoff = 4
-                elif employee.joining_date.month == 10:
-                    total_dayoff = 3
-                elif employee.joining_date.month == 11:
-                    total_dayoff = 2
-                elif employee.joining_date.month == 12:
-                    total_dayoff = 1
-            else:
-                
-                if employee.years_of_service > 1 and employee.years_of_service < 5:
-                    total_dayoff = 12
-                elif employee.years_of_service >= 5 and employee.years_of_service < 10:
-                    total_dayoff = 13
-                elif employee.years_of_service >= 10 and employee.years_of_service < 15:
-                    total_dayoff = 14
-                elif employee.years_of_service >= 15 and employee.years_of_service < 20:
-                    total_dayoff = 15
-                elif employee.years_of_service >= 20 and employee.years_of_service < 25:
-                    total_dayoff = 16
-                elif employee.years_of_service >= 25 and employee.years_of_service < 30:
-                    total_dayoff = 17
-                elif employee.years_of_service >= 30 and employee.years_of_service < 35:
-                    total_dayoff = 18
-                elif employee.years_of_service >= 35 and employee.years_of_service < 40:
-                    total_dayoff = 19
-                elif employee.years_of_service >= 40 and employee.years_of_service < 45:
-                    total_dayoff = 20
-                elif employee.years_of_service >= 45 and employee.years_of_service < 50:
-                    total_dayoff = 21
-            int_period_year = int(present_period)
             try:
-                previous_period = Period.objects.get(period_year=int_period_year-1)
+                employee_dayoff = Dayoff.objects.get(employee=employee, period=present_period)
+            except Dayoff.DoesNotExist:
+                # Lấy thông tin employee để update years_of_service
+                present_year = today.year
+                if employee.joining_year == present_year:
+                    employee.years_of_service = 1
+                else:
+                    employee.years_of_service = present_year - employee.joining_year
+                employee.save() 
+                # Tạo dayoff cho tất cả nhân viên
+                if employee.years_of_service == 1:
+                    if employee.joining_date.month == 1:
+                        total_dayoff = 12
+                    elif employee.joining_date.month == 2:
+                        total_dayoff = 11
+                    elif employee.joining_date.month == 3:
+                        total_dayoff = 10
+                    elif employee.joining_date.month == 4:
+                        total_dayoff = 9
+                    elif employee.joining_date.month == 5:
+                        total_dayoff = 8
+                    elif employee.joining_date.month == 6:
+                        total_dayoff = 7
+                    elif employee.joining_date.month == 7:
+                        total_dayoff = 6
+                    elif employee.joining_date.month == 8:
+                        total_dayoff = 5
+                    elif employee.joining_date.month == 9:
+                        total_dayoff = 4
+                    elif employee.joining_date.month == 10:
+                        total_dayoff = 3
+                    elif employee.joining_date.month == 11:
+                        total_dayoff = 2
+                    elif employee.joining_date.month == 12:
+                        total_dayoff = 1
+                else:
+                    
+                    if employee.years_of_service > 1 and employee.years_of_service < 5:
+                        total_dayoff = 12
+                    elif employee.years_of_service >= 5 and employee.years_of_service < 10:
+                        total_dayoff = 13
+                    elif employee.years_of_service >= 10 and employee.years_of_service < 15:
+                        total_dayoff = 14
+                    elif employee.years_of_service >= 15 and employee.years_of_service < 20:
+                        total_dayoff = 15
+                    elif employee.years_of_service >= 20 and employee.years_of_service < 25:
+                        total_dayoff = 16
+                    elif employee.years_of_service >= 25 and employee.years_of_service < 30:
+                        total_dayoff = 17
+                    elif employee.years_of_service >= 30 and employee.years_of_service < 35:
+                        total_dayoff = 18
+                    elif employee.years_of_service >= 35 and employee.years_of_service < 40:
+                        total_dayoff = 19
+                    elif employee.years_of_service >= 40 and employee.years_of_service < 45:
+                        total_dayoff = 20
+                    elif employee.years_of_service >= 45 and employee.years_of_service < 50:
+                        total_dayoff = 21
+                int_period_year = int(present_period)
                 try:
-                    previous_dayoff = Dayoff.objects.get(period=previous_period, employee=employee.id)
-                    previous_remain_dayoff = previous_dayoff.remain_dayoff
-                except Dayoff.DoesNotExist:
+                    previous_period = Period.objects.get(period_year=int_period_year-1)
+                    try:
+                        previous_dayoff = Dayoff.objects.get(period=previous_period, employee=employee.id)
+                        previous_remain_dayoff = previous_dayoff.remain_dayoff
+                    except Dayoff.DoesNotExist:
+                        previous_period = None
+                        previous_remain_dayoff = 0  
+                except Period.DoesNotExist:
                     previous_period = None
-                    previous_remain_dayoff = 0  
-            except Period.DoesNotExist:
-                previous_period = None
-                previous_remain_dayoff = 0    
-            dayoff_info = Dayoff(period=present_period,employee=employee,
-                                 total_dayoff=total_dayoff,remain_dayoff=total_dayoff,previous_remain_dayoff=previous_remain_dayoff,
-                                 used_dayoff=0)
-            dayoff_info.save()
+                    previous_remain_dayoff = 0    
+                dayoff_info = Dayoff(period=present_period,employee=employee,
+                                    total_dayoff=total_dayoff,remain_dayoff=total_dayoff,previous_remain_dayoff=previous_remain_dayoff,
+                                    used_dayoff=0)
+                dayoff_info.save()
 
             
             return redirect('employee:add_staff_for_manager', pk=employee.id)
