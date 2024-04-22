@@ -77,8 +77,8 @@
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonEmoji">
                                     <form method="post">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-outline-success" name="get_timesheet"
-                                            value="Period input" style="width: 240px;text-align: left;"><svg
+                                        <button type="submit" class="btn btn-outline-success" name="export_excel"
+                                            value="Report input" style="width: 240px;text-align: left;"><svg
                                                 xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                 fill="currentColor" class="bi bi-file-earmark-excel"
                                                 viewBox="0 0 16 16">
@@ -6557,6 +6557,258 @@
                                             <td class="fw-bold" style="color: red;">{{ total_data.total_achievement_apr|floatformat:0|intcomma }}</td>
                                             <td></td>
                                             <td></td>
+                                            <td></td>
+
+                                            <!-- Payroll may -->
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_basic_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_overtime_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transportation_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_phone_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_lunch_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_housing_vnd_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_KPI_achievement_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_other_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_travel_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_seniority_bonus_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_responsibility_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_allowance_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_gross_income_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_SHUI_21point5percent_company_pay_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_company_pay_2percent_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_member_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transfer_bank_salary_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_cost_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_target_value_may|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_achievement_may|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                            <!-- Payroll jun -->
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_basic_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_overtime_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transportation_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_phone_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_lunch_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_housing_vnd_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_KPI_achievement_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_other_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_travel_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_seniority_bonus_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_responsibility_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_allowance_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_gross_income_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_SHUI_21point5percent_company_pay_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_company_pay_2percent_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_member_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transfer_bank_salary_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_cost_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_target_value_jun|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_achievement_jun|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                            <!-- Payroll Q2 -->
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_target_value_q2|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_achievement_q2|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_cost_q2|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                            <!-- Payroll jul -->
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_basic_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_overtime_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transportation_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_phone_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_lunch_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_housing_vnd_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_KPI_achievement_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_other_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_travel_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_seniority_bonus_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_responsibility_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_allowance_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_gross_income_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_SHUI_21point5percent_company_pay_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_company_pay_2percent_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_member_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transfer_bank_salary_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_cost_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_target_value_jul|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_achievement_jul|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                            <!-- Payroll aug -->
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_basic_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_overtime_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transportation_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_phone_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_lunch_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_housing_vnd_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_KPI_achievement_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_other_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_travel_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_seniority_bonus_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_responsibility_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_allowance_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_gross_income_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_SHUI_21point5percent_company_pay_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_company_pay_2percent_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_member_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transfer_bank_salary_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_cost_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_target_value_aug|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_achievement_aug|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                            <!-- Payroll sep -->
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_basic_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_overtime_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transportation_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_phone_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_lunch_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_housing_vnd_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_KPI_achievement_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_other_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_travel_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_seniority_bonus_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_responsibility_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_allowance_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_gross_income_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_SHUI_21point5percent_company_pay_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_company_pay_2percent_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_member_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transfer_bank_salary_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_cost_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_target_value_sep|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_achievement_sep|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                            <!-- Payroll Q3 -->
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_target_value_q3|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_achievement_q3|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_cost_q3|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                            <!-- Payroll oct -->
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_basic_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_overtime_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transportation_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_phone_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_lunch_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_housing_vnd_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_KPI_achievement_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_other_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_travel_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_seniority_bonus_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_responsibility_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_allowance_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_gross_income_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_SHUI_21point5percent_company_pay_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_company_pay_2percent_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_member_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transfer_bank_salary_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_cost_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_target_value_oct|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_achievement_oct|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                            <!-- Payroll nov -->
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_basic_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_overtime_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transportation_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_phone_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_lunch_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_housing_vnd_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_KPI_achievement_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_other_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_travel_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_seniority_bonus_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_responsibility_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_allowance_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_gross_income_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_SHUI_21point5percent_company_pay_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_company_pay_2percent_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_member_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transfer_bank_salary_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_cost_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_target_value_nov|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_achievement_nov|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                            <!-- Payroll dec -->
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_basic_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_overtime_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transportation_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_phone_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_lunch_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_housing_vnd_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_KPI_achievement_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_other_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_travel_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_seniority_bonus_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_responsibility_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_allowance_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_gross_income_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_SHUI_21point5percent_company_pay_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_company_pay_2percent_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_trade_union_fee_member_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_transfer_bank_salary_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_cost_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_target_value_dec|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_achievement_dec|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                            <!-- Payroll Q4 -->
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_target_value_q4|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_achievement_q4|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_cost_q4|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+
+                                            <!-- Last columns -->
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_incentive_quarter_1_current_year|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_incentive_quarter_2_current_year|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_incentive_quarter_3_current_year|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_incentive_quarter_4_current_year|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_incentive_yearly_current_year|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_best_reward_current_year|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_month_13_salary_Pro_ata_full_current_year|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_month_14_salary_Pro_ata_full_current_year|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_bonus|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_remuneration_full_current_year|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_company_celebration|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_health_check_up|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_healthcare_insurance|floatformat:0|intcomma }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_cost_col_pt|floatformat:0|intcomma }}</td>
                                             <td></td>
                                         </tr>
                             </tbody>

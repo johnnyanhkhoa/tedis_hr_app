@@ -480,7 +480,7 @@ class Type_of_leave(models.Model):
         return self.leave_type_eng
     
 
-class Leave_application(models.Model):
+class Leave_application(models.Model):    
     employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
     emergency_contact = models.CharField(max_length=100, blank=True, null=True)
     contact_person = models.CharField(max_length=10, blank=True, null=True)
@@ -490,41 +490,49 @@ class Leave_application(models.Model):
     annual_to = models.CharField(max_length=50, blank=True, null=True)
     annual_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
     annual_remark = models.CharField(max_length=200, blank=True, null=True)
+    annual_halfday_note = models.CharField(max_length=200, blank=True, null=True)
     # Non-paid Leave
     non_paid_from = models.CharField(max_length=50, blank=True, null=True)
     non_paid_to = models.CharField(max_length=50, blank=True, null=True)
     non_paid_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
     non_paid_remark = models.CharField(max_length=200, blank=True, null=True)
+    non_paid_halfday_note = models.CharField(max_length=200, blank=True, null=True)
     # Wedding Leave
     wedding_from = models.CharField(max_length=50, blank=True, null=True)
     wedding_to = models.CharField(max_length=50, blank=True, null=True)
     wedding_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
     wedding_remark = models.CharField(max_length=200, blank=True, null=True)
+    wedding_halfday_note = models.CharField(max_length=200, blank=True, null=True)
     # Bereavement Leave
     bereavement_from = models.CharField(max_length=50, blank=True, null=True)
     bereavement_to = models.CharField(max_length=50, blank=True, null=True)
     bereavement_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
     bereavement_remark = models.CharField(max_length=200, blank=True, null=True)
+    bereavement_halfday_note = models.CharField(max_length=200, blank=True, null=True)
     # Maternity/Obstetric Leave
     maternity_obstetric_from = models.CharField(max_length=50, blank=True, null=True)
     maternity_obstetric_to = models.CharField(max_length=50, blank=True, null=True)
     maternity_obstetric_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
     maternity_obstetric_remark = models.CharField(max_length=200, blank=True, null=True)
+    maternity_halfday_note = models.CharField(max_length=200, blank=True, null=True)
     # Sick Leave
     sick_from = models.CharField(max_length=50, blank=True, null=True)
     sick_to = models.CharField(max_length=50, blank=True, null=True)
     sick_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
     sick_remark = models.CharField(max_length=200, blank=True, null=True)
+    sick_halfday_note = models.CharField(max_length=200, blank=True, null=True)
     # Off in-lieu Leave
     offinlieu_from = models.CharField(max_length=50, blank=True, null=True)
     offinlieu_to = models.CharField(max_length=50, blank=True, null=True)
     offinlieu_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
     offinlieu_remark = models.CharField(max_length=200, blank=True, null=True)
+    offinlieu_halfday_note = models.CharField(max_length=200, blank=True, null=True)
     # Other Leave
     other_from = models.CharField(max_length=50, blank=True, null=True)
     other_to = models.CharField(max_length=50, blank=True, null=True)
     other_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
     other_remark = models.CharField(max_length=200, blank=True, null=True)
+    other_halfday_note = models.CharField(max_length=200, blank=True, null=True)
     
     total_days = models.FloatField(null=True, blank=True)
     temporary_replacement = models.CharField(max_length=50, blank=True, null=True)

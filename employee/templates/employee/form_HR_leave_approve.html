@@ -138,11 +138,18 @@
                                     <i>Số ngày</i>
                                 </p>
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
+                                <p class="text-center">
+                                    <b>Note</b>
+                                    <br>
+                                    <i>Ghi chú (Ngày nghỉ <u>nửa buổi</u> nếu có)</i>
+                                </p>
+                            </div>
+                            <div class="col-2">
                                 <p class="text-center">
                                     <b>Remarks</b>
                                     <br>
-                                    <i>Ghi chú</i>
+                                    <i>Nghỉ buổi sáng/buổi chiều</i>
                                 </p>
                             </div>
                         </div>
@@ -167,10 +174,15 @@
                                     id="annual_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.annual_number_of_leave_days }}">
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <input type="text" class="form-control" name="annual_remark"
                                     id="annual_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
                                     value="{{ leave_application.annual_remark }}">
+                            </div>
+                            <div class="col-2">
+                                <input type="text" class="form-control" name="annual_halfday_note"
+                                    id="annual_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
+                                    value="{{ leave_application.annual_halfday_note }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -194,10 +206,15 @@
                                     id="non_paid_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.non_paid_number_of_leave_days }}">
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <input type="text" class="form-control" name="non_paid_remark"
                                     id="non_paid_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
                                     value="{{ leave_application.non_paid_remark }}">
+                            </div>
+                            <div class="col-2">
+                                <input type="text" class="form-control" name="non_paid_halfday_note"
+                                    id="non_paid_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
+                                    value="{{ leave_application.non_paid_halfday_note }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -221,10 +238,15 @@
                                     id="wedding_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.wedding_number_of_leave_days }}">
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <input type="text" class="form-control" name="wedding_remark"
                                     id="wedding_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
                                     value="{{ leave_application.wedding_remark }}">
+                            </div>
+                            <div class="col-2">
+                                <input type="text" class="form-control" name="wedding_halfday_note"
+                                    id="wedding_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
+                                    value="{{ leave_application.wedding_halfday_note }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -248,10 +270,15 @@
                                     id="bereavement_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.bereavement_number_of_leave_days }}">
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <input type="text" class="form-control" name="bereavement_remark"
                                     id="bereavement_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
                                     value="{{ leave_application.bereavement_remark }}">
+                            </div>
+                            <div class="col-2">
+                                <input type="text" class="form-control" name="bereavement_halfday_note"
+                                    id="bereavement_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
+                                    value="{{ leave_application.bereavement_halfday_note }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -277,10 +304,15 @@
                                     id="maternity_obstetric_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.maternity_obstetric_number_of_leave_days }}">
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <input type="text" class="form-control" name="maternity_obstetric_remark"
                                     id="maternity_obstetric_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
                                     value="{{ leave_application.maternity_obstetric_remark }}">
+                            </div>
+                            <div class="col-2">
+                                <input type="text" class="form-control" name="maternity_halfday_note"
+                                    id="maternity_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
+                                    value="{{ leave_application.maternity_halfday_note }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -304,10 +336,15 @@
                                     id="sick_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.sick_number_of_leave_days }}">
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <input type="text" class="form-control" name="sick_remark"
                                     id="sick_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
                                     value="{{ leave_application.sick_remark }}">
+                            </div>
+                            <div class="col-2">
+                                <input type="text" class="form-control" name="sick_halfday_note"
+                                    id="sick_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
+                                    value="{{ leave_application.sick_halfday_note }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -331,10 +368,15 @@
                                     id="offinlieu_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.offinlieu_number_of_leave_days }}">
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <input type="text" class="form-control" name="offinlieu_remark"
                                     id="offinlieu_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
                                     value="{{ leave_application.offinlieu_remark }}">
+                            </div>
+                            <div class="col-2">
+                                <input type="text" class="form-control" name="offinlieu_halfday_note"
+                                    id="offinlieu_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
+                                    value="{{ leave_application.offinlieu_halfday_note }}">
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -358,10 +400,15 @@
                                     id="other_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.other_number_of_leave_days }}">
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <input type="text" class="form-control" name="other_remark"
                                     id="other_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
                                     value="{{ leave_application.other_remark }}">
+                            </div>
+                            <div class="col-2">
+                                <input type="text" class="form-control" name="other_halfday_note"
+                                    id="other_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
+                                    value="{{ leave_application.other_halfday_note }}">
                             </div>
                         </div>
                         <div class="row text-dark" style="border-top: 1px solid black;">
@@ -371,9 +418,9 @@
                                     <i>Tổng số ngày</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                             </div>
                             <div class="col-1" style="padding: 0;">
                                 {{ leave_application.total_days }}

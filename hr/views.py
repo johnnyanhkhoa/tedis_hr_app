@@ -23,7 +23,11 @@ def index(request):
         employee = 'admin'
 
     # Lấy thông tin Dayoff
-    default_period = Period.objects.get(period_year=datetime.now().year)
+    # default_period = Period.objects.get(period_year=2023) # Chỉ để 2023 khi dev
+    try:
+        default_period = Period.objects.get(period_year=datetime.now().year)
+    except Period.DoesNotExist:
+        default_period = Period.objects.get(period_year=2023)
     try:
         dayoff_info = Dayoff.objects.get(employee=employee,period=default_period)
     except Dayoff.DoesNotExist:

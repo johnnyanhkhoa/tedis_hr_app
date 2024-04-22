@@ -92,7 +92,7 @@ CSRF_TRUSTED_ORIGINS=['https://tdvn-humanresources.com', 'https://www.tdvn-human
 #     }
 # }
 
-# # Databases for test web
+# Databases for test web
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',

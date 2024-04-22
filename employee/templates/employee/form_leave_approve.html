@@ -106,14 +106,14 @@
                         <div class="row text-dark">
                             <div class="col-3">
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 <p class="text-center">
                                     <b>From</b>
                                     <br>
                                     <i>Từ</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 <p class="text-center">
                                     <b>To</b>
                                     <br>
@@ -129,9 +129,16 @@
                             </div>
                             <div class="col-2">
                                 <p class="text-center">
+                                    <b>Note</b>
+                                    <br>
+                                    <i>Ghi chú (Ngày nghỉ <u>nửa buổi</u> nếu có)</i>
+                                </p>
+                            </div>
+                            <div class="col-2">
+                                <p class="text-center">
                                     <b>Remarks</b>
                                     <br>
-                                    <i>Ghi chú</i>
+                                    <i>Nghỉ buổi sáng/buổi chiều</i>
                                 </p>
                             </div>
                         </div>
@@ -143,10 +150,10 @@
                                     <i>Phép hằng năm</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.annual_from }}
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.annual_to }}
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -154,6 +161,9 @@
                             </div>
                             <div class="col-2">
                                 {{ leave_application.annual_remark }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.annual_halfday_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -164,10 +174,10 @@
                                     <i>Nghỉ không lương</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.non_paid_from }}
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.non_paid_to }}
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -175,6 +185,9 @@
                             </div>
                             <div class="col-2">
                                 {{ leave_application.non_paid_remark }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.non_paid_halfday_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -185,10 +198,10 @@
                                     <i>Lễ cưới</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.wedding_from }}
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.wedding_to }}
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -196,6 +209,9 @@
                             </div>
                             <div class="col-2">
                                 {{ leave_application.wedding_remark }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.wedding_halfday_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -206,10 +222,10 @@
                                     <i>Nghỉ đám tang</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.bereavement_from }}
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.bereavement_to }}
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -217,6 +233,9 @@
                             </div>
                             <div class="col-2">
                                 {{ leave_application.bereavement_remark }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.bereavement_halfday_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -227,10 +246,10 @@
                                     <i>Nghỉ thai sản / Nghỉ khám thai</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.maternity_obstetric_from }}
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.maternity_obstetric_to }}
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -238,6 +257,9 @@
                             </div>
                             <div class="col-2">
                                 {{ leave_application.maternity_obstetric_remark }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.maternity_halfday_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -248,10 +270,10 @@
                                     <i>Nghỉ ốm</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.sick_from }}
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.sick_to }}
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -259,6 +281,9 @@
                             </div>
                             <div class="col-2">
                                 {{ leave_application.sick_remark }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.sick_halfday_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -269,10 +294,10 @@
                                     <i>Nghỉ bù</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.offinlieu_from }}
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.offinlieu_to }}
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -280,6 +305,9 @@
                             </div>
                             <div class="col-2">
                                 {{ leave_application.offinlieu_remark }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.offinlieu_halfday_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -290,10 +318,10 @@
                                     <i>Khác</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.other_from }}
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 {{ leave_application.other_to }}
                             </div>
                             <div class="col-1" style="padding: 0;">
@@ -301,6 +329,9 @@
                             </div>
                             <div class="col-2">
                                 {{ leave_application.other_remark }}
+                            </div>
+                            <div class="col-2">
+                                {{ leave_application.other_halfday_note }}
                             </div>
                         </div>
                         <div class="row text-dark" style="border-top: 1px solid black;">
@@ -310,12 +341,14 @@
                                     <i>Tổng số ngày</i>
                                 </p>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                             </div>
                             <div class="col-1" style="padding: 0;">
                                 {{ leave_application.total_days }}
+                            </div>
+                            <div class="col-2">
                             </div>
                             <div class="col-2">
                             </div>
