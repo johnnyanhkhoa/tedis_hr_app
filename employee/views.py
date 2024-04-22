@@ -1336,8 +1336,11 @@ def leave_application(request):
         total_days = float(annual_number_of_leave_days) + float(non_paid_number_of_leave_days) + float(wedding_number_of_leave_days) + float(bereavement_number_of_leave_days) + float(maternity_obstetric_number_of_leave_days) + float(sick_number_of_leave_days) + float(offinlieu_number_of_leave_days) + float(other_number_of_leave_days)
         temporary_replacement = request.POST.get('temporary_replacement_id')  
         application_date = date.today()
-        status = Status.objects.get(id=1)
-        hr_status = Status.objects.get(id=1)
+        if employee.full_name == "HÀ THỊ MỸ QUYÊN" or employee.full_name == "DƯƠNG TRẦN ĐOAN THỤY" or employee.full_name == "TÔ NGỌC CHI LAN" or employee.full_name == "NGUYỄN NGỌC PHÂN" or employee.full_name == "VŨ CHÂU KIM ANH" or employee.full_name == "NGUYỄN CAO HOÀN":
+            status = Status.objects.get(status="Approved")
+        else:
+            status = Status.objects.get(status="Pending")
+        hr_status = Status.objects.get(status="Pending")
         leave_application_info = Leave_application(employee=employee_id,emergency_contact=emergency_contact,contact_person=contact_person,relation=relation,
                                                    annual_from=annual_from,annual_to=annual_to,annual_number_of_leave_days=annual_number_of_leave_days,annual_remark=annual_remark,annual_halfday_note=annual_halfday_note,
                                                    non_paid_from=non_paid_from,non_paid_to=non_paid_to,non_paid_number_of_leave_days=non_paid_number_of_leave_days,non_paid_remark=non_paid_remark,non_paid_halfday_note=non_paid_halfday_note,
