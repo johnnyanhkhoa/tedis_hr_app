@@ -317,7 +317,7 @@ class Employee(models.Model):
     provinces = models.ForeignKey(Provinces, on_delete=models.PROTECT, null=True, blank=True) #JOB
     sub_province = models.CharField(max_length=25, blank=True, null=True)
     gp = models.ForeignKey(Gp, on_delete=models.PROTECT, null=True, blank=True) #JOB
-    function = models.ForeignKey(Function, on_delete=models.PROTECT, null=True) #JOB
+    function = models.ForeignKey(Function, on_delete=models.PROTECT, null=True, blank=True) #JOB
     position_e = models.ForeignKey(Position_E, on_delete=models.PROTECT, null=True) #JOB
     position_v = models.ForeignKey(Position_V, on_delete=models.PROTECT, null=True) #JOB
     abb_position = models.ForeignKey(Abbreviation_Position, on_delete=models.PROTECT, null=True, blank=True) #JOB
