@@ -113,10 +113,7 @@ class CreateEmployeeForm(forms.ModelForm):
     permanent_address = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Permanent address",
     }))
-    current_address = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
-        "class": "form-control", "placeholder": "Current address",
-    }))
-    send_documents_to_address = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
+    contact_address = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Send documents to address",
     }))
     cellphone_no = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
@@ -194,6 +191,9 @@ class CreateEmployeeForm(forms.ModelForm):
     }))
     phone_2 = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Phone 2",
+    }))
+    year_of_birth = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={
+        "class": "form-control", "placeholder": "Year of birth",
     }))
     age = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={
         "class": "form-control", "placeholder": "Age",

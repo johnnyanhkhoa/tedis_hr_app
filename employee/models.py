@@ -335,7 +335,6 @@ class Employee(models.Model):
     issued_date_of_id_card = models.DateField(max_length=30, blank=True, null=True) #PERSONAL
     issued_place_of_id_card = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
     permanent_address = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
-    current_address = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
     send_documents_to_address = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
     cellphone_no = models.CharField(max_length=20, blank=True, null=True) #PERSONAL
     marital_status = models.ForeignKey(Marital_status, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
@@ -532,7 +531,7 @@ class Leave_application(models.Model):
     other_to = models.CharField(max_length=50, blank=True, null=True)
     other_number_of_leave_days = models.CharField(max_length=10, blank=True, null=True)
     other_remark = models.CharField(max_length=200, blank=True, null=True)
-    other_halfday_note = models.CharField(max_length=200, blank=True, null=True)
+    offinlieu_halfday_note = models.CharField(max_length=200, blank=True, null=True)
     
     total_days = models.FloatField(null=True, blank=True)
     temporary_replacement = models.CharField(max_length=50, blank=True, null=True)
