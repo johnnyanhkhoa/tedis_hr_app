@@ -335,7 +335,7 @@ class Employee(models.Model):
     issued_date_of_id_card = models.DateField(max_length=30, blank=True, null=True) #PERSONAL
     issued_place_of_id_card = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
     permanent_address = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
-    send_documents_to_address = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
+    contact_address = models.CharField(max_length=100, blank=True, null=True) #PERSONAL
     cellphone_no = models.CharField(max_length=20, blank=True, null=True) #PERSONAL
     marital_status = models.ForeignKey(Marital_status, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
     company_email = models.CharField(max_length=50, blank=True, null=True) #JOB
