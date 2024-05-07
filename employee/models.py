@@ -352,8 +352,6 @@ class Employee(models.Model):
     social_insurrance_book = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
     hi_medical_place = models.ForeignKey(Hi_medical_place, on_delete=models.PROTECT, null=True, blank=True) #PERSONAL
     personal_income_tax = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
-    children = models.CharField(max_length=50, blank=True, null=True) #PERSONAL
-    birthday_of_children = models.DateField(max_length=30, blank=True, null=True) #PERSONAL
     emergency_contact_1 = models.CharField(max_length=50, blank=True, null=True) #EMERGENCY CONTACT
     relation_1 = models.ForeignKey(Relation_1, on_delete=models.PROTECT, null=True, blank=True) #EMERGENCY CONTACT
     contact_address_1 = models.CharField(max_length=50, blank=True, null=True) #EMERGENCY CONTACT

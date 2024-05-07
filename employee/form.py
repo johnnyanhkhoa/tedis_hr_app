@@ -164,10 +164,6 @@ class CreateEmployeeForm(forms.ModelForm):
     personal_income_tax = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Personal income tax",
     }))
-    children = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
-        "class": "form-control", "placeholder": "Children",
-    }))
-    birthday_of_children = forms.DateField(required=False, widget=DateInput())
     emergency_contact_1 = forms.CharField(strip=False, required=False, widget=forms.TextInput(attrs={
         "class": "form-control", "placeholder": "Emergency contact 1",
     }))
