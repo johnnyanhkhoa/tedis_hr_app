@@ -2350,7 +2350,7 @@ def blank_period(request):
             employee.save() 
             # Tạo dayoff cho tất cả nhân viên
             period = Period.objects.get(period_year=period_year)
-            if employee.years_of_service == 1:
+            if employee.years_of_service == 1 or employee.years_of_service == 1.0:
                 if employee.joining_date.month == 1:
                     total_dayoff = 12
                 elif employee.joining_date.month == 2:
@@ -2479,7 +2479,7 @@ def period(request,pk):
             employee.save() 
             # Tạo dayoff cho tất cả nhân viên
             period = Period.objects.get(period_year=period_year)
-            if employee.years_of_service == 1:
+            if employee.years_of_service == 1 or employee.years_of_service == 1.0:
                 if employee.joining_date.month == 1:
                     total_dayoff = 12
                 elif employee.joining_date.month == 2:
