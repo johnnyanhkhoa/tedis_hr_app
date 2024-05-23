@@ -11711,7 +11711,7 @@ def report_leave(request):
             list_data.append(data)
             
     if role == 3:
-        list_employees = Employee.objects.all()
+        list_employees = Employee.objects.filter(active=1)
         list_data = []
         for employee in list_employees:
             # Get total, used and leave balance
