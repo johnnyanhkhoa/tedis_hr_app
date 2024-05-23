@@ -2339,7 +2339,7 @@ def blank_period(request):
         period_info.save()
         messages.success(request, 'SUCCESS: Period started')
         # Update years of service và tạo dayoff cho tất cả nhân viên sau khi đã tạo period
-        list_employee = Employee.objects.all()
+        list_employee = Employee.objects.filter(active=1)
         for employee in list_employee:
             # Lấy thông tin employee để update years_of_service
             present_year = today.year
@@ -17759,319 +17759,6 @@ def hr_budget_and_cashflow_view(request,pk):
 
     # Export excel
     if request.POST.get('export_excel'):
-        # file_name = 'HR_Budget & Cash flow ' + str(period_month.month_name)[:3] + ' ' + str(period_month.period.period_year)  + '.xls'
-        # response = HttpResponse(content_type='application/ms-excel')
-        # response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
-
-        # # Style
-        # style_head_jan = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-        #                          'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-        #                         'font: bold 1,height 200, name Calibri, colour black; align: horiz center, vert center' % '42')
-        # style_head_jan.alignment.wrap = 1
-        # style_head_feb = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-        #                          'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-        #                         'font: bold 1,height 200, name Calibri, colour black; align: horiz center, vert center' % '31')
-        # style_head_feb.alignment.wrap = 1
-        # style_head_mar = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-        #                          'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-        #                         'font: bold 1,height 200, name Calibri, colour black; align: horiz center, vert center' % '43')
-        # style_head_mar.alignment.wrap = 1
-        # style_head_quarter = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-        #                          'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-        #                         'font: bold 1,height 200, name Calibri, colour black; align: horiz center, vert center' % '50')
-        # style_head_quarter.alignment.wrap = 1
-        # style_head_apr = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-        #                          'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-        #                         'font: bold 1,height 200, name Calibri, colour black; align: horiz center, vert center' % '22')
-        # style_head_apr.alignment.wrap = 1
-        # style_head_may = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-        #                          'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-        #                         'font: bold 1,height 200, name Calibri, colour black; align: horiz center, vert center' % '44')
-        # style_head_may.alignment.wrap = 1
-        # style_head_jun = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-        #                          'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-        #                         'font: bold 1,height 200, name Calibri, colour black; align: horiz center, vert center' % '47')
-        # style_head_jun.alignment.wrap = 1
-        # style_head_jul = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-        #                          'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-        #                         'font: bold 1,height 200, name Calibri, colour black; align: horiz center, vert center' % '51')
-        # style_head_jul.alignment.wrap = 1
-
-
-        # style_normal = xlwt.easyxf('pattern:pattern solid, fore_colour %s;'
-        #                     'borders: top_color black, bottom_color black, right_color black, left_color black, left thin, right thin, top thin, bottom thin;'
-        #                             'font: bold off, colour black;' % 'white')
-
-        # wb = xlwt.Workbook()
-        # ws = wb.add_sheet('3Co - Detail')
-
-        # # Set col width
-        # # Full this year
-        # for col in range(60,90):
-        #     ws.col(col).width = 3750
-        # ws.col(90).width = 1300
-        # # Jan
-        # for col in range(91,113):
-        #     ws.col(col).width = 3750
-        # ws.col(113).width = 1300
-        # # Feb
-        # for col in range(114,136):
-        #     ws.col(col).width = 3750
-        # ws.col(136).width = 1300
-        # # Mar
-        # for col in range(137,159):
-        #     ws.col(col).width = 3750
-        # ws.col(159).width = 1300
-        # # Q1
-        # for col in range(160,165):
-        #     ws.col(col).width = 3750
-        # ws.col(165).width = 1800
-        # # Apr
-        # for col in range(166,188):
-        #     ws.col(col).width = 3750
-        # ws.col(188).width = 1300
-        # # May
-        # for col in range(189,211):
-        #     ws.col(col).width = 3750
-        # ws.col(211).width = 1300
-        # # Jun
-        # for col in range(212,234):
-        #     ws.col(col).width = 3750
-        # ws.col(234).width = 1300
-        # # Q2
-        # for col in range(235,240):
-        #     ws.col(col).width = 3750
-        # ws.col(240).width = 1800
-        # # Jul
-        # for col in range(241,263):
-        #     ws.col(col).width = 3750
-        # ws.col(263).width = 1300
-
-        # # Set row height
-        # ws.row(0).height_mismatch = True
-        # ws.row(0).height = 1020
-
-        # # Table
-        # # Top
-        # # Full this year
-        # ws.write(0, 60, 'Basic Salary ' + str_current_year, style_head_full_this_year)
-        # ws.write(0, 61, 'Overtime', style_head_full_this_year)
-        # ws.write(0, 62, 'Transportation', style_head_full_this_year)
-        # ws.write(0, 63, 'Phone', style_head_full_this_year)
-        # ws.write(0, 64, 'Lunch', style_head_full_this_year)
-        # ws.write(0, 65, 'Housing', style_head_full_this_year)
-        # ws.write(0, 66, 'KPI Achievement', style_head_full_this_year)
-        # ws.write(0, 67, 'Others', style_head_full_this_year)
-        # ws.write(0, 68, 'Travel', style_head_full_this_year)
-        # ws.write(0, 69, 'Seniority Bonus', style_head_full_this_year)
-        # ws.write(0, 70, 'Responsibility Allowance', style_head_full_this_year)
-        # ws.write(0, 71, 'Total Allowance', style_head_full_this_year)
-        # ws.write(0, 72, 'Gross income ' + str_current_year, style_head_full_this_year)
-        # ws.write(0, 73, 'SHUI By Company (21.5%)', style_head_full_this_year)
-        # ws.write(0, 74, 'Trade Union fee (Company pay 2%)', style_head_full_this_year)
-        # ws.write(0, 75, 'Trade Union fee (Member)', style_head_full_this_year)
-        # ws.write(0, 76, 'Bank transfer fee', style_head_full_this_year)
-        # ws.write(0, 77, 'Incentive - Quarter 1.' + str_current_year, style_head_full_this_year)
-        # ws.write(0, 78, 'Incentive - Quarter 2.' + str_current_year, style_head_full_this_year)
-        # ws.write(0, 79, 'Incentive - Quarter 3.' + str_current_year, style_head_full_this_year)
-        # ws.write(0, 80, 'Incentive - Quarter 4.' + str_current_year, style_head_full_this_year)
-        # ws.write(0, 81, 'Incentive - Yearly ' + str_current_year, style_head_full_this_year)
-        # ws.write(0, 82, 'Best Reward', style_head_full_this_year)
-        # ws.write(0, 83, '13th Salary ' + str_current_year, style_head_full_this_year)
-        # ws.write(0, 84, '14th Salary ' + str_current_year + '/Yearly Bonus', style_head_full_this_year)
-        # ws.write(0, 85, 'Total Remuneration ' + str_current_year, style_head_full_this_year)
-        # ws.write(0, 86, 'Target Value', style_head_full_this_year)
-        # ws.write(0, 87, 'Achievement', style_head_full_this_year)
-        # ws.write(0, 88, '% Achievement vs Target', style_head_full_this_year)
-        # ws.write(0, 89, '% Total Cost vs Achievement', style_head_full_this_year)
-        # ws.write(0, 90, 'Full Year ' + str_current_year, style_head_full_this_year)
-        # # Jan
-        # ws.write(0, 91, 'Basic Salary ' + str_current_year, style_head_jan)
-        # ws.write(0, 92, 'Overtime', style_head_jan)
-        # ws.write(0, 93, 'Transportation', style_head_jan)
-        # ws.write(0, 94, 'Phone', style_head_jan)
-        # ws.write(0, 95, 'Lunch', style_head_jan)
-        # ws.write(0, 96, 'Housing', style_head_jan)
-        # ws.write(0, 97, 'KPI Achievement', style_head_jan)
-        # ws.write(0, 98, 'Others', style_head_jan)
-        # ws.write(0, 99, 'Travel', style_head_jan)
-        # ws.write(0, 100, 'Seniority Bonus', style_head_jan)
-        # ws.write(0, 101, 'Responsibility Allowance', style_head_jan)
-        # ws.write(0, 102, 'Total Allowance', style_head_jan)
-        # ws.write(0, 103, 'Gross income ' + str_current_year, style_head_jan)
-        # ws.write(0, 104, 'SHUI By Company (21.5%)', style_head_jan)
-        # ws.write(0, 105, 'Trade Union fee (Company pay 2%)', style_head_jan)
-        # ws.write(0, 106, 'Trade Union fee (Member)', style_head_jan)
-        # ws.write(0, 107, 'Bank transfer fee', style_head_jan)
-        # ws.write(0, 108, 'Total Cost', style_head_jan)
-        # ws.write(0, 109, 'Target Value', style_head_jan)
-        # ws.write(0, 110, 'Achievement', style_head_jan)
-        # ws.write(0, 111, '% Achievement vs Target', style_head_jan)
-        # ws.write(0, 112, '% Total Cost vs Achievement', style_head_jan)
-        # ws.write(0, 113, 'Jan', style_head_jan)
-        # # Feb
-        # ws.write(0, 114, 'Basic Salary ' + str_current_year, style_head_feb)
-        # ws.write(0, 115, 'Overtime', style_head_feb)
-        # ws.write(0, 116, 'Transportation', style_head_feb)
-        # ws.write(0, 117, 'Phone', style_head_feb)
-        # ws.write(0, 118, 'Lunch', style_head_feb)
-        # ws.write(0, 119, 'Housing', style_head_feb)
-        # ws.write(0, 120, 'KPI Achievement', style_head_feb)
-        # ws.write(0, 121, 'Others', style_head_feb)
-        # ws.write(0, 122, 'Travel', style_head_feb)
-        # ws.write(0, 123, 'Seniority Bonus', style_head_feb)
-        # ws.write(0, 124, 'Responsibility Allowance', style_head_feb)
-        # ws.write(0, 125, 'Total Allowance', style_head_feb)
-        # ws.write(0, 126, 'Gross income ' + str_current_year, style_head_feb)
-        # ws.write(0, 127, 'SHUI By Company (21.5%)', style_head_feb)
-        # ws.write(0, 128, 'Trade Union fee (Company pay 2%)', style_head_feb)
-        # ws.write(0, 129, 'Trade Union fee (Member)', style_head_feb)
-        # ws.write(0, 130, 'Bank transfer fee', style_head_feb)
-        # ws.write(0, 131, 'Total Cost', style_head_feb)
-        # ws.write(0, 132, 'Target Value', style_head_feb)
-        # ws.write(0, 133, 'Achievement', style_head_feb)
-        # ws.write(0, 134, '% Achievement vs Target', style_head_feb)
-        # ws.write(0, 135, '% Total Cost vs Achievement', style_head_feb)
-        # ws.write(0, 136, 'Feb', style_head_feb)
-        # # Mar
-        # ws.write(0, 137, 'Basic Salary ' + str_current_year, style_head_mar)
-        # ws.write(0, 138, 'Overtime', style_head_mar)
-        # ws.write(0, 139, 'Transportation', style_head_mar)
-        # ws.write(0, 140, 'Phone', style_head_mar)
-        # ws.write(0, 141, 'Lunch', style_head_mar)
-        # ws.write(0, 142, 'Housing', style_head_mar)
-        # ws.write(0, 143, 'KPI Achievement', style_head_mar)
-        # ws.write(0, 144, 'Others', style_head_mar)
-        # ws.write(0, 145, 'Travel', style_head_mar)
-        # ws.write(0, 146, 'Seniority Bonus', style_head_mar)
-        # ws.write(0, 147, 'Responsibility Allowance', style_head_mar)
-        # ws.write(0, 148, 'Total Allowance', style_head_mar)
-        # ws.write(0, 149, 'Gross income ' + str_current_year, style_head_mar)
-        # ws.write(0, 150, 'SHUI By Company (21.5%)', style_head_mar)
-        # ws.write(0, 151, 'Trade Union fee (Company pay 2%)', style_head_mar)
-        # ws.write(0, 152, 'Trade Union fee (Member)', style_head_mar)
-        # ws.write(0, 153, 'Bank transfer fee', style_head_mar)
-        # ws.write(0, 154, 'Total Cost', style_head_mar)
-        # ws.write(0, 155, 'Target Value', style_head_mar)
-        # ws.write(0, 156, 'Achievement', style_head_mar)
-        # ws.write(0, 157, '% Achievement vs Target', style_head_mar)
-        # ws.write(0, 158, '% Total Cost vs Achievement', style_head_mar)
-        # ws.write(0, 159, 'Mar', style_head_mar)
-        # # Quarter 1
-        # ws.write(0, 160, 'Target Q1', style_head_quarter)
-        # ws.write(0, 161, 'Achievement Q1', style_head_quarter)
-        # ws.write(0, 162, '% Achievement vs Target Q1', style_head_quarter)
-        # ws.write(0, 163, '% Total Cost vs Achievement Q1', style_head_quarter)
-        # ws.write(0, 164, '% Total Cost vs Target Q1', style_head_quarter)
-        # ws.write(0, 165, 'Quarter 1.' + str_current_year, style_head_quarter)
-        # # Apr
-        # ws.write(0, 166, 'Basic Salary ' + str_current_year, style_head_apr)
-        # ws.write(0, 167, 'Overtime', style_head_apr)
-        # ws.write(0, 168, 'Transportation', style_head_apr)
-        # ws.write(0, 169, 'Phone', style_head_apr)
-        # ws.write(0, 170, 'Lunch', style_head_apr)
-        # ws.write(0, 171, 'Housing', style_head_apr)
-        # ws.write(0, 172, 'KPI Achievement', style_head_apr)
-        # ws.write(0, 173, 'Others', style_head_apr)
-        # ws.write(0, 174, 'Travel', style_head_apr)
-        # ws.write(0, 175, 'Seniority Bonus', style_head_apr)
-        # ws.write(0, 176, 'Responsibility Allowance', style_head_apr)
-        # ws.write(0, 177, 'Total Allowance', style_head_apr)
-        # ws.write(0, 178, 'Gross income ' + str_current_year, style_head_apr)
-        # ws.write(0, 179, 'SHUI By Company (21.5%)', style_head_apr)
-        # ws.write(0, 180, 'Trade Union fee (Company pay 2%)', style_head_apr)
-        # ws.write(0, 181, 'Trade Union fee (Member)', style_head_apr)
-        # ws.write(0, 182, 'Bank transfer fee', style_head_apr)
-        # ws.write(0, 183, 'Total Cost', style_head_apr)
-        # ws.write(0, 184, 'Target Value', style_head_apr)
-        # ws.write(0, 185, 'Achievement', style_head_apr)
-        # ws.write(0, 186, '% Achievement vs Target', style_head_apr)
-        # ws.write(0, 187, '% Total Cost vs Achievement', style_head_apr)
-        # ws.write(0, 188, 'Apr', style_head_apr)
-        # # May
-        # ws.write(0, 189, 'Basic Salary ' + str_current_year, style_head_may)
-        # ws.write(0, 190, 'Overtime', style_head_may)
-        # ws.write(0, 191, 'Transportation', style_head_may)
-        # ws.write(0, 192, 'Phone', style_head_may)
-        # ws.write(0, 193, 'Lunch', style_head_may)
-        # ws.write(0, 194, 'Housing', style_head_may)
-        # ws.write(0, 195, 'KPI Achievement', style_head_may)
-        # ws.write(0, 196, 'Others', style_head_may)
-        # ws.write(0, 197, 'Travel', style_head_may)
-        # ws.write(0, 198, 'Seniority Bonus', style_head_may)
-        # ws.write(0, 199, 'Responsibility Allowance', style_head_may)
-        # ws.write(0, 200, 'Total Allowance', style_head_may)
-        # ws.write(0, 201, 'Gross income ' + str_current_year, style_head_may)
-        # ws.write(0, 202, 'SHUI By Company (21.5%)', style_head_may)
-        # ws.write(0, 203, 'Trade Union fee (Company pay 2%)', style_head_may)
-        # ws.write(0, 204, 'Trade Union fee (Member)', style_head_may)
-        # ws.write(0, 205, 'Bank transfer fee', style_head_may)
-        # ws.write(0, 206, 'Total Cost', style_head_may)
-        # ws.write(0, 207, 'Target Value', style_head_may)
-        # ws.write(0, 208, 'Achievement', style_head_may)
-        # ws.write(0, 209, '% Achievement vs Target', style_head_may)
-        # ws.write(0, 210, '% Total Cost vs Achievement', style_head_may)
-        # ws.write(0, 211, 'May', style_head_may)
-        # # Jun
-        # ws.write(0, 212, 'Basic Salary ' + str_current_year, style_head_jun)
-        # ws.write(0, 213, 'Overtime', style_head_jun)
-        # ws.write(0, 214, 'Transportation', style_head_jun)
-        # ws.write(0, 215, 'Phone', style_head_jun)
-        # ws.write(0, 216, 'Lunch', style_head_jun)
-        # ws.write(0, 217, 'Housing', style_head_jun)
-        # ws.write(0, 218, 'KPI Achievement', style_head_jun)
-        # ws.write(0, 219, 'Others', style_head_jun)
-        # ws.write(0, 220, 'Travel', style_head_jun)
-        # ws.write(0, 221, 'Seniority Bonus', style_head_jun)
-        # ws.write(0, 222, 'Responsibility Allowance', style_head_jun)
-        # ws.write(0, 223, 'Total Allowance', style_head_jun)
-        # ws.write(0, 224, 'Gross income ' + str_current_year, style_head_jun)
-        # ws.write(0, 225, 'SHUI By Company (21.5%)', style_head_jun)
-        # ws.write(0, 226, 'Trade Union fee (Company pay 2%)', style_head_jun)
-        # ws.write(0, 227, 'Trade Union fee (Member)', style_head_jun)
-        # ws.write(0, 228, 'Bank transfer fee', style_head_jun)
-        # ws.write(0, 229, 'Total Cost', style_head_jun)
-        # ws.write(0, 230, 'Target Value', style_head_jun)
-        # ws.write(0, 231, 'Achievement', style_head_jun)
-        # ws.write(0, 232, '% Achievement vs Target', style_head_jun)
-        # ws.write(0, 233, '% Total Cost vs Achievement', style_head_jun)
-        # ws.write(0, 234, 'Jun', style_head_jun)
-        # # Quarter 2
-        # ws.write(0, 235, 'Target Q2', style_head_quarter)
-        # ws.write(0, 236, 'Achievement Q2', style_head_quarter)
-        # ws.write(0, 237, '% Achievement vs Target Q2', style_head_quarter)
-        # ws.write(0, 238, '% Total Cost vs Achievement Q2', style_head_quarter)
-        # ws.write(0, 239, '% Total Cost vs Target Q2', style_head_quarter)
-        # ws.write(0, 240, 'Quarter 2.' + str_current_year, style_head_quarter)
-        # # Jul
-        # ws.write(0, 241, 'Basic Salary ' + str_current_year, style_head_jul)
-        # ws.write(0, 242, 'Overtime', style_head_jul)
-        # ws.write(0, 243, 'Transportation', style_head_jul)
-        # ws.write(0, 244, 'Phone', style_head_jul)
-        # ws.write(0, 245, 'Lunch', style_head_jul)
-        # ws.write(0, 246, 'Housing', style_head_jul)
-        # ws.write(0, 247, 'KPI Achievement', style_head_jul)
-        # ws.write(0, 248, 'Others', style_head_jul)
-        # ws.write(0, 249, 'Travel', style_head_jul)
-        # ws.write(0, 250, 'Seniority Bonus', style_head_jul)
-        # ws.write(0, 251, 'Responsibility Allowance', style_head_jul)
-        # ws.write(0, 252, 'Total Allowance', style_head_jul)
-        # ws.write(0, 253, 'Gross income ' + str_current_year, style_head_jul)
-        # ws.write(0, 254, 'SHUI By Company (21.5%)', style_head_jul)
-        # ws.write(0, 255, 'Trade Union fee (Company pay 2%)', style_head_jul)
-        # ws.write(0, 256, 'Trade Union fee (Member)', style_head_jul)
-        # ws.write(0, 257, 'Bank transfer fee', style_head_jul)
-        # ws.write(0, 258, 'Total Cost', style_head_jul)
-        # ws.write(0, 259, 'Target Value', style_head_jul)
-        # ws.write(0, 260, 'Achievement', style_head_jul)
-        # ws.write(0, 261, '% Achievement vs Target', style_head_jul)
-        # ws.write(0, 262, '% Total Cost vs Achievement', style_head_jul)
-        # ws.write(0, 263, 'Jul', style_head_jul)
-
-
-        # wb.save(response)
-        # return response 
-
         file_name = 'HR_Budget & Cash flow ' + str(period_month.month_name)[:3] + ' ' + str(period_month.period.period_year) + '.xlsx'
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
@@ -18085,6 +17772,11 @@ def hr_budget_and_cashflow_view(request,pk):
         style_head_employee_information = NamedStyle(name="style_head_employee_information")
         style_head_full_last_year = NamedStyle(name="style_head_full_last_year")
         style_head_full_this_year = NamedStyle(name="style_head_full_this_year")
+        style_head_quarter = NamedStyle(name="style_head_quarter")
+        style_head_jan = NamedStyle(name="style_head_jan")
+        style_head_feb = NamedStyle(name="style_head_feb")
+        style_head_mar = NamedStyle(name="style_head_mar")
+        style_head_apr = NamedStyle(name="style_head_apr")
 
         # Thiết lập màu nền
         style_head_employee_information.fill = PatternFill(
@@ -18099,6 +17791,26 @@ def hr_budget_and_cashflow_view(request,pk):
             fill_type="solid",
             start_color="fffe00",
         )
+        style_head_quarter.fill = PatternFill(
+            fill_type="solid",
+            start_color="91d74f",
+        )
+        style_head_jan.fill = PatternFill(
+            fill_type="solid",
+            start_color="bfe1b0",
+        )
+        style_head_feb.fill = PatternFill(
+            fill_type="solid",
+            start_color="baceec",
+        )
+        style_head_mar.fill = PatternFill(
+            fill_type="solid",
+            start_color="e4f2de",
+        )
+        style_head_apr.fill = PatternFill(
+            fill_type="solid",
+            start_color="b3c2d1",
+        )
 
         # Thiết lập các đường viền
         thin_side = Side(border_style="thin", color="000000")
@@ -18112,6 +17824,11 @@ def hr_budget_and_cashflow_view(request,pk):
         style_head_employee_information.border = head_border
         style_head_full_last_year.border = head_border
         style_head_full_this_year.border = head_border
+        style_head_quarter.border = head_border
+        style_head_jan.border = head_border
+        style_head_feb.border = head_border
+        style_head_mar.border = head_border
+        style_head_apr.border = head_border
 
         # Thiết lập phông chữ
         head_font = Font(
@@ -18124,6 +17841,11 @@ def hr_budget_and_cashflow_view(request,pk):
         style_head_employee_information.font = head_font
         style_head_full_last_year.font = head_font
         style_head_full_this_year.font = head_font
+        style_head_quarter.font = head_font
+        style_head_jan.font = head_font
+        style_head_feb.font = head_font
+        style_head_mar.font = head_font
+        style_head_apr.font = head_font
 
         # Thiết lập căn lề
         head_alignment = Alignment(
@@ -18135,6 +17857,11 @@ def hr_budget_and_cashflow_view(request,pk):
         style_head_employee_information.alignment = head_alignment
         style_head_full_last_year.alignment = head_alignment
         style_head_full_this_year.alignment = head_alignment
+        style_head_quarter.alignment = head_alignment
+        style_head_jan.alignment = head_alignment
+        style_head_feb.alignment = head_alignment
+        style_head_mar.alignment = head_alignment
+        style_head_apr.alignment = head_alignment
 
         '''Set col width'''
         # Employee information
@@ -18231,6 +17958,110 @@ def hr_budget_and_cashflow_view(request,pk):
         ws.column_dimensions['CK'].width = 14
         ws.column_dimensions['CL'].width = 14
         ws.column_dimensions['CM'].width = 5
+        # Jan
+        ws.column_dimensions['CN'].width = 14
+        ws.column_dimensions['CO'].width = 14
+        ws.column_dimensions['CP'].width = 14
+        ws.column_dimensions['CQ'].width = 14
+        ws.column_dimensions['CR'].width = 14
+        ws.column_dimensions['CS'].width = 14
+        ws.column_dimensions['CT'].width = 14
+        ws.column_dimensions['CU'].width = 14
+        ws.column_dimensions['CV'].width = 14
+        ws.column_dimensions['CW'].width = 14
+        ws.column_dimensions['CX'].width = 14
+        ws.column_dimensions['CY'].width = 14
+        ws.column_dimensions['CZ'].width = 14
+        ws.column_dimensions['DA'].width = 14
+        ws.column_dimensions['DB'].width = 14
+        ws.column_dimensions['DC'].width = 14
+        ws.column_dimensions['DD'].width = 14
+        ws.column_dimensions['DE'].width = 14
+        ws.column_dimensions['DF'].width = 14
+        ws.column_dimensions['DG'].width = 14
+        ws.column_dimensions['DH'].width = 14
+        ws.column_dimensions['DI'].width = 14
+        ws.column_dimensions['DJ'].width = 5
+        # Feb
+        ws.column_dimensions['DK'].width = 14
+        ws.column_dimensions['DL'].width = 14
+        ws.column_dimensions['DM'].width = 14
+        ws.column_dimensions['DN'].width = 14
+        ws.column_dimensions['DO'].width = 14
+        ws.column_dimensions['DP'].width = 14
+        ws.column_dimensions['DQ'].width = 14
+        ws.column_dimensions['DR'].width = 14
+        ws.column_dimensions['DS'].width = 14
+        ws.column_dimensions['DT'].width = 14
+        ws.column_dimensions['DU'].width = 14
+        ws.column_dimensions['DV'].width = 14
+        ws.column_dimensions['DW'].width = 14
+        ws.column_dimensions['DX'].width = 14
+        ws.column_dimensions['DY'].width = 14
+        ws.column_dimensions['DZ'].width = 14
+        ws.column_dimensions['EA'].width = 14
+        ws.column_dimensions['EB'].width = 14
+        ws.column_dimensions['EC'].width = 14
+        ws.column_dimensions['ED'].width = 14
+        ws.column_dimensions['EE'].width = 14
+        ws.column_dimensions['EF'].width = 14
+        ws.column_dimensions['EG'].width = 5
+        # Mar
+        ws.column_dimensions['EH'].width = 14
+        ws.column_dimensions['EI'].width = 14
+        ws.column_dimensions['EJ'].width = 14
+        ws.column_dimensions['EK'].width = 14
+        ws.column_dimensions['EL'].width = 14
+        ws.column_dimensions['EM'].width = 14
+        ws.column_dimensions['EN'].width = 14
+        ws.column_dimensions['EO'].width = 14
+        ws.column_dimensions['EP'].width = 14
+        ws.column_dimensions['EQ'].width = 14
+        ws.column_dimensions['ER'].width = 14
+        ws.column_dimensions['ES'].width = 14
+        ws.column_dimensions['ET'].width = 14
+        ws.column_dimensions['EU'].width = 14
+        ws.column_dimensions['EV'].width = 14
+        ws.column_dimensions['EW'].width = 14
+        ws.column_dimensions['EX'].width = 14
+        ws.column_dimensions['EY'].width = 14
+        ws.column_dimensions['EZ'].width = 14
+        ws.column_dimensions['FA'].width = 14
+        ws.column_dimensions['FB'].width = 14
+        ws.column_dimensions['FC'].width = 14
+        ws.column_dimensions['FD'].width = 5
+        # Q1
+        ws.column_dimensions['FE'].width = 14
+        ws.column_dimensions['FF'].width = 14
+        ws.column_dimensions['FG'].width = 14
+        ws.column_dimensions['FH'].width = 14
+        ws.column_dimensions['FI'].width = 14
+        ws.column_dimensions['FJ'].width = 14
+        ws.column_dimensions['FK'].width = 7
+        # Apr
+        ws.column_dimensions['FL'].width = 14
+        ws.column_dimensions['FM'].width = 14
+        ws.column_dimensions['FN'].width = 14
+        ws.column_dimensions['FO'].width = 14
+        ws.column_dimensions['FP'].width = 14
+        ws.column_dimensions['FQ'].width = 14
+        ws.column_dimensions['FR'].width = 14
+        ws.column_dimensions['FS'].width = 14
+        ws.column_dimensions['FT'].width = 14
+        ws.column_dimensions['FU'].width = 14
+        ws.column_dimensions['FV'].width = 14
+        ws.column_dimensions['FW'].width = 14
+        ws.column_dimensions['FX'].width = 14
+        ws.column_dimensions['FY'].width = 14
+        ws.column_dimensions['FZ'].width = 14
+        ws.column_dimensions['GA'].width = 14
+        ws.column_dimensions['GB'].width = 14
+        ws.column_dimensions['GC'].width = 14
+        ws.column_dimensions['GD'].width = 14
+        ws.column_dimensions['GE'].width = 14
+        ws.column_dimensions['GF'].width = 14
+        ws.column_dimensions['GG'].width = 14
+        ws.column_dimensions['GH'].width = 5
         
 
         '''Set row height'''
@@ -18244,6 +18075,16 @@ def hr_budget_and_cashflow_view(request,pk):
             ws.cell(row=1, column=col).style = style_head_full_last_year
         for col in range(61,92):
             ws.cell(row=1, column=col).style = style_head_full_this_year
+        for col in range(92,115):
+            ws.cell(row=1, column=col).style = style_head_jan
+        for col in range(115,138):
+            ws.cell(row=1, column=col).style = style_head_feb
+        for col in range(138,161):
+            ws.cell(row=1, column=col).style = style_head_mar 
+        for col in range(161,168):
+            ws.cell(row=1, column=col).style = style_head_quarter
+        for col in range(168,191):
+            ws.cell(row=1, column=col).style = style_head_apr
 
 
         # Data
@@ -18341,7 +18182,110 @@ def hr_budget_and_cashflow_view(request,pk):
         ws.cell(row=1, column=89).value = "% Achievement vs Target"
         ws.cell(row=1, column=90).value = "% Total Cost vs Achievement"
         ws.cell(row=1, column=91).value = "Full Year " + str_current_year
-        
+        # Jan
+        ws.cell(row=1, column=92).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=93).value = "Overtime"
+        ws.cell(row=1, column=94).value = "Transportation"
+        ws.cell(row=1, column=95).value = "Phone"
+        ws.cell(row=1, column=96).value = "Lunch"
+        ws.cell(row=1, column=97).value = "Housing"
+        ws.cell(row=1, column=98).value = "KPI Achievement"
+        ws.cell(row=1, column=99).value = "Others"
+        ws.cell(row=1, column=100).value = "Travel"
+        ws.cell(row=1, column=101).value = "Seniority Bonus"
+        ws.cell(row=1, column=102).value = "Responsibility Allowance"
+        ws.cell(row=1, column=103).value = "Total Allowance"
+        ws.cell(row=1, column=104).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=105).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=106).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=107).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=108).value = "Bank transfer fee"
+        ws.cell(row=1, column=109).value = "Total Cost"
+        ws.cell(row=1, column=110).value = "Target Value"
+        ws.cell(row=1, column=111).value = "Achievement"
+        ws.cell(row=1, column=112).value = "% Achievement vs Target"
+        ws.cell(row=1, column=113).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=114).value = "Jan"
+        # Feb
+        ws.cell(row=1, column=115).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=116).value = "Overtime"
+        ws.cell(row=1, column=117).value = "Transportation"
+        ws.cell(row=1, column=118).value = "Phone"
+        ws.cell(row=1, column=119).value = "Lunch"
+        ws.cell(row=1, column=120).value = "Housing"
+        ws.cell(row=1, column=121).value = "KPI Achievement"
+        ws.cell(row=1, column=122).value = "Others"
+        ws.cell(row=1, column=123).value = "Travel"
+        ws.cell(row=1, column=124).value = "Seniority Bonus"
+        ws.cell(row=1, column=125).value = "Responsibility Allowance"
+        ws.cell(row=1, column=126).value = "Total Allowance"
+        ws.cell(row=1, column=127).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=128).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=129).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=130).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=131).value = "Bank transfer fee"
+        ws.cell(row=1, column=132).value = "Total Cost"
+        ws.cell(row=1, column=133).value = "Target Value"
+        ws.cell(row=1, column=134).value = "Achievement"
+        ws.cell(row=1, column=135).value = "% Achievement vs Target"
+        ws.cell(row=1, column=136).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=137).value = "Feb"
+        # Mar
+        ws.cell(row=1, column=138).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=139).value = "Overtime"
+        ws.cell(row=1, column=140).value = "Transportation"
+        ws.cell(row=1, column=141).value = "Phone"
+        ws.cell(row=1, column=142).value = "Lunch"
+        ws.cell(row=1, column=143).value = "Housing"
+        ws.cell(row=1, column=144).value = "KPI Achievement"
+        ws.cell(row=1, column=145).value = "Others"
+        ws.cell(row=1, column=146).value = "Travel"
+        ws.cell(row=1, column=147).value = "Seniority Bonus"
+        ws.cell(row=1, column=148).value = "Responsibility Allowance"
+        ws.cell(row=1, column=149).value = "Total Allowance"
+        ws.cell(row=1, column=150).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=151).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=152).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=153).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=154).value = "Bank transfer fee"
+        ws.cell(row=1, column=155).value = "Total Cost"
+        ws.cell(row=1, column=156).value = "Target Value"
+        ws.cell(row=1, column=157).value = "Achievement"
+        ws.cell(row=1, column=158).value = "% Achievement vs Target"
+        ws.cell(row=1, column=159).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=160).value = "Mar"
+        # Q1
+        ws.cell(row=1, column=161).value = "Target Q.1"
+        ws.cell(row=1, column=162).value = "Achievement Q.1"
+        ws.cell(row=1, column=163).value = "Total Cost Q.1"
+        ws.cell(row=1, column=164).value = "% Achievement vs Target Q.1"
+        ws.cell(row=1, column=165).value = "% Total Cost vs Achievement Q.1"
+        ws.cell(row=1, column=166).value = "% Total Cost vs Target"
+        ws.cell(row=1, column=167).value = "Quarter 1." + str_current_year
+        # Apr
+        ws.cell(row=1, column=168).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=169).value = "Overtime"
+        ws.cell(row=1, column=170).value = "Transportation"
+        ws.cell(row=1, column=171).value = "Phone"
+        ws.cell(row=1, column=172).value = "Lunch"
+        ws.cell(row=1, column=173).value = "Housing"
+        ws.cell(row=1, column=174).value = "KPI Achievement"
+        ws.cell(row=1, column=175).value = "Others"
+        ws.cell(row=1, column=176).value = "Travel"
+        ws.cell(row=1, column=177).value = "Seniority Bonus"
+        ws.cell(row=1, column=178).value = "Responsibility Allowance"
+        ws.cell(row=1, column=179).value = "Total Allowance"
+        ws.cell(row=1, column=180).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=181).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=182).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=183).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=184).value = "Bank transfer fee"
+        ws.cell(row=1, column=185).value = "Total Cost"
+        ws.cell(row=1, column=186).value = "Target Value"
+        ws.cell(row=1, column=187).value = "Achievement"
+        ws.cell(row=1, column=188).value = "% Achievement vs Target"
+        ws.cell(row=1, column=189).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=190).value = "Apr"
 
         # Lưu workbook vào HttpResponse
         wb.save(response)

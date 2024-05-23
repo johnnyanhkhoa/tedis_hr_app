@@ -84,15 +84,7 @@ CSRF_TRUSTED_ORIGINS=['https://tdvn-humanresources.com', 'https://www.tdvn-human
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# Databases for development
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-# # Databases for test web
+# Databases for test web
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
