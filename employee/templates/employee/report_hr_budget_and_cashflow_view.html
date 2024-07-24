@@ -1212,7 +1212,7 @@
                                             <td>{{ data.month_13_salary_Pro_ata_full_current_year|floatformat:0|intcomma }}</td>
                                             <td>{{ data.month_14_salary_Pro_ata_full_current_year.month_14_salary|floatformat:0|intcomma }}</td>
 
-                                            <td>{{ data.total_remuneration|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.total_remuneration_full_current_year|floatformat:0|intcomma }}</td>
 
                                             {% comment %} target_value_full_current_year {% endcomment %}
                                             <td>{{ data.target_value_full_current_year|floatformat:0|intcomma }}</td>
@@ -1399,7 +1399,7 @@
                                             {% if data.achievement_jan == 'x' %}
                                                 <td><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#AddAchievement_Modal" onclick="OpenModaAddAchievement('{{ data.employee.id }}')">{{ data.achievement_jan }}</a></td>
                                             {% else %}
-                                                <td><a class="dropdown-item" href="{% url 'employee:edit_achievement' data.achievement_jan.id %}">{{ data.achievement_jan.achievement|floatformat:0 }}</a></td>
+                                                <td><a class="dropdown-item" href="{% url 'employee:edit_achievement' data.achievement_jan.id %}">{{ data.achievement_jan.achievement|floatformat:0|intcomma }}</a></td>
                                             {% endif %}
 
                                             {% comment %}  % Achievement vs Target {% endcomment %}
@@ -3870,7 +3870,7 @@
                                             <td>{{ data.month_13_salary_Pro_ata_full_current_year|floatformat:0|intcomma }}</td>
                                             <td>{{ data.month_14_salary_Pro_ata_full_current_year.month_14_salary|floatformat:0|intcomma }}</td>
 
-                                            <td>{{ data.total_remuneration|floatformat:0|intcomma }}</td>
+                                            <td>{{ data.total_remuneration_full_current_year|floatformat:0|intcomma }}</td>
 
                                             {% comment %} target_value_full_current_year {% endcomment %}
                                             <td>{{ data.target_value_full_current_year|floatformat:0|intcomma }}</td>
@@ -6798,7 +6798,7 @@
                                             <td class="fw-bold" style="color: red;">{{ total_data.total_month_13_salary_Pro_ata_full_current_year|floatformat:0|intcomma }}</td>
                                             <td class="fw-bold" style="color: red;">{{ total_data.total_month_14_salary_Pro_ata_full_current_year|floatformat:0|intcomma }}</td>
                                             <td class="fw-bold" style="color: red;">{{ total_data.total_total_bonus|floatformat:0|intcomma }}</td>
-                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_remuneration_full_current_year|floatformat:0|intcomma }}</td>
+                                            <td class="fw-bold" style="color: red;">{{ total_data.total_total_remuneration|floatformat:0|intcomma }}</td>
                                             <td></td>
                                             <td class="fw-bold" style="color: red;">{{ total_data.total_company_celebration|floatformat:0|intcomma }}</td>
                                             <td class="fw-bold" style="color: red;">{{ total_data.total_health_check_up|floatformat:0|intcomma }}</td>

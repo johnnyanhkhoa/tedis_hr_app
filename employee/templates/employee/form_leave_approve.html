@@ -55,7 +55,7 @@
                     <form method="post">
                         {% csrf_token %}
                         <p class="text-start text-dark"
-                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            style="font-size: 16pt; font-family: tahoma; margin-bottom: 0px;">
                             <b>EMPLOYEE INFORMATION /</b>
                             <i> Chi tiết nhân viên</i>
                         </p>
@@ -97,7 +97,7 @@
                         </table>
                         <br>
                         <p class="text-start text-dark"
-                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            style="font-size: 16pt; font-family: tahoma; margin-bottom: 0px;">
                             <b>TYPE OF LEAVE REQUESTED /</b>
                             <i> Loại phép xin nghỉ</i>
                         </p>
@@ -120,18 +120,11 @@
                                     <i>Đến</i>
                                 </p>
                             </div>
-                            <div class="col-1">
+                            <div class="col-3">
                                 <p class="text-center">
                                     <b>Days</b>
                                     <br>
                                     <i>Số ngày</i>
-                                </p>
-                            </div>
-                            <div class="col-2">
-                                <p class="text-center">
-                                    <b>Note</b>
-                                    <br>
-                                    <i>Ghi chú (Ngày nghỉ <u>nửa buổi</u> nếu có)</i>
                                 </p>
                             </div>
                             <div class="col-2">
@@ -156,14 +149,11 @@
                             <div class="col-2">
                                 {{ leave_application.annual_to }}
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 {{ leave_application.annual_number_of_leave_days }}
                             </div>
                             <div class="col-2">
-                                {{ leave_application.annual_remark }}
-                            </div>
-                            <div class="col-2">
-                                {{ leave_application.annual_halfday_note }}
+                                {{ leave_application.annual_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -180,14 +170,11 @@
                             <div class="col-2">
                                 {{ leave_application.non_paid_to }}
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 {{ leave_application.non_paid_number_of_leave_days }}
                             </div>
                             <div class="col-2">
-                                {{ leave_application.non_paid_remark }}
-                            </div>
-                            <div class="col-2">
-                                {{ leave_application.non_paid_halfday_note }}
+                                {{ leave_application.non_paid_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -204,14 +191,11 @@
                             <div class="col-2">
                                 {{ leave_application.wedding_to }}
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 {{ leave_application.wedding_number_of_leave_days }}
                             </div>
                             <div class="col-2">
-                                {{ leave_application.wedding_remark }}
-                            </div>
-                            <div class="col-2">
-                                {{ leave_application.wedding_halfday_note }}
+                                {{ leave_application.wedding_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -228,14 +212,11 @@
                             <div class="col-2">
                                 {{ leave_application.bereavement_to }}
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 {{ leave_application.bereavement_number_of_leave_days }}
                             </div>
                             <div class="col-2">
-                                {{ leave_application.bereavement_remark }}
-                            </div>
-                            <div class="col-2">
-                                {{ leave_application.bereavement_halfday_note }}
+                                {{ leave_application.bereavement_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -252,14 +233,11 @@
                             <div class="col-2">
                                 {{ leave_application.maternity_obstetric_to }}
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 {{ leave_application.maternity_obstetric_number_of_leave_days }}
                             </div>
                             <div class="col-2">
-                                {{ leave_application.maternity_obstetric_remark }}
-                            </div>
-                            <div class="col-2">
-                                {{ leave_application.maternity_halfday_note }}
+                                {{ leave_application.maternity_obstetric_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -276,14 +254,11 @@
                             <div class="col-2">
                                 {{ leave_application.sick_to }}
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 {{ leave_application.sick_number_of_leave_days }}
                             </div>
                             <div class="col-2">
-                                {{ leave_application.sick_remark }}
-                            </div>
-                            <div class="col-2">
-                                {{ leave_application.sick_halfday_note }}
+                                {{ leave_application.sick_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -300,14 +275,11 @@
                             <div class="col-2">
                                 {{ leave_application.offinlieu_to }}
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 {{ leave_application.offinlieu_number_of_leave_days }}
                             </div>
                             <div class="col-2">
-                                {{ leave_application.offinlieu_remark }}
-                            </div>
-                            <div class="col-2">
-                                {{ leave_application.offinlieu_halfday_note }}
+                                {{ leave_application.offinlieu_note }}
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -324,14 +296,11 @@
                             <div class="col-2">
                                 {{ leave_application.other_to }}
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 {{ leave_application.other_number_of_leave_days }}
                             </div>
                             <div class="col-2">
-                                {{ leave_application.other_remark }}
-                            </div>
-                            <div class="col-2">
-                                {{ leave_application.other_halfday_note }}
+                                {{ leave_application.other_note }}
                             </div>
                         </div>
                         <div class="row text-dark" style="border-top: 1px solid black;">
@@ -345,10 +314,8 @@
                             </div>
                             <div class="col-2">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 {{ leave_application.total_days }}
-                            </div>
-                            <div class="col-2">
                             </div>
                             <div class="col-2">
                             </div>
@@ -356,7 +323,7 @@
                         <br>
                         <br>
                         <p class="text-start text-dark"
-                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            style="font-size: 16pt; font-family: tahoma; margin-bottom: 0px;">
                             <b>TEMPORARY REPLACEMENT /</b>
                             <i> Người thay thế tạm thời</i>
                         </p>

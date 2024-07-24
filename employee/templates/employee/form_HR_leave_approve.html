@@ -65,7 +65,7 @@
                     <form method="post">
                         {% csrf_token %}
                         <p class="text-start text-dark"
-                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            style="font-size: 16pt; font-family: tahoma; margin-bottom: 0px;">
                             <b>EMPLOYEE INFORMATION /</b>
                             <i> Chi tiết nhân viên</i>
                         </p>
@@ -108,7 +108,7 @@
                         </table>
                         <br>
                         <p class="text-start text-dark"
-                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            style="font-size: 16pt; font-family: tahoma; margin-bottom: 0px;">
                             <b>TYPE OF LEAVE REQUESTED /</b>
                             <i> Loại phép xin nghỉ</i>
                         </p>
@@ -131,7 +131,7 @@
                                     <i>Đến</i>
                                 </p>
                             </div>
-                            <div class="col-1">
+                            <div class="col-3">
                                 <p class="text-center">
                                     <b>Days</b>
                                     <br>
@@ -141,13 +141,6 @@
                             <div class="col-2">
                                 <p class="text-center">
                                     <b>Note</b>
-                                    <br>
-                                    <i>Ghi chú (Ngày nghỉ <u>nửa buổi</u> nếu có)</i>
-                                </p>
-                            </div>
-                            <div class="col-2">
-                                <p class="text-center">
-                                    <b>Remarks</b>
                                     <br>
                                     <i>Nghỉ buổi sáng/buổi chiều</i>
                                 </p>
@@ -169,20 +162,17 @@
                                 <input type="date" class="form-control" name="annual_to" id="annual_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.annual_to }}">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="annual_number_of_leave_days"
                                     id="annual_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.annual_number_of_leave_days }}">
                             </div>
                             <div class="col-2">
-                                <input type="text" class="form-control" name="annual_remark"
-                                    id="annual_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
-                                    value="{{ leave_application.annual_remark }}">
-                            </div>
-                            <div class="col-2">
-                                <input type="text" class="form-control" name="annual_halfday_note"
-                                    id="annual_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
-                                    value="{{ leave_application.annual_halfday_note }}">
+                                <select name="annual_note" id="annual_note">
+                                    <option value="--" {% if leave_application.annual_note == "--" %}selected{% endif %}>--</option>
+                                    <option value="AM" {% if leave_application.annual_note == "AM" %}selected{% endif %}>AM</option>
+                                    <option value="PM" {% if leave_application.annual_note == "PM" %}selected{% endif %}>PM</option>
+                                </select>                                
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -201,20 +191,17 @@
                                 <input type="date" class="form-control" name="non_paid_to" id="non_paid_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.non_paid_to }}">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="non_paid_number_of_leave_days"
                                     id="non_paid_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.non_paid_number_of_leave_days }}">
                             </div>
                             <div class="col-2">
-                                <input type="text" class="form-control" name="non_paid_remark"
-                                    id="non_paid_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
-                                    value="{{ leave_application.non_paid_remark }}">
-                            </div>
-                            <div class="col-2">
-                                <input type="text" class="form-control" name="non_paid_halfday_note"
-                                    id="non_paid_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
-                                    value="{{ leave_application.non_paid_halfday_note }}">
+                                <select name="non_paid_note" id="non_paid_note">
+                                    <option value="--" {% if leave_application.non_paid_note == "--" %}selected{% endif %}>--</option>
+                                    <option value="AM" {% if leave_application.non_paid_note == "AM" %}selected{% endif %}>AM</option>
+                                    <option value="PM" {% if leave_application.non_paid_note == "PM" %}selected{% endif %}>PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -233,20 +220,17 @@
                                 <input type="date" class="form-control" name="wedding_to" id="wedding_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.wedding_to }}">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="wedding_number_of_leave_days"
                                     id="wedding_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.wedding_number_of_leave_days }}">
                             </div>
                             <div class="col-2">
-                                <input type="text" class="form-control" name="wedding_remark"
-                                    id="wedding_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
-                                    value="{{ leave_application.wedding_remark }}">
-                            </div>
-                            <div class="col-2">
-                                <input type="text" class="form-control" name="wedding_halfday_note"
-                                    id="wedding_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
-                                    value="{{ leave_application.wedding_halfday_note }}">
+                                <select name="wedding_note" id="wedding_note">
+                                    <option value="--" {% if leave_application.wedding_note == "--" %}selected{% endif %}>--</option>
+                                    <option value="AM" {% if leave_application.wedding_note == "AM" %}selected{% endif %}>AM</option>
+                                    <option value="PM" {% if leave_application.wedding_note == "PM" %}selected{% endif %}>PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -265,20 +249,17 @@
                                 <input type="date" class="form-control" name="bereavement_to" id="bereavement_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.bereavement_to }}">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="bereavement_number_of_leave_days"
                                     id="bereavement_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.bereavement_number_of_leave_days }}">
                             </div>
                             <div class="col-2">
-                                <input type="text" class="form-control" name="bereavement_remark"
-                                    id="bereavement_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
-                                    value="{{ leave_application.bereavement_remark }}">
-                            </div>
-                            <div class="col-2">
-                                <input type="text" class="form-control" name="bereavement_halfday_note"
-                                    id="bereavement_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
-                                    value="{{ leave_application.bereavement_halfday_note }}">
+                                <select name="bereavement_note" id="bereavement_note">
+                                    <option value="--" {% if leave_application.bereavement_note == "--" %}selected{% endif %}>--</option>
+                                    <option value="AM" {% if leave_application.bereavement_note == "AM" %}selected{% endif %}>AM</option>
+                                    <option value="PM" {% if leave_application.bereavement_note == "PM" %}selected{% endif %}>PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -299,20 +280,17 @@
                                     id="maternity_obstetric_to" placeholder="hh:mm DD/MM/YYYY"
                                     value="{{ leave_application.maternity_obstetric_to }}">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="maternity_obstetric_number_of_leave_days"
                                     id="maternity_obstetric_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.maternity_obstetric_number_of_leave_days }}">
                             </div>
                             <div class="col-2">
-                                <input type="text" class="form-control" name="maternity_obstetric_remark"
-                                    id="maternity_obstetric_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
-                                    value="{{ leave_application.maternity_obstetric_remark }}">
-                            </div>
-                            <div class="col-2">
-                                <input type="text" class="form-control" name="maternity_halfday_note"
-                                    id="maternity_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
-                                    value="{{ leave_application.maternity_halfday_note }}">
+                                <select name="maternity_obstetric_note" id="maternity_obstetric_note">
+                                    <option value="--" {% if leave_application.maternity_obstetric_note == "--" %}selected{% endif %}>--</option>
+                                    <option value="AM" {% if leave_application.maternity_obstetric_note == "AM" %}selected{% endif %}>AM</option>
+                                    <option value="PM" {% if leave_application.maternity_obstetric_note == "PM" %}selected{% endif %}>PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -331,20 +309,17 @@
                                 <input type="date" class="form-control" name="sick_to" id="sick_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.sick_to }}">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="sick_number_of_leave_days"
                                     id="sick_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.sick_number_of_leave_days }}">
                             </div>
                             <div class="col-2">
-                                <input type="text" class="form-control" name="sick_remark"
-                                    id="sick_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
-                                    value="{{ leave_application.sick_remark }}">
-                            </div>
-                            <div class="col-2">
-                                <input type="text" class="form-control" name="sick_halfday_note"
-                                    id="sick_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
-                                    value="{{ leave_application.sick_halfday_note }}">
+                                <select name="sick_note" id="sick_note">
+                                    <option value="--" {% if leave_application.sick_note == "--" %}selected{% endif %}>--</option>
+                                    <option value="AM" {% if leave_application.sick_note == "AM" %}selected{% endif %}>AM</option>
+                                    <option value="PM" {% if leave_application.sick_note == "PM" %}selected{% endif %}>PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -363,20 +338,17 @@
                                 <input type="date" class="form-control" name="offinlieu_to" id="offinlieu_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.offinlieu_to }}">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="offinlieu_number_of_leave_days"
                                     id="offinlieu_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.offinlieu_number_of_leave_days }}">
                             </div>
                             <div class="col-2">
-                                <input type="text" class="form-control" name="offinlieu_remark"
-                                    id="offinlieu_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
-                                    value="{{ leave_application.offinlieu_remark }}">
-                            </div>
-                            <div class="col-2">
-                                <input type="text" class="form-control" name="offinlieu_halfday_note"
-                                    id="offinlieu_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
-                                    value="{{ leave_application.offinlieu_halfday_note }}">
+                                <select name="offinlieu_note" id="offinlieu_note">
+                                    <option value="--" {% if leave_application.offinlieu_note == "--" %}selected{% endif %}>--</option>
+                                    <option value="AM" {% if leave_application.offinlieu_note == "AM" %}selected{% endif %}>AM</option>
+                                    <option value="PM" {% if leave_application.offinlieu_note == "PM" %}selected{% endif %}>PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -395,20 +367,17 @@
                                 <input type="date" class="form-control" name="other_to" id="other_to"
                                     placeholder="hh:mm DD/MM/YYYY" value="{{ leave_application.other_to }}">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="other_number_of_leave_days"
                                     id="other_number_of_leave_days" placeholder="No or No.No"
                                     value="{{ leave_application.other_number_of_leave_days }}">
                             </div>
                             <div class="col-2">
-                                <input type="text" class="form-control" name="other_remark"
-                                    id="other_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
-                                    value="{{ leave_application.other_remark }}">
-                            </div>
-                            <div class="col-2">
-                                <input type="text" class="form-control" name="other_halfday_note"
-                                    id="other_halfday_note" placeholder="E.g. 01/01/2024 AM 02/01/2024 PM"
-                                    value="{{ leave_application.other_halfday_note }}">
+                                <select name="other_note" id="other_note">
+                                    <option value="--" {% if leave_application.other_note == "--" %}selected{% endif %}>--</option>
+                                    <option value="AM" {% if leave_application.other_note == "AM" %}selected{% endif %}>AM</option>
+                                    <option value="PM" {% if leave_application.other_note == "PM" %}selected{% endif %}>PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark" style="border-top: 1px solid black;">
@@ -434,25 +403,31 @@
                                 <b style="font-size: larger;"><u>Ghi chú !</u></b>
                                 <br>
                                 <i>
-                                    <b>- Nghỉ 1 ngày:</b> nghỉ cả ngày 01/01/2023 => from <u>01/01/2023</u> to <u>01/01/2023</u>
+                                    <b>- From:</b> Ghi ngày bắt đầu nghỉ
                                 </i>
                                 <br>
                                 <i>
-                                    <b>- Nghỉ 1/2 ngày:</b> nghỉ nửa ngày 01/01/2023 => from <u>01/01/2023</u> to <u>01/01/2023</u> ; Remarks: <u>01/01/2023</u>
+                                    <b>- To:</b> Ghi ngày nghỉ kết thúc
                                 </i>
                                 <br>
-                                <i><b>- Nghỉ nhiều ngày:</b>
-                                    <br>
-                                    Nghỉ từ ngày 01/01/2023 đến ngày hết ngày 03/01/2023 => from <u>01/01/2023</u> to <u>03/01/2023</u>
-                                    <br>
-                                    Nghỉ từ ngày 01/01/2023 đến ngày 03/01/2023, trong đó nghỉ nửa ngày 01/01/2023 và 02/01/2023 => from <u>01/01/2023</u> to <u>03/01/2023</u> ; Remarks: <u>01/01/2023 02/01/2023</u>
+                                <i>
+                                    <b>- Days:</b> Ghi tổng số ngày nghỉ, đã loại bỏ ngày cuối tuần, ngày lễ tết
+                                    (Nếu không trọn 1 ngày, dùng dấu chấm để chỉ số thập phân)
+                                </i>
+                                <br>
+                                <i>
+                                    <b>- Note:</b> Chọn AM hay PM nếu nghỉ nửa buổi
+                                </i>
+                                <br>
+                                <i>
+                                    <b><u>Trường hợp nghỉ nhiều ngày khác khung thời gian nghỉ, cần phải làm nhiều đơn nghỉ.</u></b>
                                 </i>
                             </p>
                         </div>
                         <br>
                         <br>
                         <p class="text-start text-dark"
-                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            style="font-size: 16pt; font-family: tahoma; margin-bottom: 0px;">
                             <b>TEMPORARY REPLACEMENT /</b>
                             <i> Người thay thế tạm thời</i>
                         </p>

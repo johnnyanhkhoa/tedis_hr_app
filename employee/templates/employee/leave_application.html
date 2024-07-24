@@ -66,7 +66,7 @@
                     <form method="post">
                         {% csrf_token %}
                         <p class="text-start text-dark"
-                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            style="font-size: 16pt; font-family: tahoma; margin-bottom: 0px;">
                             <b>EMPLOYEE INFORMATION /</b>
                             <i> Chi tiết nhân viên</i>
                         </p>
@@ -111,7 +111,7 @@
                         </table>
                         <br>
                         <p class="text-start text-dark"
-                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            style="font-size: 16pt; font-family: tahoma; margin-bottom: 0px;">
                             <b>TYPE OF LEAVE REQUESTED /</b>
                             <i> Loại phép xin nghỉ</i>
                         </p>
@@ -134,7 +134,7 @@
                                     <i>Đến hết</i>
                                 </p>
                             </div>
-                            <div class="col-1">
+                            <div class="col-3">
                                 <p class="text-center">
                                     <b>Days</b>
                                     <br>
@@ -144,13 +144,6 @@
                             <div class="col-2">
                                 <p class="text-center">
                                     <b>Note</b>
-                                    <br>
-                                    <i>Ghi chú (Ngày nghỉ <u>nửa buổi</u> nếu có)</i>
-                                </p>
-                            </div>
-                            <div class="col-2">
-                                <p class="text-center">
-                                    <b>Remark</b>
                                     <br>
                                     <i>Nghỉ buổi sáng/buổi chiều</i>
                                 </p>
@@ -172,17 +165,16 @@
                                 <input type="date" class="form-control" name="annual_to" id="annual_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="annual_number_of_leave_days"
                                     id="annual_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="annual_remark" name="annual_remark"
-                                    placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
-                            </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="annual_halfday_note" name="annual_halfday_note"
-                                    placeholder="E.g. 01/01/2024 AM 02/01/2024 PM" rows="1"></textarea>
+                            <div class="col-2 text-center">
+                                <select name="annual_note" id="annual_note">
+                                    <option value="--">--</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -201,17 +193,16 @@
                                 <input type="date" class="form-control" name="non_paid_to" id="non_paid_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="non_paid_number_of_leave_days"
                                     id="non_paid_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="non_paid_remark" name="non_paid_remark"
-                                    placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
-                            </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="non_paid_halfday_note" name="non_paid_halfday_note"
-                                    placeholder="E.g. 01/01/2024 AM 02/01/2024 PM" rows="1"></textarea>
+                            <div class="col-2 text-center">
+                                <select name="non_paid_note" id="non_paid_note">
+                                    <option value="--">--</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -230,17 +221,16 @@
                                 <input type="date" class="form-control" name="wedding_to" id="wedding_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="wedding_number_of_leave_days"
                                     id="wedding_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="wedding_remark" name="wedding_remark"
-                                    placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
-                            </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="wedding_halfday_note" name="wedding_halfday_note"
-                                    placeholder="E.g. 01/01/2024 AM 02/01/2024 PM" rows="1"></textarea>
+                            <div class="col-2 text-center">
+                                <select name="wedding_note" id="wedding_note">
+                                    <option value="--">--</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -259,17 +249,16 @@
                                 <input type="date" class="form-control" name="bereavement_to" id="bereavement_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="bereavement_number_of_leave_days"
                                     id="bereavement_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="bereavement_remark" name="bereavement_remark"
-                                    placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
-                            </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="bereavement_halfday_note" name="bereavement_halfday_note"
-                                    placeholder="E.g. 01/01/2024 AM 02/01/2024 PM" rows="1"></textarea>
+                            <div class="col-2 text-center">
+                                <select name="bereavement_note" id="bereavement_note">
+                                    <option value="--">--</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -288,17 +277,16 @@
                                 <input type="date" class="form-control" name="maternity_obstetric_to"
                                     id="maternity_obstetric_to" placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="maternity_obstetric_number_of_leave_days"
                                     id="maternity_obstetric_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="maternity_obstetric_remark"
-                                    name="maternity_obstetric_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
-                            </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="maternity_halfday_note" name="maternity_halfday_note"
-                                    placeholder="E.g. 01/01/2024 AM 02/01/2024 PM" rows="1"></textarea>
+                            <div class="col-2 text-center">
+                                <select name="maternity_obstetric_note" id="maternity_obstetric_note">
+                                    <option value="--">--</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -317,17 +305,16 @@
                                 <input type="date" class="form-control" name="sick_to" id="sick_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="sick_number_of_leave_days"
                                     id="sick_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="sick_remark" name="sick_remark" placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)"
-                                    rows="1"></textarea>
-                            </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="sick_halfday_note" name="sick_halfday_note"
-                                    placeholder="E.g. 01/01/2024 AM 02/01/2024 PM" rows="1"></textarea>
+                            <div class="col-2 text-center">
+                                <select name="sick_note" id="sick_note">
+                                    <option value="--">--</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -346,17 +333,16 @@
                                 <input type="date" class="form-control" name="offinlieu_to" id="offinlieu_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="offinlieu_number_of_leave_days"
                                     id="offinlieu_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="offinlieu_remark" name="offinlieu_remark"
-                                    placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
-                            </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="offinlieu_halfday_note" name="offinlieu_halfday_note"
-                                    placeholder="E.g. 01/01/2024 AM 02/01/2024 PM" rows="1"></textarea>
+                            <div class="col-2 text-center">
+                                <select name="offinlieu_note" id="offinlieu_note">
+                                    <option value="--">--</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row text-dark">
@@ -375,17 +361,16 @@
                                 <input type="date" class="form-control" name="other_to" id="other_to"
                                     placeholder="hh:mm DD/MM/YYYY">
                             </div>
-                            <div class="col-1" style="padding: 0;">
+                            <div class="col-3" style="padding: 0;">
                                 <input type="text" class="form-control" name="other_number_of_leave_days"
                                     id="other_number_of_leave_days" placeholder="No or No.No">
                             </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="other_remark" name="other_remark"
-                                    placeholder="dd/mm/yyyy dd/mm/yyyy (Using space between dates)" rows="1"></textarea>
-                            </div>
-                            <div class="col-2">
-                                <textarea class="form-control" id="other_halfday_note" name="other_halfday_note"
-                                    placeholder="E.g. 01/01/2024 AM 02/01/2024 PM" rows="1"></textarea>
+                            <div class="col-2 text-center">
+                                <select name="other_note" id="other_note">
+                                    <option value="--">--</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
                             </div>
                         </div>
                         <br>
@@ -394,25 +379,31 @@
                                 <b style="font-size: larger;"><u>Ghi chú !</u></b>
                                 <br>
                                 <i>
-                                    <b>- Nghỉ 1 ngày:</b> nghỉ cả ngày 01/01/2023 => from <u>01/01/2023</u> to <u>01/01/2023</u>
+                                    <b>- From:</b> Ghi ngày bắt đầu nghỉ
                                 </i>
                                 <br>
                                 <i>
-                                    <b>- Nghỉ 1/2 ngày:</b> nghỉ nửa ngày 01/01/2023 => from <u>01/01/2023</u> to <u>01/01/2023</u> ; Remarks: <u>01/01/2023</u>
+                                    <b>- To:</b> Ghi ngày nghỉ kết thúc
                                 </i>
                                 <br>
-                                <i><b>- Nghỉ nhiều ngày:</b>
-                                    <br>
-                                    Nghỉ từ ngày 01/01/2023 đến ngày hết ngày 03/01/2023 => from <u>01/01/2023</u> to <u>03/01/2023</u>
-                                    <br>
-                                    Nghỉ từ ngày 01/01/2023 đến ngày 03/01/2023, trong đó nghỉ nửa ngày 01/01/2023 và 02/01/2023 => from <u>01/01/2023</u> to <u>03/01/2023</u> ; Remarks: <u>01/01/2023 02/01/2023</u>
+                                <i>
+                                    <b>- Days:</b> Ghi tổng số ngày nghỉ, đã loại bỏ ngày cuối tuần, ngày lễ tết
+                                    (Nếu không trọn 1 ngày, dùng dấu chấm để chỉ số thập phân)
+                                </i>
+                                <br>
+                                <i>
+                                    <b>- Note:</b> Chọn AM hay PM nếu nghỉ nửa buổi
+                                </i>
+                                <br>
+                                <i>
+                                    <b><u>Trường hợp nghỉ nhiều ngày khác khung thời gian nghỉ, cần phải làm nhiều đơn nghỉ.</u></b>
                                 </i>
                             </p>
                         </div>
                         <br>
                         <br>
                         <p class="text-start text-dark"
-                            style="font-size: 16pt; font-family: calibri; margin-bottom: 0px;">
+                            style="font-size: 16pt; font-family: tahoma; margin-bottom: 0px;">
                             <b>TEMPORARY REPLACEMENT /</b>
                             <i> Người thay thế tạm thời</i>
                         </p>

@@ -33,6 +33,8 @@ from django.http import HttpResponse
 import random
 # Math
 import math
+# Locale
+import locale
 
 
 # Create Custom Function
@@ -40,6 +42,10 @@ def date_range(start, end):
     delta = end - start
     days = [start + timedelta(days=i) for i in range(delta.days + 1)]
     return days
+
+# Thiết lập locale để sử dụng dấu phẩy làm dấu phân tách hàng nghìn
+locale.setlocale(locale.LC_ALL, '')
+
 
 
 
@@ -1277,50 +1283,42 @@ def leave_application(request):
         annual_from = request.POST.get('annual_from')
         annual_to = request.POST.get('annual_to')
         annual_number_of_leave_days = request.POST.get('annual_number_of_leave_days')
-        annual_remark = request.POST.get('annual_remark')
-        annual_halfday_note = request.POST.get('annual_halfday_note')
+        annual_note = request.POST.get('annual_note')
         # Non-paid
         non_paid_from = request.POST.get('non_paid_from')
         non_paid_to = request.POST.get('non_paid_to')
         non_paid_number_of_leave_days = request.POST.get('non_paid_number_of_leave_days')
-        non_paid_remark = request.POST.get('non_paid_remark')
-        non_paid_halfday_note = request.POST.get('non_paid_halfday_note')
+        non_paid_note = request.POST.get('non_paid_note')
         # Wedding
         wedding_from = request.POST.get('wedding_from')
         wedding_to = request.POST.get('wedding_to')
         wedding_number_of_leave_days = request.POST.get('wedding_number_of_leave_days')
-        wedding_remark = request.POST.get('wedding_remark')
-        wedding_halfday_note = request.POST.get('wedding_halfday_note')
+        wedding_note = request.POST.get('wedding_note')
         # Bereavement
         bereavement_from = request.POST.get('bereavement_from')
         bereavement_to = request.POST.get('bereavement_to')
         bereavement_number_of_leave_days = request.POST.get('bereavement_number_of_leave_days')
-        bereavement_remark = request.POST.get('bereavement_remark')
-        bereavement_halfday_note = request.POST.get('bereavement_halfday_note')
+        bereavement_note = request.POST.get('bereavement_note')
         # Maternity / Obstetric
         maternity_obstetric_from = request.POST.get('maternity_obstetric_from')
         maternity_obstetric_to = request.POST.get('maternity_obstetric_to')
         maternity_obstetric_number_of_leave_days = request.POST.get('maternity_obstetric_number_of_leave_days')
-        maternity_obstetric_remark = request.POST.get('maternity_obstetric_remark')
-        maternity_halfday_note = request.POST.get('maternity_halfday_note')
+        maternity_obstetric_note = request.POST.get('maternity_obstetric_note')
         # Sick
         sick_from = request.POST.get('sick_from')
         sick_to = request.POST.get('sick_to')
         sick_number_of_leave_days = request.POST.get('sick_number_of_leave_days')
-        sick_remark = request.POST.get('sick_remark')
-        sick_halfday_note = request.POST.get('sick_halfday_note')
+        sick_note = request.POST.get('sick_note')
         # Off in-lieu
         offinlieu_from = request.POST.get('offinlieu_from')
         offinlieu_to = request.POST.get('offinlieu_to')
         offinlieu_number_of_leave_days = request.POST.get('offinlieu_number_of_leave_days')
-        offinlieu_remark = request.POST.get('offinlieu_remark')
-        offinlieu_halfday_note = request.POST.get('offinlieu_halfday_note')
+        offinlieu_note = request.POST.get('offinlieu_note')
         # Other in-lieu
         other_from = request.POST.get('other_from')
         other_to = request.POST.get('other_to')
         other_number_of_leave_days = request.POST.get('other_number_of_leave_days')
-        other_remark = request.POST.get('other_remark')
-        other_halfday_note = request.POST.get('other_halfday_note')
+        other_note = request.POST.get('other_note')
         # Total days of leave
         if annual_number_of_leave_days == '':
             annual_number_of_leave_days = 0
@@ -1347,14 +1345,14 @@ def leave_application(request):
             status = Status.objects.get(status="Pending")
         hr_status = Status.objects.get(status="Pending")
         leave_application_info = Leave_application(employee=employee_id,emergency_contact=emergency_contact,contact_person=contact_person,relation=relation,
-                                                   annual_from=annual_from,annual_to=annual_to,annual_number_of_leave_days=annual_number_of_leave_days,annual_remark=annual_remark,annual_halfday_note=annual_halfday_note,
-                                                   non_paid_from=non_paid_from,non_paid_to=non_paid_to,non_paid_number_of_leave_days=non_paid_number_of_leave_days,non_paid_remark=non_paid_remark,non_paid_halfday_note=non_paid_halfday_note,
-                                                   wedding_from=wedding_from,wedding_to=wedding_to,wedding_number_of_leave_days=wedding_number_of_leave_days,wedding_remark=wedding_remark,wedding_halfday_note=wedding_halfday_note,
-                                                   bereavement_from=bereavement_from,bereavement_to=bereavement_to,bereavement_number_of_leave_days=bereavement_number_of_leave_days,bereavement_remark=bereavement_remark,bereavement_halfday_note=bereavement_halfday_note,
-                                                   maternity_obstetric_from=maternity_obstetric_from,maternity_obstetric_to=maternity_obstetric_to,maternity_obstetric_number_of_leave_days=maternity_obstetric_number_of_leave_days,maternity_obstetric_remark=maternity_obstetric_remark,maternity_halfday_note=maternity_halfday_note,
-                                                   sick_from=sick_from,sick_to=sick_to,sick_number_of_leave_days=sick_number_of_leave_days,sick_remark=sick_remark,sick_halfday_note=sick_halfday_note,
-                                                   offinlieu_from=offinlieu_from,offinlieu_to=offinlieu_to,offinlieu_number_of_leave_days=offinlieu_number_of_leave_days,offinlieu_remark=offinlieu_remark,offinlieu_halfday_note=offinlieu_halfday_note,
-                                                   other_from=other_from,other_to=other_to,other_number_of_leave_days=other_number_of_leave_days,other_remark=other_remark,other_halfday_note=other_halfday_note,
+                                                   annual_from=annual_from,annual_to=annual_to,annual_number_of_leave_days=annual_number_of_leave_days,annual_note=annual_note,
+                                                   non_paid_from=non_paid_from,non_paid_to=non_paid_to,non_paid_number_of_leave_days=non_paid_number_of_leave_days,non_paid_note=non_paid_note,
+                                                   wedding_from=wedding_from,wedding_to=wedding_to,wedding_number_of_leave_days=wedding_number_of_leave_days,wedding_note=wedding_note,
+                                                   bereavement_from=bereavement_from,bereavement_to=bereavement_to,bereavement_number_of_leave_days=bereavement_number_of_leave_days,bereavement_note=bereavement_note,
+                                                   maternity_obstetric_from=maternity_obstetric_from,maternity_obstetric_to=maternity_obstetric_to,maternity_obstetric_number_of_leave_days=maternity_obstetric_number_of_leave_days,maternity_obstetric_note=maternity_obstetric_note,
+                                                   sick_from=sick_from,sick_to=sick_to,sick_number_of_leave_days=sick_number_of_leave_days,sick_note=sick_note,
+                                                   offinlieu_from=offinlieu_from,offinlieu_to=offinlieu_to,offinlieu_number_of_leave_days=offinlieu_number_of_leave_days,offinlieu_note=offinlieu_note,
+                                                   other_from=other_from,other_to=other_to,other_number_of_leave_days=other_number_of_leave_days,other_note=other_note,
                                                    total_days=total_days,temporary_replacement=temporary_replacement,application_date=application_date, approved_by=manager, status=status,hr_status=hr_status)  
         leave_application_info.save()
         messages.success(request, 'SUCCESS: Application registered')
@@ -1526,7 +1524,7 @@ def HR_leave_approve(request,pk):
         # Annual
         annual_from = request.POST.get('annual_from')
         annual_to = request.POST.get('annual_to')
-        annual_remark = request.POST.get('annual_remark')
+        annual_note = request.POST.get('annual_note')
         if annual_from != '' and annual_to != '':
             # Convert to datetime format
             annual_from_date = datetime.strptime(annual_from, '%Y-%m-%d')
@@ -1537,13 +1535,13 @@ def HR_leave_approve(request,pk):
                 daily_work = Daily_work.objects.get(date=annual_from_date)
                 daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work, employee=leave_application.employee)
                     # Nghỉ full ngày
-                if annual_remark == '':
+                if annual_note == '--':
                     daily_work_employee.paid_leave = 1
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
                     daily_work_employee.save()
                     # Nghỉ 1/2 ngày
-                elif annual_remark != '':
+                elif annual_note != '--':
                     daily_work_employee.paid_leave = 0.5
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
@@ -1559,27 +1557,17 @@ def HR_leave_approve(request,pk):
                 for index, daily_work in enumerate(list_daily_work):
                     daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work,employee=leave_application.employee)
                     # Nghỉ nhiều ngày không lẻ 
-                    if annual_remark == '':
+                    if annual_note == '--':
                         daily_work_employee.paid_leave = 1
                         daily_work_employee.unpaid_leave = 0
                         daily_work_employee.leave_application = leave_application
                         daily_work_employee.save()
                     # Nghỉ nhiều ngày có lẻ
-                    elif annual_remark != '':
-                        list_half_days_str = annual_remark.split()
-                        for half_day_str in list_half_days_str:
-                            half_day_date = datetime.strptime(half_day_str, '%d/%m/%Y').date()
-                            if daily_work_employee.daily_work.date == half_day_date:
-                                daily_work_employee.paid_leave = 0.5
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
-                                break
-                            elif daily_work_employee.daily_work.date != half_day_date:
-                                daily_work_employee.paid_leave = 1
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
+                    elif annual_note != '--':
+                        daily_work_employee.paid_leave = 0.5
+                        daily_work_employee.unpaid_leave = 0
+                        daily_work_employee.leave_application = leave_application
+                        daily_work_employee.save()
                     else:
                         messages.error(request, 'ERROR: Wrong time format, please check NOTES!')
         if request.POST.get('annual_number_of_leave_days') == '':
@@ -1591,7 +1579,7 @@ def HR_leave_approve(request,pk):
         # Non-paid
         non_paid_from = request.POST.get('non_paid_from')
         non_paid_to = request.POST.get('non_paid_to')
-        non_paid_remark = request.POST.get('non_paid_remark')
+        non_paid_note = request.POST.get('non_paid_note')
         if non_paid_from != '' and non_paid_to != '':
             # Convert to datetime format
             non_paid_from_date = datetime.strptime(non_paid_from, '%Y-%m-%d')
@@ -1602,13 +1590,13 @@ def HR_leave_approve(request,pk):
                 daily_work = Daily_work.objects.get(date=non_paid_from_date)
                 daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work , employee=leave_application.employee)
                     # Nghỉ full ngày
-                if non_paid_remark == '':
+                if non_paid_note == '--':
                     daily_work_employee.unpaid_leave = 1
                     daily_work_employee.paid_leave = 0
                     daily_work_employee.leave_application = leave_application
                     daily_work_employee.save()
                     # Nghỉ 1/2 ngày
-                elif non_paid_remark != '':
+                elif non_paid_note != '--':
                     daily_work_employee.unpaid_leave = 0.5
                     daily_work_employee.paid_leave = 0
                     daily_work_employee.leave_application = leave_application
@@ -1624,27 +1612,17 @@ def HR_leave_approve(request,pk):
                 for index, daily_work in enumerate(list_daily_work):
                     daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work,employee=leave_application.employee)
                     # Nghỉ nhiều ngày không lẻ
-                    if non_paid_remark == '':
+                    if non_paid_note == '--':
                         daily_work_employee.unpaid_leave = 1
                         daily_work_employee.paid_leave = 0
                         daily_work_employee.leave_application = leave_application
                         daily_work_employee.save()
                     # Nghỉ nhiều ngày có lẻ
-                    elif non_paid_remark != '':
-                        list_half_days_str = non_paid_remark.split()
-                        for half_day_str in list_half_days_str:
-                            half_day_date = datetime.strptime(half_day_str, '%d/%m/%Y').date()
-                            if daily_work_employee.daily_work.date == half_day_date:
-                                daily_work_employee.unpaid_leave = 0.5
-                                daily_work_employee.paid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
-                                break
-                            elif daily_work_employee.daily_work.date != half_day_date:
-                                daily_work_employee.unpaid_leave = 1
-                                daily_work_employee.paid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
+                    elif non_paid_note != '--':
+                        daily_work_employee.unpaid_leave = 0.5
+                        daily_work_employee.paid_leave = 0
+                        daily_work_employee.leave_application = leave_application
+                        daily_work_employee.save()
                     else:
                         messages.error(request, 'ERROR: Wrong time format, please check NOTES!')   
         if request.POST.get('non_paid_number_of_leave_days') == '':
@@ -1655,7 +1633,7 @@ def HR_leave_approve(request,pk):
         # Wedding
         wedding_from = request.POST.get('wedding_from')
         wedding_to = request.POST.get('wedding_to')
-        wedding_remark = request.POST.get('wedding_remark')
+        wedding_note = request.POST.get('wedding_note')
         if wedding_from != '' and wedding_to != '':
             # Convert to datetime format
             wedding_from_date = datetime.strptime(wedding_from, '%Y-%m-%d')
@@ -1666,13 +1644,13 @@ def HR_leave_approve(request,pk):
                 daily_work = Daily_work.objects.get(date=wedding_from_date)
                 daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work , employee=leave_application.employee)
                     # Nghỉ full ngày
-                if wedding_remark == '':
+                if wedding_note == '--':
                     daily_work_employee.paid_leave = 1
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
                     daily_work_employee.save()
                     # Nghỉ 1/2 ngày
-                elif wedding_remark != '':
+                elif wedding_note != '--':
                     daily_work_employee.paid_leave = 0.5
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
@@ -1688,27 +1666,17 @@ def HR_leave_approve(request,pk):
                 for index, daily_work in enumerate(list_daily_work):
                     daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work,employee=leave_application.employee)
                     # Nghỉ nhiều ngày không lẻ
-                    if wedding_remark == '':
+                    if wedding_note == '--':
                         daily_work_employee.paid_leave = 1
                         daily_work_employee.unpaid_leave = 0
                         daily_work_employee.leave_application = leave_application
                         daily_work_employee.save()
                     # Nghỉ nhiều ngày có lẻ
-                    elif wedding_remark != '':
-                        list_half_days_str = wedding_remark.split()
-                        for half_day_str in list_half_days_str:
-                            half_day_date = datetime.strptime(half_day_str, '%d/%m/%Y').date()
-                            if daily_work_employee.daily_work.date == half_day_date:
-                                daily_work_employee.paid_leave = 0.5
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
-                                break
-                            elif daily_work_employee.daily_work.date != half_day_date:
-                                daily_work_employee.paid_leave = 1
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
+                    elif wedding_note != '--':
+                        daily_work_employee.paid_leave = 0.5
+                        daily_work_employee.unpaid_leave = 0
+                        daily_work_employee.leave_application = leave_application
+                        daily_work_employee.save()
                     else:
                         messages.error(request, 'ERROR: Wrong time format, please check NOTES!')
         if request.POST.get('wedding_number_of_leave_days') == '':
@@ -1719,7 +1687,7 @@ def HR_leave_approve(request,pk):
         # Bereavement
         bereavement_from = request.POST.get('bereavement_from')
         bereavement_to = request.POST.get('bereavement_to')
-        bereavement_remark = request.POST.get('bereavement_remark')
+        bereavement_note = request.POST.get('bereavement_note')
         if bereavement_from != '' and bereavement_to != '':
             # Convert to datetime format
             bereavement_from_date = datetime.strptime(bereavement_from, '%Y-%m-%d')
@@ -1730,13 +1698,13 @@ def HR_leave_approve(request,pk):
                 daily_work = Daily_work.objects.get(date=bereavement_from_date)
                 daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work , employee=leave_application.employee)
                     # Nghỉ full ngày
-                if bereavement_remark == '':
+                if bereavement_note == '--':
                     daily_work_employee.paid_leave = 1
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
                     daily_work_employee.save()
                     # Nghỉ 1/2 ngày
-                elif bereavement_remark != '':
+                elif bereavement_note != '--':
                     daily_work_employee.paid_leave = 0.5
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
@@ -1752,27 +1720,17 @@ def HR_leave_approve(request,pk):
                 for index, daily_work in enumerate(list_daily_work):
                     daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work,employee=leave_application.employee)
                     # Nghỉ nhiều ngày không lẻ
-                    if bereavement_remark == '':
+                    if bereavement_note == '--':
                         daily_work_employee.paid_leave = 1
                         daily_work_employee.unpaid_leave = 0
                         daily_work_employee.leave_application = leave_application
                         daily_work_employee.save()
                     # Nghỉ nhiều ngày có lẻ
-                    elif bereavement_remark != '':
-                        list_half_days_str = bereavement_remark.split()
-                        for half_day_str in list_half_days_str:
-                            half_day_date = datetime.strptime(half_day_str, '%d/%m/%Y').date()
-                            if daily_work_employee.daily_work.date == half_day_date:
-                                daily_work_employee.paid_leave = 0.5
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
-                                break
-                            elif daily_work_employee.daily_work.date != half_day_date:
-                                daily_work_employee.paid_leave = 1
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
+                    elif bereavement_note != '--':
+                        daily_work_employee.paid_leave = 0.5
+                        daily_work_employee.unpaid_leave = 0
+                        daily_work_employee.leave_application = leave_application
+                        daily_work_employee.save()
                     else:
                         messages.error(request, 'ERROR: Wrong time format, please check NOTES!')
         if request.POST.get('bereavement_number_of_leave_days') == '':
@@ -1783,7 +1741,7 @@ def HR_leave_approve(request,pk):
         # Maternity / Obstetric
         maternity_obstetric_from = request.POST.get('maternity_obstetric_from')
         maternity_obstetric_to = request.POST.get('maternity_obstetric_to')
-        maternity_obstetric_remark = request.POST.get('maternity_obstetric_remark')
+        maternity_obstetric_note = request.POST.get('maternity_obstetric_note')
         if maternity_obstetric_from != '' and maternity_obstetric_to != '':
             # Convert to datetime format
             maternity_obstetric_from_date = datetime.strptime(maternity_obstetric_from, '%Y-%m-%d')
@@ -1794,13 +1752,13 @@ def HR_leave_approve(request,pk):
                 daily_work = Daily_work.objects.get(date=maternity_obstetric_from_date)
                 daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work , employee=leave_application.employee)
                     # Nghỉ full ngày
-                if maternity_obstetric_remark == '':
+                if maternity_obstetric_note == '--':
                     daily_work_employee.paid_leave = 1
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
                     daily_work_employee.save()
                     # Nghỉ 1/2 ngày
-                elif maternity_obstetric_remark != '':
+                elif maternity_obstetric_note != '--':
                     daily_work_employee.paid_leave = 0.5
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
@@ -1816,37 +1774,28 @@ def HR_leave_approve(request,pk):
                 for index, daily_work in enumerate(list_daily_work):
                     daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work,employee=leave_application.employee)
                     # Nghỉ nhiều ngày không lẻ
-                    if maternity_obstetric_remark == '':
+                    if maternity_obstetric_note == '--':
                         daily_work_employee.paid_leave = 1
                         daily_work_employee.unpaid_leave = 0
                         daily_work_employee.leave_application = leave_application
                         daily_work_employee.save()
                     # Nghỉ nhiều ngày có lẻ
-                    elif maternity_obstetric_remark != '':
-                        list_half_days_str = maternity_obstetric_remark.split()
-                        for half_day_str in list_half_days_str:
-                            half_day_date = datetime.strptime(half_day_str, '%d/%m/%Y').date()
-                            if daily_work_employee.daily_work.date == half_day_date:
-                                daily_work_employee.paid_leave = 0.5
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
-                                break
-                            elif daily_work_employee.daily_work.date != half_day_date:
-                                daily_work_employee.paid_leave = 1
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
+                    elif maternity_obstetric_note != '--':
+                        daily_work_employee.paid_leave = 0.5
+                        daily_work_employee.unpaid_leave = 0
+                        daily_work_employee.leave_application = leave_application
+                        daily_work_employee.save()
                     else:
                         messages.error(request, 'ERROR: Wrong time format, please check NOTES!')
         if request.POST.get('maternity_obstetric_number_of_leave_days') == '':
             maternity_obstetric_number_of_leave_days = 0
         else:
             maternity_obstetric_number_of_leave_days = request.POST.get('maternity_obstetric_number_of_leave_days')
+
         # Sick
         sick_from = request.POST.get('sick_from')
         sick_to = request.POST.get('sick_to')
-        sick_remark = request.POST.get('sick_remark')
+        sick_note = request.POST.get('sick_note')
         if sick_from != '' and sick_to != '':
             # Convert to datetime format
             sick_from_date = datetime.strptime(sick_from, '%Y-%m-%d')
@@ -1857,13 +1806,13 @@ def HR_leave_approve(request,pk):
                 daily_work = Daily_work.objects.get(date=sick_from_date)
                 daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work , employee=leave_application.employee)
                     # Nghỉ full ngày
-                if sick_remark == '':
+                if sick_note == '--':
                     daily_work_employee.paid_leave = 1
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
                     daily_work_employee.save()
                     # Nghỉ 1/2 ngày
-                elif sick_remark != '':
+                elif sick_note != '--':
                     daily_work_employee.paid_leave = 0.5
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
@@ -1879,37 +1828,28 @@ def HR_leave_approve(request,pk):
                 for index, daily_work in enumerate(list_daily_work):
                     daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work,employee=leave_application.employee)
                     # Nghỉ nhiều ngày không lẻ
-                    if sick_remark == '':
+                    if sick_note == '--':
                         daily_work_employee.paid_leave = 1
                         daily_work_employee.unpaid_leave = 0
                         daily_work_employee.leave_application = leave_application
                         daily_work_employee.save()
                     # Nghỉ nhiều ngày có lẻ
-                    elif sick_remark != '':
-                        list_half_days_str = sick_remark.split()
-                        for half_day_str in list_half_days_str:
-                            half_day_date = datetime.strptime(half_day_str, '%d/%m/%Y').date()
-                            if daily_work_employee.daily_work.date == half_day_date:
-                                daily_work_employee.paid_leave = 0.5
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
-                                break
-                            elif daily_work_employee.daily_work.date != half_day_date:
-                                daily_work_employee.paid_leave = 1
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
+                    elif sick_note != '--':
+                        daily_work_employee.paid_leave = 0.5
+                        daily_work_employee.unpaid_leave = 0
+                        daily_work_employee.leave_application = leave_application
+                        daily_work_employee.save()
                     else:
                         messages.error(request, 'ERROR: Wrong time format, please check NOTES!')
         if request.POST.get('sick_number_of_leave_days') == '':
             sick_number_of_leave_days = 0
         else:
             sick_number_of_leave_days = request.POST.get('sick_number_of_leave_days')
+
         # Off in-lieu
         offinlieu_from = request.POST.get('offinlieu_from')
         offinlieu_to = request.POST.get('offinlieu_to')
-        offinlieu_remark = request.POST.get('offinlieu_remark')
+        offinlieu_note = request.POST.get('offinlieu_note')
         if offinlieu_from != '' and offinlieu_to != '':
             # Convert to datetime format
             offinlieu_from_date = datetime.strptime(offinlieu_from, '%Y-%m-%d')
@@ -1920,13 +1860,13 @@ def HR_leave_approve(request,pk):
                 daily_work = Daily_work.objects.get(date=offinlieu_from_date)
                 daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work , employee=leave_application.employee)
                     # Nghỉ full ngày
-                if offinlieu_remark == '':
+                if offinlieu_note == '--':
                     daily_work_employee.paid_leave = 1
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
                     daily_work_employee.save()
                     # Nghỉ 1/2 ngày
-                elif offinlieu_remark != '':
+                elif offinlieu_note != '--':
                     daily_work_employee.paid_leave = 0.5
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
@@ -1942,37 +1882,28 @@ def HR_leave_approve(request,pk):
                 for index, daily_work in enumerate(list_daily_work):
                     daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work,employee=leave_application.employee)
                     # Nghỉ nhiều ngày không lẻ
-                    if offinlieu_remark == '':
+                    if offinlieu_note == '--':
                         daily_work_employee.paid_leave = 1
                         daily_work_employee.unpaid_leave = 0
                         daily_work_employee.leave_application = leave_application
                         daily_work_employee.save()
                     # Nghỉ nhiều ngày có lẻ
-                    elif offinlieu_remark != '':
-                        list_half_days_str = offinlieu_remark.split()
-                        for half_day_str in list_half_days_str:
-                            half_day_date = datetime.strptime(half_day_str, '%d/%m/%Y').date()
-                            if daily_work_employee.daily_work.date == half_day_date:
-                                daily_work_employee.paid_leave = 0.5
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
-                                break
-                            elif daily_work_employee.daily_work.date != half_day_date:
-                                daily_work_employee.paid_leave = 1
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
+                    elif offinlieu_note != '--':
+                        daily_work_employee.paid_leave = 0.5
+                        daily_work_employee.unpaid_leave = 0
+                        daily_work_employee.leave_application = leave_application
+                        daily_work_employee.save()
                     else:
                         messages.error(request, 'ERROR: Wrong time format, please check NOTES!')
         if request.POST.get('offinlieu_number_of_leave_days') == '':
             offinlieu_number_of_leave_days = 0
         else:
             offinlieu_number_of_leave_days = request.POST.get('offinlieu_number_of_leave_days')
+            
         # Other
         other_from = request.POST.get('other_from')
         other_to = request.POST.get('other_to')
-        other_remark = request.POST.get('other_remark')
+        other_note = request.POST.get('other_note')
         if other_from != '' and other_to != '':
             # Convert to datetime format
             other_from_date = datetime.strptime(other_from, '%Y-%m-%d')
@@ -1983,13 +1914,13 @@ def HR_leave_approve(request,pk):
                 daily_work = Daily_work.objects.get(date=other_from_date)
                 daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work , employee=leave_application.employee)
                     # Nghỉ full ngày
-                if other_remark == '':
+                if other_note == '--':
                     daily_work_employee.paid_leave = 1
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
                     daily_work_employee.save()
                     # Nghỉ 1/2 ngày
-                elif other_remark != '':
+                elif other_note != '--':
                     daily_work_employee.paid_leave = 0.5
                     daily_work_employee.unpaid_leave = 0
                     daily_work_employee.leave_application = leave_application
@@ -2005,27 +1936,17 @@ def HR_leave_approve(request,pk):
                 for index, daily_work in enumerate(list_daily_work):
                     daily_work_employee = Daily_work_for_employee.objects.get(daily_work=daily_work,employee=leave_application.employee)
                     # Nghỉ nhiều ngày không lẻ
-                    if other_remark == '':
+                    if other_note == '--':
                         daily_work_employee.paid_leave = 1
                         daily_work_employee.unpaid_leave = 0
                         daily_work_employee.leave_application = leave_application
                         daily_work_employee.save()
                     # Nghỉ nhiều ngày có lẻ
-                    elif other_remark != '':
-                        list_half_days_str = other_remark.split()
-                        for half_day_str in list_half_days_str:
-                            half_day_date = datetime.strptime(half_day_str, '%d/%m/%Y').date()
-                            if daily_work_employee.daily_work.date == half_day_date:
-                                daily_work_employee.paid_leave = 0.5
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
-                                break
-                            elif daily_work_employee.daily_work.date != half_day_date:
-                                daily_work_employee.paid_leave = 1
-                                daily_work_employee.unpaid_leave = 0
-                                daily_work_employee.leave_application = leave_application
-                                daily_work_employee.save()
+                    elif other_note != '--':
+                        daily_work_employee.paid_leave = 0.5
+                        daily_work_employee.unpaid_leave = 0
+                        daily_work_employee.leave_application = leave_application
+                        daily_work_employee.save()
                     else:
                         messages.error(request, 'ERROR: Wrong time format, please check NOTES!')
         if request.POST.get('other_number_of_leave_days') == '':
@@ -2037,42 +1958,42 @@ def HR_leave_approve(request,pk):
         leave_application.annual_from = annual_from
         leave_application.annual_to = annual_to
         leave_application.annual_number_of_leave_days = annual_number_of_leave_days
-        leave_application.annual_remark = annual_remark
+        leave_application.annual_note = annual_note
         # Non-paid
         leave_application.non_paid_from = non_paid_from
         leave_application.non_paid_to = non_paid_to
         leave_application.non_paid_number_of_leave_days = non_paid_number_of_leave_days
-        leave_application.non_paid_remark = non_paid_remark
+        leave_application.non_paid_note = non_paid_note
         # Wedding
         leave_application.wedding_from = wedding_from
         leave_application.wedding_to = wedding_to
         leave_application.wedding_number_of_leave_days = wedding_number_of_leave_days
-        leave_application.wedding_remark = wedding_remark
+        leave_application.wedding_note = wedding_note
         # Bereavement
         leave_application.bereavement_from = bereavement_from
         leave_application.bereavement_to = bereavement_to
         leave_application.bereavement_number_of_leave_days = bereavement_number_of_leave_days
-        leave_application.bereavement_remark = bereavement_remark
+        leave_application.bereavement_note = bereavement_note
         # Maternity / Obstetric
         leave_application.maternity_obstetric_from = maternity_obstetric_from
         leave_application.maternity_obstetric_to = maternity_obstetric_to
         leave_application.maternity_obstetric_number_of_leave_days = maternity_obstetric_number_of_leave_days
-        leave_application.maternity_obstetric_remark = maternity_obstetric_remark
+        leave_application.maternity_obstetric_note = maternity_obstetric_note
         # Sick
         leave_application.sick_from = sick_from
         leave_application.sick_to = sick_to
         leave_application.sick_number_of_leave_days = sick_number_of_leave_days
-        leave_application.sick_remark = sick_remark
+        leave_application.sick_note = sick_note
         # Off in-lieu
         leave_application.offinlieu_from = offinlieu_from
         leave_application.offinlieu_to = offinlieu_to
         leave_application.offinlieu_number_of_leave_days = offinlieu_number_of_leave_days
-        leave_application.offinlieu_remark = offinlieu_remark
+        leave_application.offinlieu_note = offinlieu_note
         # Other
         leave_application.other_from = other_from
         leave_application.other_to = other_to
         leave_application.other_number_of_leave_days = other_number_of_leave_days
-        leave_application.other_remark = other_remark
+        leave_application.other_note = other_note
         # Total days off
         total_days_off = float(annual_number_of_leave_days) + float(non_paid_number_of_leave_days) + float(wedding_number_of_leave_days) + float(bereavement_number_of_leave_days) + float(maternity_obstetric_number_of_leave_days) + float(sick_number_of_leave_days) + float(offinlieu_number_of_leave_days) + float(other_number_of_leave_days)
         leave_application.total_days = total_days_off
@@ -12234,6 +12155,9 @@ def hr_budget_and_cashflow_view(request,pk):
     total_target_value_dec = 0
     total_achievement_dec = 0
 
+    # total_total_remuneration
+    total_total_remuneration = 0
+
     # Q4
     total_target_value_q4 = 0
     total_achievement_q4 = 0
@@ -12261,7 +12185,7 @@ def hr_budget_and_cashflow_view(request,pk):
                 list_payroll_last_year = Payroll_Ser.objects.filter(month__in=last_year_months)
                 # Get salary for data
                 if list_payroll_last_year.count() == 0:
-                    basic_salary_last_year = ''
+                    basic_salary_last_year = 0
                 else:
                     basic_salary_last_year = list_payroll_last_year[::-1][0].salary_vnd
                     
@@ -12321,7 +12245,7 @@ def hr_budget_and_cashflow_view(request,pk):
                 list_payroll_last_year = Payroll_Marjorie.objects.filter(month__in=last_year_months)
                 # Get salary for data
                 if list_payroll_last_year.count() == 0:
-                    basic_salary_last_year = ''
+                    basic_salary_last_year = 0
                 else:
                     basic_salary_last_year = list_payroll_last_year[::-1][0].salary_vnd
                     
@@ -12381,7 +12305,7 @@ def hr_budget_and_cashflow_view(request,pk):
                 list_payroll_last_year = Payroll_Tedis.objects.filter(employee=employee,month__in=last_year_months)
                 # Get salary for data
                 if list_payroll_last_year.count() == 0:
-                    basic_salary_last_year = ''
+                    basic_salary_last_year = 0
                 else:
                     basic_salary_last_year = list_payroll_last_year[::-1][0].newest_salary
                     
@@ -12442,7 +12366,7 @@ def hr_budget_and_cashflow_view(request,pk):
             list_payroll_last_year = Payroll_Tedis_Vietha.objects.filter(employee=employee,month__in=last_year_months)
             # Get salary for data
             if list_payroll_last_year.count() == 0:
-                basic_salary_last_year = ''
+                basic_salary_last_year = 0
             else:
                 basic_salary_last_year = list_payroll_last_year[::-1][0].newest_salary
                 
@@ -12506,7 +12430,7 @@ def hr_budget_and_cashflow_view(request,pk):
             list_payroll_last_year = Payroll_Vietha.objects.filter(employee=employee,month__in=last_year_months)
             # Get salary for data
             if list_payroll_last_year.count() == 0:
-                    basic_salary_last_year = ''
+                    basic_salary_last_year = 0
             else:
                 basic_salary_last_year = list_payroll_last_year[::-1][0].newest_salary
                 
@@ -12625,19 +12549,19 @@ def hr_budget_and_cashflow_view(request,pk):
             
         '''Get achievement_vs_target_last_year'''  
         if target_value_full_last_year == 0 or achievement_full_last_year == 0:
-            achievement_vs_target_last_year = ''
+            achievement_vs_target_last_year = 0
         else: 
             achievement_vs_target_last_year = round((achievement_full_last_year / target_value_full_last_year) * 100, 1)
             
         '''Get total_cost_vs_achievement_last_year'''  
         if total_remuneration_full_last_year == 0 or achievement_full_last_year == 0:
-            total_cost_vs_achievement_last_year = ''
+            total_cost_vs_achievement_last_year = 0
         else: 
             total_cost_vs_achievement_last_year = round((total_remuneration_full_last_year / achievement_full_last_year) * 100, 1)
             
         '''Get total_cost_vs_target_last_year'''  
         if total_remuneration_full_last_year == 0 or target_value_full_last_year == 0:
-            total_cost_vs_target_last_year = ''
+            total_cost_vs_target_last_year = 0
         else: 
             total_cost_vs_target_last_year = round((total_remuneration_full_last_year / target_value_full_last_year) * 100, 1)    
 
@@ -13102,19 +13026,19 @@ def hr_budget_and_cashflow_view(request,pk):
             
         '''Get achievement_vs_target_current_year'''  
         if target_value_full_current_year == 0 or achievement_full_current_year == 0:
-            achievement_vs_target_current_year = ''
+            achievement_vs_target_current_year = 0
         else: 
             achievement_vs_target_current_year = round((achievement_full_current_year / target_value_full_current_year) * 100, 1)
             
         '''Get total_cost_vs_achievement_current_year'''  
         if total_remuneration_full_current_year == 0 or achievement_full_current_year == 0:
-            total_cost_vs_achievement_current_year = ''
+            total_cost_vs_achievement_current_year = 0
         else: 
             total_cost_vs_achievement_current_year = round((total_remuneration_full_current_year / achievement_full_current_year) * 100, 1)
             
         '''Get total_cost_vs_target_current_year'''  
         if total_remuneration_full_current_year == 0 or target_value_full_current_year == 0:
-            total_cost_vs_target_current_year = ''
+            total_cost_vs_target_current_year = 0
         else: 
             total_cost_vs_target_current_year = round((total_remuneration_full_current_year / target_value_full_current_year) * 100, 1)
             
@@ -16948,6 +16872,9 @@ def hr_budget_and_cashflow_view(request,pk):
             total_target_value_dec += dec_target_value
             total_achievement_dec += dec_achievement
 
+        # total_total_remuneration
+        total_total_remuneration += total_remuneration
+
         # total_company_celebration
         if company_celebration == 'x' or company_celebration == 0:
             pass
@@ -17622,6 +17549,7 @@ def hr_budget_and_cashflow_view(request,pk):
             'total_total_cost_q4' : total_total_cost_q4,
 
             # Last columns
+            'total_total_remuneration' : total_total_remuneration,
             'total_total_bonus' : total_total_bonus,
             'total_company_celebration' : total_company_celebration,
             'total_health_check_up' : total_health_check_up,
@@ -17777,6 +17705,25 @@ def hr_budget_and_cashflow_view(request,pk):
         style_head_feb = NamedStyle(name="style_head_feb")
         style_head_mar = NamedStyle(name="style_head_mar")
         style_head_apr = NamedStyle(name="style_head_apr")
+        style_head_may = NamedStyle(name="style_head_may")
+        style_head_jun = NamedStyle(name="style_head_jun")
+        style_head_jul = NamedStyle(name="style_head_jul")
+        style_head_aug = NamedStyle(name="style_head_aug")
+        style_head_sep = NamedStyle(name="style_head_sep")
+        style_head_oct = NamedStyle(name="style_head_oct")
+        style_head_nov = NamedStyle(name="style_head_nov")
+        style_head_dec = NamedStyle(name="style_head_dec")
+        style_head_incentive = NamedStyle(name="style_head_incentive")
+        style_head_bonus = NamedStyle(name="style_head_bonus")
+        style_head_total_remuneration = NamedStyle(name="style_head_total_remuneration")
+        style_head_white = NamedStyle(name="style_head_white")
+        style_head_yellow = NamedStyle(name="style_head_yellow")
+        style_head_total_cost = NamedStyle(name="style_head_total_cost")
+        style_row_2 = NamedStyle(name="style_row_2")
+        style_data_active = NamedStyle(name="style_data_active")
+        style_data_inactive = NamedStyle(name="style_data_inactive")
+        style_total = NamedStyle(name="style_total")
+
 
         # Thiết lập màu nền
         style_head_employee_information.fill = PatternFill(
@@ -17811,6 +17758,78 @@ def hr_budget_and_cashflow_view(request,pk):
             fill_type="solid",
             start_color="b3c2d1",
         )
+        style_head_may.fill = PatternFill(
+            fill_type="solid",
+            start_color="b7b3b3",
+        )
+        style_head_jun.fill = PatternFill(
+            fill_type="solid",
+            start_color="fecfb4",
+        )
+        style_head_jul.fill = PatternFill(
+            fill_type="solid",
+            start_color="ffdb67",
+        )
+        style_head_aug.fill = PatternFill(
+            fill_type="solid",
+            start_color="00bdf5",
+        )
+        style_head_sep.fill = PatternFill(
+            fill_type="solid",
+            start_color="cc9700",
+        )
+        style_head_oct.fill = PatternFill(
+            fill_type="solid",
+            start_color="ffe89e",
+        )
+        style_head_nov.fill = PatternFill(
+            fill_type="solid",
+            start_color="ffdb67",
+        )
+        style_head_dec.fill = PatternFill(
+            fill_type="solid",
+            start_color="dde5f4",
+        )
+        style_head_incentive.fill = PatternFill(
+            fill_type="solid",
+            start_color="cc9700",
+        )
+        style_head_bonus.fill = PatternFill(
+            fill_type="solid",
+            start_color="baceec",
+        )
+        style_head_total_remuneration.fill = PatternFill(
+            fill_type="solid",
+            start_color="ffe89e",
+        )
+        style_head_white.fill = PatternFill(
+            fill_type="solid",
+            start_color="ffffff",
+        )
+        style_head_yellow.fill = PatternFill(
+            fill_type="solid",
+            start_color="fffe00",
+        )
+        style_head_total_cost.fill = PatternFill(
+            fill_type="solid",
+            start_color="ffc300",
+        )
+        style_row_2.fill = PatternFill(
+            fill_type="solid",
+            start_color="ffffff",
+        )
+        style_data_active.fill = PatternFill(
+            fill_type="solid",
+            start_color="ffffff",
+        )
+        style_data_inactive.fill = PatternFill(
+            fill_type="solid",
+            start_color="ffffff",
+        )
+        style_total.fill = PatternFill(
+            fill_type="solid",
+            start_color="ffffff",
+        )
 
         # Thiết lập các đường viền
         thin_side = Side(border_style="thin", color="000000")
@@ -17829,6 +17848,24 @@ def hr_budget_and_cashflow_view(request,pk):
         style_head_feb.border = head_border
         style_head_mar.border = head_border
         style_head_apr.border = head_border
+        style_head_may.border = head_border
+        style_head_jun.border = head_border
+        style_head_jul.border = head_border
+        style_head_aug.border = head_border
+        style_head_sep.border = head_border
+        style_head_oct.border = head_border
+        style_head_nov.border = head_border
+        style_head_dec.border = head_border
+        style_head_incentive.border = head_border
+        style_head_bonus.border = head_border
+        style_head_total_remuneration.border = head_border
+        style_head_white.border = head_border
+        style_head_yellow.border = head_border
+        style_head_total_cost.border = head_border
+        style_row_2.border = head_border
+        style_data_active.border = head_border
+        style_data_inactive.border = head_border
+        style_total.border = head_border
 
         # Thiết lập phông chữ
         head_font = Font(
@@ -17846,6 +17883,46 @@ def hr_budget_and_cashflow_view(request,pk):
         style_head_feb.font = head_font
         style_head_mar.font = head_font
         style_head_apr.font = head_font
+        style_head_may.font = head_font
+        style_head_jun.font = head_font
+        style_head_jul.font = head_font
+        style_head_aug.font = head_font
+        style_head_sep.font = head_font
+        style_head_oct.font = head_font
+        style_head_nov.font = head_font
+        style_head_dec.font = head_font
+        style_head_incentive.font = head_font
+        style_head_bonus.font = head_font
+        style_head_total_remuneration.font = head_font
+        style_head_white.font = head_font
+        style_head_yellow.font = head_font
+        style_head_total_cost.font = head_font
+
+        row_2_font = Font(
+            bold=False,
+            size=10,  
+            name="Calibri",
+            color="000000",
+        )
+
+        style_row_2.font = row_2_font
+        style_data_active.font = row_2_font
+
+        data_inactive_font = Font(
+            bold=False,
+            size=10,  
+            name="Calibri",
+            color="ff0000",
+        )
+        style_data_inactive.font = data_inactive_font
+
+        total_font = Font(
+            bold=True,
+            size=10,  
+            name="Calibri",
+            color="ff0000",
+        )
+        style_total.font = total_font
 
         # Thiết lập căn lề
         head_alignment = Alignment(
@@ -17862,6 +17939,36 @@ def hr_budget_and_cashflow_view(request,pk):
         style_head_feb.alignment = head_alignment
         style_head_mar.alignment = head_alignment
         style_head_apr.alignment = head_alignment
+        style_head_may.alignment = head_alignment
+        style_head_jun.alignment = head_alignment
+        style_head_jul.alignment = head_alignment
+        style_head_aug.alignment = head_alignment
+        style_head_sep.alignment = head_alignment
+        style_head_oct.alignment = head_alignment
+        style_head_nov.alignment = head_alignment
+        style_head_dec.alignment = head_alignment
+        style_head_incentive.alignment = head_alignment
+        style_head_bonus.alignment = head_alignment
+        style_head_total_remuneration.alignment = head_alignment
+        style_head_white.alignment = head_alignment
+        style_head_yellow.alignment = head_alignment
+        style_head_total_cost.alignment = head_alignment
+
+        row_2_alignment = Alignment(
+            horizontal="left",
+            vertical="center",
+            wrapText=True
+        )
+        style_row_2.alignment = row_2_alignment
+
+        data_alignment = Alignment(
+            horizontal="right",
+            vertical="center",
+            wrapText=True
+        )
+        style_data_active.alignment = data_alignment
+        style_data_inactive.alignment = data_alignment
+        style_total.alignment = data_alignment
 
         '''Set col width'''
         # Employee information
@@ -17892,9 +17999,9 @@ def hr_budget_and_cashflow_view(request,pk):
         ws.column_dimensions['Y'].width = 14
         ws.column_dimensions['Z'].width = 14
         ws.column_dimensions['AA'].width = 14
-        ws.column_dimensions['AB'].width = 5
+        ws.column_dimensions['AB'].width = 14
+        ws.column_dimensions['AC'].width = 5
         # Full last year
-        ws.column_dimensions['AC'].width = 14
         ws.column_dimensions['AD'].width = 14
         ws.column_dimensions['AE'].width = 14
         ws.column_dimensions['AF'].width = 14
@@ -17925,9 +18032,9 @@ def hr_budget_and_cashflow_view(request,pk):
         ws.column_dimensions['BE'].width = 14
         ws.column_dimensions['BF'].width = 14
         ws.column_dimensions['BG'].width = 14
-        ws.column_dimensions['BH'].width = 5
+        ws.column_dimensions['BH'].width = 14
+        ws.column_dimensions['BI'].width = 5
         # Full this year
-        ws.column_dimensions['BI'].width = 14
         ws.column_dimensions['BJ'].width = 14
         ws.column_dimensions['BK'].width = 14
         ws.column_dimensions['BL'].width = 14
@@ -17957,10 +18064,10 @@ def hr_budget_and_cashflow_view(request,pk):
         ws.column_dimensions['CJ'].width = 14
         ws.column_dimensions['CK'].width = 14
         ws.column_dimensions['CL'].width = 14
-        ws.column_dimensions['CM'].width = 5
-        # Jan
+        ws.column_dimensions['CM'].width = 14
         ws.column_dimensions['CN'].width = 14
-        ws.column_dimensions['CO'].width = 14
+        ws.column_dimensions['CO'].width = 5
+        # Jan
         ws.column_dimensions['CP'].width = 14
         ws.column_dimensions['CQ'].width = 14
         ws.column_dimensions['CR'].width = 14
@@ -17981,10 +18088,10 @@ def hr_budget_and_cashflow_view(request,pk):
         ws.column_dimensions['DG'].width = 14
         ws.column_dimensions['DH'].width = 14
         ws.column_dimensions['DI'].width = 14
-        ws.column_dimensions['DJ'].width = 5
-        # Feb
+        ws.column_dimensions['DJ'].width = 14
         ws.column_dimensions['DK'].width = 14
-        ws.column_dimensions['DL'].width = 14
+        ws.column_dimensions['DL'].width = 5
+        # Feb
         ws.column_dimensions['DM'].width = 14
         ws.column_dimensions['DN'].width = 14
         ws.column_dimensions['DO'].width = 14
@@ -18005,10 +18112,10 @@ def hr_budget_and_cashflow_view(request,pk):
         ws.column_dimensions['ED'].width = 14
         ws.column_dimensions['EE'].width = 14
         ws.column_dimensions['EF'].width = 14
-        ws.column_dimensions['EG'].width = 5
-        # Mar
+        ws.column_dimensions['EG'].width = 14
         ws.column_dimensions['EH'].width = 14
-        ws.column_dimensions['EI'].width = 14
+        ws.column_dimensions['EI'].width = 5
+        # Mar
         ws.column_dimensions['EJ'].width = 14
         ws.column_dimensions['EK'].width = 14
         ws.column_dimensions['EL'].width = 14
@@ -18029,18 +18136,18 @@ def hr_budget_and_cashflow_view(request,pk):
         ws.column_dimensions['FA'].width = 14
         ws.column_dimensions['FB'].width = 14
         ws.column_dimensions['FC'].width = 14
-        ws.column_dimensions['FD'].width = 5
-        # Q1
+        ws.column_dimensions['FD'].width = 14
         ws.column_dimensions['FE'].width = 14
-        ws.column_dimensions['FF'].width = 14
+        ws.column_dimensions['FF'].width = 5
+        # Q1
         ws.column_dimensions['FG'].width = 14
         ws.column_dimensions['FH'].width = 14
         ws.column_dimensions['FI'].width = 14
         ws.column_dimensions['FJ'].width = 14
-        ws.column_dimensions['FK'].width = 7
-        # Apr
+        ws.column_dimensions['FK'].width = 14
         ws.column_dimensions['FL'].width = 14
-        ws.column_dimensions['FM'].width = 14
+        ws.column_dimensions['FM'].width = 7
+        # Apr
         ws.column_dimensions['FN'].width = 14
         ws.column_dimensions['FO'].width = 14
         ws.column_dimensions['FP'].width = 14
@@ -18061,33 +18168,315 @@ def hr_budget_and_cashflow_view(request,pk):
         ws.column_dimensions['GE'].width = 14
         ws.column_dimensions['GF'].width = 14
         ws.column_dimensions['GG'].width = 14
-        ws.column_dimensions['GH'].width = 5
+        ws.column_dimensions['GH'].width = 14
+        ws.column_dimensions['GI'].width = 14
+        ws.column_dimensions['GJ'].width = 5
+        # May
+        ws.column_dimensions['GK'].width = 14
+        ws.column_dimensions['GL'].width = 14
+        ws.column_dimensions['GM'].width = 14
+        ws.column_dimensions['GN'].width = 14
+        ws.column_dimensions['GO'].width = 14
+        ws.column_dimensions['GP'].width = 14
+        ws.column_dimensions['GQ'].width = 14
+        ws.column_dimensions['GR'].width = 14
+        ws.column_dimensions['GS'].width = 14
+        ws.column_dimensions['GT'].width = 14
+        ws.column_dimensions['GU'].width = 14
+        ws.column_dimensions['GV'].width = 14
+        ws.column_dimensions['GW'].width = 14
+        ws.column_dimensions['GX'].width = 14
+        ws.column_dimensions['GY'].width = 14
+        ws.column_dimensions['GZ'].width = 14
+        ws.column_dimensions['HA'].width = 14
+        ws.column_dimensions['HB'].width = 14
+        ws.column_dimensions['HC'].width = 14
+        ws.column_dimensions['HD'].width = 14
+        ws.column_dimensions['HE'].width = 14
+        ws.column_dimensions['HF'].width = 14
+        ws.column_dimensions['HG'].width = 5
+        # Jun
+        ws.column_dimensions['HH'].width = 14
+        ws.column_dimensions['HI'].width = 14
+        ws.column_dimensions['HJ'].width = 14
+        ws.column_dimensions['HK'].width = 14
+        ws.column_dimensions['HL'].width = 14
+        ws.column_dimensions['HM'].width = 14
+        ws.column_dimensions['HN'].width = 14
+        ws.column_dimensions['HO'].width = 14
+        ws.column_dimensions['HP'].width = 14
+        ws.column_dimensions['HQ'].width = 14
+        ws.column_dimensions['HR'].width = 14
+        ws.column_dimensions['HS'].width = 14
+        ws.column_dimensions['HT'].width = 14
+        ws.column_dimensions['HU'].width = 14
+        ws.column_dimensions['HV'].width = 14
+        ws.column_dimensions['HW'].width = 14
+        ws.column_dimensions['HX'].width = 14
+        ws.column_dimensions['HY'].width = 14
+        ws.column_dimensions['HZ'].width = 14
+        ws.column_dimensions['IA'].width = 14
+        ws.column_dimensions['IB'].width = 14
+        ws.column_dimensions['IC'].width = 14
+        ws.column_dimensions['ID'].width = 5
+        # Q2
+        ws.column_dimensions['IE'].width = 14
+        ws.column_dimensions['IF'].width = 14
+        ws.column_dimensions['IG'].width = 14
+        ws.column_dimensions['IH'].width = 14
+        ws.column_dimensions['II'].width = 14
+        ws.column_dimensions['IJ'].width = 14
+        ws.column_dimensions['IK'].width = 7
+        # Jul
+        ws.column_dimensions['IL'].width = 14
+        ws.column_dimensions['IM'].width = 14
+        ws.column_dimensions['IN'].width = 14
+        ws.column_dimensions['IO'].width = 14
+        ws.column_dimensions['IP'].width = 14
+        ws.column_dimensions['IQ'].width = 14
+        ws.column_dimensions['IR'].width = 14
+        ws.column_dimensions['IS'].width = 14
+        ws.column_dimensions['IT'].width = 14
+        ws.column_dimensions['IU'].width = 14
+        ws.column_dimensions['IV'].width = 14
+        ws.column_dimensions['IW'].width = 14
+        ws.column_dimensions['IX'].width = 14
+        ws.column_dimensions['IY'].width = 14
+        ws.column_dimensions['IZ'].width = 14
+        ws.column_dimensions['JA'].width = 14
+        ws.column_dimensions['JB'].width = 14
+        ws.column_dimensions['JC'].width = 14
+        ws.column_dimensions['JD'].width = 14
+        ws.column_dimensions['JE'].width = 14
+        ws.column_dimensions['JF'].width = 14
+        ws.column_dimensions['JG'].width = 14
+        ws.column_dimensions['JH'].width = 5
+        # Aug
+        ws.column_dimensions['JI'].width = 14
+        ws.column_dimensions['JJ'].width = 14
+        ws.column_dimensions['JK'].width = 14
+        ws.column_dimensions['JL'].width = 14
+        ws.column_dimensions['JM'].width = 14
+        ws.column_dimensions['JN'].width = 14
+        ws.column_dimensions['JO'].width = 14
+        ws.column_dimensions['JP'].width = 14
+        ws.column_dimensions['JQ'].width = 14
+        ws.column_dimensions['JR'].width = 14
+        ws.column_dimensions['JS'].width = 14
+        ws.column_dimensions['JT'].width = 14
+        ws.column_dimensions['JU'].width = 14
+        ws.column_dimensions['JV'].width = 14
+        ws.column_dimensions['JW'].width = 14
+        ws.column_dimensions['JX'].width = 14
+        ws.column_dimensions['JY'].width = 14
+        ws.column_dimensions['JZ'].width = 14
+        ws.column_dimensions['KA'].width = 14
+        ws.column_dimensions['KB'].width = 14
+        ws.column_dimensions['KC'].width = 14
+        ws.column_dimensions['KD'].width = 14
+        ws.column_dimensions['KE'].width = 5
+        # Sep
+        ws.column_dimensions['KF'].width = 14
+        ws.column_dimensions['KG'].width = 14
+        ws.column_dimensions['KH'].width = 14
+        ws.column_dimensions['KI'].width = 14
+        ws.column_dimensions['KJ'].width = 14
+        ws.column_dimensions['KK'].width = 14
+        ws.column_dimensions['KL'].width = 14
+        ws.column_dimensions['KM'].width = 14
+        ws.column_dimensions['KN'].width = 14
+        ws.column_dimensions['KO'].width = 14
+        ws.column_dimensions['KP'].width = 14
+        ws.column_dimensions['KQ'].width = 14
+        ws.column_dimensions['KR'].width = 14
+        ws.column_dimensions['KS'].width = 14
+        ws.column_dimensions['KT'].width = 14
+        ws.column_dimensions['KU'].width = 14
+        ws.column_dimensions['KV'].width = 14
+        ws.column_dimensions['KW'].width = 14
+        ws.column_dimensions['KX'].width = 14
+        ws.column_dimensions['KY'].width = 14
+        ws.column_dimensions['KZ'].width = 14
+        ws.column_dimensions['LA'].width = 14
+        ws.column_dimensions['LB'].width = 5
+        # Q3
+        ws.column_dimensions['LC'].width = 14
+        ws.column_dimensions['LD'].width = 14
+        ws.column_dimensions['LE'].width = 14
+        ws.column_dimensions['LF'].width = 14
+        ws.column_dimensions['LG'].width = 14
+        ws.column_dimensions['LH'].width = 14
+        ws.column_dimensions['LI'].width = 7
+        # Oct
+        ws.column_dimensions['LJ'].width = 14
+        ws.column_dimensions['LK'].width = 14
+        ws.column_dimensions['LL'].width = 14
+        ws.column_dimensions['LM'].width = 14
+        ws.column_dimensions['LN'].width = 14
+        ws.column_dimensions['LO'].width = 14
+        ws.column_dimensions['LP'].width = 14
+        ws.column_dimensions['LQ'].width = 14
+        ws.column_dimensions['LR'].width = 14
+        ws.column_dimensions['LS'].width = 14
+        ws.column_dimensions['LT'].width = 14
+        ws.column_dimensions['LU'].width = 14
+        ws.column_dimensions['LV'].width = 14
+        ws.column_dimensions['LW'].width = 14
+        ws.column_dimensions['LX'].width = 14
+        ws.column_dimensions['LY'].width = 14
+        ws.column_dimensions['LZ'].width = 14
+        ws.column_dimensions['MA'].width = 14
+        ws.column_dimensions['MB'].width = 14
+        ws.column_dimensions['MC'].width = 14
+        ws.column_dimensions['MD'].width = 14
+        ws.column_dimensions['ME'].width = 14
+        ws.column_dimensions['MF'].width = 5
+        # Nov
+        ws.column_dimensions['MG'].width = 14
+        ws.column_dimensions['MH'].width = 14
+        ws.column_dimensions['MI'].width = 14
+        ws.column_dimensions['MJ'].width = 14
+        ws.column_dimensions['MK'].width = 14
+        ws.column_dimensions['ML'].width = 14
+        ws.column_dimensions['MM'].width = 14
+        ws.column_dimensions['MN'].width = 14
+        ws.column_dimensions['MO'].width = 14
+        ws.column_dimensions['MP'].width = 14
+        ws.column_dimensions['MQ'].width = 14
+        ws.column_dimensions['MR'].width = 14
+        ws.column_dimensions['MS'].width = 14
+        ws.column_dimensions['MT'].width = 14
+        ws.column_dimensions['MU'].width = 14
+        ws.column_dimensions['MV'].width = 14
+        ws.column_dimensions['MW'].width = 14
+        ws.column_dimensions['MX'].width = 14
+        ws.column_dimensions['MY'].width = 14
+        ws.column_dimensions['MZ'].width = 14
+        ws.column_dimensions['NA'].width = 14
+        ws.column_dimensions['NB'].width = 14
+        ws.column_dimensions['NC'].width = 5
+        # Dec
+        ws.column_dimensions['ND'].width = 14
+        ws.column_dimensions['NE'].width = 14
+        ws.column_dimensions['NF'].width = 14
+        ws.column_dimensions['NG'].width = 14
+        ws.column_dimensions['NH'].width = 14
+        ws.column_dimensions['NI'].width = 14
+        ws.column_dimensions['NJ'].width = 14
+        ws.column_dimensions['NK'].width = 14
+        ws.column_dimensions['NL'].width = 14
+        ws.column_dimensions['NM'].width = 14
+        ws.column_dimensions['NN'].width = 14
+        ws.column_dimensions['NO'].width = 14
+        ws.column_dimensions['NP'].width = 14
+        ws.column_dimensions['NQ'].width = 14
+        ws.column_dimensions['NR'].width = 14
+        ws.column_dimensions['NS'].width = 14
+        ws.column_dimensions['NT'].width = 14
+        ws.column_dimensions['NU'].width = 14
+        ws.column_dimensions['NV'].width = 14
+        ws.column_dimensions['NW'].width = 14
+        ws.column_dimensions['NX'].width = 14
+        ws.column_dimensions['NY'].width = 14
+        ws.column_dimensions['NZ'].width = 5
+        # Q4
+        ws.column_dimensions['OA'].width = 14
+        ws.column_dimensions['OB'].width = 14
+        ws.column_dimensions['OC'].width = 14
+        ws.column_dimensions['OD'].width = 14
+        ws.column_dimensions['OE'].width = 14
+        ws.column_dimensions['OF'].width = 14
+        ws.column_dimensions['OG'].width = 7
+        # Incentive
+        ws.column_dimensions['OH'].width = 14
+        ws.column_dimensions['OI'].width = 14
+        ws.column_dimensions['OJ'].width = 14
+        ws.column_dimensions['OK'].width = 14
+        ws.column_dimensions['OL'].width = 14
+        ws.column_dimensions['OM'].width = 14
+        # Others (PC-PY)
+        ws.column_dimensions['ON'].width = 10
+        ws.column_dimensions['OO'].width = 10
+        ws.column_dimensions['OP'].width = 14
+        ws.column_dimensions['OQ'].width = 14
+        ws.column_dimensions['OR'].width = 14
+        ws.column_dimensions['OS'].width = 14
+        ws.column_dimensions['OT'].width = 5
+        ws.column_dimensions['OU'].width = 14
+        ws.column_dimensions['OV'].width = 14
+        ws.column_dimensions['OW'].width = 14
+        ws.column_dimensions['OX'].width = 5
+        ws.column_dimensions['OY'].width = 14
+        ws.column_dimensions['OZ'].width = 14
+        ws.column_dimensions['PA'].width = 14
+        ws.column_dimensions['PB'].width = 14
+        ws.column_dimensions['PC'].width = 14
+
+
+
         
 
         '''Set row height'''
         ws.row_dimensions[1].height = 50.25
+        ws.row_dimensions[2].height = 20
 
         '''Head'''
         # Style
-        for col in range(1,29):
+        for col in range(1,30):
             ws.cell(row=1, column=col).style = style_head_employee_information
-        for col in range(29,61):
+        for col in range(30,62):
             ws.cell(row=1, column=col).style = style_head_full_last_year
-        for col in range(61,92):
+        for col in range(62,94):
             ws.cell(row=1, column=col).style = style_head_full_this_year
-        for col in range(92,115):
+        for col in range(94,117):
             ws.cell(row=1, column=col).style = style_head_jan
-        for col in range(115,138):
+        for col in range(117,140):
             ws.cell(row=1, column=col).style = style_head_feb
-        for col in range(138,161):
+        for col in range(140,163):
             ws.cell(row=1, column=col).style = style_head_mar 
-        for col in range(161,168):
+        for col in range(163,170):
             ws.cell(row=1, column=col).style = style_head_quarter
-        for col in range(168,191):
+        for col in range(170,193):
             ws.cell(row=1, column=col).style = style_head_apr
+        for col in range(193,216):
+            ws.cell(row=1, column=col).style = style_head_may
+        for col in range(216,239):
+            ws.cell(row=1, column=col).style = style_head_jun
+        for col in range(239,246):
+            ws.cell(row=1, column=col).style = style_head_quarter
+        for col in range(246,269):
+            ws.cell(row=1, column=col).style = style_head_jul
+        for col in range(269,292):
+            ws.cell(row=1, column=col).style = style_head_aug
+        for col in range(292,315):
+            ws.cell(row=1, column=col).style = style_head_sep
+        for col in range(315,322):
+            ws.cell(row=1, column=col).style = style_head_quarter
+        for col in range(322,345):
+            ws.cell(row=1, column=col).style = style_head_oct
+        for col in range(345,368):
+            ws.cell(row=1, column=col).style = style_head_nov
+        for col in range(368,391):
+            ws.cell(row=1, column=col).style = style_head_dec
+        for col in range(391,398):
+            ws.cell(row=1, column=col).style = style_head_quarter
+        for col in range(398,404):
+            ws.cell(row=1, column=col).style = style_head_incentive
+        ws.cell(row=1, column=404).style = style_head_white
+        for col in range(405,409):
+            ws.cell(row=1, column=col).style = style_head_bonus
+        ws.cell(row=1, column=409).style = style_head_total_remuneration
+        for col in range(410,415):
+            ws.cell(row=1, column=col).style = style_head_white
+        for col in range(415,419):
+            ws.cell(row=1, column=col).style = style_head_yellow   
+        ws.cell(row=1, column=419).style = style_head_total_cost 
 
+        for col in range(1,420):
+            ws.cell(row=2, column=col).style = style_row_2
 
         # Data
+        '''Head'''
         # Employee information
         ws.cell(row=1, column=1).value = "No"
         ws.cell(row=1, column=2).value = "SITE"
@@ -18100,10 +18489,10 @@ def hr_budget_and_cashflow_view(request,pk):
         ws.cell(row=1, column=9).value = "Sub-Department 3"
         ws.cell(row=1, column=10).value = "Area"
         ws.cell(row=1, column=11).value = "Province"
-        ws.cell(row=1, column=12).value = "Position"
-        ws.cell(row=1, column=13).value = "Joining date"
-        ws.cell(row=1, column=14).value = "Out date"
-        ws.cell(row=1, column=15).value = "Headcount"
+        ws.cell(row=1, column=12).value = "Sub-Province"
+        ws.cell(row=1, column=13).value = "Position"
+        ws.cell(row=1, column=14).value = "Joining date"
+        ws.cell(row=1, column=15).value = "Out date"
         ws.cell(row=1, column=16).value = "Headcount"
         ws.cell(row=1, column=17).value = "Headcount"
         ws.cell(row=1, column=18).value = "Headcount"
@@ -18115,181 +18504,4348 @@ def hr_budget_and_cashflow_view(request,pk):
         ws.cell(row=1, column=24).value = "Headcount"
         ws.cell(row=1, column=25).value = "Headcount"
         ws.cell(row=1, column=26).value = "Headcount"
-        ws.cell(row=1, column=27).value = "Basic Salary " + str(last_year)
-        ws.cell(row=1, column=28).value = ""
+        ws.cell(row=1, column=27).value = "Headcount"
+        ws.cell(row=1, column=28).value = "Basic Salary " + str(last_year)
+        ws.cell(row=1, column=29).value = ""
         # Full last year
-        ws.cell(row=1, column=29).value = "Basic Salary " + str(last_year)
-        ws.cell(row=1, column=30).value = "Overtime"
-        ws.cell(row=1, column=31).value = "Transportation"
-        ws.cell(row=1, column=32).value = "Phone"
-        ws.cell(row=1, column=33).value = "Lunch"
-        ws.cell(row=1, column=34).value = "Housing"
-        ws.cell(row=1, column=35).value = "KPI Achievement"
-        ws.cell(row=1, column=36).value = "Others"
-        ws.cell(row=1, column=37).value = "Travel"
-        ws.cell(row=1, column=38).value = "Seniority Bonus"
-        ws.cell(row=1, column=39).value = "Responsibility Allowance"
-        ws.cell(row=1, column=40).value = "Total Allowance"
-        ws.cell(row=1, column=41).value = "Gross income " + str(last_year)
-        ws.cell(row=1, column=42).value = "SHUI By Company (21.5%)"
-        ws.cell(row=1, column=43).value = "Trade Union fee (Company pay 2%)"
-        ws.cell(row=1, column=44).value = "Trade Union fee (Member)"
-        ws.cell(row=1, column=45).value = "Bank transfer fee"
-        ws.cell(row=1, column=46).value = "Incentive - Quarter 1." + str(last_year)
-        ws.cell(row=1, column=47).value = "Incentive - Quarter 2." + str(last_year)
-        ws.cell(row=1, column=48).value = "Incentive - Quarter 3." + str(last_year)
-        ws.cell(row=1, column=49).value = "Incentive - Quarter 4." + str(last_year)
-        ws.cell(row=1, column=50).value = "Incentive - Yearly " + str(last_year)
-        ws.cell(row=1, column=51).value = "Best Reward"
-        ws.cell(row=1, column=52).value = "13th Salary " + str(last_year)
-        ws.cell(row=1, column=53).value = "14th Salary " + str(last_year)
-        ws.cell(row=1, column=54).value = "Total Remuneration " + str(last_year)
-        ws.cell(row=1, column=55).value = "Target Value"
-        ws.cell(row=1, column=56).value = "Achievement"
-        ws.cell(row=1, column=57).value = "% Achievement vs Target"
-        ws.cell(row=1, column=58).value = "% Total Cost vs Achievement"
-        ws.cell(row=1, column=59).value = "% Total Cost vs Target"
-        ws.cell(row=1, column=60).value = "Full Year " + str(last_year)
+        ws.cell(row=1, column=30).value = "Basic Salary " + str(last_year)
+        ws.cell(row=1, column=31).value = "Overtime"
+        ws.cell(row=1, column=32).value = "Transportation"
+        ws.cell(row=1, column=33).value = "Phone"
+        ws.cell(row=1, column=34).value = "Lunch"
+        ws.cell(row=1, column=35).value = "Housing"
+        ws.cell(row=1, column=36).value = "KPI Achievement"
+        ws.cell(row=1, column=37).value = "Others"
+        ws.cell(row=1, column=38).value = "Travel"
+        ws.cell(row=1, column=39).value = "Seniority Bonus"
+        ws.cell(row=1, column=40).value = "Responsibility Allowance"
+        ws.cell(row=1, column=41).value = "Total Allowance"
+        ws.cell(row=1, column=42).value = "Gross income " + str(last_year)
+        ws.cell(row=1, column=43).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=44).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=45).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=46).value = "Bank transfer fee"
+        ws.cell(row=1, column=47).value = "Incentive - Quarter 1." + str(last_year)
+        ws.cell(row=1, column=48).value = "Incentive - Quarter 2." + str(last_year)
+        ws.cell(row=1, column=49).value = "Incentive - Quarter 3." + str(last_year)
+        ws.cell(row=1, column=50).value = "Incentive - Quarter 4." + str(last_year)
+        ws.cell(row=1, column=51).value = "Incentive - Yearly " + str(last_year)
+        ws.cell(row=1, column=52).value = "Best Reward"
+        ws.cell(row=1, column=53).value = "13th Salary " + str(last_year)
+        ws.cell(row=1, column=54).value = "14th Salary " + str(last_year)
+        ws.cell(row=1, column=55).value = "Total Remuneration " + str(last_year)
+        ws.cell(row=1, column=56).value = "Target Value"
+        ws.cell(row=1, column=57).value = "Achievement"
+        ws.cell(row=1, column=58).value = "% Achievement vs Target"
+        ws.cell(row=1, column=59).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=60).value = "% Total Cost vs Target"
+        ws.cell(row=1, column=61).value = "Full Year " + str(last_year)
         # Full this year
-        ws.cell(row=1, column=61).value = "Basic Salary " + str_current_year
-        ws.cell(row=1, column=62).value = "Overtime"
-        ws.cell(row=1, column=63).value = "Transportation"
-        ws.cell(row=1, column=64).value = "Phone"
-        ws.cell(row=1, column=65).value = "Lunch"
-        ws.cell(row=1, column=66).value = "Housing"
-        ws.cell(row=1, column=67).value = "KPI Achievement"
-        ws.cell(row=1, column=68).value = "Others"
-        ws.cell(row=1, column=69).value = "Travel"
-        ws.cell(row=1, column=70).value = "Seniority Bonus"
-        ws.cell(row=1, column=71).value = "Responsibility Allowance"
-        ws.cell(row=1, column=72).value = "Total Allowance"
-        ws.cell(row=1, column=73).value = "Gross income " + str_current_year
-        ws.cell(row=1, column=74).value = "SHUI By Company (21.5%)"
-        ws.cell(row=1, column=75).value = "Trade Union fee (Company pay 2%)"
-        ws.cell(row=1, column=76).value = "Trade Union fee (Member)"
-        ws.cell(row=1, column=77).value = "Bank transfer fee"
-        ws.cell(row=1, column=78).value = "Incentive - Quarter 1." + str_current_year
-        ws.cell(row=1, column=79).value = "Incentive - Quarter 2." + str_current_year
-        ws.cell(row=1, column=80).value = "Incentive - Quarter 3." + str_current_year
-        ws.cell(row=1, column=81).value = "Incentive - Quarter 4." + str_current_year
-        ws.cell(row=1, column=82).value = "Incentive - Yearly " + str_current_year
-        ws.cell(row=1, column=83).value = "Best Reward"
-        ws.cell(row=1, column=84).value = "13th Salary " + str_current_year
-        ws.cell(row=1, column=85).value = "14th Salary " + str_current_year
-        ws.cell(row=1, column=86).value = "Total Remuneration " + str_current_year
-        ws.cell(row=1, column=87).value = "Target Value"
-        ws.cell(row=1, column=88).value = "Achievement"
-        ws.cell(row=1, column=89).value = "% Achievement vs Target"
-        ws.cell(row=1, column=90).value = "% Total Cost vs Achievement"
-        ws.cell(row=1, column=91).value = "Full Year " + str_current_year
+        ws.cell(row=1, column=62).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=63).value = "Overtime"
+        ws.cell(row=1, column=64).value = "Transportation"
+        ws.cell(row=1, column=65).value = "Phone"
+        ws.cell(row=1, column=66).value = "Lunch"
+        ws.cell(row=1, column=67).value = "Housing"
+        ws.cell(row=1, column=68).value = "KPI Achievement"
+        ws.cell(row=1, column=69).value = "Others"
+        ws.cell(row=1, column=70).value = "Travel"
+        ws.cell(row=1, column=71).value = "Seniority Bonus"
+        ws.cell(row=1, column=72).value = "Responsibility Allowance"
+        ws.cell(row=1, column=73).value = "Total Allowance"
+        ws.cell(row=1, column=74).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=75).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=76).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=77).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=78).value = "Bank transfer fee"
+        ws.cell(row=1, column=79).value = "Incentive - Quarter 1." + str_current_year
+        ws.cell(row=1, column=80).value = "Incentive - Quarter 2." + str_current_year
+        ws.cell(row=1, column=81).value = "Incentive - Quarter 3." + str_current_year
+        ws.cell(row=1, column=82).value = "Incentive - Quarter 4." + str_current_year
+        ws.cell(row=1, column=83).value = "Incentive - Yearly " + str_current_year
+        ws.cell(row=1, column=84).value = "Best Reward"
+        ws.cell(row=1, column=85).value = "13th Salary " + str_current_year
+        ws.cell(row=1, column=86).value = "14th Salary " + str_current_year
+        ws.cell(row=1, column=87).value = "Total Remuneration " + str_current_year
+        ws.cell(row=1, column=88).value = "Target Value"
+        ws.cell(row=1, column=89).value = "Achievement"
+        ws.cell(row=1, column=90).value = "% Achievement vs Target"
+        ws.cell(row=1, column=91).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=92).value = "% Total Cost vs Target"
+        ws.cell(row=1, column=93).value = "Full Year " + str_current_year
         # Jan
-        ws.cell(row=1, column=92).value = "Basic Salary " + str_current_year
-        ws.cell(row=1, column=93).value = "Overtime"
-        ws.cell(row=1, column=94).value = "Transportation"
-        ws.cell(row=1, column=95).value = "Phone"
-        ws.cell(row=1, column=96).value = "Lunch"
-        ws.cell(row=1, column=97).value = "Housing"
-        ws.cell(row=1, column=98).value = "KPI Achievement"
-        ws.cell(row=1, column=99).value = "Others"
-        ws.cell(row=1, column=100).value = "Travel"
-        ws.cell(row=1, column=101).value = "Seniority Bonus"
-        ws.cell(row=1, column=102).value = "Responsibility Allowance"
-        ws.cell(row=1, column=103).value = "Total Allowance"
-        ws.cell(row=1, column=104).value = "Gross income " + str_current_year
-        ws.cell(row=1, column=105).value = "SHUI By Company (21.5%)"
-        ws.cell(row=1, column=106).value = "Trade Union fee (Company pay 2%)"
-        ws.cell(row=1, column=107).value = "Trade Union fee (Member)"
-        ws.cell(row=1, column=108).value = "Bank transfer fee"
-        ws.cell(row=1, column=109).value = "Total Cost"
-        ws.cell(row=1, column=110).value = "Target Value"
-        ws.cell(row=1, column=111).value = "Achievement"
-        ws.cell(row=1, column=112).value = "% Achievement vs Target"
-        ws.cell(row=1, column=113).value = "% Total Cost vs Achievement"
-        ws.cell(row=1, column=114).value = "Jan"
+        ws.cell(row=1, column=94).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=95).value = "Overtime"
+        ws.cell(row=1, column=96).value = "Transportation"
+        ws.cell(row=1, column=97).value = "Phone"
+        ws.cell(row=1, column=98).value = "Lunch"
+        ws.cell(row=1, column=99).value = "Housing"
+        ws.cell(row=1, column=100).value = "KPI Achievement"
+        ws.cell(row=1, column=101).value = "Others"
+        ws.cell(row=1, column=102).value = "Travel"
+        ws.cell(row=1, column=103).value = "Seniority Bonus"
+        ws.cell(row=1, column=104).value = "Responsibility Allowance"
+        ws.cell(row=1, column=105).value = "Total Allowance"
+        ws.cell(row=1, column=106).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=107).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=108).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=109).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=110).value = "Bank transfer fee"
+        ws.cell(row=1, column=111).value = "Total Cost"
+        ws.cell(row=1, column=112).value = "Target Value"
+        ws.cell(row=1, column=113).value = "Achievement"
+        ws.cell(row=1, column=114).value = "% Achievement vs Target"
+        ws.cell(row=1, column=115).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=116).value = "Jan"
         # Feb
-        ws.cell(row=1, column=115).value = "Basic Salary " + str_current_year
-        ws.cell(row=1, column=116).value = "Overtime"
-        ws.cell(row=1, column=117).value = "Transportation"
-        ws.cell(row=1, column=118).value = "Phone"
-        ws.cell(row=1, column=119).value = "Lunch"
-        ws.cell(row=1, column=120).value = "Housing"
-        ws.cell(row=1, column=121).value = "KPI Achievement"
-        ws.cell(row=1, column=122).value = "Others"
-        ws.cell(row=1, column=123).value = "Travel"
-        ws.cell(row=1, column=124).value = "Seniority Bonus"
-        ws.cell(row=1, column=125).value = "Responsibility Allowance"
-        ws.cell(row=1, column=126).value = "Total Allowance"
-        ws.cell(row=1, column=127).value = "Gross income " + str_current_year
-        ws.cell(row=1, column=128).value = "SHUI By Company (21.5%)"
-        ws.cell(row=1, column=129).value = "Trade Union fee (Company pay 2%)"
-        ws.cell(row=1, column=130).value = "Trade Union fee (Member)"
-        ws.cell(row=1, column=131).value = "Bank transfer fee"
-        ws.cell(row=1, column=132).value = "Total Cost"
-        ws.cell(row=1, column=133).value = "Target Value"
-        ws.cell(row=1, column=134).value = "Achievement"
-        ws.cell(row=1, column=135).value = "% Achievement vs Target"
-        ws.cell(row=1, column=136).value = "% Total Cost vs Achievement"
-        ws.cell(row=1, column=137).value = "Feb"
+        ws.cell(row=1, column=117).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=118).value = "Overtime"
+        ws.cell(row=1, column=119).value = "Transportation"
+        ws.cell(row=1, column=120).value = "Phone"
+        ws.cell(row=1, column=121).value = "Lunch"
+        ws.cell(row=1, column=122).value = "Housing"
+        ws.cell(row=1, column=123).value = "KPI Achievement"
+        ws.cell(row=1, column=124).value = "Others"
+        ws.cell(row=1, column=125).value = "Travel"
+        ws.cell(row=1, column=126).value = "Seniority Bonus"
+        ws.cell(row=1, column=127).value = "Responsibility Allowance"
+        ws.cell(row=1, column=128).value = "Total Allowance"
+        ws.cell(row=1, column=129).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=130).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=131).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=132).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=133).value = "Bank transfer fee"
+        ws.cell(row=1, column=134).value = "Total Cost"
+        ws.cell(row=1, column=135).value = "Target Value"
+        ws.cell(row=1, column=136).value = "Achievement"
+        ws.cell(row=1, column=137).value = "% Achievement vs Target"
+        ws.cell(row=1, column=138).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=139).value = "Feb"
         # Mar
-        ws.cell(row=1, column=138).value = "Basic Salary " + str_current_year
-        ws.cell(row=1, column=139).value = "Overtime"
-        ws.cell(row=1, column=140).value = "Transportation"
-        ws.cell(row=1, column=141).value = "Phone"
-        ws.cell(row=1, column=142).value = "Lunch"
-        ws.cell(row=1, column=143).value = "Housing"
-        ws.cell(row=1, column=144).value = "KPI Achievement"
-        ws.cell(row=1, column=145).value = "Others"
-        ws.cell(row=1, column=146).value = "Travel"
-        ws.cell(row=1, column=147).value = "Seniority Bonus"
-        ws.cell(row=1, column=148).value = "Responsibility Allowance"
-        ws.cell(row=1, column=149).value = "Total Allowance"
-        ws.cell(row=1, column=150).value = "Gross income " + str_current_year
-        ws.cell(row=1, column=151).value = "SHUI By Company (21.5%)"
-        ws.cell(row=1, column=152).value = "Trade Union fee (Company pay 2%)"
-        ws.cell(row=1, column=153).value = "Trade Union fee (Member)"
-        ws.cell(row=1, column=154).value = "Bank transfer fee"
-        ws.cell(row=1, column=155).value = "Total Cost"
-        ws.cell(row=1, column=156).value = "Target Value"
-        ws.cell(row=1, column=157).value = "Achievement"
-        ws.cell(row=1, column=158).value = "% Achievement vs Target"
-        ws.cell(row=1, column=159).value = "% Total Cost vs Achievement"
-        ws.cell(row=1, column=160).value = "Mar"
+        ws.cell(row=1, column=140).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=141).value = "Overtime"
+        ws.cell(row=1, column=142).value = "Transportation"
+        ws.cell(row=1, column=143).value = "Phone"
+        ws.cell(row=1, column=144).value = "Lunch"
+        ws.cell(row=1, column=145).value = "Housing"
+        ws.cell(row=1, column=146).value = "KPI Achievement"
+        ws.cell(row=1, column=147).value = "Others"
+        ws.cell(row=1, column=148).value = "Travel"
+        ws.cell(row=1, column=149).value = "Seniority Bonus"
+        ws.cell(row=1, column=150).value = "Responsibility Allowance"
+        ws.cell(row=1, column=151).value = "Total Allowance"
+        ws.cell(row=1, column=152).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=153).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=154).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=155).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=156).value = "Bank transfer fee"
+        ws.cell(row=1, column=157).value = "Total Cost"
+        ws.cell(row=1, column=158).value = "Target Value"
+        ws.cell(row=1, column=159).value = "Achievement"
+        ws.cell(row=1, column=160).value = "% Achievement vs Target"
+        ws.cell(row=1, column=161).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=162).value = "Mar"
         # Q1
-        ws.cell(row=1, column=161).value = "Target Q.1"
-        ws.cell(row=1, column=162).value = "Achievement Q.1"
-        ws.cell(row=1, column=163).value = "Total Cost Q.1"
-        ws.cell(row=1, column=164).value = "% Achievement vs Target Q.1"
-        ws.cell(row=1, column=165).value = "% Total Cost vs Achievement Q.1"
-        ws.cell(row=1, column=166).value = "% Total Cost vs Target"
-        ws.cell(row=1, column=167).value = "Quarter 1." + str_current_year
+        ws.cell(row=1, column=163).value = "Target Q.1"
+        ws.cell(row=1, column=164).value = "Achievement Q.1"
+        ws.cell(row=1, column=165).value = "Total Cost Q.1"
+        ws.cell(row=1, column=166).value = "% Achievement vs Target Q.1"
+        ws.cell(row=1, column=167).value = "% Total Cost vs Achievement Q.1"
+        ws.cell(row=1, column=168).value = "% Total Cost vs Target"
+        ws.cell(row=1, column=169).value = "Quarter 1." + str_current_year
         # Apr
-        ws.cell(row=1, column=168).value = "Basic Salary " + str_current_year
-        ws.cell(row=1, column=169).value = "Overtime"
-        ws.cell(row=1, column=170).value = "Transportation"
-        ws.cell(row=1, column=171).value = "Phone"
-        ws.cell(row=1, column=172).value = "Lunch"
-        ws.cell(row=1, column=173).value = "Housing"
-        ws.cell(row=1, column=174).value = "KPI Achievement"
-        ws.cell(row=1, column=175).value = "Others"
-        ws.cell(row=1, column=176).value = "Travel"
-        ws.cell(row=1, column=177).value = "Seniority Bonus"
-        ws.cell(row=1, column=178).value = "Responsibility Allowance"
-        ws.cell(row=1, column=179).value = "Total Allowance"
-        ws.cell(row=1, column=180).value = "Gross income " + str_current_year
-        ws.cell(row=1, column=181).value = "SHUI By Company (21.5%)"
-        ws.cell(row=1, column=182).value = "Trade Union fee (Company pay 2%)"
-        ws.cell(row=1, column=183).value = "Trade Union fee (Member)"
-        ws.cell(row=1, column=184).value = "Bank transfer fee"
-        ws.cell(row=1, column=185).value = "Total Cost"
-        ws.cell(row=1, column=186).value = "Target Value"
-        ws.cell(row=1, column=187).value = "Achievement"
-        ws.cell(row=1, column=188).value = "% Achievement vs Target"
-        ws.cell(row=1, column=189).value = "% Total Cost vs Achievement"
-        ws.cell(row=1, column=190).value = "Apr"
+        ws.cell(row=1, column=170).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=171).value = "Overtime"
+        ws.cell(row=1, column=172).value = "Transportation"
+        ws.cell(row=1, column=173).value = "Phone"
+        ws.cell(row=1, column=174).value = "Lunch"
+        ws.cell(row=1, column=175).value = "Housing"
+        ws.cell(row=1, column=176).value = "KPI Achievement"
+        ws.cell(row=1, column=177).value = "Others"
+        ws.cell(row=1, column=178).value = "Travel"
+        ws.cell(row=1, column=179).value = "Seniority Bonus"
+        ws.cell(row=1, column=180).value = "Responsibility Allowance"
+        ws.cell(row=1, column=181).value = "Total Allowance"
+        ws.cell(row=1, column=182).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=183).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=184).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=185).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=186).value = "Bank transfer fee"
+        ws.cell(row=1, column=187).value = "Total Cost"
+        ws.cell(row=1, column=188).value = "Target Value"
+        ws.cell(row=1, column=189).value = "Achievement"
+        ws.cell(row=1, column=190).value = "% Achievement vs Target"
+        ws.cell(row=1, column=191).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=192).value = "Apr"
+        # May
+        ws.cell(row=1, column=193).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=194).value = "Overtime"
+        ws.cell(row=1, column=195).value = "Transportation"
+        ws.cell(row=1, column=196).value = "Phone"
+        ws.cell(row=1, column=197).value = "Lunch"
+        ws.cell(row=1, column=198).value = "Housing"
+        ws.cell(row=1, column=199).value = "KPI Achievement"
+        ws.cell(row=1, column=200).value = "Others"
+        ws.cell(row=1, column=201).value = "Travel"
+        ws.cell(row=1, column=202).value = "Seniority Bonus"
+        ws.cell(row=1, column=203).value = "Responsibility Allowance"
+        ws.cell(row=1, column=204).value = "Total Allowance"
+        ws.cell(row=1, column=205).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=206).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=207).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=208).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=209).value = "Bank transfer fee"
+        ws.cell(row=1, column=210).value = "Total Cost"
+        ws.cell(row=1, column=211).value = "Target Value"
+        ws.cell(row=1, column=212).value = "Achievement"
+        ws.cell(row=1, column=213).value = "% Achievement vs Target"
+        ws.cell(row=1, column=214).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=215).value = "May"
+        # Jun
+        ws.cell(row=1, column=216).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=217).value = "Overtime"
+        ws.cell(row=1, column=218).value = "Transportation"
+        ws.cell(row=1, column=219).value = "Phone"
+        ws.cell(row=1, column=220).value = "Lunch"
+        ws.cell(row=1, column=221).value = "Housing"
+        ws.cell(row=1, column=222).value = "KPI Achievement"
+        ws.cell(row=1, column=223).value = "Others"
+        ws.cell(row=1, column=224).value = "Travel"
+        ws.cell(row=1, column=225).value = "Seniority Bonus"
+        ws.cell(row=1, column=226).value = "Responsibility Allowance"
+        ws.cell(row=1, column=227).value = "Total Allowance"
+        ws.cell(row=1, column=228).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=229).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=230).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=231).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=232).value = "Bank transfer fee"
+        ws.cell(row=1, column=233).value = "Total Cost"
+        ws.cell(row=1, column=234).value = "Target Value"
+        ws.cell(row=1, column=235).value = "Achievement"
+        ws.cell(row=1, column=236).value = "% Achievement vs Target"
+        ws.cell(row=1, column=237).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=238).value = "Jun"
+        # Q2
+        ws.cell(row=1, column=239).value = "Target Q.2"
+        ws.cell(row=1, column=240).value = "Achievement Q.2"
+        ws.cell(row=1, column=241).value = "Total Cost Q.2"
+        ws.cell(row=1, column=242).value = "% Achievement vs Target Q.2"
+        ws.cell(row=1, column=243).value = "% Total Cost vs Achievement Q.2"
+        ws.cell(row=1, column=244).value = "% Total Cost vs Target"
+        ws.cell(row=1, column=245).value = "Quarter 2." + str_current_year
+        # Jul
+        ws.cell(row=1, column=246).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=247).value = "Overtime"
+        ws.cell(row=1, column=248).value = "Transportation"
+        ws.cell(row=1, column=249).value = "Phone"
+        ws.cell(row=1, column=250).value = "Lunch"
+        ws.cell(row=1, column=251).value = "Housing"
+        ws.cell(row=1, column=252).value = "KPI Achievement"
+        ws.cell(row=1, column=253).value = "Others"
+        ws.cell(row=1, column=254).value = "Travel"
+        ws.cell(row=1, column=255).value = "Seniority Bonus"
+        ws.cell(row=1, column=256).value = "Responsibility Allowance"
+        ws.cell(row=1, column=257).value = "Total Allowance"
+        ws.cell(row=1, column=258).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=259).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=260).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=261).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=262).value = "Bank transfer fee"
+        ws.cell(row=1, column=263).value = "Total Cost"
+        ws.cell(row=1, column=264).value = "Target Value"
+        ws.cell(row=1, column=265).value = "Achievement"
+        ws.cell(row=1, column=266).value = "% Achievement vs Target"
+        ws.cell(row=1, column=267).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=268).value = "Jul"
+        # Aug
+        ws.cell(row=1, column=269).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=270).value = "Overtime"
+        ws.cell(row=1, column=271).value = "Transportation"
+        ws.cell(row=1, column=272).value = "Phone"
+        ws.cell(row=1, column=273).value = "Lunch"
+        ws.cell(row=1, column=274).value = "Housing"
+        ws.cell(row=1, column=275).value = "KPI Achievement"
+        ws.cell(row=1, column=276).value = "Others"
+        ws.cell(row=1, column=277).value = "Travel"
+        ws.cell(row=1, column=278).value = "Seniority Bonus"
+        ws.cell(row=1, column=279).value = "Responsibility Allowance"
+        ws.cell(row=1, column=280).value = "Total Allowance"
+        ws.cell(row=1, column=281).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=282).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=283).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=284).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=285).value = "Bank transfer fee"
+        ws.cell(row=1, column=286).value = "Total Cost"
+        ws.cell(row=1, column=287).value = "Target Value"
+        ws.cell(row=1, column=288).value = "Achievement"
+        ws.cell(row=1, column=289).value = "% Achievement vs Target"
+        ws.cell(row=1, column=290).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=291).value = "Aug"
+        # Sep
+        ws.cell(row=1, column=292).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=293).value = "Overtime"
+        ws.cell(row=1, column=294).value = "Transportation"
+        ws.cell(row=1, column=295).value = "Phone"
+        ws.cell(row=1, column=296).value = "Lunch"
+        ws.cell(row=1, column=297).value = "Housing"
+        ws.cell(row=1, column=298).value = "KPI Achievement"
+        ws.cell(row=1, column=299).value = "Others"
+        ws.cell(row=1, column=300).value = "Travel"
+        ws.cell(row=1, column=301).value = "Seniority Bonus"
+        ws.cell(row=1, column=302).value = "Responsibility Allowance"
+        ws.cell(row=1, column=303).value = "Total Allowance"
+        ws.cell(row=1, column=304).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=305).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=306).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=307).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=308).value = "Bank transfer fee"
+        ws.cell(row=1, column=309).value = "Total Cost"
+        ws.cell(row=1, column=310).value = "Target Value"
+        ws.cell(row=1, column=311).value = "Achievement"
+        ws.cell(row=1, column=312).value = "% Achievement vs Target"
+        ws.cell(row=1, column=313).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=314).value = "Sep"
+        # Q3
+        ws.cell(row=1, column=315).value = "Target Q.3"
+        ws.cell(row=1, column=316).value = "Achievement Q.3"
+        ws.cell(row=1, column=317).value = "Total Cost Q.3"
+        ws.cell(row=1, column=318).value = "% Achievement vs Target Q.3"
+        ws.cell(row=1, column=319).value = "% Total Cost vs Achievement Q.3"
+        ws.cell(row=1, column=320).value = "% Total Cost vs Target"
+        ws.cell(row=1, column=321).value = "Quarter 3." + str_current_year
+        # Oct
+        ws.cell(row=1, column=322).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=323).value = "Overtime"
+        ws.cell(row=1, column=324).value = "Transportation"
+        ws.cell(row=1, column=325).value = "Phone"
+        ws.cell(row=1, column=326).value = "Lunch"
+        ws.cell(row=1, column=327).value = "Housing"
+        ws.cell(row=1, column=328).value = "KPI Achievement"
+        ws.cell(row=1, column=329).value = "Others"
+        ws.cell(row=1, column=330).value = "Travel"
+        ws.cell(row=1, column=331).value = "Seniority Bonus"
+        ws.cell(row=1, column=332).value = "Responsibility Allowance"
+        ws.cell(row=1, column=333).value = "Total Allowance"
+        ws.cell(row=1, column=334).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=335).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=336).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=337).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=338).value = "Bank transfer fee"
+        ws.cell(row=1, column=339).value = "Total Cost"
+        ws.cell(row=1, column=340).value = "Target Value"
+        ws.cell(row=1, column=341).value = "Achievement"
+        ws.cell(row=1, column=342).value = "% Achievement vs Target"
+        ws.cell(row=1, column=343).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=344).value = "Oct"
+        # Nov
+        ws.cell(row=1, column=345).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=346).value = "Overtime"
+        ws.cell(row=1, column=347).value = "Transportation"
+        ws.cell(row=1, column=348).value = "Phone"
+        ws.cell(row=1, column=349).value = "Lunch"
+        ws.cell(row=1, column=350).value = "Housing"
+        ws.cell(row=1, column=351).value = "KPI Achievement"
+        ws.cell(row=1, column=352).value = "Others"
+        ws.cell(row=1, column=353).value = "Travel"
+        ws.cell(row=1, column=354).value = "Seniority Bonus"
+        ws.cell(row=1, column=355).value = "Responsibility Allowance"
+        ws.cell(row=1, column=356).value = "Total Allowance"
+        ws.cell(row=1, column=357).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=358).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=359).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=360).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=361).value = "Bank transfer fee"
+        ws.cell(row=1, column=362).value = "Total Cost"
+        ws.cell(row=1, column=363).value = "Target Value"
+        ws.cell(row=1, column=364).value = "Achievement"
+        ws.cell(row=1, column=365).value = "% Achievement vs Target"
+        ws.cell(row=1, column=366).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=367).value = "Nov"
+        # Dec
+        ws.cell(row=1, column=368).value = "Basic Salary " + str_current_year
+        ws.cell(row=1, column=369).value = "Overtime"
+        ws.cell(row=1, column=370).value = "Transportation"
+        ws.cell(row=1, column=371).value = "Phone"
+        ws.cell(row=1, column=372).value = "Lunch"
+        ws.cell(row=1, column=373).value = "Housing"
+        ws.cell(row=1, column=374).value = "KPI Achievement"
+        ws.cell(row=1, column=375).value = "Others"
+        ws.cell(row=1, column=376).value = "Travel"
+        ws.cell(row=1, column=377).value = "Seniority Bonus"
+        ws.cell(row=1, column=378).value = "Responsibility Allowance"
+        ws.cell(row=1, column=379).value = "Total Allowance"
+        ws.cell(row=1, column=380).value = "Gross income " + str_current_year
+        ws.cell(row=1, column=381).value = "SHUI By Company (21.5%)"
+        ws.cell(row=1, column=382).value = "Trade Union fee (Company pay 2%)"
+        ws.cell(row=1, column=383).value = "Trade Union fee (Member)"
+        ws.cell(row=1, column=384).value = "Bank transfer fee"
+        ws.cell(row=1, column=385).value = "Total Cost"
+        ws.cell(row=1, column=386).value = "Target Value"
+        ws.cell(row=1, column=387).value = "Achievement"
+        ws.cell(row=1, column=388).value = "% Achievement vs Target"
+        ws.cell(row=1, column=389).value = "% Total Cost vs Achievement"
+        ws.cell(row=1, column=390).value = "Dec"
+        # Q4
+        ws.cell(row=1, column=391).value = "Target Q.4"
+        ws.cell(row=1, column=392).value = "Achievement Q.4"
+        ws.cell(row=1, column=393).value = "Total Cost Q.4"
+        ws.cell(row=1, column=394).value = "% Achievement vs Target Q.4"
+        ws.cell(row=1, column=395).value = "% Total Cost vs Achievement Q.4"
+        ws.cell(row=1, column=396).value = "% Total Cost vs Target"
+        ws.cell(row=1, column=397).value = "Quarter 4." + str_current_year
+        # Incentive
+        ws.cell(row=1, column=398).value = "Incentive - Quarter 1." + str_current_year
+        ws.cell(row=1, column=399).value = "Incentive - Quarter 2." + str_current_year
+        ws.cell(row=1, column=400).value = "Incentive - Quarter 3." + str_current_year
+        ws.cell(row=1, column=401).value = "Incentive - Quarter 4." + str_current_year
+        ws.cell(row=1, column=402).value = "Incentive - Yearly " + str_current_year
+        ws.cell(row=1, column=403).value = "Best Reward " + str_current_year
+        # Others
+        ws.cell(row=1, column=404).value = ""
+        ws.cell(row=1, column=405).value = ""
+        ws.cell(row=1, column=406).value = "13th Salary " + str_current_year
+        ws.cell(row=1, column=407).value = "14th Salary " + str_current_year + " / Yearly Bonus"
+        ws.cell(row=1, column=408).value = "Total Bonus"
+        ws.cell(row=1, column=409).value = "Total Remuneration"
+        ws.cell(row=1, column=410).value = ""
+        ws.cell(row=1, column=411).value = "Company celebration"
+        ws.cell(row=1, column=412).value = "Health Check up"
+        ws.cell(row=1, column=413).value = "Healthcare Insurance"
+        ws.cell(row=1, column=414).value = ""
+        ws.cell(row=1, column=415).value = "Saving from vacant"
+        ws.cell(row=1, column=416).value = "Chênh lệch lương"
+        ws.cell(row=1, column=417).value = "Chênh lệch 5% BHXH"
+        ws.cell(row=1, column=418).value = "Chênh lệch 5% KPCĐ"
+        ws.cell(row=1, column=419).value = "Total cost"
+
+        # Row 2
+        # Employee information
+        for col in range(1,16):
+            ws.cell(row=2, column=col).value = ""
+        ws.cell(row=2, column=16).value = "Jan"
+        ws.cell(row=2, column=17).value = "Feb"
+        ws.cell(row=2, column=18).value = "Mar"
+        ws.cell(row=2, column=19).value = "Apr"
+        ws.cell(row=2, column=20).value = "May"
+        ws.cell(row=2, column=21).value = "Jun"
+        ws.cell(row=2, column=22).value = "Jul"
+        ws.cell(row=2, column=23).value = "Aug"
+        ws.cell(row=2, column=24).value = "Sep"
+        ws.cell(row=2, column=25).value = "Oct"
+        ws.cell(row=2, column=26).value = "Nov"
+        ws.cell(row=2, column=27).value = "Dec"
+        ws.cell(row=2, column=28).value = ""
+        ws.cell(row=2, column=29).value = ""
+        # Full last year
+        for col in range(30,62):
+            ws.cell(row=2, column=col).value = "Full Year " + str(last_year)
+        ws.cell(row=2, column=62).value = ""
+        # Full this year
+        for col in range(62,94):
+            ws.cell(row=2, column=col).value = "Full Year " + str_current_year
+        ws.cell(row=2, column=92).value = ""
+        # Jan
+        for col in range(94,117):
+            ws.cell(row=2, column=col).value = "Jan"
+        # Feb
+        for col in range(117,140):
+            ws.cell(row=2, column=col).value = "Feb"
+        # Mar
+        for col in range(140,163):
+            ws.cell(row=2, column=col).value = "Mar"
+        # Q1
+        for col in range(163,170):
+            ws.cell(row=2, column=col).value = ""
+        # Apr
+        for col in range(170,193):
+            ws.cell(row=2, column=col).value = "Apr"
+        # May
+        for col in range(193,216):
+            ws.cell(row=2, column=col).value = "May"
+        # Jun
+        for col in range(216,239):
+            ws.cell(row=2, column=col).value = "Jun"
+        # Q2
+        for col in range(239,246):
+            ws.cell(row=2, column=col).value = ""
+        # Jul
+        for col in range(246,269):
+            ws.cell(row=2, column=col).value = "Jul"
+        # Aug
+        for col in range(269,292):
+            ws.cell(row=2, column=col).value = "Aug"
+        # Sep
+        for col in range(292,315):
+            ws.cell(row=2, column=col).value = "Sep"
+        # Q3
+        for col in range(315,322):
+            ws.cell(row=2, column=col).value = ""
+        # Oct
+        for col in range(322,345):
+            ws.cell(row=2, column=col).value = "Oct"
+        # Nov
+        for col in range(345,368):
+            ws.cell(row=2, column=col).value = "Nov"
+        # Dec
+        for col in range(368,391):
+            ws.cell(row=2, column=col).value = "Dec"
+        # Q4 and others
+        for col in range(391,421):
+            ws.cell(row=2, column=col).value = ""
+
+
+        '''Body'''
+        # Data
+        for index, data in enumerate(list_data):
+            # Col 1 (No)
+            ws.cell(row=index+3, column=1).value = index + 1
+            # Set row height
+            ws.row_dimensions[index+3].height = 40
+
+            if data['employee'].out_date == None: # Active employee
+                # Set style
+                for col in range(1,420):
+                    ws.cell(row=index+3, column=col).style = style_data_active
+                # Employee information
+                ws.cell(row=index+3, column=2).value = str(data['employee'].site)
+                ws.cell(row=index+3, column=3).value = str(data['employee'].employee_code)
+                ws.cell(row=index+3, column=4).value = str(data['employee'].full_name)
+                ws.cell(row=index+3, column=5).value = str(data['employee'].gp)
+                ws.cell(row=index+3, column=6).value = str(data['employee'].department_e)
+                ws.cell(row=index+3, column=7).value = str(data['employee'].sub_department_1)
+                ws.cell(row=index+3, column=8).value = str(data['employee'].sub_department_2)
+                ws.cell(row=index+3, column=9).value = str(data['employee'].sub_department_3)
+                ws.cell(row=index+3, column=10).value = str(data['employee'].area)
+                ws.cell(row=index+3, column=11).value = str(data['employee'].provinces)
+                ws.cell(row=index+3, column=12).value = str(data['employee'].sub_province)
+                ws.cell(row=index+3, column=13).value = str(data['employee'].position_e)
+                ws.cell(row=index+3, column=14).value = str(data['employee'].joining_date.strftime("%d/%m/%Y"))
+                ws.cell(row=index+3, column=15).value = ""
+                ws.cell(row=index+3, column=16).value = str(data['head_count_jan'])
+                ws.cell(row=index+3, column=17).value = str(data['head_count_feb'])
+                ws.cell(row=index+3, column=18).value = str(data['head_count_mar'])
+                ws.cell(row=index+3, column=19).value = str(data['head_count_apr'])
+                ws.cell(row=index+3, column=20).value = str(data['head_count_may'])
+                ws.cell(row=index+3, column=21).value = str(data['head_count_jun'])
+                ws.cell(row=index+3, column=22).value = str(data['head_count_jul'])
+                ws.cell(row=index+3, column=23).value = str(data['head_count_aug'])
+                ws.cell(row=index+3, column=24).value = str(data['head_count_sep'])
+                ws.cell(row=index+3, column=25).value = str(data['head_count_oct'])
+                ws.cell(row=index+3, column=26).value = str(data['head_count_nov'])
+                ws.cell(row=index+3, column=27).value = str(data['head_count_dec'])
+                ws.cell(row=index+3, column=28).value = locale.format_string("%d", round((data['basic_salary_last_year'])), grouping=True)
+                ws.cell(row=index+3, column=29).value = ""
+                ws.cell(row=index+3, column=30).value = locale.format_string("%d", round(data['basic_salary_full_last_year']), grouping=True)
+                # Full last year
+                ws.cell(row=index+3, column=31).value = locale.format_string("%d", round(data['overtime_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=32).value = locale.format_string("%d", round(data['transportation_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=33).value = locale.format_string("%d", round(data['phone_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=34).value = locale.format_string("%d", round(data['lunch_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=35).value = locale.format_string("%d", round(data['housing_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=36).value = locale.format_string("%d", round(data['KPI_achievement_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=37).value = locale.format_string("%d", round(data['others_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=38).value = locale.format_string("%d", round(data['travel_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=39).value = locale.format_string("%d", round(data['seniority_bonus_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=40).value = locale.format_string("%d", round(data['responsibility_allowance_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=41).value = locale.format_string("%d", round(data['total_allowance_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=42).value = locale.format_string("%d", round(data['gross_income_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=43).value = locale.format_string("%d", round(data['SHUI_21point5percent_company_pay_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=44).value = locale.format_string("%d", round(data['trade_union_fee_company_pay_2percent_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=45).value = locale.format_string("%d", round(data['trade_union_fee_member_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=46).value = locale.format_string("%d", round(data['transfer_bank_salary_full_last_year']), grouping=True)
+
+                if data['incentive_quarter_1_last_year'] == 'x':
+                    ws.cell(row=index+3, column=47).value = ""
+                else:
+                    ws.cell(row=index+3, column=47).value = locale.format_string("%d", round(data['incentive_quarter_1_last_year'].incentive), grouping=True)
+                if data['incentive_quarter_2_last_year'] == 'x':
+                    ws.cell(row=index+3, column=48).value = ""
+                else:
+                    ws.cell(row=index+3, column=48).value = locale.format_string("%d", round(data['incentive_quarter_2_last_year'].incentive), grouping=True)
+                if data['incentive_quarter_3_last_year'] == 'x':
+                    ws.cell(row=index+3, column=49).value = ""
+                else:
+                    ws.cell(row=index+3, column=49).value = locale.format_string("%d", round(data['incentive_quarter_3_last_year'].incentive), grouping=True)
+                if data['incentive_quarter_4_last_year'] == 'x':
+                    ws.cell(row=index+3, column=50).value = ""
+                else:
+                    ws.cell(row=index+3, column=50).value = locale.format_string("%d", round(data['incentive_quarter_4_last_year'].incentive), grouping=True)
+                if data['incentive_yearly_last_year'] == 'x':
+                    ws.cell(row=index+3, column=51).value = ""
+                else:
+                    ws.cell(row=index+3, column=51).value = locale.format_string("%d", round(data['incentive_yearly_last_year'].incentive), grouping=True)
+                if data['best_reward_last_year'] == 'x':
+                    ws.cell(row=index+3, column=52).value = ""
+                else:
+                    ws.cell(row=index+3, column=52).value = locale.format_string("%d", round(data['best_reward_last_year'].best_reward), grouping=True)
+ 
+                ws.cell(row=index+3, column=53).value = locale.format_string("%d", round(data['month_13_salary_Pro_ata_full_last_year']), grouping=True)
+
+                if data['month_14_salary_Pro_ata_full_last_year'] == 'x':
+                    ws.cell(row=index+3, column=54).value = ""
+                else:
+                    ws.cell(row=index+3, column=54).value = locale.format_string("%d", round(data['month_14_salary_Pro_ata_full_last_year'].month_14_salary), grouping=True)
+ 
+                ws.cell(row=index+3, column=55).value = locale.format_string("%d", round(data['total_remuneration_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=56).value = locale.format_string("%d", round(data['target_value_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=57).value = locale.format_string("%d", round(data['achievement_full_last_year']), grouping=True)
+
+                ws.cell(row=index+3, column=58).value = locale.format_string("%d", round(data['achievement_vs_target_last_year']), grouping=True) + '%'
+                ws.cell(row=index+3, column=59).value = locale.format_string("%d", round(data['total_cost_vs_achievement_last_year']), grouping=True) + '%'
+                ws.cell(row=index+3, column=60).value = locale.format_string("%d", round(data['total_cost_vs_target_last_year']), grouping=True) + '%'
+                ws.cell(row=index+3, column=61).value = ""
+                # Full this year
+                ws.cell(row=index+3, column=62).value = locale.format_string("%d", round(data['basic_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=63).value = locale.format_string("%d", round(data['overtime_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=64).value = locale.format_string("%d", round(data['transportation_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=65).value = locale.format_string("%d", round(data['phone_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=66).value = locale.format_string("%d", round(data['lunch_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=67).value = locale.format_string("%d", round(data['housing_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=68).value = locale.format_string("%d", round(data['KPI_achievement_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=69).value = locale.format_string("%d", round(data['others_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=70).value = locale.format_string("%d", round(data['travel_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=71).value = locale.format_string("%d", round(data['seniority_bonus_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=72).value = locale.format_string("%d", round(data['responsibility_allowance_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=73).value = locale.format_string("%d", round(data['total_allowance_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=74).value = locale.format_string("%d", round(data['gross_income_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=75).value = locale.format_string("%d", round(data['SHUI_21point5percent_company_pay_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=76).value = locale.format_string("%d", round(data['trade_union_fee_company_pay_2percent_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=77).value = locale.format_string("%d", round(data['trade_union_fee_member_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=78).value = locale.format_string("%d", round(data['transfer_bank_salary_full_current_year']), grouping=True)
+
+                if data['incentive_quarter_1_current_year'] == 'x':
+                    ws.cell(row=index+3, column=79).value = ""
+                else:
+                    ws.cell(row=index+3, column=79).value = locale.format_string("%d", round(data['incentive_quarter_1_current_year'].incentive), grouping=True)
+                if data['incentive_quarter_2_current_year'] == 'x':
+                    ws.cell(row=index+3, column=80).value = ""
+                else:
+                    ws.cell(row=index+3, column=80).value = locale.format_string("%d", round(data['incentive_quarter_2_current_year'].incentive), grouping=True)
+                if data['incentive_quarter_3_current_year'] == 'x':
+                    ws.cell(row=index+3, column=81).value = ""
+                else:
+                    ws.cell(row=index+3, column=81).value = locale.format_string("%d", round(data['incentive_quarter_3_current_year'].incentive), grouping=True)
+                if data['incentive_quarter_4_current_year'] == 'x':
+                    ws.cell(row=index+3, column=82).value = ""
+                else:
+                    ws.cell(row=index+3, column=82).value = locale.format_string("%d", round(data['incentive_quarter_4_current_year'].incentive), grouping=True)
+                if data['incentive_yearly_current_year'] == 'x':
+                    ws.cell(row=index+3, column=83).value = ""
+                else:
+                    ws.cell(row=index+3, column=83).value = locale.format_string("%d", round(data['incentive_yearly_current_year'].incentive), grouping=True)
+                if data['best_reward_current_year'] == 'x':
+                    ws.cell(row=index+3, column=84).value = ""
+                else:
+                    ws.cell(row=index+3, column=84).value = locale.format_string("%d", round(data['best_reward_current_year'].best_reward), grouping=True)
+
+                ws.cell(row=index+3, column=85).value = locale.format_string("%d", round(data['month_13_salary_Pro_ata_full_current_year']), grouping=True)
+
+                if data['month_14_salary_Pro_ata_full_current_year'] == 'x':
+                    ws.cell(row=index+3, column=86).value = ""
+                else:
+                    ws.cell(row=index+3, column=86).value = locale.format_string("%d", round(data['month_14_salary_Pro_ata_full_current_year'].month_14_salary), grouping=True)
+                
+                ws.cell(row=index+3, column=87).value = locale.format_string("%d", round(data['total_remuneration_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=88).value = locale.format_string("%d", round(data['target_value_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=89).value = locale.format_string("%d", round(data['achievement_full_current_year']), grouping=True)
+
+                ws.cell(row=index+3, column=90).value = locale.format_string("%d", round(data['achievement_vs_target_current_year']), grouping=True) + '%'
+                ws.cell(row=index+3, column=91).value = locale.format_string("%d", round(data['total_cost_vs_achievement_current_year']), grouping=True) + '%'
+                ws.cell(row=index+3, column=92).value = locale.format_string("%d", round(data['total_cost_vs_target_current_year']), grouping=True) + '%'
+                ws.cell(row=index+3, column=93).value = ""
+                # Jan
+                if data['payroll_data_jan'] != "":
+                    ws.cell(row=index+3, column=94).value = locale.format_string("%d", round(data['payroll_data_jan'].gross_income), grouping=True)
+                    if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=95).value = 0
+                        ws.cell(row=index+3, column=96).value = 0
+                    else:
+                        ws.cell(row=index+3, column=95).value = locale.format_string("%d", round(data['payroll_data_jan'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=96).value = locale.format_string("%d", round(data['payroll_data_jan'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=97).value = locale.format_string("%d", round(data['payroll_data_jan'].phone), grouping=True)
+                    ws.cell(row=index+3, column=98).value = locale.format_string("%d", round(data['payroll_data_jan'].lunch), grouping=True)
+                    if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=99).value = locale.format_string("%d", round(data['payroll_data_jan'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=99).value = 0
+                    if data['payroll_data_jan'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=100).value = locale.format_string("%d", round(data['payroll_data_jan'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=100).value = 0
+                    ws.cell(row=index+3, column=101).value = locale.format_string("%d", round(data['payroll_data_jan'].other), grouping=True)
+                    ws.cell(row=index+3, column=102).value = locale.format_string("%d", round(data['payroll_data_jan'].travel), grouping=True)
+                    ws.cell(row=index+3, column=103).value = locale.format_string("%d", round(data['payroll_data_jan'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=104).value = locale.format_string("%d", round(data['payroll_data_jan'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_jan'].employee.site.site == 'RO':
+                        if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=105).value =locale.format_string("%d", round(data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].housing_vnd + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility) , grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=105).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility) , grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=105).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].KPI_achievement + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility) , grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=105).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility) , grouping=True)
+                    # Gross income
+                    if data['payroll_data_jan'].employee.site.site == 'RO':
+                        if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=106).value =locale.format_string("%d", round(data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].housing_vnd + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income) , grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=106).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income) , grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=106).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].KPI_achievement + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income) , grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=106).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income) , grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_jan'].employee.site.site == 'RO':
+                        if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=107).value =locale.format_string("%d", round(data['payroll_data_jan'].SHUI_9point5percent_employee_pay + data['payroll_data_jan'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_jan'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=107).value =locale.format_string("%d", round(data['payroll_data_jan'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=107).value =locale.format_string("%d", round(data['payroll_data_jan'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=107).value =locale.format_string("%d", round(data['payroll_data_jan'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_jan'].employee.site.site == 'RO':
+                        if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=108).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_jan'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=108).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=108).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=108).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_jan'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=109).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=109).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=109).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=110).value = 0
+                    else:
+                        ws.cell(row=index+3, column=110).value =locale.format_string("%d", round(data['payroll_data_jan'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_jan'].employee.site.site == 'RO':
+                        if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=111).value =locale.format_string("%d", round(data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].housing_vnd + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income + data['payroll_data_jan'].SHUI_9point5percent_employee_pay + data['payroll_data_jan'].SHUI_20point5percent_employer_pay + data['payroll_data_jan'].trade_union_fee_company_pay + data['payroll_data_jan'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_jan'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=111).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income + data['payroll_data_jan'].SHUI_21point5percent_employer_pay + data['payroll_data_jan'].trade_union_fee_company_pay_2percent + data['payroll_data_jan'].trade_union_fee_member + data['payroll_data_jan'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=111).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income + data['payroll_data_jan'].SHUI_21point5percent_company_pay + data['payroll_data_jan'].trade_union_fee_company_pay_2percent + data['payroll_data_jan'].trade_union_fee_member + data['payroll_data_jan'].transfer_bank), grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=111).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].KPI_achievement + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income + data['payroll_data_jan'].SHUI_21point5percent_company_pay + data['payroll_data_jan'].trade_union_fee_company_pay + data['payroll_data_jan'].trade_union_fee_employee_pay + data['payroll_data_jan'].transfer_bank), grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=111).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income + data['payroll_data_jan'].SHUI_21point5percent_company_pay + data['payroll_data_jan'].trade_union_fee_company_pay + data['payroll_data_jan'].trade_union_fee_staff_pay + data['payroll_data_jan'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_jan'] == 'x':
+                        ws.cell(row=index+3, column=112).value = 0
+                    else:
+                        ws.cell(row=index+3, column=112).value = locale.format_string("%d", round(data['target_value_jan'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_jan'] == 'x':
+                        ws.cell(row=index+3, column=113).value = 0
+                    else:
+                        ws.cell(row=index+3, column=113).value = locale.format_string("%d", round(data['achievement_jan'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_jan'] == '':
+                        ws.cell(row=index+3, column=114).value = 0
+                    else:
+                        ws.cell(row=index+3, column=114).value = str(data['achievement_vs_target_jan']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_jan'] == '':
+                        ws.cell(row=index+3, column=115).value = 0
+                    else:
+                        ws.cell(row=index+3, column=115).value = str(data['total_cost_vs_achievement_jan']) + '%'
+                    ws.cell(row=index+3, column=116).value = ''
+                else:
+                    pass
+
+                # Feb
+                if data['payroll_data_feb'] != "":
+                    ws.cell(row=index+3, column=117).value = locale.format_string("%d", round(data['payroll_data_feb'].gross_income), grouping=True)
+                    if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=118).value = 0
+                        ws.cell(row=index+3, column=119).value = 0
+                    else:
+                        ws.cell(row=index+3, column=118).value = locale.format_string("%d", round(data['payroll_data_feb'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=119).value = locale.format_string("%d", round(data['payroll_data_feb'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=120).value = locale.format_string("%d", round(data['payroll_data_feb'].phone), grouping=True)
+                    ws.cell(row=index+3, column=121).value = locale.format_string("%d", round(data['payroll_data_feb'].lunch), grouping=True)
+                    if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=122).value = locale.format_string("%d", round(data['payroll_data_feb'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=122).value = 0
+                    if data['payroll_data_feb'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=123).value = locale.format_string("%d", round(data['payroll_data_feb'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=123).value = 0
+                    ws.cell(row=index+3, column=124).value = locale.format_string("%d", round(data['payroll_data_feb'].other), grouping=True)
+                    ws.cell(row=index+3, column=125).value = locale.format_string("%d", round(data['payroll_data_feb'].travel), grouping=True)
+                    ws.cell(row=index+3, column=126).value = locale.format_string("%d", round(data['payroll_data_feb'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=127).value = locale.format_string("%d", round(data['payroll_data_feb'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_feb'].employee.site.site == 'RO':
+                        if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=128).value =locale.format_string("%d", round(data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].housing_vnd + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=128).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=128).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].KPI_achievement + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=128).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_feb'].employee.site.site == 'RO':
+                        if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=129).value =locale.format_string("%d", round(data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].housing_vnd + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=129).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=129).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].KPI_achievement + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=129).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_feb'].employee.site.site == 'RO':
+                        if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=130).value =locale.format_string("%d", round(data['payroll_data_feb'].SHUI_9point5percent_employee_pay + data['payroll_data_feb'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_feb'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=130).value =locale.format_string("%d", round(data['payroll_data_feb'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=130).value =locale.format_string("%d", round(data['payroll_data_feb'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=130).value =locale.format_string("%d", round(data['payroll_data_feb'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_feb'].employee.site.site == 'RO':
+                        if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=131).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_feb'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=131).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=131).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=131).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_feb'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=132).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=132).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=132).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=133).value = 0
+                    else:
+                        ws.cell(row=index+3, column=133).value =locale.format_string("%d", round(data['payroll_data_feb'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_feb'].employee.site.site == 'RO':
+                        if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=134).value =locale.format_string("%d", round(data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].housing_vnd + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income + data['payroll_data_feb'].SHUI_9point5percent_employee_pay + data['payroll_data_feb'].SHUI_20point5percent_employer_pay + data['payroll_data_feb'].trade_union_fee_company_pay + data['payroll_data_feb'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_feb'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=134).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income + data['payroll_data_feb'].SHUI_21point5percent_employer_pay + data['payroll_data_feb'].trade_union_fee_company_pay_2percent + data['payroll_data_feb'].trade_union_fee_member + data['payroll_data_feb'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=134).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income + data['payroll_data_feb'].SHUI_21point5percent_company_pay + data['payroll_data_feb'].trade_union_fee_company_pay_2percent + data['payroll_data_feb'].trade_union_fee_member + data['payroll_data_feb'].transfer_bank), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=134).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].KPI_achievement + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income + data['payroll_data_feb'].SHUI_21point5percent_company_pay + data['payroll_data_feb'].trade_union_fee_company_pay + data['payroll_data_feb'].trade_union_fee_employee_pay + data['payroll_data_feb'].transfer_bank), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=134).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income + data['payroll_data_feb'].SHUI_21point5percent_company_pay + data['payroll_data_feb'].trade_union_fee_company_pay + data['payroll_data_feb'].trade_union_fee_staff_pay + data['payroll_data_feb'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_feb'] == 'x':
+                        ws.cell(row=index+3, column=135).value = 0
+                    else:
+                        ws.cell(row=index+3, column=135).value = locale.format_string("%d", round(data['target_value_feb'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_feb'] == 'x':
+                        ws.cell(row=index+3, column=136).value = 0
+                    else:
+                        ws.cell(row=index+3, column=136).value = locale.format_string("%d", round(data['achievement_feb'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_feb'] == '':
+                        ws.cell(row=index+3, column=137).value = 0
+                    else:
+                        ws.cell(row=index+3, column=137).value = str(data['achievement_vs_target_feb']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_feb'] == '':
+                        ws.cell(row=index+3, column=138).value = 0
+                    else:
+                        ws.cell(row=index+3, column=138).value = str(data['total_cost_vs_achievement_feb']) + '%'
+                    ws.cell(row=index+3, column=139).value = ''
+                else:
+                    pass
+
+                # Mar
+                if data['payroll_data_mar'] != "":
+                    ws.cell(row=index+3, column=140).value = locale.format_string("%d", round(data['payroll_data_mar'].gross_income), grouping=True)
+                    if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=141).value = 0
+                        ws.cell(row=index+3, column=142).value = 0
+                    else:
+                        ws.cell(row=index+3, column=141).value = locale.format_string("%d", round(data['payroll_data_mar'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=142).value = locale.format_string("%d", round(data['payroll_data_mar'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=143).value = locale.format_string("%d", round(data['payroll_data_mar'].phone), grouping=True)
+                    ws.cell(row=index+3, column=144).value = locale.format_string("%d", round(data['payroll_data_mar'].lunch), grouping=True)
+                    if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=145).value = locale.format_string("%d", round(data['payroll_data_mar'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=145).value = 0
+                    if data['payroll_data_mar'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=146).value = locale.format_string("%d", round(data['payroll_data_mar'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=146).value = 0
+                    ws.cell(row=index+3, column=147).value = locale.format_string("%d", round(data['payroll_data_mar'].other), grouping=True)
+                    ws.cell(row=index+3, column=148).value = locale.format_string("%d", round(data['payroll_data_mar'].travel), grouping=True)
+                    ws.cell(row=index+3, column=149).value = locale.format_string("%d", round(data['payroll_data_mar'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=150).value = locale.format_string("%d", round(data['payroll_data_mar'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_mar'].employee.site.site == 'RO':
+                        if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=151).value =locale.format_string("%d", round(data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].housing_vnd + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=151).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=151).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].KPI_achievement + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=151).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_mar'].employee.site.site == 'RO':
+                        if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=152).value =locale.format_string("%d", round(data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].housing_vnd + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=152).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=152).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].KPI_achievement + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=152).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_mar'].employee.site.site == 'RO':
+                        if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=153).value =locale.format_string("%d", round(data['payroll_data_mar'].SHUI_9point5percent_employee_pay + data['payroll_data_mar'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_mar'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=153).value =locale.format_string("%d", round(data['payroll_data_mar'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=153).value =locale.format_string("%d", round(data['payroll_data_mar'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=153).value =locale.format_string("%d", round(data['payroll_data_mar'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_mar'].employee.site.site == 'RO':
+                        if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=154).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_mar'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=154).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=154).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=154).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_mar'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=155).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=155).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=155).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=156).value = 0
+                    else:
+                        ws.cell(row=index+3, column=156).value =locale.format_string("%d", round(data['payroll_data_mar'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_mar'].employee.site.site == 'RO':
+                        if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=157).value =locale.format_string("%d", round(data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].housing_vnd + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income + data['payroll_data_mar'].SHUI_9point5percent_employee_pay + data['payroll_data_mar'].SHUI_20point5percent_employer_pay + data['payroll_data_mar'].trade_union_fee_company_pay + data['payroll_data_mar'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_mar'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=157).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income + data['payroll_data_mar'].SHUI_21point5percent_employer_pay + data['payroll_data_mar'].trade_union_fee_company_pay_2percent + data['payroll_data_mar'].trade_union_fee_member + data['payroll_data_mar'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=157).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income + data['payroll_data_mar'].SHUI_21point5percent_company_pay + data['payroll_data_mar'].trade_union_fee_company_pay_2percent + data['payroll_data_mar'].trade_union_fee_member + data['payroll_data_mar'].transfer_bank), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=157).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].KPI_achievement + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income + data['payroll_data_mar'].SHUI_21point5percent_company_pay + data['payroll_data_mar'].trade_union_fee_company_pay + data['payroll_data_mar'].trade_union_fee_employee_pay + data['payroll_data_mar'].transfer_bank), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=157).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income + data['payroll_data_mar'].SHUI_21point5percent_company_pay + data['payroll_data_mar'].trade_union_fee_company_pay + data['payroll_data_mar'].trade_union_fee_staff_pay + data['payroll_data_mar'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_mar'] == 'x':
+                        ws.cell(row=index+3, column=158).value = 0
+                    else:
+                        ws.cell(row=index+3, column=158).value = locale.format_string("%d", round(data['target_value_mar'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_mar'] == 'x':
+                        ws.cell(row=index+3, column=159).value = 0
+                    else:
+                        ws.cell(row=index+3, column=159).value = locale.format_string("%d", round(data['achievement_mar'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_mar'] == '':
+                        ws.cell(row=index+3, column=160).value = 0
+                    else:
+                        ws.cell(row=index+3, column=160).value = str(data['achievement_vs_target_mar']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_mar'] == '':
+                        ws.cell(row=index+3, column=161).value = 0
+                    else:
+                        ws.cell(row=index+3, column=161).value = str(data['total_cost_vs_achievement_mar']) + '%'
+                    ws.cell(row=index+3, column=162).value = ''
+                else:
+                    pass
+
+                # Quarter 1
+                # Targer value
+                if data['target_value_jan'] == 'x':
+                    target_value_jan = 0
+                else:
+                    target_value_jan = data['target_value_jan'].target_value
+                if data['target_value_feb'] == 'x':
+                    target_value_feb = 0
+                else:
+                    target_value_feb = data['target_value_feb'].target_value
+                if data['target_value_mar'] == 'x':
+                    target_value_mar = 0
+                else:
+                    target_value_mar = data['target_value_mar'].target_value
+                ws.cell(row=index+3, column=163).value = locale.format_string("%d", (target_value_jan + target_value_feb + target_value_mar), grouping=True)
+                # Achievement
+                if data['achievement_jan'] == 'x':
+                    achievement_jan = 0
+                else:
+                    achievement_jan = data['achievement_jan'].achievement
+                if data['achievement_feb'] == 'x':
+                    achievement_feb = 0
+                else:
+                    achievement_feb = data['achievement_feb'].achievement
+                if data['achievement_mar'] == 'x':
+                    achievement_mar = 0
+                else:
+                    achievement_mar = data['achievement_mar'].achievement
+                ws.cell(row=index+3, column=164).value = locale.format_string("%d", (achievement_jan + achievement_feb + achievement_mar), grouping=True)
+                # Total cost
+                ws.cell(row=index+3, column=165).value = locale.format_string("%d", (data['total_cost_jan'] + data['total_cost_feb'] + data['total_cost_mar']), grouping=True)
+                # % Achievement vs Target Q.1
+                if data['achievement_vs_target_q1'] == '':
+                    ws.cell(row=index+3, column=166).value = ''
+                else:
+                    ws.cell(row=index+3, column=166).value = str(data['achievement_vs_target_q1']) + '%'
+                # % Total Cost vs Achievement Q.1
+                if data['total_cost_vs_achievement_q1'] == '':
+                    ws.cell(row=index+3, column=167).value = ''
+                else:
+                    ws.cell(row=index+3, column=167).value = str(data['total_cost_vs_achievement_q1']) + '%'
+                # % Total Cost vs Target Q.1
+                if data['total_cost_vs_target_value_q1'] == '':
+                    ws.cell(row=index+3, column=168).value = ''
+                else:
+                    ws.cell(row=index+3, column=168).value = str(data['total_cost_vs_target_value_q1']) + '%'
+
+                # Apr
+                if data['payroll_data_apr'] != "":
+                    ws.cell(row=index+3, column=170).value = locale.format_string("%d", round(data['payroll_data_apr'].gross_income), grouping=True)
+                    if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=171).value = 0
+                        ws.cell(row=index+3, column=172).value = 0
+                    else:
+                        ws.cell(row=index+3, column=171).value = locale.format_string("%d", round(data['payroll_data_apr'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=172).value = locale.format_string("%d", round(data['payroll_data_apr'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=173).value = locale.format_string("%d", round(data['payroll_data_apr'].phone), grouping=True)
+                    ws.cell(row=index+3, column=174).value = locale.format_string("%d", round(data['payroll_data_apr'].lunch), grouping=True)
+                    if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=175).value = locale.format_string("%d", round(data['payroll_data_apr'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=175).value = 0
+                    if data['payroll_data_apr'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=176).value = locale.format_string("%d", round(data['payroll_data_apr'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=176).value = 0
+                    ws.cell(row=index+3, column=177).value = locale.format_string("%d", round(data['payroll_data_apr'].other), grouping=True)
+                    ws.cell(row=index+3, column=178).value = locale.format_string("%d", round(data['payroll_data_apr'].travel), grouping=True)
+                    ws.cell(row=index+3, column=179).value = locale.format_string("%d", round(data['payroll_data_apr'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=180).value = locale.format_string("%d", round(data['payroll_data_apr'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_apr'].employee.site.site == 'RO':
+                        if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=181).value =locale.format_string("%d", round(data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].housing_vnd + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=181).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=181).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].KPI_achievement + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=181).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_apr'].employee.site.site == 'RO':
+                        if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=182).value =locale.format_string("%d", round(data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].housing_vnd + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=182).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=182).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].KPI_achievement + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=182).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_apr'].employee.site.site == 'RO':
+                        if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=183).value =locale.format_string("%d", round(data['payroll_data_apr'].SHUI_9point5percent_employee_pay + data['payroll_data_apr'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_apr'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=183).value =locale.format_string("%d", round(data['payroll_data_apr'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=183).value =locale.format_string("%d", round(data['payroll_data_apr'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=183).value =locale.format_string("%d", round(data['payroll_data_apr'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_apr'].employee.site.site == 'RO':
+                        if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=184).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_apr'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=184).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=184).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=184).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_apr'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=185).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=185).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=185).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=186).value = 0
+                    else:
+                        ws.cell(row=index+3, column=186).value =locale.format_string("%d", round(data['payroll_data_apr'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_apr'].employee.site.site == 'RO':
+                        if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=187).value =locale.format_string("%d", round(data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].housing_vnd + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income + data['payroll_data_apr'].SHUI_9point5percent_employee_pay + data['payroll_data_apr'].SHUI_20point5percent_employer_pay + data['payroll_data_apr'].trade_union_fee_company_pay + data['payroll_data_apr'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_apr'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=187).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income + data['payroll_data_apr'].SHUI_21point5percent_employer_pay + data['payroll_data_apr'].trade_union_fee_company_pay_2percent + data['payroll_data_apr'].trade_union_fee_member + data['payroll_data_apr'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=187).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income + data['payroll_data_apr'].SHUI_21point5percent_company_pay + data['payroll_data_apr'].trade_union_fee_company_pay_2percent + data['payroll_data_apr'].trade_union_fee_member + data['payroll_data_apr'].transfer_bank), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=187).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].KPI_achievement + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income + data['payroll_data_apr'].SHUI_21point5percent_company_pay + data['payroll_data_apr'].trade_union_fee_company_pay + data['payroll_data_apr'].trade_union_fee_employee_pay + data['payroll_data_apr'].transfer_bank), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=187).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income + data['payroll_data_apr'].SHUI_21point5percent_company_pay + data['payroll_data_apr'].trade_union_fee_company_pay + data['payroll_data_apr'].trade_union_fee_staff_pay + data['payroll_data_apr'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_apr'] == 'x':
+                        ws.cell(row=index+3, column=188).value = 0
+                    else:
+                        ws.cell(row=index+3, column=188).value = locale.format_string("%d", round(data['target_value_apr'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_apr'] == 'x':
+                        ws.cell(row=index+3, column=189).value = 0
+                    else:
+                        ws.cell(row=index+3, column=189).value = locale.format_string("%d", round(data['achievement_apr'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_apr'] == '':
+                        ws.cell(row=index+3, column=190).value = 0
+                    else:
+                        ws.cell(row=index+3, column=190).value = str(data['achievement_vs_target_apr']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_apr'] == '':
+                        ws.cell(row=index+3, column=191).value = 0
+                    else:
+                        ws.cell(row=index+3, column=191).value = str(data['total_cost_vs_achievement_apr']) + '%'
+                    ws.cell(row=index+3, column=192).value = ''
+                else:
+                    pass
+
+                # May
+                if data['payroll_data_may'] != "":
+                    ws.cell(row=index+3, column=193).value = locale.format_string("%d", round(data['payroll_data_may'].gross_income), grouping=True)
+                    if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=194).value = 0
+                        ws.cell(row=index+3, column=195).value = 0
+                    else:
+                        ws.cell(row=index+3, column=194).value = locale.format_string("%d", round(data['payroll_data_may'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=195).value = locale.format_string("%d", round(data['payroll_data_may'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=196).value = locale.format_string("%d", round(data['payroll_data_may'].phone), grouping=True)
+                    ws.cell(row=index+3, column=197).value = locale.format_string("%d", round(data['payroll_data_may'].lunch), grouping=True)
+                    if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=198).value = locale.format_string("%d", round(data['payroll_data_may'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=198).value = 0
+                    if data['payroll_data_may'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=199).value = locale.format_string("%d", round(data['payroll_data_may'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=199).value = 0
+                    ws.cell(row=index+3, column=200).value = locale.format_string("%d", round(data['payroll_data_may'].other), grouping=True)
+                    ws.cell(row=index+3, column=201).value = locale.format_string("%d", round(data['payroll_data_may'].travel), grouping=True)
+                    ws.cell(row=index+3, column=202).value = locale.format_string("%d", round(data['payroll_data_may'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=203).value = locale.format_string("%d", round(data['payroll_data_may'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_may'].employee.site.site == 'RO':
+                        if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=204).value =locale.format_string("%d", round(data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].housing_vnd + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=204).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=204).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].KPI_achievement + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=204).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_may'].employee.site.site == 'RO':
+                        if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=205).value =locale.format_string("%d", round(data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].housing_vnd + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=205).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=205).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].KPI_achievement + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=205).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_may'].employee.site.site == 'RO':
+                        if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=206).value =locale.format_string("%d", round(data['payroll_data_may'].SHUI_9point5percent_employee_pay + data['payroll_data_may'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_may'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=206).value =locale.format_string("%d", round(data['payroll_data_may'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=206).value =locale.format_string("%d", round(data['payroll_data_may'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=206).value =locale.format_string("%d", round(data['payroll_data_may'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_may'].employee.site.site == 'RO':
+                        if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=207).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_may'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=207).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=207).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=207).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_may'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=208).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=208).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=208).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=209).value = 0
+                    else:
+                        ws.cell(row=index+3, column=209).value =locale.format_string("%d", round(data['payroll_data_may'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_may'].employee.site.site == 'RO':
+                        if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=210).value =locale.format_string("%d", round(data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].housing_vnd + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income + data['payroll_data_may'].SHUI_9point5percent_employee_pay + data['payroll_data_may'].SHUI_20point5percent_employer_pay + data['payroll_data_may'].trade_union_fee_company_pay + data['payroll_data_may'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_may'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=210).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income + data['payroll_data_may'].SHUI_21point5percent_employer_pay + data['payroll_data_may'].trade_union_fee_company_pay_2percent + data['payroll_data_may'].trade_union_fee_member + data['payroll_data_may'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=210).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income + data['payroll_data_may'].SHUI_21point5percent_company_pay + data['payroll_data_may'].trade_union_fee_company_pay_2percent + data['payroll_data_may'].trade_union_fee_member + data['payroll_data_may'].transfer_bank), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=210).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].KPI_achievement + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income + data['payroll_data_may'].SHUI_21point5percent_company_pay + data['payroll_data_may'].trade_union_fee_company_pay + data['payroll_data_may'].trade_union_fee_employee_pay + data['payroll_data_may'].transfer_bank), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=210).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income + data['payroll_data_may'].SHUI_21point5percent_company_pay + data['payroll_data_may'].trade_union_fee_company_pay + data['payroll_data_may'].trade_union_fee_staff_pay + data['payroll_data_may'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_may'] == 'x':
+                        ws.cell(row=index+3, column=211).value = 0
+                    else:
+                        ws.cell(row=index+3, column=211).value = locale.format_string("%d", round(data['target_value_may'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_may'] == 'x':
+                        ws.cell(row=index+3, column=212).value = 0
+                    else:
+                        ws.cell(row=index+3, column=212).value = locale.format_string("%d", round(data['achievement_may'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_may'] == '':
+                        ws.cell(row=index+3, column=213).value = 0
+                    else:
+                        ws.cell(row=index+3, column=213).value = str(data['achievement_vs_target_may']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_may'] == '':
+                        ws.cell(row=index+3, column=214).value = 0
+                    else:
+                        ws.cell(row=index+3, column=214).value = str(data['total_cost_vs_achievement_may']) + '%'
+                    ws.cell(row=index+3, column=215).value = ''
+                else:
+                    pass
+
+                # Jun
+                if data['payroll_data_jun'] != "":
+                    ws.cell(row=index+3, column=216).value = locale.format_string("%d", round(data['payroll_data_jun'].gross_income), grouping=True)
+                    if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=217).value = 0
+                        ws.cell(row=index+3, column=218).value = 0
+                    else:
+                        ws.cell(row=index+3, column=217).value = locale.format_string("%d", round(data['payroll_data_jun'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=218).value = locale.format_string("%d", round(data['payroll_data_jun'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=219).value = locale.format_string("%d", round(data['payroll_data_jun'].phone), grouping=True)
+                    ws.cell(row=index+3, column=220).value = locale.format_string("%d", round(data['payroll_data_jun'].lunch), grouping=True)
+                    if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=221).value = locale.format_string("%d", round(data['payroll_data_jun'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=221).value = 0
+                    if data['payroll_data_jun'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=222).value = locale.format_string("%d", round(data['payroll_data_jun'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=222).value = 0
+                    ws.cell(row=index+3, column=223).value = locale.format_string("%d", round(data['payroll_data_jun'].other), grouping=True)
+                    ws.cell(row=index+3, column=224).value = locale.format_string("%d", round(data['payroll_data_jun'].travel), grouping=True)
+                    ws.cell(row=index+3, column=225).value = locale.format_string("%d", round(data['payroll_data_jun'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=226).value = locale.format_string("%d", round(data['payroll_data_jun'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_jun'].employee.site.site == 'RO':
+                        if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=227).value =locale.format_string("%d", round(data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].housing_vnd + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=227).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=227).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].KPI_achievement + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=227).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_jun'].employee.site.site == 'RO':
+                        if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=228).value =locale.format_string("%d", round(data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].housing_vnd + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=228).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=228).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].KPI_achievement + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=228).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_jun'].employee.site.site == 'RO':
+                        if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=229).value =locale.format_string("%d", round(data['payroll_data_jun'].SHUI_9point5percent_employee_pay + data['payroll_data_jun'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_jun'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=229).value =locale.format_string("%d", round(data['payroll_data_jun'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=229).value =locale.format_string("%d", round(data['payroll_data_jun'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=229).value =locale.format_string("%d", round(data['payroll_data_jun'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_jun'].employee.site.site == 'RO':
+                        if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=230).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_jun'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=230).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=230).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=230).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_jun'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=231).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=231).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=231).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=232).value = 0
+                    else:
+                        ws.cell(row=index+3, column=232).value =locale.format_string("%d", round(data['payroll_data_jun'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_jun'].employee.site.site == 'RO':
+                        if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=233).value =locale.format_string("%d", round(data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].housing_vnd + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income + data['payroll_data_jun'].SHUI_9point5percent_employee_pay + data['payroll_data_jun'].SHUI_20point5percent_employer_pay + data['payroll_data_jun'].trade_union_fee_company_pay + data['payroll_data_jun'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_jun'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=233).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income + data['payroll_data_jun'].SHUI_21point5percent_employer_pay + data['payroll_data_jun'].trade_union_fee_company_pay_2percent + data['payroll_data_jun'].trade_union_fee_member + data['payroll_data_jun'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=233).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income + data['payroll_data_jun'].SHUI_21point5percent_company_pay + data['payroll_data_jun'].trade_union_fee_company_pay_2percent + data['payroll_data_jun'].trade_union_fee_member + data['payroll_data_jun'].transfer_bank), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=233).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].KPI_achievement + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income + data['payroll_data_jun'].SHUI_21point5percent_company_pay + data['payroll_data_jun'].trade_union_fee_company_pay + data['payroll_data_jun'].trade_union_fee_employee_pay + data['payroll_data_jun'].transfer_bank), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=233).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income + data['payroll_data_jun'].SHUI_21point5percent_company_pay + data['payroll_data_jun'].trade_union_fee_company_pay + data['payroll_data_jun'].trade_union_fee_staff_pay + data['payroll_data_jun'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_jun'] == 'x':
+                        ws.cell(row=index+3, column=234).value = 0
+                    else:
+                        ws.cell(row=index+3, column=234).value = locale.format_string("%d", round(data['target_value_jun'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_jun'] == 'x':
+                        ws.cell(row=index+3, column=235).value = 0
+                    else:
+                        ws.cell(row=index+3, column=235).value = locale.format_string("%d", round(data['achievement_jun'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_jun'] == '':
+                        ws.cell(row=index+3, column=236).value = 0
+                    else:
+                        ws.cell(row=index+3, column=236).value = str(data['achievement_vs_target_jun']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_jun'] == '':
+                        ws.cell(row=index+3, column=237).value = 0
+                    else:
+                        ws.cell(row=index+3, column=237).value = str(data['total_cost_vs_achievement_jun']) + '%'
+                    ws.cell(row=index+3, column=238).value = ''
+                else:
+                    pass
+
+                # Quarter 2
+                # Targer value
+                if data['target_value_apr'] == 'x':
+                    target_value_apr = 0
+                else:
+                    target_value_apr = data['target_value_apr'].target_value
+                if data['target_value_may'] == 'x':
+                    target_value_may = 0
+                else:
+                    target_value_may = data['target_value_may'].target_value
+                if data['target_value_jun'] == 'x':
+                    target_value_jun = 0
+                else:
+                    target_value_jun = data['target_value_jun'].target_value
+                ws.cell(row=index+3, column=239).value = locale.format_string("%d", (target_value_apr + target_value_may + target_value_jun), grouping=True)
+                # Achievement
+                if data['achievement_apr'] == 'x':
+                    achievement_apr = 0
+                else:
+                    achievement_apr = data['achievement_apr'].achievement
+                if data['achievement_may'] == 'x':
+                    achievement_may = 0
+                else:
+                    achievement_may = data['achievement_may'].achievement
+                if data['achievement_jun'] == 'x':
+                    achievement_jun = 0
+                else:
+                    achievement_jun = data['achievement_jun'].achievement
+                ws.cell(row=index+3, column=240).value = locale.format_string("%d", (achievement_apr + achievement_may + achievement_jun), grouping=True)
+                # Total cost
+                ws.cell(row=index+3, column=241).value = locale.format_string("%d", (data['total_cost_apr'] + data['total_cost_may'] + data['total_cost_jun']), grouping=True)
+                # % Achievement vs Target Q.2
+                if data['achievement_vs_target_q2'] == '':
+                    ws.cell(row=index+3, column=242).value = ''
+                else:
+                    ws.cell(row=index+3, column=242).value = str(data['achievement_vs_target_q2']) + '%'
+                # % Total Cost vs Achievement Q.2
+                if data['total_cost_vs_achievement_q2'] == '':
+                    ws.cell(row=index+3, column=243).value = ''
+                else:
+                    ws.cell(row=index+3, column=243).value = str(data['total_cost_vs_achievement_q2']) + '%'
+                # % Total Cost vs Target Q.2
+                if data['total_cost_vs_target_value_q2'] == '':
+                    ws.cell(row=index+3, column=244).value = ''
+                else:
+                    ws.cell(row=index+3, column=244).value = str(data['total_cost_vs_target_value_q2']) + '%'
+
+                # Jul
+                if data['payroll_data_jul'] != "":
+                    ws.cell(row=index+3, column=246).value = locale.format_string("%d", round(data['payroll_data_jul'].gross_income), grouping=True)
+                    if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=247).value = 0
+                        ws.cell(row=index+3, column=248).value = 0
+                    else:
+                        ws.cell(row=index+3, column=247).value = locale.format_string("%d", round(data['payroll_data_jul'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=248).value = locale.format_string("%d", round(data['payroll_data_jul'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=249).value = locale.format_string("%d", round(data['payroll_data_jul'].phone), grouping=True)
+                    ws.cell(row=index+3, column=250).value = locale.format_string("%d", round(data['payroll_data_jul'].lunch), grouping=True)
+                    if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=251).value = locale.format_string("%d", round(data['payroll_data_jul'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=251).value = 0
+                    if data['payroll_data_jul'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=252).value = locale.format_string("%d", round(data['payroll_data_jul'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=252).value = 0
+                    ws.cell(row=index+3, column=253).value = locale.format_string("%d", round(data['payroll_data_jul'].other), grouping=True)
+                    ws.cell(row=index+3, column=254).value = locale.format_string("%d", round(data['payroll_data_jul'].travel), grouping=True)
+                    ws.cell(row=index+3, column=255).value = locale.format_string("%d", round(data['payroll_data_jul'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=256).value = locale.format_string("%d", round(data['payroll_data_jul'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_jul'].employee.site.site == 'RO':
+                        if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=257).value =locale.format_string("%d", round(data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].housing_vnd + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=257).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=257).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].KPI_achievement + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=257).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_jul'].employee.site.site == 'RO':
+                        if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=258).value =locale.format_string("%d", round(data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].housing_vnd + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=258).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=258).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].KPI_achievement + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=258).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_jul'].employee.site.site == 'RO':
+                        if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=259).value =locale.format_string("%d", round(data['payroll_data_jul'].SHUI_9point5percent_employee_pay + data['payroll_data_jul'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_jul'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=259).value =locale.format_string("%d", round(data['payroll_data_jul'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=259).value =locale.format_string("%d", round(data['payroll_data_jul'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=259).value =locale.format_string("%d", round(data['payroll_data_jul'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_jul'].employee.site.site == 'RO':
+                        if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=260).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_jul'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=260).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=260).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=260).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_jul'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=261).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=261).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=261).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=262).value = 0
+                    else:
+                        ws.cell(row=index+3, column=262).value =locale.format_string("%d", round(data['payroll_data_jul'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_jul'].employee.site.site == 'RO':
+                        if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=263).value =locale.format_string("%d", round(data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].housing_vnd + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income + data['payroll_data_jul'].SHUI_9point5percent_employee_pay + data['payroll_data_jul'].SHUI_20point5percent_employer_pay + data['payroll_data_jul'].trade_union_fee_company_pay + data['payroll_data_jul'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_jul'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=263).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income + data['payroll_data_jul'].SHUI_21point5percent_employer_pay + data['payroll_data_jul'].trade_union_fee_company_pay_2percent + data['payroll_data_jul'].trade_union_fee_member + data['payroll_data_jul'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=263).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income + data['payroll_data_jul'].SHUI_21point5percent_company_pay + data['payroll_data_jul'].trade_union_fee_company_pay_2percent + data['payroll_data_jul'].trade_union_fee_member + data['payroll_data_jul'].transfer_bank), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=263).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].KPI_achievement + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income + data['payroll_data_jul'].SHUI_21point5percent_company_pay + data['payroll_data_jul'].trade_union_fee_company_pay + data['payroll_data_jul'].trade_union_fee_employee_pay + data['payroll_data_jul'].transfer_bank), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=263).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income + data['payroll_data_jul'].SHUI_21point5percent_company_pay + data['payroll_data_jul'].trade_union_fee_company_pay + data['payroll_data_jul'].trade_union_fee_staff_pay + data['payroll_data_jul'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_jul'] == 'x':
+                        ws.cell(row=index+3, column=264).value = 0
+                    else:
+                        ws.cell(row=index+3, column=264).value = locale.format_string("%d", round(data['target_value_jul'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_jul'] == 'x':
+                        ws.cell(row=index+3, column=265).value = 0
+                    else:
+                        ws.cell(row=index+3, column=265).value = locale.format_string("%d", round(data['achievement_jul'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_jul'] == '':
+                        ws.cell(row=index+3, column=266).value = 0
+                    else:
+                        ws.cell(row=index+3, column=266).value = str(data['achievement_vs_target_jul']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_jul'] == '':
+                        ws.cell(row=index+3, column=267).value = 0
+                    else:
+                        ws.cell(row=index+3, column=267).value = str(data['total_cost_vs_achievement_jul']) + '%'
+                    ws.cell(row=index+3, column=268).value = ''
+                else:
+                    pass
+
+                # Aug
+                if data['payroll_data_aug'] != "":
+                    ws.cell(row=index+3, column=269).value = locale.format_string("%d", round(data['payroll_data_aug'].gross_income), grouping=True)
+                    if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=270).value = 0
+                        ws.cell(row=index+3, column=271).value = 0
+                    else:
+                        ws.cell(row=index+3, column=270).value = locale.format_string("%d", round(data['payroll_data_aug'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=271).value = locale.format_string("%d", round(data['payroll_data_aug'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=272).value = locale.format_string("%d", round(data['payroll_data_aug'].phone), grouping=True)
+                    ws.cell(row=index+3, column=273).value = locale.format_string("%d", round(data['payroll_data_aug'].lunch), grouping=True)
+                    if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=274).value = locale.format_string("%d", round(data['payroll_data_aug'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=274).value = 0
+                    if data['payroll_data_aug'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=275).value = locale.format_string("%d", round(data['payroll_data_aug'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=275).value = 0
+                    ws.cell(row=index+3, column=276).value = locale.format_string("%d", round(data['payroll_data_aug'].other), grouping=True)
+                    ws.cell(row=index+3, column=277).value = locale.format_string("%d", round(data['payroll_data_aug'].travel), grouping=True)
+                    ws.cell(row=index+3, column=278).value = locale.format_string("%d", round(data['payroll_data_aug'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=279).value = locale.format_string("%d", round(data['payroll_data_aug'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_aug'].employee.site.site == 'RO':
+                        if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=280).value =locale.format_string("%d", round(data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].housing_vnd + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=280).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=280).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].KPI_achievement + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=280).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_aug'].employee.site.site == 'RO':
+                        if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=281).value =locale.format_string("%d", round(data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].housing_vnd + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=281).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=281).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].KPI_achievement + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=281).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_aug'].employee.site.site == 'RO':
+                        if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=282).value =locale.format_string("%d", round(data['payroll_data_aug'].SHUI_9point5percent_employee_pay + data['payroll_data_aug'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_aug'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=282).value =locale.format_string("%d", round(data['payroll_data_aug'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=282).value =locale.format_string("%d", round(data['payroll_data_aug'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=282).value =locale.format_string("%d", round(data['payroll_data_aug'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_aug'].employee.site.site == 'RO':
+                        if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=283).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_aug'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=283).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=283).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=283).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_aug'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=284).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=284).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=284).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=285).value = 0
+                    else:
+                        ws.cell(row=index+3, column=285).value =locale.format_string("%d", round(data['payroll_data_aug'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_aug'].employee.site.site == 'RO':
+                        if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=286).value =locale.format_string("%d", round(data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].housing_vnd + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income + data['payroll_data_aug'].SHUI_9point5percent_employee_pay + data['payroll_data_aug'].SHUI_20point5percent_employer_pay + data['payroll_data_aug'].trade_union_fee_company_pay + data['payroll_data_aug'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_aug'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=286).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income + data['payroll_data_aug'].SHUI_21point5percent_employer_pay + data['payroll_data_aug'].trade_union_fee_company_pay_2percent + data['payroll_data_aug'].trade_union_fee_member + data['payroll_data_aug'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=286).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income + data['payroll_data_aug'].SHUI_21point5percent_company_pay + data['payroll_data_aug'].trade_union_fee_company_pay_2percent + data['payroll_data_aug'].trade_union_fee_member + data['payroll_data_aug'].transfer_bank), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=286).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].KPI_achievement + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income + data['payroll_data_aug'].SHUI_21point5percent_company_pay + data['payroll_data_aug'].trade_union_fee_company_pay + data['payroll_data_aug'].trade_union_fee_employee_pay + data['payroll_data_aug'].transfer_bank), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=286).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income + data['payroll_data_aug'].SHUI_21point5percent_company_pay + data['payroll_data_aug'].trade_union_fee_company_pay + data['payroll_data_aug'].trade_union_fee_staff_pay + data['payroll_data_aug'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_aug'] == 'x':
+                        ws.cell(row=index+3, column=287).value = 0
+                    else:
+                        ws.cell(row=index+3, column=287).value = locale.format_string("%d", round(data['target_value_aug'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_aug'] == 'x':
+                        ws.cell(row=index+3, column=288).value = 0
+                    else:
+                        ws.cell(row=index+3, column=288).value = locale.format_string("%d", round(data['achievement_aug'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_aug'] == '':
+                        ws.cell(row=index+3, column=289).value = 0
+                    else:
+                        ws.cell(row=index+3, column=289).value = str(data['achievement_vs_target_aug']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_aug'] == '':
+                        ws.cell(row=index+3, column=290).value = 0
+                    else:
+                        ws.cell(row=index+3, column=290).value = str(data['total_cost_vs_achievement_aug']) + '%'
+                    ws.cell(row=index+3, column=291).value = ''
+                else:
+                    pass
+
+                # Sep
+                if data['payroll_data_sep'] != "":
+                    ws.cell(row=index+3, column=292).value = locale.format_string("%d", round(data['payroll_data_sep'].gross_income), grouping=True)
+                    if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=293).value = 0
+                        ws.cell(row=index+3, column=294).value = 0
+                    else:
+                        ws.cell(row=index+3, column=293).value = locale.format_string("%d", round(data['payroll_data_sep'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=294).value = locale.format_string("%d", round(data['payroll_data_sep'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=295).value = locale.format_string("%d", round(data['payroll_data_sep'].phone), grouping=True)
+                    ws.cell(row=index+3, column=296).value = locale.format_string("%d", round(data['payroll_data_sep'].lunch), grouping=True)
+                    if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=297).value = locale.format_string("%d", round(data['payroll_data_sep'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=297).value = 0
+                    if data['payroll_data_sep'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=298).value = locale.format_string("%d", round(data['payroll_data_sep'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=298).value = 0
+                    ws.cell(row=index+3, column=299).value = locale.format_string("%d", round(data['payroll_data_sep'].other), grouping=True)
+                    ws.cell(row=index+3, column=300).value = locale.format_string("%d", round(data['payroll_data_sep'].travel), grouping=True)
+                    ws.cell(row=index+3, column=301).value = locale.format_string("%d", round(data['payroll_data_sep'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=302).value = locale.format_string("%d", round(data['payroll_data_sep'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_sep'].employee.site.site == 'RO':
+                        if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=303).value =locale.format_string("%d", round(data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].housing_vnd + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=303).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=303).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].KPI_achievement + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=303).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_sep'].employee.site.site == 'RO':
+                        if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=304).value =locale.format_string("%d", round(data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].housing_vnd + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=304).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=304).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].KPI_achievement + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=304).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_sep'].employee.site.site == 'RO':
+                        if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=305).value =locale.format_string("%d", round(data['payroll_data_sep'].SHUI_9point5percent_employee_pay + data['payroll_data_sep'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_sep'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=305).value =locale.format_string("%d", round(data['payroll_data_sep'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=305).value =locale.format_string("%d", round(data['payroll_data_sep'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=305).value =locale.format_string("%d", round(data['payroll_data_sep'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_sep'].employee.site.site == 'RO':
+                        if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=306).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_sep'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=306).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=306).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=306).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_sep'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=307).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=307).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=307).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=308).value = 0
+                    else:
+                        ws.cell(row=index+3, column=308).value =locale.format_string("%d", round(data['payroll_data_sep'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_sep'].employee.site.site == 'RO':
+                        if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=309).value =locale.format_string("%d", round(data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].housing_vnd + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income + data['payroll_data_sep'].SHUI_9point5percent_employee_pay + data['payroll_data_sep'].SHUI_20point5percent_employer_pay + data['payroll_data_sep'].trade_union_fee_company_pay + data['payroll_data_sep'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_sep'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=309).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income + data['payroll_data_sep'].SHUI_21point5percent_employer_pay + data['payroll_data_sep'].trade_union_fee_company_pay_2percent + data['payroll_data_sep'].trade_union_fee_member + data['payroll_data_sep'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=309).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income + data['payroll_data_sep'].SHUI_21point5percent_company_pay + data['payroll_data_sep'].trade_union_fee_company_pay_2percent + data['payroll_data_sep'].trade_union_fee_member + data['payroll_data_sep'].transfer_bank), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=309).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].KPI_achievement + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income + data['payroll_data_sep'].SHUI_21point5percent_company_pay + data['payroll_data_sep'].trade_union_fee_company_pay + data['payroll_data_sep'].trade_union_fee_employee_pay + data['payroll_data_sep'].transfer_bank), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=309).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income + data['payroll_data_sep'].SHUI_21point5percent_company_pay + data['payroll_data_sep'].trade_union_fee_company_pay + data['payroll_data_sep'].trade_union_fee_staff_pay + data['payroll_data_sep'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_sep'] == 'x':
+                        ws.cell(row=index+3, column=310).value = 0
+                    else:
+                        ws.cell(row=index+3, column=310).value = locale.format_string("%d", round(data['target_value_sep'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_sep'] == 'x':
+                        ws.cell(row=index+3, column=311).value = 0
+                    else:
+                        ws.cell(row=index+3, column=311).value = locale.format_string("%d", round(data['achievement_sep'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_sep'] == '':
+                        ws.cell(row=index+3, column=312).value = 0
+                    else:
+                        ws.cell(row=index+3, column=312).value = str(data['achievement_vs_target_sep']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_sep'] == '':
+                        ws.cell(row=index+3, column=313).value = 0
+                    else:
+                        ws.cell(row=index+3, column=313).value = str(data['total_cost_vs_achievement_sep']) + '%'
+                    ws.cell(row=index+3, column=314).value = ''
+                else:
+                    pass
+
+                # Quarter 3
+                # Targer value
+                if data['target_value_jul'] == 'x':
+                    target_value_jul = 0
+                else:
+                    target_value_jul = data['target_value_jul'].target_value
+                if data['target_value_aug'] == 'x':
+                    target_value_aug = 0
+                else:
+                    target_value_aug = data['target_value_aug'].target_value
+                if data['target_value_sep'] == 'x':
+                    target_value_sep = 0
+                else:
+                    target_value_sep = data['target_value_sep'].target_value
+                ws.cell(row=index+3, column=315).value = locale.format_string("%d", (target_value_jul + target_value_aug + target_value_sep), grouping=True)
+                # Achievement
+                if data['achievement_jul'] == 'x':
+                    achievement_jul = 0
+                else:
+                    achievement_jul = data['achievement_jul'].achievement
+                if data['achievement_aug'] == 'x':
+                    achievement_aug = 0
+                else:
+                    achievement_aug = data['achievement_aug'].achievement
+                if data['achievement_sep'] == 'x':
+                    achievement_sep = 0
+                else:
+                    achievement_sep = data['achievement_sep'].achievement
+                ws.cell(row=index+3, column=316).value = locale.format_string("%d", (achievement_jul + achievement_aug + achievement_sep), grouping=True)
+                # Total cost
+                ws.cell(row=index+3, column=317).value = locale.format_string("%d", (data['total_cost_jul'] + data['total_cost_aug'] + data['total_cost_sep']), grouping=True)
+                # % Achievement vs Target Q.3
+                if data['achievement_vs_target_q3'] == '':
+                    ws.cell(row=index+3, column=318).value = ''
+                else:
+                    ws.cell(row=index+3, column=318).value = str(data['achievement_vs_target_q3']) + '%'
+                # % Total Cost vs Achievement Q.3
+                if data['total_cost_vs_achievement_q3'] == '':
+                    ws.cell(row=index+3, column=319).value = ''
+                else:
+                    ws.cell(row=index+3, column=319).value = str(data['total_cost_vs_achievement_q3']) + '%'
+                # % Total Cost vs Target Q.3
+                if data['total_cost_vs_target_value_q3'] == '':
+                    ws.cell(row=index+3, column=320).value = ''
+                else:
+                    ws.cell(row=index+3, column=320).value = str(data['total_cost_vs_target_value_q3']) + '%'
+
+                # Oct
+                if data['payroll_data_oct'] != "":
+                    ws.cell(row=index+3, column=322).value = locale.format_string("%d", round(data['payroll_data_oct'].gross_income), grouping=True)
+                    if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=323).value = 0
+                        ws.cell(row=index+3, column=324).value = 0
+                    else:
+                        ws.cell(row=index+3, column=323).value = locale.format_string("%d", round(data['payroll_data_oct'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=324).value = locale.format_string("%d", round(data['payroll_data_oct'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=325).value = locale.format_string("%d", round(data['payroll_data_oct'].phone), grouping=True)
+                    ws.cell(row=index+3, column=326).value = locale.format_string("%d", round(data['payroll_data_oct'].lunch), grouping=True)
+                    if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=327).value = locale.format_string("%d", round(data['payroll_data_oct'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=327).value = 0
+                    if data['payroll_data_oct'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=328).value = locale.format_string("%d", round(data['payroll_data_oct'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=328).value = 0
+                    ws.cell(row=index+3, column=329).value = locale.format_string("%d", round(data['payroll_data_oct'].other), grouping=True)
+                    ws.cell(row=index+3, column=330).value = locale.format_string("%d", round(data['payroll_data_oct'].travel), grouping=True)
+                    ws.cell(row=index+3, column=331).value = locale.format_string("%d", round(data['payroll_data_oct'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=332).value = locale.format_string("%d", round(data['payroll_data_oct'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_oct'].employee.site.site == 'RO':
+                        if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=333).value =locale.format_string("%d", round(data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].housing_vnd + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=333).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=333).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].KPI_achievement + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=333).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_oct'].employee.site.site == 'RO':
+                        if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=334).value =locale.format_string("%d", round(data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].housing_vnd + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=334).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=334).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].KPI_achievement + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=334).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_oct'].employee.site.site == 'RO':
+                        if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=335).value =locale.format_string("%d", round(data['payroll_data_oct'].SHUI_9point5percent_employee_pay + data['payroll_data_oct'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_oct'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=335).value =locale.format_string("%d", round(data['payroll_data_oct'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=335).value =locale.format_string("%d", round(data['payroll_data_oct'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=335).value =locale.format_string("%d", round(data['payroll_data_oct'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_oct'].employee.site.site == 'RO':
+                        if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=336).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_oct'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=336).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=336).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=336).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_oct'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=337).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=337).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=337).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=338).value = 0
+                    else:
+                        ws.cell(row=index+3, column=338).value =locale.format_string("%d", round(data['payroll_data_oct'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_oct'].employee.site.site == 'RO':
+                        if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=339).value =locale.format_string("%d", round(data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].housing_vnd + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income + data['payroll_data_oct'].SHUI_9point5percent_employee_pay + data['payroll_data_oct'].SHUI_20point5percent_employer_pay + data['payroll_data_oct'].trade_union_fee_company_pay + data['payroll_data_oct'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_oct'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=339).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income + data['payroll_data_oct'].SHUI_21point5percent_employer_pay + data['payroll_data_oct'].trade_union_fee_company_pay_2percent + data['payroll_data_oct'].trade_union_fee_member + data['payroll_data_oct'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=339).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income + data['payroll_data_oct'].SHUI_21point5percent_company_pay + data['payroll_data_oct'].trade_union_fee_company_pay_2percent + data['payroll_data_oct'].trade_union_fee_member + data['payroll_data_oct'].transfer_bank), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=339).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].KPI_achievement + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income + data['payroll_data_oct'].SHUI_21point5percent_company_pay + data['payroll_data_oct'].trade_union_fee_company_pay + data['payroll_data_oct'].trade_union_fee_employee_pay + data['payroll_data_oct'].transfer_bank), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=339).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income + data['payroll_data_oct'].SHUI_21point5percent_company_pay + data['payroll_data_oct'].trade_union_fee_company_pay + data['payroll_data_oct'].trade_union_fee_staff_pay + data['payroll_data_oct'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_oct'] == 'x':
+                        ws.cell(row=index+3, column=340).value = 0
+                    else:
+                        ws.cell(row=index+3, column=340).value = locale.format_string("%d", round(data['target_value_oct'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_oct'] == 'x':
+                        ws.cell(row=index+3, column=341).value = 0
+                    else:
+                        ws.cell(row=index+3, column=341).value = locale.format_string("%d", round(data['achievement_oct'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_oct'] == '':
+                        ws.cell(row=index+3, column=342).value = 0
+                    else:
+                        ws.cell(row=index+3, column=342).value = str(data['achievement_vs_target_oct']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_oct'] == '':
+                        ws.cell(row=index+3, column=343).value = 0
+                    else:
+                        ws.cell(row=index+3, column=343).value = str(data['total_cost_vs_achievement_oct']) + '%'
+                    ws.cell(row=index+3, column=344).value = ''
+                else:
+                    pass
+
+                # Nov
+                if data['payroll_data_nov'] != "":
+                    ws.cell(row=index+3, column=345).value = locale.format_string("%d", round(data['payroll_data_nov'].gross_income), grouping=True)
+                    if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=346).value = 0
+                        ws.cell(row=index+3, column=347).value = 0
+                    else:
+                        ws.cell(row=index+3, column=346).value = locale.format_string("%d", round(data['payroll_data_nov'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=347).value = locale.format_string("%d", round(data['payroll_data_nov'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=348).value = locale.format_string("%d", round(data['payroll_data_nov'].phone), grouping=True)
+                    ws.cell(row=index+3, column=349).value = locale.format_string("%d", round(data['payroll_data_nov'].lunch), grouping=True)
+                    if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=350).value = locale.format_string("%d", round(data['payroll_data_nov'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=350).value = 0
+                    if data['payroll_data_nov'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=351).value = locale.format_string("%d", round(data['payroll_data_nov'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=351).value = 0
+                    ws.cell(row=index+3, column=352).value = locale.format_string("%d", round(data['payroll_data_nov'].other), grouping=True)
+                    ws.cell(row=index+3, column=353).value = locale.format_string("%d", round(data['payroll_data_nov'].travel), grouping=True)
+                    ws.cell(row=index+3, column=354).value = locale.format_string("%d", round(data['payroll_data_nov'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=355).value = locale.format_string("%d", round(data['payroll_data_nov'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_nov'].employee.site.site == 'RO':
+                        if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=356).value =locale.format_string("%d", round(data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].housing_vnd + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=356).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=356).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].KPI_achievement + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=356).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_nov'].employee.site.site == 'RO':
+                        if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=357).value =locale.format_string("%d", round(data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].housing_vnd + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=357).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=357).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].KPI_achievement + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=357).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_nov'].employee.site.site == 'RO':
+                        if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=358).value =locale.format_string("%d", round(data['payroll_data_nov'].SHUI_9point5percent_employee_pay + data['payroll_data_nov'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_nov'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=358).value =locale.format_string("%d", round(data['payroll_data_nov'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=358).value =locale.format_string("%d", round(data['payroll_data_nov'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=358).value =locale.format_string("%d", round(data['payroll_data_nov'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_nov'].employee.site.site == 'RO':
+                        if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=359).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_nov'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=359).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=359).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=359).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_nov'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=360).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=360).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=360).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=361).value = 0
+                    else:
+                        ws.cell(row=index+3, column=361).value =locale.format_string("%d", round(data['payroll_data_nov'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_nov'].employee.site.site == 'RO':
+                        if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=362).value =locale.format_string("%d", round(data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].housing_vnd + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income + data['payroll_data_nov'].SHUI_9point5percent_employee_pay + data['payroll_data_nov'].SHUI_20point5percent_employer_pay + data['payroll_data_nov'].trade_union_fee_company_pay + data['payroll_data_nov'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_nov'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=362).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income + data['payroll_data_nov'].SHUI_21point5percent_employer_pay + data['payroll_data_nov'].trade_union_fee_company_pay_2percent + data['payroll_data_nov'].trade_union_fee_member + data['payroll_data_nov'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=362).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income + data['payroll_data_nov'].SHUI_21point5percent_company_pay + data['payroll_data_nov'].trade_union_fee_company_pay_2percent + data['payroll_data_nov'].trade_union_fee_member + data['payroll_data_nov'].transfer_bank), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=362).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].KPI_achievement + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income + data['payroll_data_nov'].SHUI_21point5percent_company_pay + data['payroll_data_nov'].trade_union_fee_company_pay + data['payroll_data_nov'].trade_union_fee_employee_pay + data['payroll_data_nov'].transfer_bank), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=362).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income + data['payroll_data_nov'].SHUI_21point5percent_company_pay + data['payroll_data_nov'].trade_union_fee_company_pay + data['payroll_data_nov'].trade_union_fee_staff_pay + data['payroll_data_nov'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_nov'] == 'x':
+                        ws.cell(row=index+3, column=363).value = 0
+                    else:
+                        ws.cell(row=index+3, column=363).value = locale.format_string("%d", round(data['target_value_nov'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_nov'] == 'x':
+                        ws.cell(row=index+3, column=364).value = 0
+                    else:
+                        ws.cell(row=index+3, column=364).value = locale.format_string("%d", round(data['achievement_nov'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_nov'] == '':
+                        ws.cell(row=index+3, column=365).value = 0
+                    else:
+                        ws.cell(row=index+3, column=365).value = str(data['achievement_vs_target_nov']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_nov'] == '':
+                        ws.cell(row=index+3, column=366).value = 0
+                    else:
+                        ws.cell(row=index+3, column=366).value = str(data['total_cost_vs_achievement_nov']) + '%'
+                    ws.cell(row=index+3, column=367).value = ''
+                else:
+                    pass
+                
+                # Dec
+                if data['payroll_data_dec'] != "":
+                    ws.cell(row=index+3, column=368).value = locale.format_string("%d", round(data['payroll_data_dec'].gross_income), grouping=True)
+                    if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=369).value = 0
+                        ws.cell(row=index+3, column=370).value = 0
+                    else:
+                        ws.cell(row=index+3, column=369).value = locale.format_string("%d", round(data['payroll_data_dec'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=370).value = locale.format_string("%d", round(data['payroll_data_dec'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=371).value = locale.format_string("%d", round(data['payroll_data_dec'].phone), grouping=True)
+                    ws.cell(row=index+3, column=372).value = locale.format_string("%d", round(data['payroll_data_dec'].lunch), grouping=True)
+                    if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=373).value = locale.format_string("%d", round(data['payroll_data_dec'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=373).value = 0
+                    if data['payroll_data_dec'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=374).value = locale.format_string("%d", round(data['payroll_data_dec'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=374).value = 0
+                    ws.cell(row=index+3, column=375).value = locale.format_string("%d", round(data['payroll_data_dec'].other), grouping=True)
+                    ws.cell(row=index+3, column=376).value = locale.format_string("%d", round(data['payroll_data_dec'].travel), grouping=True)
+                    ws.cell(row=index+3, column=377).value = locale.format_string("%d", round(data['payroll_data_dec'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=378).value = locale.format_string("%d", round(data['payroll_data_dec'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_dec'].employee.site.site == 'RO':
+                        if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=379).value =locale.format_string("%d", round(data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].housing_vnd + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=379).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=379).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].KPI_achievement + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=379).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_dec'].employee.site.site == 'RO':
+                        if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=380).value =locale.format_string("%d", round(data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].housing_vnd + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=380).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=380).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].KPI_achievement + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=380).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_dec'].employee.site.site == 'RO':
+                        if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=381).value =locale.format_string("%d", round(data['payroll_data_dec'].SHUI_9point5percent_employee_pay + data['payroll_data_dec'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_dec'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=381).value =locale.format_string("%d", round(data['payroll_data_dec'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=381).value =locale.format_string("%d", round(data['payroll_data_dec'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=381).value =locale.format_string("%d", round(data['payroll_data_dec'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_dec'].employee.site.site == 'RO':
+                        if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=382).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_dec'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=382).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=382).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=382).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_dec'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=383).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=383).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=383).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=384).value = 0
+                    else:
+                        ws.cell(row=index+3, column=384).value =locale.format_string("%d", round(data['payroll_data_dec'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_dec'].employee.site.site == 'RO':
+                        if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=385).value =locale.format_string("%d", round(data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].housing_vnd + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income + data['payroll_data_dec'].SHUI_9point5percent_employee_pay + data['payroll_data_dec'].SHUI_20point5percent_employer_pay + data['payroll_data_dec'].trade_union_fee_company_pay + data['payroll_data_dec'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_dec'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=385).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income + data['payroll_data_dec'].SHUI_21point5percent_employer_pay + data['payroll_data_dec'].trade_union_fee_company_pay_2percent + data['payroll_data_dec'].trade_union_fee_member + data['payroll_data_dec'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=385).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income + data['payroll_data_dec'].SHUI_21point5percent_company_pay + data['payroll_data_dec'].trade_union_fee_company_pay_2percent + data['payroll_data_dec'].trade_union_fee_member + data['payroll_data_dec'].transfer_bank), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=385).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].KPI_achievement + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income + data['payroll_data_dec'].SHUI_21point5percent_company_pay + data['payroll_data_dec'].trade_union_fee_company_pay + data['payroll_data_dec'].trade_union_fee_employee_pay + data['payroll_data_dec'].transfer_bank), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=385).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income + data['payroll_data_dec'].SHUI_21point5percent_company_pay + data['payroll_data_dec'].trade_union_fee_company_pay + data['payroll_data_dec'].trade_union_fee_staff_pay + data['payroll_data_dec'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_dec'] == 'x':
+                        ws.cell(row=index+3, column=386).value = 0
+                    else:
+                        ws.cell(row=index+3, column=386).value = locale.format_string("%d", round(data['target_value_dec'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_dec'] == 'x':
+                        ws.cell(row=index+3, column=387).value = 0
+                    else:
+                        ws.cell(row=index+3, column=387).value = locale.format_string("%d", round(data['achievement_dec'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_dec'] == '':
+                        ws.cell(row=index+3, column=388).value = 0
+                    else:
+                        ws.cell(row=index+3, column=388).value = str(data['achievement_vs_target_dec']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_dec'] == '':
+                        ws.cell(row=index+3, column=389).value = 0
+                    else:
+                        ws.cell(row=index+3, column=389).value = str(data['total_cost_vs_achievement_dec']) + '%'
+                    ws.cell(row=index+3, column=390).value = ''
+                else:
+                    pass
+
+                # Quarter 4
+                # Targer value
+                if data['target_value_oct'] == 'x':
+                    target_value_oct = 0
+                else:
+                    target_value_oct = data['target_value_oct'].target_value
+                if data['target_value_nov'] == 'x':
+                    target_value_nov = 0
+                else:
+                    target_value_nov = data['target_value_nov'].target_value
+                if data['target_value_dec'] == 'x':
+                    target_value_dec = 0
+                else:
+                    target_value_dec = data['target_value_dec'].target_value
+                ws.cell(row=index+3, column=391).value = locale.format_string("%d", (target_value_oct + target_value_nov + target_value_dec), grouping=True)
+                # Achievement
+                if data['achievement_oct'] == 'x':
+                    achievement_oct = 0
+                else:
+                    achievement_oct = data['achievement_oct'].achievement
+                if data['achievement_nov'] == 'x':
+                    achievement_nov = 0
+                else:
+                    achievement_nov = data['achievement_nov'].achievement
+                if data['achievement_dec'] == 'x':
+                    achievement_dec = 0
+                else:
+                    achievement_dec = data['achievement_dec'].achievement
+                ws.cell(row=index+3, column=392).value = locale.format_string("%d", (achievement_oct + achievement_nov + achievement_dec), grouping=True)
+                # Total cost
+                ws.cell(row=index+3, column=393).value = locale.format_string("%d", (data['total_cost_oct'] + data['total_cost_nov'] + data['total_cost_dec']), grouping=True)
+                # % Achievement vs Target Q.4
+                if data['achievement_vs_target_q4'] == '':
+                    ws.cell(row=index+3, column=394).value = ''
+                else:
+                    ws.cell(row=index+3, column=394).value = str(data['achievement_vs_target_q4']) + '%'
+                # % Total Cost vs Achievement Q.4
+                if data['total_cost_vs_achievement_q4'] == '':
+                    ws.cell(row=index+3, column=395).value = ''
+                else:
+                    ws.cell(row=index+3, column=395).value = str(data['total_cost_vs_achievement_q4']) + '%'
+                # % Total Cost vs Target Q.4
+                if data['total_cost_vs_target_value_q4'] == '':
+                    ws.cell(row=index+3, column=396).value = ''
+                else:
+                    ws.cell(row=index+3, column=396).value = str(data['total_cost_vs_target_value_q4']) + '%'
+
+                # Incentive q1
+                if data['incentive_quarter_1_current_year'] == 'x':
+                    ws.cell(row=index+3, column=398).value = ""
+                else:
+                    ws.cell(row=index+3, column=398).value = locale.format_string("%d", round(data['incentive_quarter_1_current_year'].incentive), grouping=True)
+                # Incentive q2
+                if data['incentive_quarter_2_current_year'] == 'x':
+                    ws.cell(row=index+3, column=399).value = ""
+                else:
+                    ws.cell(row=index+3, column=399).value = locale.format_string("%d", round(data['incentive_quarter_2_current_year'].incentive), grouping=True)
+                # Incentive q3
+                if data['incentive_quarter_3_current_year'] == 'x':
+                    ws.cell(row=index+3, column=400).value = ""
+                else:
+                    ws.cell(row=index+3, column=400).value = locale.format_string("%d", round(data['incentive_quarter_3_current_year'].incentive), grouping=True)
+                # Incentive q4
+                if data['incentive_quarter_4_current_year'] == 'x':
+                    ws.cell(row=index+3, column=401).value = ""
+                else:
+                    ws.cell(row=index+3, column=401).value = locale.format_string("%d", round(data['incentive_quarter_4_current_year'].incentive), grouping=True)
+                # Incentive yearly
+                if data['incentive_yearly_current_year'] == 'x':
+                    ws.cell(row=index+3, column=402).value = ""
+                else:
+                    ws.cell(row=index+3, column=402).value = locale.format_string("%d", round(data['incentive_yearly_current_year'].incentive), grouping=True)
+                # Best reward
+                if data['best_reward_current_year'] == 'x':
+                    ws.cell(row=index+3, column=403).value = ""
+                else:
+                    ws.cell(row=index+3, column=403).value = locale.format_string("%d", round(data['best_reward_current_year'].best_reward), grouping=True)
+
+                # column PC-PJ
+                ws.cell(row=index+3, column=404).value = data['years_of_service']
+                ws.cell(row=index+3, column=405).value = data['pd']
+                ws.cell(row=index+3, column=406).value = locale.format_string("%d", round(data['month_13_salary_Pro_ata_full_current_year']), grouping=True)
+                if data['month_14_salary_Pro_ata_full_current_year'] == 'x':
+                    ws.cell(row=index+3, column=407).value = ""
+                else:
+                    ws.cell(row=index+3, column=407).value = locale.format_string("%d", round(data['month_14_salary_Pro_ata_full_current_year'].month_14_salary), grouping=True)
+                ws.cell(row=index+3, column=408).value = locale.format_string("%d", round(data['total_bonus']), grouping=True)
+                ws.cell(row=index+3, column=409).value = locale.format_string("%d", round(data['total_remuneration']), grouping=True)
+
+                # column PK-PO
+                if data['company_celebration'] == 'x' or data['company_celebration'] == 0:
+                    ws.cell(row=index+3, column=411).value = 0
+                else:
+                    ws.cell(row=index+3, column=411).value = locale.format_string("%d", round(data['company_celebration'].celebration), grouping=True)
+                if data['health_check_up'] == 'x' or data['health_check_up'] == 0:
+                    ws.cell(row=index+3, column=412).value = 0
+                else:
+                    ws.cell(row=index+3, column=412).value = locale.format_string("%d", round(data['health_check_up'].health_check_up_fee), grouping=True)
+                if data['healthcare_insurance'] == 'x' or data['healthcare_insurance'] == 0:
+                    ws.cell(row=index+3, column=413).value = 0
+                else:
+                    ws.cell(row=index+3, column=413).value = locale.format_string("%d", round(data['healthcare_insurance'].insurance_fee), grouping=True)
+                
+                if data['saving_from_vacant'] == 'x' or data['saving_from_vacant'] == 0:
+                    ws.cell(row=index+3, column=415).value = 0
+                else:
+                    ws.cell(row=index+3, column=415).value = locale.format_string("%d", round(data['saving_from_vacant'].saving_from_vacant), grouping=True)
+                ws.cell(row=index+3, column=416).value = data['salary_difference']
+                ws.cell(row=index+3, column=417).value = data['bhxh_5percent_difference']
+                ws.cell(row=index+3, column=418).value = data['kpcd_5percent_difference']
+                ws.cell(row=index+3, column=419).value = locale.format_string("%d", round(data['total_cost_col_pt']), grouping=True)
+
+
+            else: # Employee có ngày nghỉ trong năm nay
+                # Set style
+                for col in range(1,420):
+                    ws.cell(row=index+3, column=col).style = style_data_inactive
+                # Employee information
+                ws.cell(row=index+3, column=2).value = str(data['employee'].site)
+                ws.cell(row=index+3, column=3).value = str(data['employee'].employee_code)
+                ws.cell(row=index+3, column=4).value = str(data['employee'].full_name)
+                ws.cell(row=index+3, column=5).value = str(data['employee'].gp)
+                ws.cell(row=index+3, column=6).value = str(data['employee'].department_e)
+                ws.cell(row=index+3, column=7).value = str(data['employee'].sub_department_1)
+                ws.cell(row=index+3, column=8).value = str(data['employee'].sub_department_2)
+                ws.cell(row=index+3, column=9).value = str(data['employee'].sub_department_3)
+                ws.cell(row=index+3, column=10).value = str(data['employee'].area)
+                ws.cell(row=index+3, column=11).value = str(data['employee'].provinces)
+                ws.cell(row=index+3, column=12).value = str(data['employee'].sub_province)
+                ws.cell(row=index+3, column=13).value = str(data['employee'].position_e)
+                ws.cell(row=index+3, column=14).value = str(data['employee'].joining_date.strftime("%d/%m/%Y"))
+                ws.cell(row=index+3, column=15).value = ""
+                ws.cell(row=index+3, column=16).value = str(data['head_count_jan'])
+                ws.cell(row=index+3, column=17).value = str(data['head_count_feb'])
+                ws.cell(row=index+3, column=18).value = str(data['head_count_mar'])
+                ws.cell(row=index+3, column=19).value = str(data['head_count_apr'])
+                ws.cell(row=index+3, column=20).value = str(data['head_count_may'])
+                ws.cell(row=index+3, column=21).value = str(data['head_count_jun'])
+                ws.cell(row=index+3, column=22).value = str(data['head_count_jul'])
+                ws.cell(row=index+3, column=23).value = str(data['head_count_aug'])
+                ws.cell(row=index+3, column=24).value = str(data['head_count_sep'])
+                ws.cell(row=index+3, column=25).value = str(data['head_count_oct'])
+                ws.cell(row=index+3, column=26).value = str(data['head_count_nov'])
+                ws.cell(row=index+3, column=27).value = str(data['head_count_dec'])
+                ws.cell(row=index+3, column=28).value = locale.format_string("%d", round((data['basic_salary_last_year'])), grouping=True)
+                ws.cell(row=index+3, column=29).value = ""
+                ws.cell(row=index+3, column=30).value = locale.format_string("%d", round(data['basic_salary_full_last_year']), grouping=True)
+                # Full last year
+                ws.cell(row=index+3, column=31).value = locale.format_string("%d", round(data['overtime_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=32).value = locale.format_string("%d", round(data['transportation_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=33).value = locale.format_string("%d", round(data['phone_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=34).value = locale.format_string("%d", round(data['lunch_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=35).value = locale.format_string("%d", round(data['housing_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=36).value = locale.format_string("%d", round(data['KPI_achievement_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=37).value = locale.format_string("%d", round(data['others_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=38).value = locale.format_string("%d", round(data['travel_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=39).value = locale.format_string("%d", round(data['seniority_bonus_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=40).value = locale.format_string("%d", round(data['responsibility_allowance_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=41).value = locale.format_string("%d", round(data['total_allowance_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=42).value = locale.format_string("%d", round(data['gross_income_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=43).value = locale.format_string("%d", round(data['SHUI_21point5percent_company_pay_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=44).value = locale.format_string("%d", round(data['trade_union_fee_company_pay_2percent_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=45).value = locale.format_string("%d", round(data['trade_union_fee_member_salary_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=46).value = locale.format_string("%d", round(data['transfer_bank_salary_full_last_year']), grouping=True)
+
+                if data['incentive_quarter_1_last_year'] == 'x':
+                    ws.cell(row=index+3, column=47).value = ""
+                else:
+                    ws.cell(row=index+3, column=47).value = locale.format_string("%d", round(data['incentive_quarter_1_last_year'].incentive), grouping=True)
+                if data['incentive_quarter_2_last_year'] == 'x':
+                    ws.cell(row=index+3, column=48).value = ""
+                else:
+                    ws.cell(row=index+3, column=48).value = locale.format_string("%d", round(data['incentive_quarter_2_last_year'].incentive), grouping=True)
+                if data['incentive_quarter_3_last_year'] == 'x':
+                    ws.cell(row=index+3, column=49).value = ""
+                else:
+                    ws.cell(row=index+3, column=49).value = locale.format_string("%d", round(data['incentive_quarter_3_last_year'].incentive), grouping=True)
+                if data['incentive_quarter_4_last_year'] == 'x':
+                    ws.cell(row=index+3, column=50).value = ""
+                else:
+                    ws.cell(row=index+3, column=50).value = locale.format_string("%d", round(data['incentive_quarter_4_last_year'].incentive), grouping=True)
+                if data['incentive_yearly_last_year'] == 'x':
+                    ws.cell(row=index+3, column=51).value = ""
+                else:
+                    ws.cell(row=index+3, column=51).value = locale.format_string("%d", round(data['incentive_yearly_last_year'].incentive), grouping=True)
+                if data['best_reward_last_year'] == 'x':
+                    ws.cell(row=index+3, column=52).value = ""
+                else:
+                    ws.cell(row=index+3, column=52).value = locale.format_string("%d", round(data['best_reward_last_year'].best_reward), grouping=True)
+ 
+                ws.cell(row=index+3, column=53).value = locale.format_string("%d", round(data['month_13_salary_Pro_ata_full_last_year']), grouping=True)
+
+                if data['month_14_salary_Pro_ata_full_last_year'] == 'x':
+                    ws.cell(row=index+3, column=54).value = ""
+                else:
+                    ws.cell(row=index+3, column=54).value = locale.format_string("%d", round(data['month_14_salary_Pro_ata_full_last_year'].month_14_salary), grouping=True)
+ 
+                ws.cell(row=index+3, column=55).value = locale.format_string("%d", round(data['total_remuneration_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=56).value = locale.format_string("%d", round(data['target_value_full_last_year']), grouping=True)
+                ws.cell(row=index+3, column=57).value = locale.format_string("%d", round(data['achievement_full_last_year']), grouping=True)
+
+                ws.cell(row=index+3, column=58).value = locale.format_string("%d", round(data['achievement_vs_target_last_year']), grouping=True) + '%'
+                ws.cell(row=index+3, column=59).value = locale.format_string("%d", round(data['total_cost_vs_achievement_last_year']), grouping=True) + '%'
+                ws.cell(row=index+3, column=60).value = locale.format_string("%d", round(data['total_cost_vs_target_last_year']), grouping=True) + '%'
+                ws.cell(row=index+3, column=61).value = ""
+                # Full this year
+                ws.cell(row=index+3, column=62).value = locale.format_string("%d", round(data['basic_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=63).value = locale.format_string("%d", round(data['overtime_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=64).value = locale.format_string("%d", round(data['transportation_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=65).value = locale.format_string("%d", round(data['phone_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=66).value = locale.format_string("%d", round(data['lunch_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=67).value = locale.format_string("%d", round(data['housing_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=68).value = locale.format_string("%d", round(data['KPI_achievement_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=69).value = locale.format_string("%d", round(data['others_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=70).value = locale.format_string("%d", round(data['travel_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=71).value = locale.format_string("%d", round(data['seniority_bonus_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=72).value = locale.format_string("%d", round(data['responsibility_allowance_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=73).value = locale.format_string("%d", round(data['total_allowance_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=74).value = locale.format_string("%d", round(data['gross_income_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=75).value = locale.format_string("%d", round(data['SHUI_21point5percent_company_pay_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=76).value = locale.format_string("%d", round(data['trade_union_fee_company_pay_2percent_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=77).value = locale.format_string("%d", round(data['trade_union_fee_member_salary_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=78).value = locale.format_string("%d", round(data['transfer_bank_salary_full_current_year']), grouping=True)
+
+                if data['incentive_quarter_1_current_year'] == 'x':
+                    ws.cell(row=index+3, column=79).value = ""
+                else:
+                    ws.cell(row=index+3, column=79).value = locale.format_string("%d", round(data['incentive_quarter_1_current_year'].incentive), grouping=True)
+                if data['incentive_quarter_2_current_year'] == 'x':
+                    ws.cell(row=index+3, column=80).value = ""
+                else:
+                    ws.cell(row=index+3, column=80).value = locale.format_string("%d", round(data['incentive_quarter_2_current_year'].incentive), grouping=True)
+                if data['incentive_quarter_3_current_year'] == 'x':
+                    ws.cell(row=index+3, column=81).value = ""
+                else:
+                    ws.cell(row=index+3, column=81).value = locale.format_string("%d", round(data['incentive_quarter_3_current_year'].incentive), grouping=True)
+                if data['incentive_quarter_4_current_year'] == 'x':
+                    ws.cell(row=index+3, column=82).value = ""
+                else:
+                    ws.cell(row=index+3, column=82).value = locale.format_string("%d", round(data['incentive_quarter_4_current_year'].incentive), grouping=True)
+                if data['incentive_yearly_current_year'] == 'x':
+                    ws.cell(row=index+3, column=83).value = ""
+                else:
+                    ws.cell(row=index+3, column=83).value = locale.format_string("%d", round(data['incentive_yearly_current_year'].incentive), grouping=True)
+                if data['best_reward_current_year'] == 'x':
+                    ws.cell(row=index+3, column=84).value = ""
+                else:
+                    ws.cell(row=index+3, column=84).value = locale.format_string("%d", round(data['best_reward_current_year'].best_reward), grouping=True)
+
+                ws.cell(row=index+3, column=85).value = locale.format_string("%d", round(data['month_13_salary_Pro_ata_full_current_year']), grouping=True)
+
+                if data['month_14_salary_Pro_ata_full_current_year'] == 'x':
+                    ws.cell(row=index+3, column=86).value = ""
+                else:
+                    ws.cell(row=index+3, column=86).value = locale.format_string("%d", round(data['month_14_salary_Pro_ata_full_current_year'].month_14_salary), grouping=True)
+                
+                ws.cell(row=index+3, column=87).value = locale.format_string("%d", round(data['total_remuneration_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=88).value = locale.format_string("%d", round(data['target_value_full_current_year']), grouping=True)
+                ws.cell(row=index+3, column=89).value = locale.format_string("%d", round(data['achievement_full_current_year']), grouping=True)
+
+                ws.cell(row=index+3, column=90).value = locale.format_string("%d", round(data['achievement_vs_target_current_year']), grouping=True) + '%'
+                ws.cell(row=index+3, column=91).value = locale.format_string("%d", round(data['total_cost_vs_achievement_current_year']), grouping=True) + '%'
+                ws.cell(row=index+3, column=92).value = locale.format_string("%d", round(data['total_cost_vs_target_current_year']), grouping=True) + '%'
+                ws.cell(row=index+3, column=93).value = ""
+                # Jan
+                if data['payroll_data_jan'] != "":
+                    ws.cell(row=index+3, column=94).value = locale.format_string("%d", round(data['payroll_data_jan'].gross_income), grouping=True)
+                    if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=95).value = 0
+                        ws.cell(row=index+3, column=96).value = 0
+                    else:
+                        ws.cell(row=index+3, column=95).value = locale.format_string("%d", round(data['payroll_data_jan'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=96).value = locale.format_string("%d", round(data['payroll_data_jan'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=97).value = locale.format_string("%d", round(data['payroll_data_jan'].phone), grouping=True)
+                    ws.cell(row=index+3, column=98).value = locale.format_string("%d", round(data['payroll_data_jan'].lunch), grouping=True)
+                    if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=99).value = locale.format_string("%d", round(data['payroll_data_jan'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=99).value = 0
+                    if data['payroll_data_jan'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=100).value = locale.format_string("%d", round(data['payroll_data_jan'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=100).value = 0
+                    ws.cell(row=index+3, column=101).value = locale.format_string("%d", round(data['payroll_data_jan'].other), grouping=True)
+                    ws.cell(row=index+3, column=102).value = locale.format_string("%d", round(data['payroll_data_jan'].travel), grouping=True)
+                    ws.cell(row=index+3, column=103).value = locale.format_string("%d", round(data['payroll_data_jan'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=104).value = locale.format_string("%d", round(data['payroll_data_jan'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_jan'].employee.site.site == 'RO':
+                        if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=105).value =locale.format_string("%d", round(data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].housing_vnd + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility) , grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=105).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility) , grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=105).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].KPI_achievement + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility) , grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=105).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility) , grouping=True)
+                    # Gross income
+                    if data['payroll_data_jan'].employee.site.site == 'RO':
+                        if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=106).value =locale.format_string("%d", round(data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].housing_vnd + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income) , grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=106).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income) , grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=106).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].KPI_achievement + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income) , grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=106).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income) , grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_jan'].employee.site.site == 'RO':
+                        if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=107).value =locale.format_string("%d", round(data['payroll_data_jan'].SHUI_9point5percent_employee_pay + data['payroll_data_jan'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_jan'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=107).value =locale.format_string("%d", round(data['payroll_data_jan'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=107).value =locale.format_string("%d", round(data['payroll_data_jan'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=107).value =locale.format_string("%d", round(data['payroll_data_jan'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_jan'].employee.site.site == 'RO':
+                        if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=108).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_jan'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=108).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=108).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=108).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_jan'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=109).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=109).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=109).value =locale.format_string("%d", round(data['payroll_data_jan'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=110).value = 0
+                    else:
+                        ws.cell(row=index+3, column=110).value =locale.format_string("%d", round(data['payroll_data_jan'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_jan'].employee.site.site == 'RO':
+                        if data['payroll_data_jan'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=111).value =locale.format_string("%d", round(data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].housing_vnd + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income + data['payroll_data_jan'].SHUI_9point5percent_employee_pay + data['payroll_data_jan'].SHUI_20point5percent_employer_pay + data['payroll_data_jan'].trade_union_fee_company_pay + data['payroll_data_jan'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_jan'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=111).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income + data['payroll_data_jan'].SHUI_21point5percent_employer_pay + data['payroll_data_jan'].trade_union_fee_company_pay_2percent + data['payroll_data_jan'].trade_union_fee_member + data['payroll_data_jan'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=111).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income + data['payroll_data_jan'].SHUI_21point5percent_company_pay + data['payroll_data_jan'].trade_union_fee_company_pay_2percent + data['payroll_data_jan'].trade_union_fee_member + data['payroll_data_jan'].transfer_bank), grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=111).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].KPI_achievement + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income + data['payroll_data_jan'].SHUI_21point5percent_company_pay + data['payroll_data_jan'].trade_union_fee_company_pay + data['payroll_data_jan'].trade_union_fee_employee_pay + data['payroll_data_jan'].transfer_bank), grouping=True)
+                    elif data['payroll_data_jan'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=111).value =locale.format_string("%d", round(data['payroll_data_jan'].overtime + data['payroll_data_jan'].transportation + data['payroll_data_jan'].phone + data['payroll_data_jan'].lunch + data['payroll_data_jan'].other + data['payroll_data_jan'].travel + data['payroll_data_jan'].seniority_bonus + data['payroll_data_jan'].responsibility + data['payroll_data_jan'].gross_income + data['payroll_data_jan'].SHUI_21point5percent_company_pay + data['payroll_data_jan'].trade_union_fee_company_pay + data['payroll_data_jan'].trade_union_fee_staff_pay + data['payroll_data_jan'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_jan'] == 'x':
+                        ws.cell(row=index+3, column=112).value = 0
+                    else:
+                        ws.cell(row=index+3, column=112).value = locale.format_string("%d", round(data['target_value_jan'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_jan'] == 'x':
+                        ws.cell(row=index+3, column=113).value = 0
+                    else:
+                        ws.cell(row=index+3, column=113).value = locale.format_string("%d", round(data['achievement_jan'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_jan'] == '':
+                        ws.cell(row=index+3, column=114).value = 0
+                    else:
+                        ws.cell(row=index+3, column=114).value = str(data['achievement_vs_target_jan']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_jan'] == '':
+                        ws.cell(row=index+3, column=115).value = 0
+                    else:
+                        ws.cell(row=index+3, column=115).value = str(data['total_cost_vs_achievement_jan']) + '%'
+                    ws.cell(row=index+3, column=116).value = ''
+                else:
+                    pass
+
+                # Feb
+                if data['payroll_data_feb'] != "":
+                    ws.cell(row=index+3, column=117).value = locale.format_string("%d", round(data['payroll_data_feb'].gross_income), grouping=True)
+                    if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=118).value = 0
+                        ws.cell(row=index+3, column=119).value = 0
+                    else:
+                        ws.cell(row=index+3, column=118).value = locale.format_string("%d", round(data['payroll_data_feb'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=119).value = locale.format_string("%d", round(data['payroll_data_feb'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=120).value = locale.format_string("%d", round(data['payroll_data_feb'].phone), grouping=True)
+                    ws.cell(row=index+3, column=121).value = locale.format_string("%d", round(data['payroll_data_feb'].lunch), grouping=True)
+                    if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=122).value = locale.format_string("%d", round(data['payroll_data_feb'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=122).value = 0
+                    if data['payroll_data_feb'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=123).value = locale.format_string("%d", round(data['payroll_data_feb'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=123).value = 0
+                    ws.cell(row=index+3, column=124).value = locale.format_string("%d", round(data['payroll_data_feb'].other), grouping=True)
+                    ws.cell(row=index+3, column=125).value = locale.format_string("%d", round(data['payroll_data_feb'].travel), grouping=True)
+                    ws.cell(row=index+3, column=126).value = locale.format_string("%d", round(data['payroll_data_feb'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=127).value = locale.format_string("%d", round(data['payroll_data_feb'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_feb'].employee.site.site == 'RO':
+                        if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=128).value =locale.format_string("%d", round(data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].housing_vnd + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=128).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=128).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].KPI_achievement + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=128).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_feb'].employee.site.site == 'RO':
+                        if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=129).value =locale.format_string("%d", round(data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].housing_vnd + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=129).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=129).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].KPI_achievement + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=129).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_feb'].employee.site.site == 'RO':
+                        if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=130).value =locale.format_string("%d", round(data['payroll_data_feb'].SHUI_9point5percent_employee_pay + data['payroll_data_feb'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_feb'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=130).value =locale.format_string("%d", round(data['payroll_data_feb'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=130).value =locale.format_string("%d", round(data['payroll_data_feb'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=130).value =locale.format_string("%d", round(data['payroll_data_feb'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_feb'].employee.site.site == 'RO':
+                        if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=131).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_feb'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=131).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=131).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=131).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_feb'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=132).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=132).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=132).value =locale.format_string("%d", round(data['payroll_data_feb'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=133).value = 0
+                    else:
+                        ws.cell(row=index+3, column=133).value =locale.format_string("%d", round(data['payroll_data_feb'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_feb'].employee.site.site == 'RO':
+                        if data['payroll_data_feb'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=134).value =locale.format_string("%d", round(data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].housing_vnd + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income + data['payroll_data_feb'].SHUI_9point5percent_employee_pay + data['payroll_data_feb'].SHUI_20point5percent_employer_pay + data['payroll_data_feb'].trade_union_fee_company_pay + data['payroll_data_feb'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_feb'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=134).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income + data['payroll_data_feb'].SHUI_21point5percent_employer_pay + data['payroll_data_feb'].trade_union_fee_company_pay_2percent + data['payroll_data_feb'].trade_union_fee_member + data['payroll_data_feb'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=134).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income + data['payroll_data_feb'].SHUI_21point5percent_company_pay + data['payroll_data_feb'].trade_union_fee_company_pay_2percent + data['payroll_data_feb'].trade_union_fee_member + data['payroll_data_feb'].transfer_bank), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=134).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].KPI_achievement + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income + data['payroll_data_feb'].SHUI_21point5percent_company_pay + data['payroll_data_feb'].trade_union_fee_company_pay + data['payroll_data_feb'].trade_union_fee_employee_pay + data['payroll_data_feb'].transfer_bank), grouping=True)
+                    elif data['payroll_data_feb'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=134).value =locale.format_string("%d", round(data['payroll_data_feb'].overtime + data['payroll_data_feb'].transportation + data['payroll_data_feb'].phone + data['payroll_data_feb'].lunch + data['payroll_data_feb'].other + data['payroll_data_feb'].travel + data['payroll_data_feb'].seniority_bonus + data['payroll_data_feb'].responsibility + data['payroll_data_feb'].gross_income + data['payroll_data_feb'].SHUI_21point5percent_company_pay + data['payroll_data_feb'].trade_union_fee_company_pay + data['payroll_data_feb'].trade_union_fee_staff_pay + data['payroll_data_feb'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_feb'] == 'x':
+                        ws.cell(row=index+3, column=135).value = 0
+                    else:
+                        ws.cell(row=index+3, column=135).value = locale.format_string("%d", round(data['target_value_feb'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_feb'] == 'x':
+                        ws.cell(row=index+3, column=136).value = 0
+                    else:
+                        ws.cell(row=index+3, column=136).value = locale.format_string("%d", round(data['achievement_feb'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_feb'] == '':
+                        ws.cell(row=index+3, column=137).value = 0
+                    else:
+                        ws.cell(row=index+3, column=137).value = str(data['achievement_vs_target_feb']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_feb'] == '':
+                        ws.cell(row=index+3, column=138).value = 0
+                    else:
+                        ws.cell(row=index+3, column=138).value = str(data['total_cost_vs_achievement_feb']) + '%'
+                    ws.cell(row=index+3, column=139).value = ''
+                else:
+                    pass
+
+                # Mar
+                if data['payroll_data_mar'] != "":
+                    ws.cell(row=index+3, column=140).value = locale.format_string("%d", round(data['payroll_data_mar'].gross_income), grouping=True)
+                    if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=141).value = 0
+                        ws.cell(row=index+3, column=142).value = 0
+                    else:
+                        ws.cell(row=index+3, column=141).value = locale.format_string("%d", round(data['payroll_data_mar'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=142).value = locale.format_string("%d", round(data['payroll_data_mar'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=143).value = locale.format_string("%d", round(data['payroll_data_mar'].phone), grouping=True)
+                    ws.cell(row=index+3, column=144).value = locale.format_string("%d", round(data['payroll_data_mar'].lunch), grouping=True)
+                    if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=145).value = locale.format_string("%d", round(data['payroll_data_mar'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=145).value = 0
+                    if data['payroll_data_mar'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=146).value = locale.format_string("%d", round(data['payroll_data_mar'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=146).value = 0
+                    ws.cell(row=index+3, column=147).value = locale.format_string("%d", round(data['payroll_data_mar'].other), grouping=True)
+                    ws.cell(row=index+3, column=148).value = locale.format_string("%d", round(data['payroll_data_mar'].travel), grouping=True)
+                    ws.cell(row=index+3, column=149).value = locale.format_string("%d", round(data['payroll_data_mar'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=150).value = locale.format_string("%d", round(data['payroll_data_mar'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_mar'].employee.site.site == 'RO':
+                        if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=151).value =locale.format_string("%d", round(data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].housing_vnd + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=151).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=151).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].KPI_achievement + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=151).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_mar'].employee.site.site == 'RO':
+                        if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=152).value =locale.format_string("%d", round(data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].housing_vnd + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=152).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=152).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].KPI_achievement + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=152).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_mar'].employee.site.site == 'RO':
+                        if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=153).value =locale.format_string("%d", round(data['payroll_data_mar'].SHUI_9point5percent_employee_pay + data['payroll_data_mar'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_mar'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=153).value =locale.format_string("%d", round(data['payroll_data_mar'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=153).value =locale.format_string("%d", round(data['payroll_data_mar'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=153).value =locale.format_string("%d", round(data['payroll_data_mar'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_mar'].employee.site.site == 'RO':
+                        if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=154).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_mar'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=154).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=154).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=154).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_mar'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=155).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=155).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=155).value =locale.format_string("%d", round(data['payroll_data_mar'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=156).value = 0
+                    else:
+                        ws.cell(row=index+3, column=156).value =locale.format_string("%d", round(data['payroll_data_mar'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_mar'].employee.site.site == 'RO':
+                        if data['payroll_data_mar'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=157).value =locale.format_string("%d", round(data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].housing_vnd + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income + data['payroll_data_mar'].SHUI_9point5percent_employee_pay + data['payroll_data_mar'].SHUI_20point5percent_employer_pay + data['payroll_data_mar'].trade_union_fee_company_pay + data['payroll_data_mar'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_mar'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=157).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income + data['payroll_data_mar'].SHUI_21point5percent_employer_pay + data['payroll_data_mar'].trade_union_fee_company_pay_2percent + data['payroll_data_mar'].trade_union_fee_member + data['payroll_data_mar'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=157).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income + data['payroll_data_mar'].SHUI_21point5percent_company_pay + data['payroll_data_mar'].trade_union_fee_company_pay_2percent + data['payroll_data_mar'].trade_union_fee_member + data['payroll_data_mar'].transfer_bank), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=157).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].KPI_achievement + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income + data['payroll_data_mar'].SHUI_21point5percent_company_pay + data['payroll_data_mar'].trade_union_fee_company_pay + data['payroll_data_mar'].trade_union_fee_employee_pay + data['payroll_data_mar'].transfer_bank), grouping=True)
+                    elif data['payroll_data_mar'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=157).value =locale.format_string("%d", round(data['payroll_data_mar'].overtime + data['payroll_data_mar'].transportation + data['payroll_data_mar'].phone + data['payroll_data_mar'].lunch + data['payroll_data_mar'].other + data['payroll_data_mar'].travel + data['payroll_data_mar'].seniority_bonus + data['payroll_data_mar'].responsibility + data['payroll_data_mar'].gross_income + data['payroll_data_mar'].SHUI_21point5percent_company_pay + data['payroll_data_mar'].trade_union_fee_company_pay + data['payroll_data_mar'].trade_union_fee_staff_pay + data['payroll_data_mar'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_mar'] == 'x':
+                        ws.cell(row=index+3, column=158).value = 0
+                    else:
+                        ws.cell(row=index+3, column=158).value = locale.format_string("%d", round(data['target_value_mar'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_mar'] == 'x':
+                        ws.cell(row=index+3, column=159).value = 0
+                    else:
+                        ws.cell(row=index+3, column=159).value = locale.format_string("%d", round(data['achievement_mar'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_mar'] == '':
+                        ws.cell(row=index+3, column=160).value = 0
+                    else:
+                        ws.cell(row=index+3, column=160).value = str(data['achievement_vs_target_mar']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_mar'] == '':
+                        ws.cell(row=index+3, column=161).value = 0
+                    else:
+                        ws.cell(row=index+3, column=161).value = str(data['total_cost_vs_achievement_mar']) + '%'
+                    ws.cell(row=index+3, column=162).value = ''
+                else:
+                    pass
+
+                # Quarter 1
+                # Targer value
+                if data['target_value_jan'] == 'x':
+                    target_value_jan = 0
+                else:
+                    target_value_jan = data['target_value_jan'].target_value
+                if data['target_value_feb'] == 'x':
+                    target_value_feb = 0
+                else:
+                    target_value_feb = data['target_value_feb'].target_value
+                if data['target_value_mar'] == 'x':
+                    target_value_mar = 0
+                else:
+                    target_value_mar = data['target_value_mar'].target_value
+                ws.cell(row=index+3, column=163).value = locale.format_string("%d", (target_value_jan + target_value_feb + target_value_mar), grouping=True)
+                # Achievement
+                if data['achievement_jan'] == 'x':
+                    achievement_jan = 0
+                else:
+                    achievement_jan = data['achievement_jan'].achievement
+                if data['achievement_feb'] == 'x':
+                    achievement_feb = 0
+                else:
+                    achievement_feb = data['achievement_feb'].achievement
+                if data['achievement_mar'] == 'x':
+                    achievement_mar = 0
+                else:
+                    achievement_mar = data['achievement_mar'].achievement
+                ws.cell(row=index+3, column=164).value = locale.format_string("%d", (achievement_jan + achievement_feb + achievement_mar), grouping=True)
+                # Total cost
+                ws.cell(row=index+3, column=165).value = locale.format_string("%d", (data['total_cost_jan'] + data['total_cost_feb'] + data['total_cost_mar']), grouping=True)
+                # % Achievement vs Target Q.1
+                if data['achievement_vs_target_q1'] == '':
+                    ws.cell(row=index+3, column=166).value = ''
+                else:
+                    ws.cell(row=index+3, column=166).value = str(data['achievement_vs_target_q1']) + '%'
+                # % Total Cost vs Achievement Q.1
+                if data['total_cost_vs_achievement_q1'] == '':
+                    ws.cell(row=index+3, column=167).value = ''
+                else:
+                    ws.cell(row=index+3, column=167).value = str(data['total_cost_vs_achievement_q1']) + '%'
+                # % Total Cost vs Target Q.1
+                if data['total_cost_vs_target_value_q1'] == '':
+                    ws.cell(row=index+3, column=168).value = ''
+                else:
+                    ws.cell(row=index+3, column=168).value = str(data['total_cost_vs_target_value_q1']) + '%'
+
+                # Apr
+                if data['payroll_data_apr'] != "":
+                    ws.cell(row=index+3, column=170).value = locale.format_string("%d", round(data['payroll_data_apr'].gross_income), grouping=True)
+                    if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=171).value = 0
+                        ws.cell(row=index+3, column=172).value = 0
+                    else:
+                        ws.cell(row=index+3, column=171).value = locale.format_string("%d", round(data['payroll_data_apr'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=172).value = locale.format_string("%d", round(data['payroll_data_apr'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=173).value = locale.format_string("%d", round(data['payroll_data_apr'].phone), grouping=True)
+                    ws.cell(row=index+3, column=174).value = locale.format_string("%d", round(data['payroll_data_apr'].lunch), grouping=True)
+                    if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=175).value = locale.format_string("%d", round(data['payroll_data_apr'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=175).value = 0
+                    if data['payroll_data_apr'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=176).value = locale.format_string("%d", round(data['payroll_data_apr'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=176).value = 0
+                    ws.cell(row=index+3, column=177).value = locale.format_string("%d", round(data['payroll_data_apr'].other), grouping=True)
+                    ws.cell(row=index+3, column=178).value = locale.format_string("%d", round(data['payroll_data_apr'].travel), grouping=True)
+                    ws.cell(row=index+3, column=179).value = locale.format_string("%d", round(data['payroll_data_apr'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=180).value = locale.format_string("%d", round(data['payroll_data_apr'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_apr'].employee.site.site == 'RO':
+                        if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=181).value =locale.format_string("%d", round(data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].housing_vnd + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=181).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=181).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].KPI_achievement + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=181).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_apr'].employee.site.site == 'RO':
+                        if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=182).value =locale.format_string("%d", round(data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].housing_vnd + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=182).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=182).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].KPI_achievement + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=182).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_apr'].employee.site.site == 'RO':
+                        if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=183).value =locale.format_string("%d", round(data['payroll_data_apr'].SHUI_9point5percent_employee_pay + data['payroll_data_apr'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_apr'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=183).value =locale.format_string("%d", round(data['payroll_data_apr'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=183).value =locale.format_string("%d", round(data['payroll_data_apr'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=183).value =locale.format_string("%d", round(data['payroll_data_apr'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_apr'].employee.site.site == 'RO':
+                        if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=184).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_apr'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=184).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=184).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=184).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_apr'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=185).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=185).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=185).value =locale.format_string("%d", round(data['payroll_data_apr'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=186).value = 0
+                    else:
+                        ws.cell(row=index+3, column=186).value =locale.format_string("%d", round(data['payroll_data_apr'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_apr'].employee.site.site == 'RO':
+                        if data['payroll_data_apr'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=187).value =locale.format_string("%d", round(data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].housing_vnd + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income + data['payroll_data_apr'].SHUI_9point5percent_employee_pay + data['payroll_data_apr'].SHUI_20point5percent_employer_pay + data['payroll_data_apr'].trade_union_fee_company_pay + data['payroll_data_apr'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_apr'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=187).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income + data['payroll_data_apr'].SHUI_21point5percent_employer_pay + data['payroll_data_apr'].trade_union_fee_company_pay_2percent + data['payroll_data_apr'].trade_union_fee_member + data['payroll_data_apr'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=187).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income + data['payroll_data_apr'].SHUI_21point5percent_company_pay + data['payroll_data_apr'].trade_union_fee_company_pay_2percent + data['payroll_data_apr'].trade_union_fee_member + data['payroll_data_apr'].transfer_bank), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=187).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].KPI_achievement + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income + data['payroll_data_apr'].SHUI_21point5percent_company_pay + data['payroll_data_apr'].trade_union_fee_company_pay + data['payroll_data_apr'].trade_union_fee_employee_pay + data['payroll_data_apr'].transfer_bank), grouping=True)
+                    elif data['payroll_data_apr'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=187).value =locale.format_string("%d", round(data['payroll_data_apr'].overtime + data['payroll_data_apr'].transportation + data['payroll_data_apr'].phone + data['payroll_data_apr'].lunch + data['payroll_data_apr'].other + data['payroll_data_apr'].travel + data['payroll_data_apr'].seniority_bonus + data['payroll_data_apr'].responsibility + data['payroll_data_apr'].gross_income + data['payroll_data_apr'].SHUI_21point5percent_company_pay + data['payroll_data_apr'].trade_union_fee_company_pay + data['payroll_data_apr'].trade_union_fee_staff_pay + data['payroll_data_apr'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_apr'] == 'x':
+                        ws.cell(row=index+3, column=188).value = 0
+                    else:
+                        ws.cell(row=index+3, column=188).value = locale.format_string("%d", round(data['target_value_apr'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_apr'] == 'x':
+                        ws.cell(row=index+3, column=189).value = 0
+                    else:
+                        ws.cell(row=index+3, column=189).value = locale.format_string("%d", round(data['achievement_apr'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_apr'] == '':
+                        ws.cell(row=index+3, column=190).value = 0
+                    else:
+                        ws.cell(row=index+3, column=190).value = str(data['achievement_vs_target_apr']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_apr'] == '':
+                        ws.cell(row=index+3, column=191).value = 0
+                    else:
+                        ws.cell(row=index+3, column=191).value = str(data['total_cost_vs_achievement_apr']) + '%'
+                    ws.cell(row=index+3, column=192).value = ''
+                else:
+                    pass
+
+                # May
+                if data['payroll_data_may'] != "":
+                    ws.cell(row=index+3, column=193).value = locale.format_string("%d", round(data['payroll_data_may'].gross_income), grouping=True)
+                    if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=194).value = 0
+                        ws.cell(row=index+3, column=195).value = 0
+                    else:
+                        ws.cell(row=index+3, column=194).value = locale.format_string("%d", round(data['payroll_data_may'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=195).value = locale.format_string("%d", round(data['payroll_data_may'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=196).value = locale.format_string("%d", round(data['payroll_data_may'].phone), grouping=True)
+                    ws.cell(row=index+3, column=197).value = locale.format_string("%d", round(data['payroll_data_may'].lunch), grouping=True)
+                    if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=198).value = locale.format_string("%d", round(data['payroll_data_may'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=198).value = 0
+                    if data['payroll_data_may'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=199).value = locale.format_string("%d", round(data['payroll_data_may'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=199).value = 0
+                    ws.cell(row=index+3, column=200).value = locale.format_string("%d", round(data['payroll_data_may'].other), grouping=True)
+                    ws.cell(row=index+3, column=201).value = locale.format_string("%d", round(data['payroll_data_may'].travel), grouping=True)
+                    ws.cell(row=index+3, column=202).value = locale.format_string("%d", round(data['payroll_data_may'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=203).value = locale.format_string("%d", round(data['payroll_data_may'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_may'].employee.site.site == 'RO':
+                        if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=204).value =locale.format_string("%d", round(data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].housing_vnd + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=204).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=204).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].KPI_achievement + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=204).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_may'].employee.site.site == 'RO':
+                        if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=205).value =locale.format_string("%d", round(data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].housing_vnd + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=205).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=205).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].KPI_achievement + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=205).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_may'].employee.site.site == 'RO':
+                        if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=206).value =locale.format_string("%d", round(data['payroll_data_may'].SHUI_9point5percent_employee_pay + data['payroll_data_may'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_may'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=206).value =locale.format_string("%d", round(data['payroll_data_may'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=206).value =locale.format_string("%d", round(data['payroll_data_may'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=206).value =locale.format_string("%d", round(data['payroll_data_may'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_may'].employee.site.site == 'RO':
+                        if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=207).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_may'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=207).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=207).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=207).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_may'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=208).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=208).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=208).value =locale.format_string("%d", round(data['payroll_data_may'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=209).value = 0
+                    else:
+                        ws.cell(row=index+3, column=209).value =locale.format_string("%d", round(data['payroll_data_may'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_may'].employee.site.site == 'RO':
+                        if data['payroll_data_may'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=210).value =locale.format_string("%d", round(data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].housing_vnd + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income + data['payroll_data_may'].SHUI_9point5percent_employee_pay + data['payroll_data_may'].SHUI_20point5percent_employer_pay + data['payroll_data_may'].trade_union_fee_company_pay + data['payroll_data_may'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_may'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=210).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income + data['payroll_data_may'].SHUI_21point5percent_employer_pay + data['payroll_data_may'].trade_union_fee_company_pay_2percent + data['payroll_data_may'].trade_union_fee_member + data['payroll_data_may'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=210).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income + data['payroll_data_may'].SHUI_21point5percent_company_pay + data['payroll_data_may'].trade_union_fee_company_pay_2percent + data['payroll_data_may'].trade_union_fee_member + data['payroll_data_may'].transfer_bank), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=210).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].KPI_achievement + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income + data['payroll_data_may'].SHUI_21point5percent_company_pay + data['payroll_data_may'].trade_union_fee_company_pay + data['payroll_data_may'].trade_union_fee_employee_pay + data['payroll_data_may'].transfer_bank), grouping=True)
+                    elif data['payroll_data_may'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=210).value =locale.format_string("%d", round(data['payroll_data_may'].overtime + data['payroll_data_may'].transportation + data['payroll_data_may'].phone + data['payroll_data_may'].lunch + data['payroll_data_may'].other + data['payroll_data_may'].travel + data['payroll_data_may'].seniority_bonus + data['payroll_data_may'].responsibility + data['payroll_data_may'].gross_income + data['payroll_data_may'].SHUI_21point5percent_company_pay + data['payroll_data_may'].trade_union_fee_company_pay + data['payroll_data_may'].trade_union_fee_staff_pay + data['payroll_data_may'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_may'] == 'x':
+                        ws.cell(row=index+3, column=211).value = 0
+                    else:
+                        ws.cell(row=index+3, column=211).value = locale.format_string("%d", round(data['target_value_may'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_may'] == 'x':
+                        ws.cell(row=index+3, column=212).value = 0
+                    else:
+                        ws.cell(row=index+3, column=212).value = locale.format_string("%d", round(data['achievement_may'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_may'] == '':
+                        ws.cell(row=index+3, column=213).value = 0
+                    else:
+                        ws.cell(row=index+3, column=213).value = str(data['achievement_vs_target_may']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_may'] == '':
+                        ws.cell(row=index+3, column=214).value = 0
+                    else:
+                        ws.cell(row=index+3, column=214).value = str(data['total_cost_vs_achievement_may']) + '%'
+                    ws.cell(row=index+3, column=215).value = ''
+                else:
+                    pass
+
+                # Jun
+                if data['payroll_data_jun'] != "":
+                    ws.cell(row=index+3, column=216).value = locale.format_string("%d", round(data['payroll_data_jun'].gross_income), grouping=True)
+                    if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=217).value = 0
+                        ws.cell(row=index+3, column=218).value = 0
+                    else:
+                        ws.cell(row=index+3, column=217).value = locale.format_string("%d", round(data['payroll_data_jun'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=218).value = locale.format_string("%d", round(data['payroll_data_jun'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=219).value = locale.format_string("%d", round(data['payroll_data_jun'].phone), grouping=True)
+                    ws.cell(row=index+3, column=220).value = locale.format_string("%d", round(data['payroll_data_jun'].lunch), grouping=True)
+                    if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=221).value = locale.format_string("%d", round(data['payroll_data_jun'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=221).value = 0
+                    if data['payroll_data_jun'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=222).value = locale.format_string("%d", round(data['payroll_data_jun'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=222).value = 0
+                    ws.cell(row=index+3, column=223).value = locale.format_string("%d", round(data['payroll_data_jun'].other), grouping=True)
+                    ws.cell(row=index+3, column=224).value = locale.format_string("%d", round(data['payroll_data_jun'].travel), grouping=True)
+                    ws.cell(row=index+3, column=225).value = locale.format_string("%d", round(data['payroll_data_jun'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=226).value = locale.format_string("%d", round(data['payroll_data_jun'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_jun'].employee.site.site == 'RO':
+                        if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=227).value =locale.format_string("%d", round(data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].housing_vnd + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=227).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=227).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].KPI_achievement + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=227).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_jun'].employee.site.site == 'RO':
+                        if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=228).value =locale.format_string("%d", round(data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].housing_vnd + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=228).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=228).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].KPI_achievement + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=228).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_jun'].employee.site.site == 'RO':
+                        if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=229).value =locale.format_string("%d", round(data['payroll_data_jun'].SHUI_9point5percent_employee_pay + data['payroll_data_jun'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_jun'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=229).value =locale.format_string("%d", round(data['payroll_data_jun'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=229).value =locale.format_string("%d", round(data['payroll_data_jun'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=229).value =locale.format_string("%d", round(data['payroll_data_jun'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_jun'].employee.site.site == 'RO':
+                        if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=230).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_jun'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=230).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=230).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=230).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_jun'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=231).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=231).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=231).value =locale.format_string("%d", round(data['payroll_data_jun'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=232).value = 0
+                    else:
+                        ws.cell(row=index+3, column=232).value =locale.format_string("%d", round(data['payroll_data_jun'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_jun'].employee.site.site == 'RO':
+                        if data['payroll_data_jun'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=233).value =locale.format_string("%d", round(data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].housing_vnd + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income + data['payroll_data_jun'].SHUI_9point5percent_employee_pay + data['payroll_data_jun'].SHUI_20point5percent_employer_pay + data['payroll_data_jun'].trade_union_fee_company_pay + data['payroll_data_jun'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_jun'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=233).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income + data['payroll_data_jun'].SHUI_21point5percent_employer_pay + data['payroll_data_jun'].trade_union_fee_company_pay_2percent + data['payroll_data_jun'].trade_union_fee_member + data['payroll_data_jun'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=233).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income + data['payroll_data_jun'].SHUI_21point5percent_company_pay + data['payroll_data_jun'].trade_union_fee_company_pay_2percent + data['payroll_data_jun'].trade_union_fee_member + data['payroll_data_jun'].transfer_bank), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=233).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].KPI_achievement + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income + data['payroll_data_jun'].SHUI_21point5percent_company_pay + data['payroll_data_jun'].trade_union_fee_company_pay + data['payroll_data_jun'].trade_union_fee_employee_pay + data['payroll_data_jun'].transfer_bank), grouping=True)
+                    elif data['payroll_data_jun'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=233).value =locale.format_string("%d", round(data['payroll_data_jun'].overtime + data['payroll_data_jun'].transportation + data['payroll_data_jun'].phone + data['payroll_data_jun'].lunch + data['payroll_data_jun'].other + data['payroll_data_jun'].travel + data['payroll_data_jun'].seniority_bonus + data['payroll_data_jun'].responsibility + data['payroll_data_jun'].gross_income + data['payroll_data_jun'].SHUI_21point5percent_company_pay + data['payroll_data_jun'].trade_union_fee_company_pay + data['payroll_data_jun'].trade_union_fee_staff_pay + data['payroll_data_jun'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_jun'] == 'x':
+                        ws.cell(row=index+3, column=234).value = 0
+                    else:
+                        ws.cell(row=index+3, column=234).value = locale.format_string("%d", round(data['target_value_jun'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_jun'] == 'x':
+                        ws.cell(row=index+3, column=235).value = 0
+                    else:
+                        ws.cell(row=index+3, column=235).value = locale.format_string("%d", round(data['achievement_jun'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_jun'] == '':
+                        ws.cell(row=index+3, column=236).value = 0
+                    else:
+                        ws.cell(row=index+3, column=236).value = str(data['achievement_vs_target_jun']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_jun'] == '':
+                        ws.cell(row=index+3, column=237).value = 0
+                    else:
+                        ws.cell(row=index+3, column=237).value = str(data['total_cost_vs_achievement_jun']) + '%'
+                    ws.cell(row=index+3, column=238).value = ''
+                else:
+                    pass
+
+                # Quarter 2
+                # Targer value
+                if data['target_value_apr'] == 'x':
+                    target_value_apr = 0
+                else:
+                    target_value_apr = data['target_value_apr'].target_value
+                if data['target_value_may'] == 'x':
+                    target_value_may = 0
+                else:
+                    target_value_may = data['target_value_may'].target_value
+                if data['target_value_jun'] == 'x':
+                    target_value_jun = 0
+                else:
+                    target_value_jun = data['target_value_jun'].target_value
+                ws.cell(row=index+3, column=239).value = locale.format_string("%d", (target_value_apr + target_value_may + target_value_jun), grouping=True)
+                # Achievement
+                if data['achievement_apr'] == 'x':
+                    achievement_apr = 0
+                else:
+                    achievement_apr = data['achievement_apr'].achievement
+                if data['achievement_may'] == 'x':
+                    achievement_may = 0
+                else:
+                    achievement_may = data['achievement_may'].achievement
+                if data['achievement_jun'] == 'x':
+                    achievement_jun = 0
+                else:
+                    achievement_jun = data['achievement_jun'].achievement
+                ws.cell(row=index+3, column=240).value = locale.format_string("%d", (achievement_apr + achievement_may + achievement_jun), grouping=True)
+                # Total cost
+                ws.cell(row=index+3, column=241).value = locale.format_string("%d", (data['total_cost_apr'] + data['total_cost_may'] + data['total_cost_jun']), grouping=True)
+                # % Achievement vs Target Q.2
+                if data['achievement_vs_target_q2'] == '':
+                    ws.cell(row=index+3, column=242).value = ''
+                else:
+                    ws.cell(row=index+3, column=242).value = str(data['achievement_vs_target_q2']) + '%'
+                # % Total Cost vs Achievement Q.2
+                if data['total_cost_vs_achievement_q2'] == '':
+                    ws.cell(row=index+3, column=243).value = ''
+                else:
+                    ws.cell(row=index+3, column=243).value = str(data['total_cost_vs_achievement_q2']) + '%'
+                # % Total Cost vs Target Q.2
+                if data['total_cost_vs_target_value_q2'] == '':
+                    ws.cell(row=index+3, column=244).value = ''
+                else:
+                    ws.cell(row=index+3, column=244).value = str(data['total_cost_vs_target_value_q2']) + '%'
+
+                # Jul
+                if data['payroll_data_jul'] != "":
+                    ws.cell(row=index+3, column=246).value = locale.format_string("%d", round(data['payroll_data_jul'].gross_income), grouping=True)
+                    if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=247).value = 0
+                        ws.cell(row=index+3, column=248).value = 0
+                    else:
+                        ws.cell(row=index+3, column=247).value = locale.format_string("%d", round(data['payroll_data_jul'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=248).value = locale.format_string("%d", round(data['payroll_data_jul'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=249).value = locale.format_string("%d", round(data['payroll_data_jul'].phone), grouping=True)
+                    ws.cell(row=index+3, column=250).value = locale.format_string("%d", round(data['payroll_data_jul'].lunch), grouping=True)
+                    if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=251).value = locale.format_string("%d", round(data['payroll_data_jul'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=251).value = 0
+                    if data['payroll_data_jul'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=252).value = locale.format_string("%d", round(data['payroll_data_jul'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=252).value = 0
+                    ws.cell(row=index+3, column=253).value = locale.format_string("%d", round(data['payroll_data_jul'].other), grouping=True)
+                    ws.cell(row=index+3, column=254).value = locale.format_string("%d", round(data['payroll_data_jul'].travel), grouping=True)
+                    ws.cell(row=index+3, column=255).value = locale.format_string("%d", round(data['payroll_data_jul'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=256).value = locale.format_string("%d", round(data['payroll_data_jul'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_jul'].employee.site.site == 'RO':
+                        if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=257).value =locale.format_string("%d", round(data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].housing_vnd + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=257).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=257).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].KPI_achievement + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=257).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_jul'].employee.site.site == 'RO':
+                        if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=258).value =locale.format_string("%d", round(data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].housing_vnd + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=258).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=258).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].KPI_achievement + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=258).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_jul'].employee.site.site == 'RO':
+                        if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=259).value =locale.format_string("%d", round(data['payroll_data_jul'].SHUI_9point5percent_employee_pay + data['payroll_data_jul'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_jul'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=259).value =locale.format_string("%d", round(data['payroll_data_jul'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=259).value =locale.format_string("%d", round(data['payroll_data_jul'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=259).value =locale.format_string("%d", round(data['payroll_data_jul'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_jul'].employee.site.site == 'RO':
+                        if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=260).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_jul'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=260).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=260).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=260).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_jul'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=261).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=261).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=261).value =locale.format_string("%d", round(data['payroll_data_jul'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=262).value = 0
+                    else:
+                        ws.cell(row=index+3, column=262).value =locale.format_string("%d", round(data['payroll_data_jul'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_jul'].employee.site.site == 'RO':
+                        if data['payroll_data_jul'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=263).value =locale.format_string("%d", round(data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].housing_vnd + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income + data['payroll_data_jul'].SHUI_9point5percent_employee_pay + data['payroll_data_jul'].SHUI_20point5percent_employer_pay + data['payroll_data_jul'].trade_union_fee_company_pay + data['payroll_data_jul'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_jul'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=263).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income + data['payroll_data_jul'].SHUI_21point5percent_employer_pay + data['payroll_data_jul'].trade_union_fee_company_pay_2percent + data['payroll_data_jul'].trade_union_fee_member + data['payroll_data_jul'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=263).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income + data['payroll_data_jul'].SHUI_21point5percent_company_pay + data['payroll_data_jul'].trade_union_fee_company_pay_2percent + data['payroll_data_jul'].trade_union_fee_member + data['payroll_data_jul'].transfer_bank), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=263).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].KPI_achievement + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income + data['payroll_data_jul'].SHUI_21point5percent_company_pay + data['payroll_data_jul'].trade_union_fee_company_pay + data['payroll_data_jul'].trade_union_fee_employee_pay + data['payroll_data_jul'].transfer_bank), grouping=True)
+                    elif data['payroll_data_jul'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=263).value =locale.format_string("%d", round(data['payroll_data_jul'].overtime + data['payroll_data_jul'].transportation + data['payroll_data_jul'].phone + data['payroll_data_jul'].lunch + data['payroll_data_jul'].other + data['payroll_data_jul'].travel + data['payroll_data_jul'].seniority_bonus + data['payroll_data_jul'].responsibility + data['payroll_data_jul'].gross_income + data['payroll_data_jul'].SHUI_21point5percent_company_pay + data['payroll_data_jul'].trade_union_fee_company_pay + data['payroll_data_jul'].trade_union_fee_staff_pay + data['payroll_data_jul'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_jul'] == 'x':
+                        ws.cell(row=index+3, column=264).value = 0
+                    else:
+                        ws.cell(row=index+3, column=264).value = locale.format_string("%d", round(data['target_value_jul'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_jul'] == 'x':
+                        ws.cell(row=index+3, column=265).value = 0
+                    else:
+                        ws.cell(row=index+3, column=265).value = locale.format_string("%d", round(data['achievement_jul'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_jul'] == '':
+                        ws.cell(row=index+3, column=266).value = 0
+                    else:
+                        ws.cell(row=index+3, column=266).value = str(data['achievement_vs_target_jul']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_jul'] == '':
+                        ws.cell(row=index+3, column=267).value = 0
+                    else:
+                        ws.cell(row=index+3, column=267).value = str(data['total_cost_vs_achievement_jul']) + '%'
+                    ws.cell(row=index+3, column=268).value = ''
+                else:
+                    pass
+
+                # Aug
+                if data['payroll_data_aug'] != "":
+                    ws.cell(row=index+3, column=269).value = locale.format_string("%d", round(data['payroll_data_aug'].gross_income), grouping=True)
+                    if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=270).value = 0
+                        ws.cell(row=index+3, column=271).value = 0
+                    else:
+                        ws.cell(row=index+3, column=270).value = locale.format_string("%d", round(data['payroll_data_aug'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=271).value = locale.format_string("%d", round(data['payroll_data_aug'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=272).value = locale.format_string("%d", round(data['payroll_data_aug'].phone), grouping=True)
+                    ws.cell(row=index+3, column=273).value = locale.format_string("%d", round(data['payroll_data_aug'].lunch), grouping=True)
+                    if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=274).value = locale.format_string("%d", round(data['payroll_data_aug'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=274).value = 0
+                    if data['payroll_data_aug'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=275).value = locale.format_string("%d", round(data['payroll_data_aug'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=275).value = 0
+                    ws.cell(row=index+3, column=276).value = locale.format_string("%d", round(data['payroll_data_aug'].other), grouping=True)
+                    ws.cell(row=index+3, column=277).value = locale.format_string("%d", round(data['payroll_data_aug'].travel), grouping=True)
+                    ws.cell(row=index+3, column=278).value = locale.format_string("%d", round(data['payroll_data_aug'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=279).value = locale.format_string("%d", round(data['payroll_data_aug'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_aug'].employee.site.site == 'RO':
+                        if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=280).value =locale.format_string("%d", round(data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].housing_vnd + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=280).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=280).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].KPI_achievement + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=280).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_aug'].employee.site.site == 'RO':
+                        if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=281).value =locale.format_string("%d", round(data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].housing_vnd + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=281).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=281).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].KPI_achievement + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=281).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_aug'].employee.site.site == 'RO':
+                        if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=282).value =locale.format_string("%d", round(data['payroll_data_aug'].SHUI_9point5percent_employee_pay + data['payroll_data_aug'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_aug'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=282).value =locale.format_string("%d", round(data['payroll_data_aug'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=282).value =locale.format_string("%d", round(data['payroll_data_aug'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=282).value =locale.format_string("%d", round(data['payroll_data_aug'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_aug'].employee.site.site == 'RO':
+                        if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=283).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_aug'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=283).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=283).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=283).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_aug'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=284).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=284).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=284).value =locale.format_string("%d", round(data['payroll_data_aug'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=285).value = 0
+                    else:
+                        ws.cell(row=index+3, column=285).value =locale.format_string("%d", round(data['payroll_data_aug'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_aug'].employee.site.site == 'RO':
+                        if data['payroll_data_aug'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=286).value =locale.format_string("%d", round(data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].housing_vnd + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income + data['payroll_data_aug'].SHUI_9point5percent_employee_pay + data['payroll_data_aug'].SHUI_20point5percent_employer_pay + data['payroll_data_aug'].trade_union_fee_company_pay + data['payroll_data_aug'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_aug'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=286).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income + data['payroll_data_aug'].SHUI_21point5percent_employer_pay + data['payroll_data_aug'].trade_union_fee_company_pay_2percent + data['payroll_data_aug'].trade_union_fee_member + data['payroll_data_aug'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=286).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income + data['payroll_data_aug'].SHUI_21point5percent_company_pay + data['payroll_data_aug'].trade_union_fee_company_pay_2percent + data['payroll_data_aug'].trade_union_fee_member + data['payroll_data_aug'].transfer_bank), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=286).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].KPI_achievement + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income + data['payroll_data_aug'].SHUI_21point5percent_company_pay + data['payroll_data_aug'].trade_union_fee_company_pay + data['payroll_data_aug'].trade_union_fee_employee_pay + data['payroll_data_aug'].transfer_bank), grouping=True)
+                    elif data['payroll_data_aug'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=286).value =locale.format_string("%d", round(data['payroll_data_aug'].overtime + data['payroll_data_aug'].transportation + data['payroll_data_aug'].phone + data['payroll_data_aug'].lunch + data['payroll_data_aug'].other + data['payroll_data_aug'].travel + data['payroll_data_aug'].seniority_bonus + data['payroll_data_aug'].responsibility + data['payroll_data_aug'].gross_income + data['payroll_data_aug'].SHUI_21point5percent_company_pay + data['payroll_data_aug'].trade_union_fee_company_pay + data['payroll_data_aug'].trade_union_fee_staff_pay + data['payroll_data_aug'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_aug'] == 'x':
+                        ws.cell(row=index+3, column=287).value = 0
+                    else:
+                        ws.cell(row=index+3, column=287).value = locale.format_string("%d", round(data['target_value_aug'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_aug'] == 'x':
+                        ws.cell(row=index+3, column=288).value = 0
+                    else:
+                        ws.cell(row=index+3, column=288).value = locale.format_string("%d", round(data['achievement_aug'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_aug'] == '':
+                        ws.cell(row=index+3, column=289).value = 0
+                    else:
+                        ws.cell(row=index+3, column=289).value = str(data['achievement_vs_target_aug']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_aug'] == '':
+                        ws.cell(row=index+3, column=290).value = 0
+                    else:
+                        ws.cell(row=index+3, column=290).value = str(data['total_cost_vs_achievement_aug']) + '%'
+                    ws.cell(row=index+3, column=291).value = ''
+                else:
+                    pass
+
+                # Sep
+                if data['payroll_data_sep'] != "":
+                    ws.cell(row=index+3, column=292).value = locale.format_string("%d", round(data['payroll_data_sep'].gross_income), grouping=True)
+                    if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=293).value = 0
+                        ws.cell(row=index+3, column=294).value = 0
+                    else:
+                        ws.cell(row=index+3, column=293).value = locale.format_string("%d", round(data['payroll_data_sep'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=294).value = locale.format_string("%d", round(data['payroll_data_sep'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=295).value = locale.format_string("%d", round(data['payroll_data_sep'].phone), grouping=True)
+                    ws.cell(row=index+3, column=296).value = locale.format_string("%d", round(data['payroll_data_sep'].lunch), grouping=True)
+                    if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=297).value = locale.format_string("%d", round(data['payroll_data_sep'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=297).value = 0
+                    if data['payroll_data_sep'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=298).value = locale.format_string("%d", round(data['payroll_data_sep'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=298).value = 0
+                    ws.cell(row=index+3, column=299).value = locale.format_string("%d", round(data['payroll_data_sep'].other), grouping=True)
+                    ws.cell(row=index+3, column=300).value = locale.format_string("%d", round(data['payroll_data_sep'].travel), grouping=True)
+                    ws.cell(row=index+3, column=301).value = locale.format_string("%d", round(data['payroll_data_sep'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=302).value = locale.format_string("%d", round(data['payroll_data_sep'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_sep'].employee.site.site == 'RO':
+                        if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=303).value =locale.format_string("%d", round(data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].housing_vnd + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=303).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=303).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].KPI_achievement + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=303).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_sep'].employee.site.site == 'RO':
+                        if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=304).value =locale.format_string("%d", round(data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].housing_vnd + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=304).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=304).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].KPI_achievement + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=304).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_sep'].employee.site.site == 'RO':
+                        if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=305).value =locale.format_string("%d", round(data['payroll_data_sep'].SHUI_9point5percent_employee_pay + data['payroll_data_sep'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_sep'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=305).value =locale.format_string("%d", round(data['payroll_data_sep'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=305).value =locale.format_string("%d", round(data['payroll_data_sep'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=305).value =locale.format_string("%d", round(data['payroll_data_sep'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_sep'].employee.site.site == 'RO':
+                        if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=306).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_sep'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=306).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=306).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=306).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_sep'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=307).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=307).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=307).value =locale.format_string("%d", round(data['payroll_data_sep'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=308).value = 0
+                    else:
+                        ws.cell(row=index+3, column=308).value =locale.format_string("%d", round(data['payroll_data_sep'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_sep'].employee.site.site == 'RO':
+                        if data['payroll_data_sep'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=309).value =locale.format_string("%d", round(data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].housing_vnd + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income + data['payroll_data_sep'].SHUI_9point5percent_employee_pay + data['payroll_data_sep'].SHUI_20point5percent_employer_pay + data['payroll_data_sep'].trade_union_fee_company_pay + data['payroll_data_sep'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_sep'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=309).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income + data['payroll_data_sep'].SHUI_21point5percent_employer_pay + data['payroll_data_sep'].trade_union_fee_company_pay_2percent + data['payroll_data_sep'].trade_union_fee_member + data['payroll_data_sep'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=309).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income + data['payroll_data_sep'].SHUI_21point5percent_company_pay + data['payroll_data_sep'].trade_union_fee_company_pay_2percent + data['payroll_data_sep'].trade_union_fee_member + data['payroll_data_sep'].transfer_bank), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=309).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].KPI_achievement + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income + data['payroll_data_sep'].SHUI_21point5percent_company_pay + data['payroll_data_sep'].trade_union_fee_company_pay + data['payroll_data_sep'].trade_union_fee_employee_pay + data['payroll_data_sep'].transfer_bank), grouping=True)
+                    elif data['payroll_data_sep'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=309).value =locale.format_string("%d", round(data['payroll_data_sep'].overtime + data['payroll_data_sep'].transportation + data['payroll_data_sep'].phone + data['payroll_data_sep'].lunch + data['payroll_data_sep'].other + data['payroll_data_sep'].travel + data['payroll_data_sep'].seniority_bonus + data['payroll_data_sep'].responsibility + data['payroll_data_sep'].gross_income + data['payroll_data_sep'].SHUI_21point5percent_company_pay + data['payroll_data_sep'].trade_union_fee_company_pay + data['payroll_data_sep'].trade_union_fee_staff_pay + data['payroll_data_sep'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_sep'] == 'x':
+                        ws.cell(row=index+3, column=310).value = 0
+                    else:
+                        ws.cell(row=index+3, column=310).value = locale.format_string("%d", round(data['target_value_sep'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_sep'] == 'x':
+                        ws.cell(row=index+3, column=311).value = 0
+                    else:
+                        ws.cell(row=index+3, column=311).value = locale.format_string("%d", round(data['achievement_sep'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_sep'] == '':
+                        ws.cell(row=index+3, column=312).value = 0
+                    else:
+                        ws.cell(row=index+3, column=312).value = str(data['achievement_vs_target_sep']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_sep'] == '':
+                        ws.cell(row=index+3, column=313).value = 0
+                    else:
+                        ws.cell(row=index+3, column=313).value = str(data['total_cost_vs_achievement_sep']) + '%'
+                    ws.cell(row=index+3, column=314).value = ''
+                else:
+                    pass
+
+                # Quarter 3
+                # Targer value
+                if data['target_value_jul'] == 'x':
+                    target_value_jul = 0
+                else:
+                    target_value_jul = data['target_value_jul'].target_value
+                if data['target_value_aug'] == 'x':
+                    target_value_aug = 0
+                else:
+                    target_value_aug = data['target_value_aug'].target_value
+                if data['target_value_sep'] == 'x':
+                    target_value_sep = 0
+                else:
+                    target_value_sep = data['target_value_sep'].target_value
+                ws.cell(row=index+3, column=315).value = locale.format_string("%d", (target_value_jul + target_value_aug + target_value_sep), grouping=True)
+                # Achievement
+                if data['achievement_jul'] == 'x':
+                    achievement_jul = 0
+                else:
+                    achievement_jul = data['achievement_jul'].achievement
+                if data['achievement_aug'] == 'x':
+                    achievement_aug = 0
+                else:
+                    achievement_aug = data['achievement_aug'].achievement
+                if data['achievement_sep'] == 'x':
+                    achievement_sep = 0
+                else:
+                    achievement_sep = data['achievement_sep'].achievement
+                ws.cell(row=index+3, column=316).value = locale.format_string("%d", (achievement_jul + achievement_aug + achievement_sep), grouping=True)
+                # Total cost
+                ws.cell(row=index+3, column=317).value = locale.format_string("%d", (data['total_cost_jul'] + data['total_cost_aug'] + data['total_cost_sep']), grouping=True)
+                # % Achievement vs Target Q.3
+                if data['achievement_vs_target_q3'] == '':
+                    ws.cell(row=index+3, column=318).value = ''
+                else:
+                    ws.cell(row=index+3, column=318).value = str(data['achievement_vs_target_q3']) + '%'
+                # % Total Cost vs Achievement Q.3
+                if data['total_cost_vs_achievement_q3'] == '':
+                    ws.cell(row=index+3, column=319).value = ''
+                else:
+                    ws.cell(row=index+3, column=319).value = str(data['total_cost_vs_achievement_q3']) + '%'
+                # % Total Cost vs Target Q.3
+                if data['total_cost_vs_target_value_q3'] == '':
+                    ws.cell(row=index+3, column=320).value = ''
+                else:
+                    ws.cell(row=index+3, column=320).value = str(data['total_cost_vs_target_value_q3']) + '%'
+                
+                # Oct
+                if data['payroll_data_oct'] != "":
+                    ws.cell(row=index+3, column=322).value = locale.format_string("%d", round(data['payroll_data_oct'].gross_income), grouping=True)
+                    if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=323).value = 0
+                        ws.cell(row=index+3, column=324).value = 0
+                    else:
+                        ws.cell(row=index+3, column=323).value = locale.format_string("%d", round(data['payroll_data_oct'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=324).value = locale.format_string("%d", round(data['payroll_data_oct'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=325).value = locale.format_string("%d", round(data['payroll_data_oct'].phone), grouping=True)
+                    ws.cell(row=index+3, column=326).value = locale.format_string("%d", round(data['payroll_data_oct'].lunch), grouping=True)
+                    if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=327).value = locale.format_string("%d", round(data['payroll_data_oct'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=327).value = 0
+                    if data['payroll_data_oct'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=328).value = locale.format_string("%d", round(data['payroll_data_oct'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=328).value = 0
+                    ws.cell(row=index+3, column=329).value = locale.format_string("%d", round(data['payroll_data_oct'].other), grouping=True)
+                    ws.cell(row=index+3, column=330).value = locale.format_string("%d", round(data['payroll_data_oct'].travel), grouping=True)
+                    ws.cell(row=index+3, column=331).value = locale.format_string("%d", round(data['payroll_data_oct'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=332).value = locale.format_string("%d", round(data['payroll_data_oct'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_oct'].employee.site.site == 'RO':
+                        if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=333).value =locale.format_string("%d", round(data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].housing_vnd + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=333).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=333).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].KPI_achievement + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=333).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_oct'].employee.site.site == 'RO':
+                        if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=334).value =locale.format_string("%d", round(data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].housing_vnd + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=334).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=334).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].KPI_achievement + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=334).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_oct'].employee.site.site == 'RO':
+                        if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=335).value =locale.format_string("%d", round(data['payroll_data_oct'].SHUI_9point5percent_employee_pay + data['payroll_data_oct'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_oct'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=335).value =locale.format_string("%d", round(data['payroll_data_oct'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=335).value =locale.format_string("%d", round(data['payroll_data_oct'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=335).value =locale.format_string("%d", round(data['payroll_data_oct'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_oct'].employee.site.site == 'RO':
+                        if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=336).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_oct'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=336).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=336).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=336).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_oct'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=337).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=337).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=337).value =locale.format_string("%d", round(data['payroll_data_oct'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=338).value = 0
+                    else:
+                        ws.cell(row=index+3, column=338).value =locale.format_string("%d", round(data['payroll_data_oct'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_oct'].employee.site.site == 'RO':
+                        if data['payroll_data_oct'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=339).value =locale.format_string("%d", round(data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].housing_vnd + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income + data['payroll_data_oct'].SHUI_9point5percent_employee_pay + data['payroll_data_oct'].SHUI_20point5percent_employer_pay + data['payroll_data_oct'].trade_union_fee_company_pay + data['payroll_data_oct'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_oct'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=339).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income + data['payroll_data_oct'].SHUI_21point5percent_employer_pay + data['payroll_data_oct'].trade_union_fee_company_pay_2percent + data['payroll_data_oct'].trade_union_fee_member + data['payroll_data_oct'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=339).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income + data['payroll_data_oct'].SHUI_21point5percent_company_pay + data['payroll_data_oct'].trade_union_fee_company_pay_2percent + data['payroll_data_oct'].trade_union_fee_member + data['payroll_data_oct'].transfer_bank), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=339).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].KPI_achievement + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income + data['payroll_data_oct'].SHUI_21point5percent_company_pay + data['payroll_data_oct'].trade_union_fee_company_pay + data['payroll_data_oct'].trade_union_fee_employee_pay + data['payroll_data_oct'].transfer_bank), grouping=True)
+                    elif data['payroll_data_oct'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=339).value =locale.format_string("%d", round(data['payroll_data_oct'].overtime + data['payroll_data_oct'].transportation + data['payroll_data_oct'].phone + data['payroll_data_oct'].lunch + data['payroll_data_oct'].other + data['payroll_data_oct'].travel + data['payroll_data_oct'].seniority_bonus + data['payroll_data_oct'].responsibility + data['payroll_data_oct'].gross_income + data['payroll_data_oct'].SHUI_21point5percent_company_pay + data['payroll_data_oct'].trade_union_fee_company_pay + data['payroll_data_oct'].trade_union_fee_staff_pay + data['payroll_data_oct'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_oct'] == 'x':
+                        ws.cell(row=index+3, column=340).value = 0
+                    else:
+                        ws.cell(row=index+3, column=340).value = locale.format_string("%d", round(data['target_value_oct'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_oct'] == 'x':
+                        ws.cell(row=index+3, column=341).value = 0
+                    else:
+                        ws.cell(row=index+3, column=341).value = locale.format_string("%d", round(data['achievement_oct'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_oct'] == '':
+                        ws.cell(row=index+3, column=342).value = 0
+                    else:
+                        ws.cell(row=index+3, column=342).value = str(data['achievement_vs_target_oct']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_oct'] == '':
+                        ws.cell(row=index+3, column=343).value = 0
+                    else:
+                        ws.cell(row=index+3, column=343).value = str(data['total_cost_vs_achievement_oct']) + '%'
+                    ws.cell(row=index+3, column=344).value = ''
+                else:
+                    pass
+
+                # Nov
+                if data['payroll_data_nov'] != "":
+                    ws.cell(row=index+3, column=345).value = locale.format_string("%d", round(data['payroll_data_nov'].gross_income), grouping=True)
+                    if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=346).value = 0
+                        ws.cell(row=index+3, column=347).value = 0
+                    else:
+                        ws.cell(row=index+3, column=346).value = locale.format_string("%d", round(data['payroll_data_nov'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=347).value = locale.format_string("%d", round(data['payroll_data_nov'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=348).value = locale.format_string("%d", round(data['payroll_data_nov'].phone), grouping=True)
+                    ws.cell(row=index+3, column=349).value = locale.format_string("%d", round(data['payroll_data_nov'].lunch), grouping=True)
+                    if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=350).value = locale.format_string("%d", round(data['payroll_data_nov'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=350).value = 0
+                    if data['payroll_data_nov'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=351).value = locale.format_string("%d", round(data['payroll_data_nov'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=351).value = 0
+                    ws.cell(row=index+3, column=352).value = locale.format_string("%d", round(data['payroll_data_nov'].other), grouping=True)
+                    ws.cell(row=index+3, column=353).value = locale.format_string("%d", round(data['payroll_data_nov'].travel), grouping=True)
+                    ws.cell(row=index+3, column=354).value = locale.format_string("%d", round(data['payroll_data_nov'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=355).value = locale.format_string("%d", round(data['payroll_data_nov'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_nov'].employee.site.site == 'RO':
+                        if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=356).value =locale.format_string("%d", round(data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].housing_vnd + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=356).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=356).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].KPI_achievement + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=356).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_nov'].employee.site.site == 'RO':
+                        if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=357).value =locale.format_string("%d", round(data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].housing_vnd + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=357).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=357).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].KPI_achievement + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=357).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_nov'].employee.site.site == 'RO':
+                        if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=358).value =locale.format_string("%d", round(data['payroll_data_nov'].SHUI_9point5percent_employee_pay + data['payroll_data_nov'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_nov'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=358).value =locale.format_string("%d", round(data['payroll_data_nov'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=358).value =locale.format_string("%d", round(data['payroll_data_nov'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=358).value =locale.format_string("%d", round(data['payroll_data_nov'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_nov'].employee.site.site == 'RO':
+                        if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=359).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_nov'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=359).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=359).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=359).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_nov'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=360).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=360).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=360).value =locale.format_string("%d", round(data['payroll_data_nov'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=361).value = 0
+                    else:
+                        ws.cell(row=index+3, column=361).value =locale.format_string("%d", round(data['payroll_data_nov'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_nov'].employee.site.site == 'RO':
+                        if data['payroll_data_nov'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=362).value =locale.format_string("%d", round(data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].housing_vnd + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income + data['payroll_data_nov'].SHUI_9point5percent_employee_pay + data['payroll_data_nov'].SHUI_20point5percent_employer_pay + data['payroll_data_nov'].trade_union_fee_company_pay + data['payroll_data_nov'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_nov'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=362).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income + data['payroll_data_nov'].SHUI_21point5percent_employer_pay + data['payroll_data_nov'].trade_union_fee_company_pay_2percent + data['payroll_data_nov'].trade_union_fee_member + data['payroll_data_nov'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=362).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income + data['payroll_data_nov'].SHUI_21point5percent_company_pay + data['payroll_data_nov'].trade_union_fee_company_pay_2percent + data['payroll_data_nov'].trade_union_fee_member + data['payroll_data_nov'].transfer_bank), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=362).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].KPI_achievement + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income + data['payroll_data_nov'].SHUI_21point5percent_company_pay + data['payroll_data_nov'].trade_union_fee_company_pay + data['payroll_data_nov'].trade_union_fee_employee_pay + data['payroll_data_nov'].transfer_bank), grouping=True)
+                    elif data['payroll_data_nov'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=362).value =locale.format_string("%d", round(data['payroll_data_nov'].overtime + data['payroll_data_nov'].transportation + data['payroll_data_nov'].phone + data['payroll_data_nov'].lunch + data['payroll_data_nov'].other + data['payroll_data_nov'].travel + data['payroll_data_nov'].seniority_bonus + data['payroll_data_nov'].responsibility + data['payroll_data_nov'].gross_income + data['payroll_data_nov'].SHUI_21point5percent_company_pay + data['payroll_data_nov'].trade_union_fee_company_pay + data['payroll_data_nov'].trade_union_fee_staff_pay + data['payroll_data_nov'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_nov'] == 'x':
+                        ws.cell(row=index+3, column=363).value = 0
+                    else:
+                        ws.cell(row=index+3, column=363).value = locale.format_string("%d", round(data['target_value_nov'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_nov'] == 'x':
+                        ws.cell(row=index+3, column=364).value = 0
+                    else:
+                        ws.cell(row=index+3, column=364).value = locale.format_string("%d", round(data['achievement_nov'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_nov'] == '':
+                        ws.cell(row=index+3, column=365).value = 0
+                    else:
+                        ws.cell(row=index+3, column=365).value = str(data['achievement_vs_target_nov']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_nov'] == '':
+                        ws.cell(row=index+3, column=366).value = 0
+                    else:
+                        ws.cell(row=index+3, column=366).value = str(data['total_cost_vs_achievement_nov']) + '%'
+                    ws.cell(row=index+3, column=367).value = ''
+                else:
+                    pass
+                
+                # Dec
+                if data['payroll_data_dec'] != "":
+                    ws.cell(row=index+3, column=368).value = locale.format_string("%d", round(data['payroll_data_dec'].gross_income), grouping=True)
+                    if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=369).value = 0
+                        ws.cell(row=index+3, column=370).value = 0
+                    else:
+                        ws.cell(row=index+3, column=369).value = locale.format_string("%d", round(data['payroll_data_dec'].overtime), grouping=True)
+                        ws.cell(row=index+3, column=370).value = locale.format_string("%d", round(data['payroll_data_dec'].transportation), grouping=True)
+                    ws.cell(row=index+3, column=371).value = locale.format_string("%d", round(data['payroll_data_dec'].phone), grouping=True)
+                    ws.cell(row=index+3, column=372).value = locale.format_string("%d", round(data['payroll_data_dec'].lunch), grouping=True)
+                    if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=373).value = locale.format_string("%d", round(data['payroll_data_dec'].housing_vnd), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=373).value = 0
+                    if data['payroll_data_dec'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=374).value = locale.format_string("%d", round(data['payroll_data_dec'].KPI_achievement), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=374).value = 0
+                    ws.cell(row=index+3, column=375).value = locale.format_string("%d", round(data['payroll_data_dec'].other), grouping=True)
+                    ws.cell(row=index+3, column=376).value = locale.format_string("%d", round(data['payroll_data_dec'].travel), grouping=True)
+                    ws.cell(row=index+3, column=377).value = locale.format_string("%d", round(data['payroll_data_dec'].seniority_bonus), grouping=True)
+                    ws.cell(row=index+3, column=378).value = locale.format_string("%d", round(data['payroll_data_dec'].responsibility), grouping=True)
+                    # Total allowance
+                    if data['payroll_data_dec'].employee.site.site == 'RO':
+                        if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=379).value =locale.format_string("%d", round(data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].housing_vnd + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=379).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=379).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].KPI_achievement + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=379).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility), grouping=True)
+                    # Gross income
+                    if data['payroll_data_dec'].employee.site.site == 'RO':
+                        if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=380).value =locale.format_string("%d", round(data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].housing_vnd + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=380).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=380).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].KPI_achievement + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=380).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income), grouping=True)
+                    # SHUI_21point5percent_company_pay
+                    if data['payroll_data_dec'].employee.site.site == 'RO':
+                        if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=381).value =locale.format_string("%d", round(data['payroll_data_dec'].SHUI_9point5percent_employee_pay + data['payroll_data_dec'].SHUI_20point5percent_employer_pay), grouping=True)
+                        elif data['payroll_data_dec'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=381).value =locale.format_string("%d", round(data['payroll_data_dec'].SHUI_21point5percent_employer_pay), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=381).value =locale.format_string("%d", round(data['payroll_data_dec'].SHUI_21point5percent_company_pay), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=381).value =locale.format_string("%d", round(data['payroll_data_dec'].SHUI_21point5percent_company_pay), grouping=True)
+                    # Trade Union fee (Company pay 2%)
+                    if data['payroll_data_dec'].employee.site.site == 'RO':
+                        if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=382).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_company_pay), grouping=True)
+                        elif data['payroll_data_dec'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=382).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_company_pay_2percent), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=382).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_company_pay_2percent), grouping=True)
+                    else:
+                        ws.cell(row=index+3, column=382).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_company_pay), grouping=True)
+                    # Trade Union fee (Member)
+                    if data['payroll_data_dec'].employee.site.site == 'RO':
+                        ws.cell(row=index+3, column=383).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_member), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=383).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_employee_pay), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=383).value =locale.format_string("%d", round(data['payroll_data_dec'].trade_union_fee_staff_pay), grouping=True)
+                    # transfer_bank
+                    if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                        ws.cell(row=index+3, column=384).value = 0
+                    else:
+                        ws.cell(row=index+3, column=384).value =locale.format_string("%d", round(data['payroll_data_dec'].transfer_bank), grouping=True)
+                    # Total Cost
+                    if data['payroll_data_dec'].employee.site.site == 'RO':
+                        if data['payroll_data_dec'].employee.full_name == 'SEVERINE EDGARD-ROSA':
+                            ws.cell(row=index+3, column=385).value =locale.format_string("%d", round(data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].housing_vnd + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income + data['payroll_data_dec'].SHUI_9point5percent_employee_pay + data['payroll_data_dec'].SHUI_20point5percent_employer_pay + data['payroll_data_dec'].trade_union_fee_company_pay + data['payroll_data_dec'].trade_union_fee_member), grouping=True)
+                        elif data['payroll_data_dec'].employee.full_name == 'MARJORIE EDGARD - ROSA':
+                            ws.cell(row=index+3, column=385).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income + data['payroll_data_dec'].SHUI_21point5percent_employer_pay + data['payroll_data_dec'].trade_union_fee_company_pay_2percent + data['payroll_data_dec'].trade_union_fee_member + data['payroll_data_dec'].transfer_bank), grouping=True)
+                        else:
+                            ws.cell(row=index+3, column=385).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income + data['payroll_data_dec'].SHUI_21point5percent_company_pay + data['payroll_data_dec'].trade_union_fee_company_pay_2percent + data['payroll_data_dec'].trade_union_fee_member + data['payroll_data_dec'].transfer_bank), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'JV':
+                        ws.cell(row=index+3, column=385).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].KPI_achievement + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income + data['payroll_data_dec'].SHUI_21point5percent_company_pay + data['payroll_data_dec'].trade_union_fee_company_pay + data['payroll_data_dec'].trade_union_fee_employee_pay + data['payroll_data_dec'].transfer_bank), grouping=True)
+                    elif data['payroll_data_dec'].employee.site.site == 'VH':
+                        ws.cell(row=index+3, column=385).value =locale.format_string("%d", round(data['payroll_data_dec'].overtime + data['payroll_data_dec'].transportation + data['payroll_data_dec'].phone + data['payroll_data_dec'].lunch + data['payroll_data_dec'].other + data['payroll_data_dec'].travel + data['payroll_data_dec'].seniority_bonus + data['payroll_data_dec'].responsibility + data['payroll_data_dec'].gross_income + data['payroll_data_dec'].SHUI_21point5percent_company_pay + data['payroll_data_dec'].trade_union_fee_company_pay + data['payroll_data_dec'].trade_union_fee_staff_pay + data['payroll_data_dec'].transfer_bank), grouping=True)
+                    # Target Value
+                    if data['target_value_dec'] == 'x':
+                        ws.cell(row=index+3, column=386).value = 0
+                    else:
+                        ws.cell(row=index+3, column=386).value = locale.format_string("%d", round(data['target_value_dec'].target_value), grouping=True)
+                    # Achievement
+                    if data['achievement_dec'] == 'x':
+                        ws.cell(row=index+3, column=387).value = 0
+                    else:
+                        ws.cell(row=index+3, column=387).value = locale.format_string("%d", round(data['achievement_dec'].achievement), grouping=True)
+                    # % Achievement vs Target
+                    if data['achievement_vs_target_dec'] == '':
+                        ws.cell(row=index+3, column=388).value = 0
+                    else:
+                        ws.cell(row=index+3, column=388).value = str(data['achievement_vs_target_dec']) + '%'
+                    # % Total Cost vs Achievement
+                    if data['total_cost_vs_achievement_dec'] == '':
+                        ws.cell(row=index+3, column=389).value = 0
+                    else:
+                        ws.cell(row=index+3, column=389).value = str(data['total_cost_vs_achievement_dec']) + '%'
+                    ws.cell(row=index+3, column=390).value = ''
+                else:
+                    pass
+
+                # Quarter 4
+                # Targer value
+                if data['target_value_oct'] == 'x':
+                    target_value_oct = 0
+                else:
+                    target_value_oct = data['target_value_oct'].target_value
+                if data['target_value_nov'] == 'x':
+                    target_value_nov = 0
+                else:
+                    target_value_nov = data['target_value_nov'].target_value
+                if data['target_value_dec'] == 'x':
+                    target_value_dec = 0
+                else:
+                    target_value_dec = data['target_value_dec'].target_value
+                ws.cell(row=index+3, column=391).value = locale.format_string("%d", (target_value_oct + target_value_nov + target_value_dec), grouping=True)
+                # Achievement
+                if data['achievement_oct'] == 'x':
+                    achievement_oct = 0
+                else:
+                    achievement_oct = data['achievement_oct'].achievement
+                if data['achievement_nov'] == 'x':
+                    achievement_nov = 0
+                else:
+                    achievement_nov = data['achievement_nov'].achievement
+                if data['achievement_dec'] == 'x':
+                    achievement_dec = 0
+                else:
+                    achievement_dec = data['achievement_dec'].achievement
+                ws.cell(row=index+3, column=392).value = locale.format_string("%d", (achievement_oct + achievement_nov + achievement_dec), grouping=True)
+                # Total cost
+                ws.cell(row=index+3, column=393).value = locale.format_string("%d", (data['total_cost_oct'] + data['total_cost_nov'] + data['total_cost_dec']), grouping=True)
+                # % Achievement vs Target Q.4
+                if data['achievement_vs_target_q4'] == '':
+                    ws.cell(row=index+3, column=394).value = ''
+                else:
+                    ws.cell(row=index+3, column=394).value = str(data['achievement_vs_target_q4']) + '%'
+                # % Total Cost vs Achievement Q.4
+                if data['total_cost_vs_achievement_q4'] == '':
+                    ws.cell(row=index+3, column=395).value = ''
+                else:
+                    ws.cell(row=index+3, column=395).value = str(data['total_cost_vs_achievement_q4']) + '%'
+                # % Total Cost vs Target Q.4
+                if data['total_cost_vs_target_value_q4'] == '':
+                    ws.cell(row=index+3, column=396).value = ''
+                else:
+                    ws.cell(row=index+3, column=396).value = str(data['total_cost_vs_target_value_q4']) + '%'
+
+                # Incentive q1
+                if data['incentive_quarter_1_current_year'] == 'x':
+                    ws.cell(row=index+3, column=398).value = ""
+                else:
+                    ws.cell(row=index+3, column=398).value = locale.format_string("%d", round(data['incentive_quarter_1_current_year'].incentive), grouping=True)
+                # Incentive q2
+                if data['incentive_quarter_2_current_year'] == 'x':
+                    ws.cell(row=index+3, column=399).value = ""
+                else:
+                    ws.cell(row=index+3, column=399).value = locale.format_string("%d", round(data['incentive_quarter_2_current_year'].incentive), grouping=True)
+                # Incentive q3
+                if data['incentive_quarter_3_current_year'] == 'x':
+                    ws.cell(row=index+3, column=400).value = ""
+                else:
+                    ws.cell(row=index+3, column=400).value = locale.format_string("%d", round(data['incentive_quarter_3_current_year'].incentive), grouping=True)
+                # Incentive q4
+                if data['incentive_quarter_4_current_year'] == 'x':
+                    ws.cell(row=index+3, column=401).value = ""
+                else:
+                    ws.cell(row=index+3, column=401).value = locale.format_string("%d", round(data['incentive_quarter_4_current_year'].incentive), grouping=True)
+                # Incentive yearly
+                if data['incentive_yearly_current_year'] == 'x':
+                    ws.cell(row=index+3, column=402).value = ""
+                else:
+                    ws.cell(row=index+3, column=402).value = locale.format_string("%d", round(data['incentive_yearly_current_year'].incentive), grouping=True)
+                # Best reward
+                if data['best_reward_current_year'] == 'x':
+                    ws.cell(row=index+3, column=403).value = ""
+                else:
+                    ws.cell(row=index+3, column=403).value = locale.format_string("%d", round(data['best_reward_current_year'].best_reward), grouping=True)
+
+                # column PC-PJ
+                ws.cell(row=index+3, column=404).value = data['years_of_service']
+                ws.cell(row=index+3, column=405).value = data['pd']
+                ws.cell(row=index+3, column=406).value = locale.format_string("%d", round(data['month_13_salary_Pro_ata_full_current_year']), grouping=True)
+                if data['month_14_salary_Pro_ata_full_current_year'] == 'x':
+                    ws.cell(row=index+3, column=407).value = ""
+                else:
+                    ws.cell(row=index+3, column=407).value = locale.format_string("%d", round(data['month_14_salary_Pro_ata_full_current_year'].month_14_salary), grouping=True)
+                ws.cell(row=index+3, column=408).value = locale.format_string("%d", round(data['total_bonus']), grouping=True)
+                ws.cell(row=index+3, column=409).value = locale.format_string("%d", round(data['total_remuneration']), grouping=True)
+
+                # column PK-PO
+                if data['company_celebration'] == 'x' or data['company_celebration'] == 0:
+                    ws.cell(row=index+3, column=411).value = 0
+                else:
+                    ws.cell(row=index+3, column=411).value = locale.format_string("%d", round(data['company_celebration'].celebration), grouping=True)
+                if data['health_check_up'] == 'x' or data['health_check_up'] == 0:
+                    ws.cell(row=index+3, column=412).value = 0
+                else:
+                    ws.cell(row=index+3, column=412).value = locale.format_string("%d", round(data['health_check_up'].health_check_up_fee), grouping=True)
+                if data['healthcare_insurance'] == 'x' or data['healthcare_insurance'] == 0:
+                    ws.cell(row=index+3, column=413).value = 0
+                else:
+                    ws.cell(row=index+3, column=413).value = locale.format_string("%d", round(data['healthcare_insurance'].insurance_fee), grouping=True)
+                
+                if data['saving_from_vacant'] == 'x' or data['saving_from_vacant'] == 0:
+                    ws.cell(row=index+3, column=415).value = 0
+                else:
+                    ws.cell(row=index+3, column=415).value = locale.format_string("%d", round(data['saving_from_vacant'].saving_from_vacant), grouping=True)
+                ws.cell(row=index+3, column=416).value = data['salary_difference']
+                ws.cell(row=index+3, column=417).value = data['bhxh_5percent_difference']
+                ws.cell(row=index+3, column=418).value = data['kpcd_5percent_difference']
+                ws.cell(row=index+3, column=419).value = locale.format_string("%d", round(data['total_cost_col_pt']), grouping=True)
+
+        # Total data
+        # Set the height of the next row
+        next_row = ws.max_row + 1
+        ws.row_dimensions[next_row].height = 40
+
+        # Set the style for each cell in the next row
+        for col in range(1, 420):
+            cell = ws.cell(row=next_row, column=col)
+            cell.style = style_total
+
+        '''Data'''
+        ws.cell(row=next_row, column=28).value = "TOTAL"
+        # Last year
+        ws.cell(row=next_row, column=30).value = locale.format_string("%d", round(total_data['total_basic_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=31).value = locale.format_string("%d", round(total_data['total_overtime_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=32).value = locale.format_string("%d", round(total_data['total_transportation_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=33).value = locale.format_string("%d", round(total_data['total_phone_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=34).value = locale.format_string("%d", round(total_data['total_lunch_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=35).value = locale.format_string("%d", round(total_data['total_housing_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=36).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=37).value = locale.format_string("%d", round(total_data['total_others_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=38).value = locale.format_string("%d", round(total_data['total_travel_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=39).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=40).value = locale.format_string("%d", round(total_data['total_responsibility_allowance_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=41).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=42).value = locale.format_string("%d", round(total_data['total_gross_income_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=43).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=44).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=45).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=46).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=47).value = locale.format_string("%d", round(total_data['total_incentive_quarter_1_last_year']), grouping=True)
+        ws.cell(row=next_row, column=48).value = locale.format_string("%d", round(total_data['total_incentive_quarter_2_last_year']), grouping=True)
+        ws.cell(row=next_row, column=49).value = locale.format_string("%d", round(total_data['total_incentive_quarter_3_last_year']), grouping=True)
+        ws.cell(row=next_row, column=50).value = locale.format_string("%d", round(total_data['total_incentive_quarter_4_last_year']), grouping=True)
+        ws.cell(row=next_row, column=51).value = locale.format_string("%d", round(total_data['total_incentive_yearly_last_year']), grouping=True)
+        ws.cell(row=next_row, column=52).value = locale.format_string("%d", round(total_data['total_best_reward_last_year']), grouping=True)
+        ws.cell(row=next_row, column=53).value = locale.format_string("%d", round(total_data['total_month_13_salary_Pro_ata_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=54).value = locale.format_string("%d", round(total_data['total_month_14_salary_Pro_ata_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=55).value = locale.format_string("%d", round(total_data['total_total_remuneration_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=56).value = locale.format_string("%d", round(total_data['total_target_value_full_last_year']), grouping=True)
+        ws.cell(row=next_row, column=57).value = locale.format_string("%d", round(total_data['total_achievement_full_last_year']), grouping=True)
+        # Current year
+        ws.cell(row=next_row, column=62).value = locale.format_string("%d", round(total_data['total_basic_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=63).value = locale.format_string("%d", round(total_data['total_overtime_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=64).value = locale.format_string("%d", round(total_data['total_transportation_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=65).value = locale.format_string("%d", round(total_data['total_phone_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=66).value = locale.format_string("%d", round(total_data['total_lunch_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=67).value = locale.format_string("%d", round(total_data['total_housing_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=68).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=69).value = locale.format_string("%d", round(total_data['total_others_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=70).value = locale.format_string("%d", round(total_data['total_travel_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=71).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=72).value = locale.format_string("%d", round(total_data['total_responsibility_allowance_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=73).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=74).value = locale.format_string("%d", round(total_data['total_gross_income_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=75).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=76).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=77).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=78).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=79).value = locale.format_string("%d", round(total_data['total_incentive_quarter_1_current_year']), grouping=True)
+        ws.cell(row=next_row, column=80).value = locale.format_string("%d", round(total_data['total_incentive_quarter_2_current_year']), grouping=True)
+        ws.cell(row=next_row, column=81).value = locale.format_string("%d", round(total_data['total_incentive_quarter_3_current_year']), grouping=True)
+        ws.cell(row=next_row, column=82).value = locale.format_string("%d", round(total_data['total_incentive_quarter_4_current_year']), grouping=True)
+        ws.cell(row=next_row, column=83).value = locale.format_string("%d", round(total_data['total_incentive_yearly_current_year']), grouping=True)
+        ws.cell(row=next_row, column=84).value = locale.format_string("%d", round(total_data['total_best_reward_current_year']), grouping=True)
+        ws.cell(row=next_row, column=85).value = locale.format_string("%d", round(total_data['total_month_13_salary_Pro_ata_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=86).value = locale.format_string("%d", round(total_data['total_month_14_salary_Pro_ata_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=87).value = locale.format_string("%d", round(total_data['total_total_remuneration_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=88).value = locale.format_string("%d", round(total_data['total_target_value_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=89).value = locale.format_string("%d", round(total_data['total_achievement_full_current_year']), grouping=True)
+        # Payroll jan
+        ws.cell(row=next_row, column=94).value = locale.format_string("%d", round(total_data['total_basic_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=95).value = locale.format_string("%d", round(total_data['total_overtime_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=96).value = locale.format_string("%d", round(total_data['total_transportation_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=97).value = locale.format_string("%d", round(total_data['total_phone_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=98).value = locale.format_string("%d", round(total_data['total_lunch_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=99).value = locale.format_string("%d", round(total_data['total_housing_vnd_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=100).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=101).value = locale.format_string("%d", round(total_data['total_other_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=102).value = locale.format_string("%d", round(total_data['total_travel_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=103).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=104).value = locale.format_string("%d", round(total_data['total_responsibility_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=105).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=106).value = locale.format_string("%d", round(total_data['total_gross_income_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=107).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_jan']), grouping=True)
+        ws.cell(row=next_row, column=108).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=109).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=110).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_jan']), grouping=True)
+        ws.cell(row=next_row, column=111).value = locale.format_string("%d", round(total_data['total_total_cost_jan']), grouping=True)
+        ws.cell(row=next_row, column=112).value = locale.format_string("%d", round(total_data['total_target_value_jan']), grouping=True)
+        ws.cell(row=next_row, column=113).value = locale.format_string("%d", round(total_data['total_achievement_jan']), grouping=True)
+        # Payroll feb
+        ws.cell(row=next_row, column=117).value = locale.format_string("%d", round(total_data['total_basic_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=118).value = locale.format_string("%d", round(total_data['total_overtime_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=119).value = locale.format_string("%d", round(total_data['total_transportation_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=120).value = locale.format_string("%d", round(total_data['total_phone_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=121).value = locale.format_string("%d", round(total_data['total_lunch_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=122).value = locale.format_string("%d", round(total_data['total_housing_vnd_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=123).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=124).value = locale.format_string("%d", round(total_data['total_other_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=125).value = locale.format_string("%d", round(total_data['total_travel_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=126).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=127).value = locale.format_string("%d", round(total_data['total_responsibility_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=128).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=129).value = locale.format_string("%d", round(total_data['total_gross_income_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=130).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_feb']), grouping=True)
+        ws.cell(row=next_row, column=131).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=132).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=133).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_feb']), grouping=True)
+        ws.cell(row=next_row, column=134).value = locale.format_string("%d", round(total_data['total_total_cost_feb']), grouping=True)
+        ws.cell(row=next_row, column=135).value = locale.format_string("%d", round(total_data['total_target_value_feb']), grouping=True)
+        ws.cell(row=next_row, column=136).value = locale.format_string("%d", round(total_data['total_achievement_feb']), grouping=True)
+        # Payroll mar
+        ws.cell(row=next_row, column=140).value = locale.format_string("%d", round(total_data['total_basic_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=141).value = locale.format_string("%d", round(total_data['total_overtime_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=142).value = locale.format_string("%d", round(total_data['total_transportation_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=143).value = locale.format_string("%d", round(total_data['total_phone_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=144).value = locale.format_string("%d", round(total_data['total_lunch_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=145).value = locale.format_string("%d", round(total_data['total_housing_vnd_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=146).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=147).value = locale.format_string("%d", round(total_data['total_other_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=148).value = locale.format_string("%d", round(total_data['total_travel_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=149).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=150).value = locale.format_string("%d", round(total_data['total_responsibility_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=151).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=152).value = locale.format_string("%d", round(total_data['total_gross_income_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=153).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_mar']), grouping=True)
+        ws.cell(row=next_row, column=154).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=155).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=156).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_mar']), grouping=True)
+        ws.cell(row=next_row, column=157).value = locale.format_string("%d", round(total_data['total_total_cost_mar']), grouping=True)
+        ws.cell(row=next_row, column=158).value = locale.format_string("%d", round(total_data['total_target_value_mar']), grouping=True)
+        ws.cell(row=next_row, column=159).value = locale.format_string("%d", round(total_data['total_achievement_mar']), grouping=True)
+        # Quarter 1
+        ws.cell(row=next_row, column=163).value = locale.format_string("%d", round(total_data['total_target_value_q1']), grouping=True)
+        ws.cell(row=next_row, column=164).value = locale.format_string("%d", round(total_data['total_achievement_q1']), grouping=True)
+        ws.cell(row=next_row, column=165).value = locale.format_string("%d", round(total_data['total_total_cost_q1']), grouping=True)
+        # Payroll apr
+        ws.cell(row=next_row, column=170).value = locale.format_string("%d", round(total_data['total_basic_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=171).value = locale.format_string("%d", round(total_data['total_overtime_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=172).value = locale.format_string("%d", round(total_data['total_transportation_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=173).value = locale.format_string("%d", round(total_data['total_phone_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=174).value = locale.format_string("%d", round(total_data['total_lunch_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=175).value = locale.format_string("%d", round(total_data['total_housing_vnd_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=176).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=177).value = locale.format_string("%d", round(total_data['total_other_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=178).value = locale.format_string("%d", round(total_data['total_travel_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=179).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=180).value = locale.format_string("%d", round(total_data['total_responsibility_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=181).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=182).value = locale.format_string("%d", round(total_data['total_gross_income_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=183).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_apr']), grouping=True)
+        ws.cell(row=next_row, column=184).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=185).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=186).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_apr']), grouping=True)
+        ws.cell(row=next_row, column=187).value = locale.format_string("%d", round(total_data['total_total_cost_apr']), grouping=True)
+        ws.cell(row=next_row, column=188).value = locale.format_string("%d", round(total_data['total_target_value_apr']), grouping=True)
+        ws.cell(row=next_row, column=189).value = locale.format_string("%d", round(total_data['total_achievement_apr']), grouping=True)
+        # Payroll may
+        ws.cell(row=next_row, column=193).value = locale.format_string("%d", round(total_data['total_basic_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=194).value = locale.format_string("%d", round(total_data['total_overtime_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=195).value = locale.format_string("%d", round(total_data['total_transportation_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=196).value = locale.format_string("%d", round(total_data['total_phone_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=197).value = locale.format_string("%d", round(total_data['total_lunch_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=198).value = locale.format_string("%d", round(total_data['total_housing_vnd_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=199).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=200).value = locale.format_string("%d", round(total_data['total_other_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=201).value = locale.format_string("%d", round(total_data['total_travel_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=202).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=203).value = locale.format_string("%d", round(total_data['total_responsibility_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=204).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=205).value = locale.format_string("%d", round(total_data['total_gross_income_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=206).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_may']), grouping=True)
+        ws.cell(row=next_row, column=207).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=208).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=209).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_may']), grouping=True)
+        ws.cell(row=next_row, column=210).value = locale.format_string("%d", round(total_data['total_total_cost_may']), grouping=True)
+        ws.cell(row=next_row, column=211).value = locale.format_string("%d", round(total_data['total_target_value_may']), grouping=True)
+        ws.cell(row=next_row, column=212).value = locale.format_string("%d", round(total_data['total_achievement_may']), grouping=True)
+        # Payroll jun
+        ws.cell(row=next_row, column=216).value = locale.format_string("%d", round(total_data['total_basic_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=217).value = locale.format_string("%d", round(total_data['total_overtime_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=218).value = locale.format_string("%d", round(total_data['total_transportation_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=219).value = locale.format_string("%d", round(total_data['total_phone_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=220).value = locale.format_string("%d", round(total_data['total_lunch_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=221).value = locale.format_string("%d", round(total_data['total_housing_vnd_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=222).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=223).value = locale.format_string("%d", round(total_data['total_other_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=224).value = locale.format_string("%d", round(total_data['total_travel_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=225).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=226).value = locale.format_string("%d", round(total_data['total_responsibility_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=227).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=228).value = locale.format_string("%d", round(total_data['total_gross_income_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=229).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_jun']), grouping=True)
+        ws.cell(row=next_row, column=230).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=231).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=232).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_jun']), grouping=True)
+        ws.cell(row=next_row, column=233).value = locale.format_string("%d", round(total_data['total_total_cost_jun']), grouping=True)
+        ws.cell(row=next_row, column=234).value = locale.format_string("%d", round(total_data['total_target_value_jun']), grouping=True)
+        ws.cell(row=next_row, column=235).value = locale.format_string("%d", round(total_data['total_achievement_jun']), grouping=True)
+        # Quarter 2
+        ws.cell(row=next_row, column=239).value = locale.format_string("%d", round(total_data['total_target_value_q2']), grouping=True)
+        ws.cell(row=next_row, column=240).value = locale.format_string("%d", round(total_data['total_achievement_q2']), grouping=True)
+        ws.cell(row=next_row, column=241).value = locale.format_string("%d", round(total_data['total_total_cost_q2']), grouping=True)
+        # Payroll jul
+        ws.cell(row=next_row, column=246).value = locale.format_string("%d", round(total_data['total_basic_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=247).value = locale.format_string("%d", round(total_data['total_overtime_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=248).value = locale.format_string("%d", round(total_data['total_transportation_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=249).value = locale.format_string("%d", round(total_data['total_phone_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=250).value = locale.format_string("%d", round(total_data['total_lunch_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=251).value = locale.format_string("%d", round(total_data['total_housing_vnd_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=252).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=253).value = locale.format_string("%d", round(total_data['total_other_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=254).value = locale.format_string("%d", round(total_data['total_travel_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=255).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=256).value = locale.format_string("%d", round(total_data['total_responsibility_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=257).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=258).value = locale.format_string("%d", round(total_data['total_gross_income_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=259).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_jul']), grouping=True)
+        ws.cell(row=next_row, column=260).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=261).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=262).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_jul']), grouping=True)
+        ws.cell(row=next_row, column=263).value = locale.format_string("%d", round(total_data['total_total_cost_jul']), grouping=True)
+        ws.cell(row=next_row, column=264).value = locale.format_string("%d", round(total_data['total_target_value_jul']), grouping=True)
+        ws.cell(row=next_row, column=265).value = locale.format_string("%d", round(total_data['total_achievement_jul']), grouping=True)
+        # Payroll aug
+        ws.cell(row=next_row, column=269).value = locale.format_string("%d", round(total_data['total_basic_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=270).value = locale.format_string("%d", round(total_data['total_overtime_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=271).value = locale.format_string("%d", round(total_data['total_transportation_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=272).value = locale.format_string("%d", round(total_data['total_phone_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=273).value = locale.format_string("%d", round(total_data['total_lunch_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=274).value = locale.format_string("%d", round(total_data['total_housing_vnd_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=275).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=276).value = locale.format_string("%d", round(total_data['total_other_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=277).value = locale.format_string("%d", round(total_data['total_travel_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=278).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=279).value = locale.format_string("%d", round(total_data['total_responsibility_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=280).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=281).value = locale.format_string("%d", round(total_data['total_gross_income_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=282).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_aug']), grouping=True)
+        ws.cell(row=next_row, column=283).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=284).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=285).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_aug']), grouping=True)
+        ws.cell(row=next_row, column=286).value = locale.format_string("%d", round(total_data['total_total_cost_aug']), grouping=True)
+        ws.cell(row=next_row, column=287).value = locale.format_string("%d", round(total_data['total_target_value_aug']), grouping=True)
+        ws.cell(row=next_row, column=288).value = locale.format_string("%d", round(total_data['total_achievement_aug']), grouping=True)
+        # Payroll sep
+        ws.cell(row=next_row, column=292).value = locale.format_string("%d", round(total_data['total_basic_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=293).value = locale.format_string("%d", round(total_data['total_overtime_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=294).value = locale.format_string("%d", round(total_data['total_transportation_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=295).value = locale.format_string("%d", round(total_data['total_phone_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=296).value = locale.format_string("%d", round(total_data['total_lunch_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=297).value = locale.format_string("%d", round(total_data['total_housing_vnd_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=298).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=299).value = locale.format_string("%d", round(total_data['total_other_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=300).value = locale.format_string("%d", round(total_data['total_travel_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=301).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=302).value = locale.format_string("%d", round(total_data['total_responsibility_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=303).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=304).value = locale.format_string("%d", round(total_data['total_gross_income_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=305).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_sep']), grouping=True)
+        ws.cell(row=next_row, column=306).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=307).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=308).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_sep']), grouping=True)
+        ws.cell(row=next_row, column=309).value = locale.format_string("%d", round(total_data['total_total_cost_sep']), grouping=True)
+        ws.cell(row=next_row, column=310).value = locale.format_string("%d", round(total_data['total_target_value_sep']), grouping=True)
+        ws.cell(row=next_row, column=311).value = locale.format_string("%d", round(total_data['total_achievement_sep']), grouping=True)
+        # Quarter 3
+        ws.cell(row=next_row, column=315).value = locale.format_string("%d", round(total_data['total_target_value_q3']), grouping=True)
+        ws.cell(row=next_row, column=316).value = locale.format_string("%d", round(total_data['total_achievement_q3']), grouping=True)
+        ws.cell(row=next_row, column=317).value = locale.format_string("%d", round(total_data['total_total_cost_q3']), grouping=True)
+        # Payroll oct
+        ws.cell(row=next_row, column=322).value = locale.format_string("%d", round(total_data['total_basic_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=323).value = locale.format_string("%d", round(total_data['total_overtime_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=324).value = locale.format_string("%d", round(total_data['total_transportation_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=325).value = locale.format_string("%d", round(total_data['total_phone_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=326).value = locale.format_string("%d", round(total_data['total_lunch_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=327).value = locale.format_string("%d", round(total_data['total_housing_vnd_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=328).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=329).value = locale.format_string("%d", round(total_data['total_other_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=330).value = locale.format_string("%d", round(total_data['total_travel_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=331).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=332).value = locale.format_string("%d", round(total_data['total_responsibility_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=333).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=334).value = locale.format_string("%d", round(total_data['total_gross_income_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=335).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_oct']), grouping=True)
+        ws.cell(row=next_row, column=336).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=337).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=338).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_oct']), grouping=True)
+        ws.cell(row=next_row, column=339).value = locale.format_string("%d", round(total_data['total_total_cost_oct']), grouping=True)
+        ws.cell(row=next_row, column=340).value = locale.format_string("%d", round(total_data['total_target_value_oct']), grouping=True)
+        ws.cell(row=next_row, column=341).value = locale.format_string("%d", round(total_data['total_achievement_oct']), grouping=True)
+        # Payroll nov
+        ws.cell(row=next_row, column=345).value = locale.format_string("%d", round(total_data['total_basic_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=346).value = locale.format_string("%d", round(total_data['total_overtime_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=347).value = locale.format_string("%d", round(total_data['total_transportation_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=348).value = locale.format_string("%d", round(total_data['total_phone_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=349).value = locale.format_string("%d", round(total_data['total_lunch_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=350).value = locale.format_string("%d", round(total_data['total_housing_vnd_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=351).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=352).value = locale.format_string("%d", round(total_data['total_other_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=353).value = locale.format_string("%d", round(total_data['total_travel_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=354).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=355).value = locale.format_string("%d", round(total_data['total_responsibility_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=356).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=357).value = locale.format_string("%d", round(total_data['total_gross_income_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=358).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_nov']), grouping=True)
+        ws.cell(row=next_row, column=359).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=360).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=361).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_nov']), grouping=True)
+        ws.cell(row=next_row, column=362).value = locale.format_string("%d", round(total_data['total_total_cost_nov']), grouping=True)
+        ws.cell(row=next_row, column=363).value = locale.format_string("%d", round(total_data['total_target_value_nov']), grouping=True)
+        ws.cell(row=next_row, column=364).value = locale.format_string("%d", round(total_data['total_achievement_nov']), grouping=True)
+        # Payroll dec
+        ws.cell(row=next_row, column=368).value = locale.format_string("%d", round(total_data['total_basic_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=369).value = locale.format_string("%d", round(total_data['total_overtime_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=370).value = locale.format_string("%d", round(total_data['total_transportation_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=371).value = locale.format_string("%d", round(total_data['total_phone_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=372).value = locale.format_string("%d", round(total_data['total_lunch_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=373).value = locale.format_string("%d", round(total_data['total_housing_vnd_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=374).value = locale.format_string("%d", round(total_data['total_KPI_achievement_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=375).value = locale.format_string("%d", round(total_data['total_other_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=376).value = locale.format_string("%d", round(total_data['total_travel_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=377).value = locale.format_string("%d", round(total_data['total_seniority_bonus_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=378).value = locale.format_string("%d", round(total_data['total_responsibility_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=379).value = locale.format_string("%d", round(total_data['total_total_allowance_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=380).value = locale.format_string("%d", round(total_data['total_gross_income_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=381).value = locale.format_string("%d", round(total_data['total_SHUI_21point5percent_company_pay_dec']), grouping=True)
+        ws.cell(row=next_row, column=382).value = locale.format_string("%d", round(total_data['total_trade_union_fee_company_pay_2percent_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=383).value = locale.format_string("%d", round(total_data['total_trade_union_fee_member_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=384).value = locale.format_string("%d", round(total_data['total_transfer_bank_salary_dec']), grouping=True)
+        ws.cell(row=next_row, column=385).value = locale.format_string("%d", round(total_data['total_total_cost_dec']), grouping=True)
+        ws.cell(row=next_row, column=386).value = locale.format_string("%d", round(total_data['total_target_value_dec']), grouping=True)
+        ws.cell(row=next_row, column=387).value = locale.format_string("%d", round(total_data['total_achievement_dec']), grouping=True)
+        # Quarter 4
+        ws.cell(row=next_row, column=391).value = locale.format_string("%d", round(total_data['total_target_value_q4']), grouping=True)
+        ws.cell(row=next_row, column=392).value = locale.format_string("%d", round(total_data['total_achievement_q4']), grouping=True)
+        ws.cell(row=next_row, column=393).value = locale.format_string("%d", round(total_data['total_total_cost_q4']), grouping=True)
+        # Last columns
+        ws.cell(row=next_row, column=398).value = locale.format_string("%d", round(total_data['total_incentive_quarter_1_current_year']), grouping=True)
+        ws.cell(row=next_row, column=399).value = locale.format_string("%d", round(total_data['total_incentive_quarter_2_current_year']), grouping=True)
+        ws.cell(row=next_row, column=400).value = locale.format_string("%d", round(total_data['total_incentive_quarter_3_current_year']), grouping=True)
+        ws.cell(row=next_row, column=401).value = locale.format_string("%d", round(total_data['total_incentive_quarter_4_current_year']), grouping=True)
+        ws.cell(row=next_row, column=402).value = locale.format_string("%d", round(total_data['total_incentive_yearly_current_year']), grouping=True)
+        ws.cell(row=next_row, column=403).value = locale.format_string("%d", round(total_data['total_best_reward_current_year']), grouping=True)
+
+        ws.cell(row=next_row, column=406).value = locale.format_string("%d", round(total_data['total_month_13_salary_Pro_ata_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=407).value = locale.format_string("%d", round(total_data['total_month_14_salary_Pro_ata_full_current_year']), grouping=True)
+        ws.cell(row=next_row, column=408).value = locale.format_string("%d", round(total_data['total_total_bonus']), grouping=True)
+        ws.cell(row=next_row, column=409).value = locale.format_string("%d", round(total_data['total_total_remuneration']), grouping=True)
+
+        ws.cell(row=next_row, column=411).value = locale.format_string("%d", round(total_data['total_company_celebration']), grouping=True)
+        ws.cell(row=next_row, column=412).value = locale.format_string("%d", round(total_data['total_health_check_up']), grouping=True)
+        ws.cell(row=next_row, column=413).value = locale.format_string("%d", round(total_data['total_healthcare_insurance']), grouping=True)
+
+        ws.cell(row=next_row, column=419).value = locale.format_string("%d", round(total_data['total_total_cost_col_pt']), grouping=True)
+
+
 
         # Lưu workbook vào HttpResponse
         wb.save(response)
         return response
+    
+    # Test
+    # for data in list_data:
+    #     if data['employee'].out_date == None:
+    #         print(data['payroll_data_jan'])
+    #         pass
+    #     else:
+    #         if str(data['employee'].out_date.year) == str_current_year:
+    #             print(data['payroll_data_jan'])
         
     
     return render(request, 'employee/report_hr_budget_and_cashflow_view.html', {
