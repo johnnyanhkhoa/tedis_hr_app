@@ -480,8 +480,8 @@ class Type_of_leave(models.Model):
 class Leave_application(models.Model):    
     employee = models.ForeignKey(Employee, on_delete=models.PROTECT, null=True)
     emergency_contact = models.CharField(max_length=100, blank=True, null=True)
-    contact_person = models.CharField(max_length=10, blank=True, null=True)
-    relation = models.CharField(max_length=10, blank=True, null=True)
+    contact_person = models.CharField(max_length=100, blank=True, null=True)
+    relation = models.CharField(max_length=100, blank=True, null=True)
     # Annual Leave
     annual_from = models.CharField(max_length=50, blank=True, null=True)
     annual_to = models.CharField(max_length=50, blank=True, null=True)
