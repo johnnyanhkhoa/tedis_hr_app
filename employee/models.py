@@ -304,7 +304,7 @@ class Staff_info_submission(models.Model):
 
     
 class Employee(models.Model):
-    employee_code = models.IntegerField(blank=False) #JOB
+    employee_code = models.CharField(max_length=100, blank=False) #JOB
     full_name = models.CharField(max_length=100, blank=False) #PERSONAL
     site = models.ForeignKey(Site, on_delete=models.PROTECT, null=True) #JOB
     division = models.ForeignKey(Division, on_delete=models.PROTECT, null=True) #JOB
