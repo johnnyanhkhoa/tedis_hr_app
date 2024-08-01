@@ -1261,10 +1261,13 @@ def leave_application(request):
     employee = Employee.objects.get(pk=employee_pk)
     
     # Get manager:
-    employee_id_in_Employee_model = int(employee_pk)
-    manager_id_in_Manager_model = Employee_manager.objects.only('id').get(employee=employee_id_in_Employee_model)
-    manager_int_id_in_Manager_model = int(manager_id_in_Manager_model.manager.id)
-    manager = Employee.objects.get(pk=manager_int_id_in_Manager_model)
+    if employee.full_name == "SEVERINE EDGARD-ROSA" or employee.full_name == "HÀ THỊ MỸ QUYÊN" or employee.full_name == "DƯƠNG TRẦN ĐOAN THỤY" or employee.full_name == "TÔ NGỌC CHI LAN" or employee.full_name == "NGUYỄN NGỌC PHÂN" or employee.full_name == "VŨ CHÂU KIM ANH" or employee.full_name == "NGUYỄN CAO HOÀN":
+        manager = None
+    else:
+        employee_id_in_Employee_model = int(employee_pk)
+        manager_id_in_Manager_model = Employee_manager.objects.only('id').get(employee=employee_id_in_Employee_model)
+        manager_int_id_in_Manager_model = int(manager_id_in_Manager_model.manager.id)
+        manager = Employee.objects.get(pk=manager_int_id_in_Manager_model)
     
     # Get today date
     application_date = date.today()
