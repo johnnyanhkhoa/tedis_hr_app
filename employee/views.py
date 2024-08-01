@@ -1444,6 +1444,19 @@ def leave_verification(request):
         'hr_list_leave_application' : hr_list_leave_application,
         'list_present_year_leave_application' : list_present_year_leave_application,
     })
+
+def leave_delete(request, pk):
+    # Kiểm tra session xem khách hàng đã đăng nhập chưa?
+    if 's_user' not in request.session:
+        return redirect('hr:signin')
+
+    try:
+        leave_info = Leave_application.objects.get(id = pk)
+        leave_info.delete()
+        messages.success(request, 'Leave deleted')
+    except Employee.DoesNotExist:
+        return redirect('/leave_verification/')
+    return redirect('/leave_verification/')
     
 
 def leave_approve(request,pk):

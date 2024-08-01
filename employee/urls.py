@@ -26,6 +26,7 @@ urlpatterns = [
     path('leave_application/', views.leave_application, name='leave_application'),
     path('leave_view/<int:pk>/', views.leave_view, name='leave_view'),
     path('leave_verification/', views.leave_verification, name='leave_verification'),
+    path('leave_delete/<int:pk>/', views.leave_delete, name='leave_delete'),
     path('leave_approve/<int:pk>/', views.leave_approve, name='leave_approve'),
     path('HR_leave_approve/<int:pk>/', views.HR_leave_approve, name='HR_leave_approve'),
     path('ot_application/', views.ot_application, name='ot_application'),
