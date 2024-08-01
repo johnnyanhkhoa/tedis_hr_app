@@ -80,7 +80,7 @@
                                     <span class="badge bg-warning">{{ leave_application.status.status }}</span>
                                     {% elif leave_application.status.status == 'Approved' %}
                                     <span class="badge bg-success">{{ leave_application.status.status }}</span>
-                                    {% elif leave_application.status.status == 'Reject' %}
+                                    {% elif leave_application.status.status == 'Rejected' %}
                                     <span class="badge bg-danger">{{ leave_application.status.status }}</span>
                                     {% endif %}
                                 </td>
@@ -90,7 +90,7 @@
                                     <span class="badge bg-warning">{{ leave_application.hr_status.status }}</span>
                                     {% elif leave_application.hr_status.status == 'Approved' %}
                                     <span class="badge bg-success">{{ leave_application.hr_status.status }}</span>
-                                    {% elif leave_application.hr_status.status == 'Reject' %}
+                                    {% elif leave_application.hr_status.status == 'Rejected' %}
                                     <span class="badge bg-danger">{{ leave_application.hr_status.status }}</span>
                                     {% endif %}
                                 </td>
@@ -130,7 +130,7 @@
                             <span class="badge bg-warning">{{ overtime_application.status.status }}</span>
                             {% elif overtime_application.status.status == 'Approved' %}
                             <span class="badge bg-success">{{ overtime_application.status.status }}</span>
-                            {% elif overtime_application.status.status == 'Reject' %}
+                            {% elif overtime_application.status.status == 'Rejected' %}
                             <span class="badge bg-danger">{{ overtime_application.status.status }}</span>
                             {% endif %}
                         </td>
@@ -140,7 +140,7 @@
                             <span class="badge bg-warning">{{ overtime_application.hr_status.status }}</span>
                             {% elif overtime_application.hr_status.status == 'Approved' %}
                             <span class="badge bg-success">{{ overtime_application.hr_status.status }}</span>
-                            {% elif overtime_application.hr_status.status == 'Reject' %}
+                            {% elif overtime_application.hr_status.status == 'Rejected' %}
                             <span class="badge bg-danger">{{ overtime_application.hr_status.status }}</span>
                             {% endif %}
                         </td>
