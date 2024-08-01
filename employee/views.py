@@ -1340,7 +1340,7 @@ def leave_application(request):
         if other_number_of_leave_days == '':
             other_number_of_leave_days = 0
         total_days = float(annual_number_of_leave_days) + float(non_paid_number_of_leave_days) + float(wedding_number_of_leave_days) + float(bereavement_number_of_leave_days) + float(maternity_obstetric_number_of_leave_days) + float(sick_number_of_leave_days) + float(offinlieu_number_of_leave_days) + float(other_number_of_leave_days)
-        temporary_replacement = request.POST.get('temporary_replacement_id')  
+        temporary_replacement = request.POST.get('temporary_replacement')  
         application_date = date.today()
         if employee.full_name == "SEVERINE EDGARD-ROSA" or employee.full_name == "HÀ THỊ MỸ QUYÊN" or employee.full_name == "DƯƠNG TRẦN ĐOAN THỤY" or employee.full_name == "TÔ NGỌC CHI LAN" or employee.full_name == "NGUYỄN NGỌC PHÂN" or employee.full_name == "VŨ CHÂU KIM ANH" or employee.full_name == "NGUYỄN CAO HOÀN":
             status = Status.objects.get(status="Approved")
